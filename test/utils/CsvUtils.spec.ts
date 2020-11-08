@@ -3,7 +3,7 @@ import { CsvUtils } from '../../src/ts/utils/CsvUtils';
 
 describe('CSV Utils', () => {
 	describe('CSV to JSON', () => {
-		it('Transform CSV content in JSON', () => {
+		it('Transforma CSV preenchido corretamente em Json', () => {
 			const csvContent = `
             Nome,Idade,Sexo
             Rodrigo,25,Masculino
@@ -36,12 +36,14 @@ describe('CSV Utils', () => {
 			expect(JSON.stringify(CsvUtils.csv2json(csvContent, ','))).to.equal(
 				JSON.stringify(jsonFromCsv)
 			);
-			const csvContent2 = `
+		});
+		it('Transforma um CSV preenchido com espaços em JSON', () => {
+			const csvContent = `
             Nome,Idade,Sexo
             Rodrigo,   25    ,Masculino
             Juan       ,45,       Masculino
             `;
-			const jsonFromCsv2 = [
+			const jsonFromCsv = [
 				{
 					Nome: 'Rodrigo',
 					Idade: '25',
@@ -53,21 +55,25 @@ describe('CSV Utils', () => {
 					Sexo: 'Masculino',
 				},
 			];
-			expect(
-				JSON.stringify(CsvUtils.csv2json(csvContent2, ','))
-			).to.equal(JSON.stringify(jsonFromCsv2));
-			const csvContent3 = `
+			expect(JSON.stringify(CsvUtils.csv2json(csvContent, ','))).to.equal(
+				JSON.stringify(jsonFromCsv)
+			);
+		});
+		it('Transforma um CSV somente com preenchimento de cabeçalhos em JSON', () => {
+			const csvContent = `
             Nome,Idade,Sexo
             `;
-			expect(
-				JSON.stringify(CsvUtils.csv2json(csvContent3, ','))
-			).to.equal('[]');
-			const csvContent4 = `
+			expect(JSON.stringify(CsvUtils.csv2json(csvContent, ','))).to.equal(
+				'[]'
+			);
+		});
+		it('Transforma um CSV com alguns preenchimentos vazios em JSON', () => {
+			const csvContent = `
             Nome,Idade,Sexo
             Rodrigo,       ,Masculino
             Juan       ,45,       
             `;
-			const jsonFromCsv4 = [
+			const jsonFromCsv = [
 				{
 					Nome: 'Rodrigo',
 					Idade: '',
@@ -79,18 +85,20 @@ describe('CSV Utils', () => {
 					Sexo: '',
 				},
 			];
-			expect(
-				JSON.stringify(CsvUtils.csv2json(csvContent4, ','))
-			).to.equal(JSON.stringify(jsonFromCsv4));
-			const csvContent5 = '';
-			expect(
-				JSON.stringify(CsvUtils.csv2json(csvContent5, ','))
-			).to.equal('[]');
+			expect(JSON.stringify(CsvUtils.csv2json(csvContent, ','))).to.equal(
+				JSON.stringify(jsonFromCsv)
+			);
+		});
+		it('Transforma um CSV vazio em JSON', () => {
+			const csvContent = '';
+			expect(JSON.stringify(CsvUtils.csv2json(csvContent, ','))).to.equal(
+				'[]'
+			);
 		});
 	});
 
 	describe('Config to CSV', () => {
-		it('Transform JSON config in CSV header content', () => {
+		it('Trasnforma um JsonConfig do GA em um cabeçalho de CSV', () => {
 			const jsonConfigGa = {
 				separator: ':',
 				spaceSeparator: '+',
@@ -143,6 +151,8 @@ describe('CSV Utils', () => {
 			expect(CsvUtils.config2csvHeader(jsonConfigGa, ';')).to.equal(
 				'Url;Veículo;Inserção;campanha;categoriaDoProduto;produto;segmentação;criativo;formato;campaignId;adId'
 			);
+		});
+		it('Trasnforma um JsonConfig de Adobe em um cabeçalho de CSV', () => {
 			const jsonConfigAdobe = {
 				separator: ':',
 				spaceSeparator: '+',
@@ -187,6 +197,8 @@ describe('CSV Utils', () => {
 			expect(CsvUtils.config2csvHeader(jsonConfigAdobe, ';')).to.equal(
 				'Url;Veículo;Inserção;campanha;categoriaDoProduto;produto;segmentação;criativo;formato;campaignId;adId'
 			);
+		});
+		it('Trasnforma um JsonConfig de Adobe e GA em um cabeçalho CSV de GA', () => {
 			const jsonConfigAdobeAndGa = {
 				separator: ':',
 				spaceSeparator: '+',
@@ -221,6 +233,8 @@ describe('CSV Utils', () => {
 			expect(
 				CsvUtils.config2csvHeader(jsonConfigAdobeAndGa, ';')
 			).to.equal('Url;Veículo;Inserção');
+		});
+		it('Transforma um JsonConfi sem Adobe e GA em um cabeçalho CSV', () => {
 			const jsonConfig = {
 				separator: ':',
 				spaceSeparator: '+',

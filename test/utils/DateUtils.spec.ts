@@ -2,8 +2,8 @@ import { expect } from 'chai';
 import { DateUtils } from '../../src/ts/utils/DateUtils';
 
 describe('Date Utils', () => {
-	describe('New String Format', () => {
-		it('Check cut date', () => {
+	describe('New Date String Format', () => {
+		it('Valida a alteração no formato da string de data', () => {
 			expect(
 				DateUtils.newDateStringFormat(
 					'07/08/2019',
@@ -32,6 +32,8 @@ describe('Date Utils', () => {
 					'dd/mm/yyyy'
 				)
 			).to.equal('01/02/2020');
+		});
+		it('Valida a alteração no formato da string de data com horas', () => {
 			expect(
 				DateUtils.newDateStringFormat(
 					'20200819184820',
@@ -42,7 +44,7 @@ describe('Date Utils', () => {
 		});
 	});
 	describe('Generate Date String', () => {
-		it('Check generate date string', () => {
+		it('Valida a geração da string de data sem os segundos', () => {
 			const date = new Date();
 			expect(DateUtils.generateDateString()).to.equal(
 				date.getFullYear() +
@@ -55,6 +57,9 @@ describe('Date Utils', () => {
 					'' +
 					('0' + String(date.getMinutes())).slice(-2)
 			);
+		});
+		it('Valida a geração da string de data com os segundos', () => {
+			const date = new Date();
 			expect(DateUtils.generateDateString(true)).to.equal(
 				date.getFullYear() +
 					'' +

@@ -2,7 +2,7 @@ import { StringUtils } from './StringUtils';
 
 export class JsonUtils {
 	private static _keyValueIsAnObject(keyValue: any): boolean {
-		return typeof keyValue === 'object';
+		return typeof keyValue === 'object' && !Array.isArray(keyValue);
 	}
 
 	/**
