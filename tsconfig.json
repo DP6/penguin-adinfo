@@ -4,7 +4,8 @@
 		"outDir": "src/js",
 		"noEmitOnError": true,
 		"noImplicitAny": true,
-		"module": "CommonJS"
+		"module": "CommonJS",
+		"removeComments": true
 	},
 	"include": ["src/ts/**/*"]
 }
