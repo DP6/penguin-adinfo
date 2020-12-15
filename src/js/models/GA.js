@@ -63,7 +63,6 @@ class GA extends AnalyticsTool_1.AnalyticsTool {
 		};
 	}
 	_buildUtms() {
-		console.log(this.csvLine);
 		Object.keys(this.config).forEach((utm) => {
 			let utmString = '';
 			this.config[utm].forEach((column) => {

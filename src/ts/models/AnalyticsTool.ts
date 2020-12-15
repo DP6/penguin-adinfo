@@ -62,6 +62,7 @@ export abstract class AnalyticsTool {
 	 */
 	abstract _buildUrl(): void;
 
+	//TODO passar para o Stringutils
 	/**
 	 * Verifica se a string está vazia
 	 * @param parameter string para checar se está vazia

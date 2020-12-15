@@ -118,7 +118,6 @@ export class GA extends AnalyticsTool {
 	 * Constrói os utms
 	 */
 	private _buildUtms(): void {
-		console.log(this.csvLine);
 		Object.keys(this.config).forEach((utm) => {
 			let utmString = '';
 			this.config[utm].forEach((column) => {
