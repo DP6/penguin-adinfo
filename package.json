@@ -20,7 +20,7 @@
 	"author": "DP6",
 	"license": "ISC",
 	"dependencies": {
-		"@google-cloud/firestore": "^4.0.0",
+		"@google-cloud/firestore": "^4.8.1",
 		"@google-cloud/storage": "^5.1.1",
 		"body-parser": "^1.19.0",
 		"convert-csv-to-json": "0.0.15",
