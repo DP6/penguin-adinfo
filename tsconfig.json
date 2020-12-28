@@ -5,7 +5,8 @@
 		"noEmitOnError": true,
 		"noImplicitAny": true,
 		"module": "CommonJS",
-		"removeComments": true
+		"removeComments": true,
+		"resolveJsonModule": true
 	},
 	"include": ["src/ts/**/*"]
 }
