@@ -3,6 +3,7 @@ import { JsonUtils } from '../utils/JsonUtils';
 export class Config {
 	private _separator: string;
 	private _spaceSeparator: string;
+	private _csvSeparator = ',';
 	private _insertTime: string;
 	private _version: number;
 	private _analyticsTool: { [key: string]: { [key: string]: string[] } };
@@ -11,6 +12,8 @@ export class Config {
 	constructor(jsonConfig: { [key: string]: any }) {
 		this._separator = jsonConfig.separator;
 		delete jsonConfig.separator;
+		this._csvSeparator = jsonConfig.csvSeparator;
+		delete jsonConfig.csvSeparator;
 		this._spaceSeparator = jsonConfig.spaceSeparator;
 		delete jsonConfig.spaceSeparator;
 		this._insertTime = jsonConfig.insertTime;
@@ -68,6 +71,26 @@ export class Config {
 			}
 		});
 		return jsonConfig;
+	}
+
+	/**
+	 * Transforma a configuração em um cabeçalho csv
+	 * @param separator Separador de colunas a ser utilizado no CSV
+	 * @returns String correspondente ao CSV gerado
+	 */
+	public toCsvTemplate(): string {
+		const configValues: string[] = [];
+		configValues.push('Url');
+		const vehicle = Object.keys(this._analyticsTool)[0];
+		Object.keys(this._analyticsTool[vehicle]).map((campaignParam) => {
+			Object.keys(this._analyticsTool[vehicle][campaignParam]).map(
+				(param) => {
+					if (configValues.indexOf(param) === -1)
+						configValues.push(param);
+				}
+			);
+		});
+		return configValues.join(this._csvSeparator);
 	}
 
 	get separator(): string {

@@ -4,8 +4,11 @@ exports.Config = void 0;
 const JsonUtils_1 = require('../utils/JsonUtils');
 class Config {
 	constructor(jsonConfig) {
+		this._csvSeparator = ',';
 		this._separator = jsonConfig.separator;
 		delete jsonConfig.separator;
+		this._csvSeparator = jsonConfig.csvSeparator;
+		delete jsonConfig.csvSeparator;
 		this._spaceSeparator = jsonConfig.spaceSeparator;
 		delete jsonConfig.spaceSeparator;
 		this._insertTime = jsonConfig.insertTime;
@@ -57,6 +60,20 @@ class Config {
 			}
 		});
 		return jsonConfig;
+	}
+	toCsvTemplate() {
+		const configValues = [];
+		configValues.push('Url');
+		const vehicle = Object.keys(this._analyticsTool)[0];
+		Object.keys(this._analyticsTool[vehicle]).map((campaignParam) => {
+			Object.keys(this._analyticsTool[vehicle][campaignParam]).map(
+				(param) => {
+					if (configValues.indexOf(param) === -1)
+						configValues.push(param);
+				}
+			);
+		});
+		return configValues.join(this._csvSeparator);
 	}
 	get separator() {
 		return this._separator;
