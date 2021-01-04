@@ -1,4 +1,5 @@
 import { ConfigDAO } from '../models/DAO/ConfigDAO';
+import { Config } from '../models/Config';
 
 const config = (app: { [key: string]: any }) => {
 	app.post(
@@ -13,7 +14,7 @@ const config = (app: { [key: string]: any }) => {
 				res.status(500).send('Configuração não foi informada!');
 				return;
 			}
-			const config = JSON.parse(configString);
+			const config = new Config(JSON.parse(configString));
 			const configDAO = new ConfigDAO(company);
 			configDAO
 				.addConfig(config)

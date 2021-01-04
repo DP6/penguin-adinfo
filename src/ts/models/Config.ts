@@ -1,3 +1,5 @@
+import { JsonUtils } from '../utils/JsonUtils';
+
 export class Config {
 	private _separator: string;
 	private _spaceSeparator: string;
@@ -35,11 +37,33 @@ export class Config {
 	}
 
 	public toString(): string {
-		const jsonConfig: { [key: string]: any } = {};
+		let jsonConfig: { [key: string]: any } = {};
 		Object.keys(this).forEach((key: string, index: number) => {
-			jsonConfig[key.replace('_', '')] = Object.values(this)[index];
+			if (key === '_analyticsTool' || key === '_medias') {
+				jsonConfig = JsonUtils.addParametersAt(
+					jsonConfig,
+					Object.values(this)[index] || {}
+				);
+			} else {
+				jsonConfig[key.replace('_', '')] = Object.values(this)[index];
+			}
 		});
 		return JSON.stringify(jsonConfig);
+	}
+
+	public toJson(): { [key: string]: any } {
+		let jsonConfig: { [key: string]: any } = {};
+		Object.keys(this).forEach((key: string, index: number) => {
+			if (key === '_analyticsTool' || key === '_medias') {
+				jsonConfig = JsonUtils.addParametersAt(
+					jsonConfig,
+					Object.values(this)[index]
+				);
+			} else {
+				jsonConfig[key.replace('_', '')] = Object.values(this)[index];
+			}
+		});
+		return jsonConfig;
 	}
 
 	get separator(): string {
@@ -54,8 +78,16 @@ export class Config {
 		return this._insertTime;
 	}
 
+	set insertTime(insertTime: string) {
+		this._insertTime = insertTime;
+	}
+
 	get version(): number {
 		return this._version;
+	}
+
+	set version(version: number) {
+		this._version = version;
 	}
 
 	get analyticsTool(): { [key: string]: { [key: string]: string[] } } {

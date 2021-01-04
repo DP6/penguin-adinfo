@@ -1,6 +1,7 @@
 'use strict';
 Object.defineProperty(exports, '__esModule', { value: true });
 const ConfigDAO_1 = require('../models/DAO/ConfigDAO');
+const Config_1 = require('../models/Config');
 const config = (app) => {
 	app.post('/config', (req, res) => {
 		const company = req.body.company;
@@ -12,7 +13,7 @@ const config = (app) => {
 			res.status(500).send('Configuração não foi informada!');
 			return;
 		}
-		const config = JSON.parse(configString);
+		const config = new Config_1.Config(JSON.parse(configString));
 		const configDAO = new ConfigDAO_1.ConfigDAO(company);
 		configDAO
 			.addConfig(config)

@@ -47,47 +47,4 @@ export class CsvUtils {
 		});
 		return jsonFromCsv;
 	}
-
-	/**
-	 * Verifica se o veículo exista no Json de configurações
-	 * @param config Json de configurações
-	 * @param vehicle Veículo a ser buscado
-	 * @returns Booelano indicando se o veículo foi configurado no Json de configurações
-	 *
-	 * Retorna true ou false informado se o veículo foi configurado
-	 */
-	private static existsVehicleInConfig(
-		config: { [key: string]: any },
-		vehicle: string
-	): boolean {
-		return config[vehicle] === undefined ? false : true;
-	}
-
-	/**
-	 * Transforma um objeto JSON da configuração de parametros da empresa em uma linha CSV
-	 * @param jsonConfig Objeto JSON respectivo às configurações de parametrização da empresa
-	 * @param separator Separador de colunas a ser utilizado no CSV
-	 * @returns String correspondente ao CSV gerado
-	 *
-	 * Recebe o objeto JSON de configurações da empresa e gera uma string correspondente ao CSV, de acordo com o separado passado no parâmetro
-	 */
-	static config2csvHeader(
-		jsonConfig: { [key: string]: any },
-		separator: string
-	): string {
-		const configValues: string[] = [];
-		configValues.push('Url');
-		const vehicle = JsonUtils.normalizeKeys(jsonConfig)['ga']
-			? 'ga'
-			: 'adobe';
-		if (!this.existsVehicleInConfig(jsonConfig, vehicle))
-			return configValues.join(separator);
-		Object.keys(jsonConfig[vehicle]).map((campaignParam) => {
-			Object.keys(jsonConfig[vehicle][campaignParam]).map((param) => {
-				if (configValues.indexOf(param) === -1)
-					configValues.push(param);
-			});
-		});
-		return configValues.join(separator);
-	}
 }

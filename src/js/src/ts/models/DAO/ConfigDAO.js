@@ -31,15 +31,14 @@ class ConfigDAO {
 			this.getLastConfig()
 				.then((lastConfig) => {
 					if (!lastConfig) {
-						jsonConfig['version'] = 1;
+						jsonConfig.version = 1;
 					} else {
-						jsonConfig['version'] = lastConfig.version + 1;
+						jsonConfig.version = lastConfig.version + 1;
 					}
-					jsonConfig[
-						'insertTime'
-					] = DateUtils_1.DateUtils.generateDateString(true);
-					const newConfig = new Config_1.Config(jsonConfig);
-					if (newConfig.validateConfig()) {
+					jsonConfig.insertTime = DateUtils_1.DateUtils.generateDateString(
+						true
+					);
+					if (jsonConfig.validateConfig()) {
 						resolve(
 							this._objectStore.addDocumentIn(
 								this._configCollection,
