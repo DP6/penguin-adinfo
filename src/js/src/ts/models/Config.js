@@ -25,6 +25,13 @@ class Config {
 			!this._analyticsTool
 		);
 	}
+	toString() {
+		const jsonConfig = {};
+		Object.keys(this).forEach((key, index) => {
+			jsonConfig[key.replace('_', '')] = Object.values(this)[index];
+		});
+		return JSON.stringify(jsonConfig);
+	}
 	get separator() {
 		return this._separator;
 	}

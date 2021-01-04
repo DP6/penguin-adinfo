@@ -34,6 +34,14 @@ export class Config {
 		);
 	}
 
+	public toString(): string {
+		const jsonConfig: { [key: string]: any } = {};
+		Object.keys(this).forEach((key: string, index: number) => {
+			jsonConfig[key.replace('_', '')] = Object.values(this)[index];
+		});
+		return JSON.stringify(jsonConfig);
+	}
+
 	get separator(): string {
 		return this._separator;
 	}
