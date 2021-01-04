@@ -12,9 +12,13 @@ class Config {
 		delete jsonConfig.insertTime;
 		this._version = jsonConfig.version;
 		delete jsonConfig.version;
-		this._analyticsTool = jsonConfig.ga || jsonConfig.adobe;
-		delete jsonConfig.ga;
-		delete jsonConfig.adobe;
+		if (jsonConfig.ga) {
+			this._analyticsTool = { ga: jsonConfig.ga };
+			delete jsonConfig.ga;
+		} else if (jsonConfig.adobe) {
+			this._analyticsTool = { adobe: jsonConfig.adobe };
+			delete jsonConfig.adobe;
+		}
 		this._medias = jsonConfig;
 	}
 	validateConfig() {
