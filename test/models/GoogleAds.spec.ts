@@ -39,7 +39,7 @@ describe('GoogleAds', () => {
 				ad: 'fifinha',
 				'url google ads': 'auto tagging',
 			};
-			expect(JSON.stringify(googleAds.buildedLine)).to.equal(
+			expect(JSON.stringify(googleAds.buildedLine())).to.equal(
 				JSON.stringify(googleAdsFields)
 			);
 
@@ -60,7 +60,7 @@ describe('GoogleAds', () => {
 				ad: 'Parâmetro(s) incorreto(s): Produto',
 				'url google ads': 'auto tagging',
 			};
-			expect(JSON.stringify(googleAds.buildedLine)).to.equal(
+			expect(JSON.stringify(googleAds.buildedLine())).to.equal(
 				JSON.stringify(googleAdsFields)
 			);
 
@@ -85,7 +85,7 @@ describe('GoogleAds', () => {
 					'Parâmetro(s) não encontrado(s) na configuração: utm_campaign',
 				'url google ads': 'auto tagging',
 			};
-			expect(JSON.stringify(googleAds.buildedLine)).to.equal(
+			expect(JSON.stringify(googleAds.buildedLine())).to.equal(
 				JSON.stringify(googleAdsFields)
 			);
 		});

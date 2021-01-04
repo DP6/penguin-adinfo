@@ -1,5 +1,6 @@
 import { StringUtils } from '../utils/StringUtils';
 import { JsonUtils } from '../utils/JsonUtils';
+import { Parametrizer } from './Parametrizer';
 
 /**
     params: {
@@ -39,15 +40,11 @@ import { JsonUtils } from '../utils/JsonUtils';
 */
 
 //TODO parametros compostos e parametros não dinamicos
-export class FacebookAds {
+export class FacebookAds extends Parametrizer {
 	private _dynamicValues: boolean;
-	private _params: { [key: string]: string };
 	private _facebookParams: { [key: string]: string } = {};
 	private _config: { [key: string]: string };
 	private _configTool: { [key: string]: string[] };
-	private _validationRules: { [key: string]: string[] };
-	private _spaceSeparator: string;
-	private _separator: string;
 	private _hasValidationError = false;
 	private _hasUndefinedParameterError = false;
 	private _validationErrorMessage = 'Parâmetros incorretos: ';
@@ -55,7 +52,6 @@ export class FacebookAds {
 	private _undefinedParameterErrorMessage =
 		'Parâmetro(s) não encontrado(s) na configuração: ';
 	private _undefinedParameterErrorFields: { [key: string]: string[] } = {};
-	private _url: string;
 
 	/**
 	 * Geração dos campos para Facebook
@@ -68,30 +64,27 @@ export class FacebookAds {
 	 * Recebe os parametros e configurações do csv preenchido e preenche os atributos url
 	 */
 	constructor(
-		params: { [key: string]: string },
+		csvLine: { [key: string]: string },
 		config: { [key: string]: string },
 		separators: { [key: string]: string },
 		validationRules: { [key: string]: string[] },
 		configTool: { [key: string]: string[] }
 	) {
+		super(csvLine, separators, validationRules);
 		this._dynamicValues =
 			config['dynamicValues'].toLowerCase() === 'true' ? true : false;
 		this._config = Object.assign({}, config);
 		delete this._config['dynamicValues'];
-		this._params = params;
-		this._separator = separators.separator;
-		this._spaceSeparator = separators.spaceSeparator;
 		this._configTool = configTool;
-		this._validationRules = validationRules;
 		this._buildUrlParams();
-		this._buildUrl();
+		this.buildUrl();
 		this._clearFacebookParamsNames();
 		// this._transformCompoundParameter();
 	}
 
-	get buildedLine(): { [key: string]: string } {
+	public buildedLine(): { [key: string]: string } {
 		return JsonUtils.addParametersAt(this._facebookParams, {
-			'url facebook': this._url,
+			'url facebook': this.url,
 		});
 	}
 
@@ -111,16 +104,19 @@ export class FacebookAds {
 						this._facebookParams[facebookParam] = '';
 					} else {
 						this._configTool[urlParam].forEach((column) => {
+							const normalizedColumn = StringUtils.normalize(
+								column
+							);
 							if (
 								StringUtils.validateString(
-									this._params[column],
-									this._validationRules[column]
+									this.csvLine[normalizedColumn],
+									this.validationRules[normalizedColumn]
 								)
 							) {
 								urlParamFields.push(
 									StringUtils.replaceWhiteSpace(
-										this._params[column],
-										this._spaceSeparator
+										this.csvLine[normalizedColumn],
+										this.spaceSeparator
 									).toLocaleLowerCase()
 								);
 							} else {
@@ -147,7 +143,7 @@ export class FacebookAds {
 					} else {
 						this._facebookParams[
 							facebookParam
-						] = urlParamFields.join(this._separator);
+						] = urlParamFields.join(this.separator);
 					}
 				}
 			});
@@ -176,13 +172,13 @@ export class FacebookAds {
 	/**
 	 * Constrói a url do facebook
 	 */
-	private _buildUrl(): void {
+	public buildUrl(): void {
 		if (this._hasValidationError) {
 			const errorFields = Object.keys(this._errorFacebookParams).filter(
 				(facebookParam) =>
 					this._errorFacebookParams[facebookParam].length > 0
 			);
-			this._url =
+			this.url =
 				'Para gerar a URL corrija o(s) parâmetro(s): ' +
 				this._clearFacebookParamName(errorFields.join(', '));
 		} else if (this._hasUndefinedParameterError) {
@@ -193,16 +189,16 @@ export class FacebookAds {
 					this._undefinedParameterErrorFields[facebookParam].length >
 					0
 			);
-			this._url =
+			this.url =
 				'Para gerar a URL corrija o(s) parâmetro(s): ' +
 				this._clearFacebookParamName(errorFields.join(', '));
 		} else {
-			this._url = `${this._params.Url}?`;
+			this.url = `${this.csvLine.url}?`;
 			const urlParams: string[] = [];
 			Object.keys(this._config).forEach((config) => {
 				urlParams.push(`${config}=${this._config[config]}`);
 			});
-			this._url = this._url + urlParams.join('&');
+			this.url = this.url + urlParams.join('&');
 		}
 	}
 

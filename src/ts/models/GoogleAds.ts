@@ -1,5 +1,6 @@
 import { StringUtils } from '../utils/StringUtils';
 import { JsonUtils } from '../utils/JsonUtils';
+import { Parametrizer } from './Parametrizer';
 
 /**
     params: {
@@ -28,13 +29,9 @@ import { JsonUtils } from '../utils/JsonUtils';
     }
 */
 
-export class GoogleAds {
-	private _params: { [key: string]: string };
-	private _config: { [key: string]: string };
-	private _validationRules: { [key: string]: string[] };
+export class GoogleAds extends Parametrizer {
 	private _configTool: { [key: string]: string[] };
-	private _separator: string;
-	private _spaceSeparator: string;
+	private _config: { [key: string]: string };
 	private _adsParams: { [key: string]: string } = {};
 	private _hasValidationError = false;
 	private _hasUndefinedParameterError = false;
@@ -55,25 +52,26 @@ export class GoogleAds {
 	 * Recebe os parametros e configurações do csv preenchido e preenche os atributos url
 	 */
 	constructor(
-		params: { [key: string]: string },
+		csvLine: { [key: string]: string },
 		config: { [key: string]: string },
 		separators: { [key: string]: string },
 		validationRules: { [key: string]: string[] },
 		configTool: { [key: string]: string[] }
 	) {
-		this._params = params;
+		super(csvLine, separators, validationRules);
 		this._config = config;
-		this._validationRules = validationRules;
 		this._configTool = configTool;
-		this._separator = separators.separator;
-		this._spaceSeparator = separators.spaceSeparator;
 		this._buildAdsParams();
 	}
 
-	get buildedLine() {
-		return JsonUtils.addParametersAt(this._adsParams, {
+	public buildUrl() {
+		return {
 			'url google ads': 'auto tagging',
-		});
+		};
+	}
+
+	public buildedLine() {
+		return JsonUtils.addParametersAt(this._adsParams, this.buildUrl());
 	}
 
 	/**
@@ -90,18 +88,19 @@ export class GoogleAds {
 				this._undefinedParameterErrorFields[googleAdsParam].push(utm);
 			} else {
 				this._configTool[utm].forEach((column) => {
+					const normalizedColumn = StringUtils.normalize(column);
 					if (
 						StringUtils.validateString(
-							this._params[column],
-							this._validationRules[column]
+							this.csvLine[normalizedColumn],
+							this.validationRules[normalizedColumn]
 						)
 					) {
 						this._adsParams[
 							googleAdsParam
 						] += `${StringUtils.replaceWhiteSpace(
-							this._params[column],
-							this._spaceSeparator
-						).toLowerCase()}${this._separator}`;
+							this.csvLine[normalizedColumn],
+							this.spaceSeparator
+						).toLowerCase()}${this.separator}`;
 					} else {
 						this._hasValidationError = true;
 						this._errorAdsParams[googleAdsParam].push(column);

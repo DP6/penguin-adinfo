@@ -3,8 +3,10 @@ Object.defineProperty(exports, '__esModule', { value: true });
 exports.GoogleAds = void 0;
 const StringUtils_1 = require('../utils/StringUtils');
 const JsonUtils_1 = require('../utils/JsonUtils');
-class GoogleAds {
-	constructor(params, config, separators, validationRules, configTool) {
+const Parametrizer_1 = require('./Parametrizer');
+class GoogleAds extends Parametrizer_1.Parametrizer {
+	constructor(csvLine, config, separators, validationRules, configTool) {
+		super(csvLine, separators, validationRules);
 		this._adsParams = {};
 		this._hasValidationError = false;
 		this._hasUndefinedParameterError = false;
@@ -13,18 +15,20 @@ class GoogleAds {
 		this._undefinedParameterErrorMessage =
 			'Parâmetro(s) não encontrado(s) na configuração: ';
 		this._undefinedParameterErrorFields = {};
-		this._params = params;
 		this._config = config;
-		this._validationRules = validationRules;
 		this._configTool = configTool;
-		this._separator = separators.separator;
-		this._spaceSeparator = separators.spaceSeparator;
 		this._buildAdsParams();
 	}
-	get buildedLine() {
-		return JsonUtils_1.JsonUtils.addParametersAt(this._adsParams, {
+	buildUrl() {
+		return {
 			'url google ads': 'auto tagging',
-		});
+		};
+	}
+	buildedLine() {
+		return JsonUtils_1.JsonUtils.addParametersAt(
+			this._adsParams,
+			this.buildUrl()
+		);
 	}
 	_buildAdsParams() {
 		Object.keys(this._config).forEach((googleAdsParam) => {
@@ -37,18 +41,21 @@ class GoogleAds {
 				this._undefinedParameterErrorFields[googleAdsParam].push(utm);
 			} else {
 				this._configTool[utm].forEach((column) => {
+					const normalizedColumn = StringUtils_1.StringUtils.normalize(
+						column
+					);
 					if (
 						StringUtils_1.StringUtils.validateString(
-							this._params[column],
-							this._validationRules[column]
+							this.csvLine[normalizedColumn],
+							this.validationRules[normalizedColumn]
 						)
 					) {
 						this._adsParams[
 							googleAdsParam
 						] += `${StringUtils_1.StringUtils.replaceWhiteSpace(
-							this._params[column],
-							this._spaceSeparator
-						).toLowerCase()}${this._separator}`;
+							this.csvLine[normalizedColumn],
+							this.spaceSeparator
+						).toLowerCase()}${this.separator}`;
 					} else {
 						this._hasValidationError = true;
 						this._errorAdsParams[googleAdsParam].push(column);

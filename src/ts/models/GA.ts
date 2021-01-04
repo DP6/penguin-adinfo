@@ -1,5 +1,5 @@
 import { StringUtils } from '../utils/StringUtils';
-import { AnalyticsTool } from './AnalyticsTool';
+import { Parametrizer } from './Parametrizer';
 
 /**
  csvLine: {
@@ -25,7 +25,8 @@ import { AnalyticsTool } from './AnalyticsTool';
  }
  */
 
-export class GA extends AnalyticsTool {
+export class GA extends Parametrizer {
+	private _config: { [key: string]: string[] };
 	private _utms: { [key: string]: string } = {};
 	private _hasValidationError: { [key: string]: boolean } = {};
 	private _hasUndefinedParameterError: { [key: string]: boolean } = {};
@@ -45,7 +46,7 @@ export class GA extends AnalyticsTool {
 		separators: { [key: string]: string },
 		validationRules: { [key: string]: string[] }
 	) {
-		super(csvLine, config, separators, validationRules);
+		super(csvLine, separators, validationRules);
 		Object.keys(config).map((utm) => {
 			this._hasValidationError[utm] = false;
 			this._hasUndefinedParameterError[utm] = false;
@@ -53,8 +54,9 @@ export class GA extends AnalyticsTool {
 			this._undefinedParameterErroMessage[utm] =
 				'Parâmetros não encontrados:';
 		});
+		this._config = config;
 		this._buildUtms();
-		this._buildUrl();
+		this.buildUrl();
 	}
 
 	/**
@@ -118,9 +120,9 @@ export class GA extends AnalyticsTool {
 	 * Constrói os utms
 	 */
 	private _buildUtms(): void {
-		Object.keys(this.config).forEach((utm) => {
+		Object.keys(this._config).forEach((utm) => {
 			let utmString = '';
-			this.config[utm].forEach((column) => {
+			this._config[utm].forEach((column) => {
 				const columnNormalized = StringUtils.normalize(column);
 				if (this._isEmpty(this.csvLine[columnNormalized])) {
 					this._hasUndefinedParameterError[utm] = true;
@@ -149,7 +151,7 @@ export class GA extends AnalyticsTool {
 	/**
 	 * Constrói a url parametrizada
 	 */
-	_buildUrl(): void {
+	public buildUrl(): void {
 		let utmString = '';
 		Object.keys(this._utms).forEach((utm) => {
 			utmString += `${utm}=${this._utms[utm]}&`;

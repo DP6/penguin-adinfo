@@ -1,11 +1,10 @@
 'use strict';
 Object.defineProperty(exports, '__esModule', { value: true });
-exports.AnalyticsTool = void 0;
+exports.Parametrizer = void 0;
 const JsonUtils_1 = require('../utils/JsonUtils');
-class AnalyticsTool {
-	constructor(csvLine, config, separators, validationRules) {
+class Parametrizer {
+	constructor(csvLine, separators, validationRules) {
 		this._csvLine = JsonUtils_1.JsonUtils.normalizeKeys(csvLine);
-		this._config = config;
 		this._separator = separators.separator;
 		this._spaceSeparator = separators.spaceSeparator;
 		this._validationRules = JsonUtils_1.JsonUtils.normalizeKeys(
@@ -14,9 +13,6 @@ class AnalyticsTool {
 	}
 	get csvLine() {
 		return this._csvLine;
-	}
-	get config() {
-		return this._config;
 	}
 	get separator() {
 		return this._separator;
@@ -37,4 +33,4 @@ class AnalyticsTool {
 		return !parameter;
 	}
 }
-exports.AnalyticsTool = AnalyticsTool;
+exports.Parametrizer = Parametrizer;

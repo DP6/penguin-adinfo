@@ -41,7 +41,7 @@ describe('FacebookAds', () => {
 				'url facebook':
 					'www.teste.com.br?utm_source={{ad.name}}&utm_campaign={{campaign.name}}',
 			};
-			expect(JSON.stringify(facebookAds.buildedLine)).to.equal(
+			expect(JSON.stringify(facebookAds.buildedLine())).to.equal(
 				JSON.stringify(facebookAdsFields)
 			);
 
@@ -63,7 +63,7 @@ describe('FacebookAds', () => {
 				'url facebook':
 					'Para gerar a URL corrija o(s) parâmetro(s): campaign name',
 			};
-			expect(JSON.stringify(facebookAds.buildedLine)).to.equal(
+			expect(JSON.stringify(facebookAds.buildedLine())).to.equal(
 				JSON.stringify(facebookAdsFields)
 			);
 
@@ -89,7 +89,7 @@ describe('FacebookAds', () => {
 				'url facebook':
 					'Para gerar a URL corrija o(s) parâmetro(s): campaign name',
 			};
-			expect(JSON.stringify(facebookAds.buildedLine)).to.equal(
+			expect(JSON.stringify(facebookAds.buildedLine())).to.equal(
 				JSON.stringify(facebookAdsFields)
 			);
 		});

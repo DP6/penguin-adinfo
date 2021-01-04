@@ -1,5 +1,5 @@
 import { StringUtils } from '../utils/StringUtils';
-import { AnalyticsTool } from './AnalyticsTool';
+import { Parametrizer } from './Parametrizer';
 
 /**
  csvLine: {
@@ -24,8 +24,9 @@ import { AnalyticsTool } from './AnalyticsTool';
  }
  */
 
-export class Adobe extends AnalyticsTool {
+export class Adobe extends Parametrizer {
 	private _cid = '';
+	private _config: { [key: string]: string[] };
 	private _hasValidationError = false;
 	private _hasUndefinedParameterError = false;
 	private _validationErrorMessage = 'Parâmetros incorretos:';
@@ -44,9 +45,10 @@ export class Adobe extends AnalyticsTool {
 		separators: { [key: string]: string },
 		validationRules: { [key: string]: string[] }
 	) {
-		super(csvLine, config, separators, validationRules);
+		super(csvLine, separators, validationRules);
+		this._config = config;
 		this._buildCid();
-		this._buildUrl();
+		this.buildUrl();
 	}
 
 	/**
@@ -88,7 +90,7 @@ export class Adobe extends AnalyticsTool {
 	 * Constroi o Cid da linha e preenche o atributo hasErrorAtCid
 	 */
 	private _buildCid(): void {
-		this.config.cid.forEach((column) => {
+		this._config.cid.forEach((column) => {
 			const columnNormalized = StringUtils.normalize(column);
 			if (this._isEmpty(this.csvLine[columnNormalized])) {
 				this._hasUndefinedParameterError = true;
@@ -116,7 +118,7 @@ export class Adobe extends AnalyticsTool {
 	/**
 	 * Construção da url para adobe
 	 */
-	_buildUrl(): void {
+	public buildUrl(): void {
 		this.url = `${this.csvLine.url}?cid=${this._cid}`;
 	}
 }

@@ -2,17 +2,18 @@
 Object.defineProperty(exports, '__esModule', { value: true });
 exports.Adobe = void 0;
 const StringUtils_1 = require('../utils/StringUtils');
-const AnalyticsTool_1 = require('./AnalyticsTool');
-class Adobe extends AnalyticsTool_1.AnalyticsTool {
+const Parametrizer_1 = require('./Parametrizer');
+class Adobe extends Parametrizer_1.Parametrizer {
 	constructor(csvLine, config, separators, validationRules) {
-		super(csvLine, config, separators, validationRules);
+		super(csvLine, separators, validationRules);
 		this._cid = '';
 		this._hasValidationError = false;
 		this._hasUndefinedParameterError = false;
 		this._validationErrorMessage = 'Parâmetros incorretos:';
 		this._undefinedParameterErroMessage = 'Parâmetros não encontrados:';
+		this._config = config;
 		this._buildCid();
-		this._buildUrl();
+		this.buildUrl();
 	}
 	_hasErrorAtCid() {
 		return this._hasValidationError || this._hasUndefinedParameterError;
@@ -38,7 +39,7 @@ class Adobe extends AnalyticsTool_1.AnalyticsTool {
 		};
 	}
 	_buildCid() {
-		this.config.cid.forEach((column) => {
+		this._config.cid.forEach((column) => {
 			const columnNormalized = StringUtils_1.StringUtils.normalize(
 				column
 			);
@@ -64,7 +65,7 @@ class Adobe extends AnalyticsTool_1.AnalyticsTool {
 			this.spaceSeparator
 		).slice(0, -1);
 	}
-	_buildUrl() {
+	buildUrl() {
 		this.url = `${this.csvLine.url}?cid=${this._cid}`;
 	}
 }

@@ -1,8 +1,7 @@
 import { JsonUtils } from '../utils/JsonUtils';
 
-export abstract class AnalyticsTool {
+export abstract class Parametrizer {
 	private _csvLine: { [key: string]: string };
-	private _config: { [key: string]: string[] };
 	private _separator: string;
 	private _spaceSeparator: string;
 	private _url: string;
@@ -18,12 +17,10 @@ export abstract class AnalyticsTool {
 	 */
 	constructor(
 		csvLine: { [key: string]: string },
-		config: { [key: string]: string[] },
 		separators: { [key: string]: string },
 		validationRules: { [key: string]: string[] }
 	) {
 		this._csvLine = JsonUtils.normalizeKeys(csvLine);
-		this._config = config;
 		this._separator = separators.separator;
 		this._spaceSeparator = separators.spaceSeparator;
 		this._validationRules = JsonUtils.normalizeKeys(validationRules);
@@ -31,10 +28,6 @@ export abstract class AnalyticsTool {
 
 	get csvLine(): { [key: string]: string } {
 		return this._csvLine;
-	}
-
-	get config(): { [key: string]: string[] } {
-		return this._config;
 	}
 
 	get separator(): string {
@@ -60,7 +53,7 @@ export abstract class AnalyticsTool {
 	/**
 	 * Método para construção de URLs
 	 */
-	abstract _buildUrl(): void;
+	abstract buildUrl(): void;
 
 	//TODO passar para o Stringutils
 	/**

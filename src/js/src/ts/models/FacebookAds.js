@@ -3,8 +3,10 @@ Object.defineProperty(exports, '__esModule', { value: true });
 exports.FacebookAds = void 0;
 const StringUtils_1 = require('../utils/StringUtils');
 const JsonUtils_1 = require('../utils/JsonUtils');
-class FacebookAds {
-	constructor(params, config, separators, validationRules, configTool) {
+const Parametrizer_1 = require('./Parametrizer');
+class FacebookAds extends Parametrizer_1.Parametrizer {
+	constructor(csvLine, config, separators, validationRules, configTool) {
+		super(csvLine, separators, validationRules);
 		this._facebookParams = {};
 		this._hasValidationError = false;
 		this._hasUndefinedParameterError = false;
@@ -17,18 +19,14 @@ class FacebookAds {
 			config['dynamicValues'].toLowerCase() === 'true' ? true : false;
 		this._config = Object.assign({}, config);
 		delete this._config['dynamicValues'];
-		this._params = params;
-		this._separator = separators.separator;
-		this._spaceSeparator = separators.spaceSeparator;
 		this._configTool = configTool;
-		this._validationRules = validationRules;
 		this._buildUrlParams();
-		this._buildUrl();
+		this.buildUrl();
 		this._clearFacebookParamsNames();
 	}
-	get buildedLine() {
+	buildedLine() {
 		return JsonUtils_1.JsonUtils.addParametersAt(this._facebookParams, {
-			'url facebook': this._url,
+			'url facebook': this.url,
 		});
 	}
 	_buildUrlParams() {
@@ -47,16 +45,19 @@ class FacebookAds {
 						this._facebookParams[facebookParam] = '';
 					} else {
 						this._configTool[urlParam].forEach((column) => {
+							const normalizedColumn = StringUtils_1.StringUtils.normalize(
+								column
+							);
 							if (
 								StringUtils_1.StringUtils.validateString(
-									this._params[column],
-									this._validationRules[column]
+									this.csvLine[normalizedColumn],
+									this.validationRules[normalizedColumn]
 								)
 							) {
 								urlParamFields.push(
 									StringUtils_1.StringUtils.replaceWhiteSpace(
-										this._params[column],
-										this._spaceSeparator
+										this.csvLine[normalizedColumn],
+										this.spaceSeparator
 									).toLocaleLowerCase()
 								);
 							} else {
@@ -83,19 +84,19 @@ class FacebookAds {
 					} else {
 						this._facebookParams[
 							facebookParam
-						] = urlParamFields.join(this._separator);
+						] = urlParamFields.join(this.separator);
 					}
 				}
 			});
 		}
 	}
-	_buildUrl() {
+	buildUrl() {
 		if (this._hasValidationError) {
 			const errorFields = Object.keys(this._errorFacebookParams).filter(
 				(facebookParam) =>
 					this._errorFacebookParams[facebookParam].length > 0
 			);
-			this._url =
+			this.url =
 				'Para gerar a URL corrija o(s) parâmetro(s): ' +
 				this._clearFacebookParamName(errorFields.join(', '));
 		} else if (this._hasUndefinedParameterError) {
@@ -106,16 +107,16 @@ class FacebookAds {
 					this._undefinedParameterErrorFields[facebookParam].length >
 					0
 			);
-			this._url =
+			this.url =
 				'Para gerar a URL corrija o(s) parâmetro(s): ' +
 				this._clearFacebookParamName(errorFields.join(', '));
 		} else {
-			this._url = `${this._params.Url}?`;
+			this.url = `${this.csvLine.url}?`;
 			const urlParams = [];
 			Object.keys(this._config).forEach((config) => {
 				urlParams.push(`${config}=${this._config[config]}`);
 			});
-			this._url = this._url + urlParams.join('&');
+			this.url = this.url + urlParams.join('&');
 		}
 	}
 	_clearFacebookParamsNames() {

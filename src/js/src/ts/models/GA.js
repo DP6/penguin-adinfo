@@ -2,10 +2,10 @@
 Object.defineProperty(exports, '__esModule', { value: true });
 exports.GA = void 0;
 const StringUtils_1 = require('../utils/StringUtils');
-const AnalyticsTool_1 = require('./AnalyticsTool');
-class GA extends AnalyticsTool_1.AnalyticsTool {
+const Parametrizer_1 = require('./Parametrizer');
+class GA extends Parametrizer_1.Parametrizer {
 	constructor(csvLine, config, separators, validationRules) {
-		super(csvLine, config, separators, validationRules);
+		super(csvLine, separators, validationRules);
 		this._utms = {};
 		this._hasValidationError = {};
 		this._hasUndefinedParameterError = {};
@@ -18,8 +18,9 @@ class GA extends AnalyticsTool_1.AnalyticsTool {
 			this._undefinedParameterErroMessage[utm] =
 				'Parâmetros não encontrados:';
 		});
+		this._config = config;
 		this._buildUtms();
-		this._buildUrl();
+		this.buildUrl();
 	}
 	_hasErrorAtUtm(utm) {
 		return (
@@ -63,9 +64,9 @@ class GA extends AnalyticsTool_1.AnalyticsTool {
 		};
 	}
 	_buildUtms() {
-		Object.keys(this.config).forEach((utm) => {
+		Object.keys(this._config).forEach((utm) => {
 			let utmString = '';
-			this.config[utm].forEach((column) => {
+			this._config[utm].forEach((column) => {
 				const columnNormalized = StringUtils_1.StringUtils.normalize(
 					column
 				);
@@ -92,7 +93,7 @@ class GA extends AnalyticsTool_1.AnalyticsTool {
 			);
 		});
 	}
-	_buildUrl() {
+	buildUrl() {
 		let utmString = '';
 		Object.keys(this._utms).forEach((utm) => {
 			utmString += `${utm}=${this._utms[utm]}&`;
