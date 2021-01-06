@@ -15,17 +15,13 @@ class Builder {
 		const linesWithContent = this._jsonFromFile.filter(
 			(line) => !CsvUtils_1.CsvUtils.isLineEmpty(line)
 		);
-		const separators = {
-			separator: this._companyConfig.separator,
-			spaceSeparator: this._companyConfig.spaceSeparator,
-		};
 		const linesBuilded = linesWithContent.map((lineFromFile) => {
 			const parameters = new ParametrizerFactory_1.ParametrizerFactory(
 				lineFromFile,
-				this._companyConfig,
-				separators
-			).build(StringUtils_1.StringUtils.normalize(this._media))
-				.buildedLine;
+				this._companyConfig
+			)
+				.build(StringUtils_1.StringUtils.normalize(this._media))
+				.buildedLine();
 			return JsonUtils_1.JsonUtils.addParametersAt(
 				lineFromFile,
 				parameters

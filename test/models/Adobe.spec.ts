@@ -1,5 +1,6 @@
 import { expect } from 'chai';
 import { Adobe } from '../../src/ts/models/Adobe';
+import { Config } from '../../src/ts/models/Config';
 
 describe('Adobe', () => {
 	describe('Valida a geração da linha do Adobe', () => {
@@ -9,17 +10,18 @@ describe('Adobe', () => {
 				'Tipo de Compra': 'cpc',
 				Dispositivo: 'desktop e mobile',
 			};
-			const config = {
-				cid: ['Tipo de Compra', 'Bandeira', 'Veículo'],
-			};
-			const separators = {
+			const config = new Config({
 				separator: ':',
 				spaceSeparator: '_',
-			};
-			const rules = {
-				'Tipo de Compra': ['cpa', 'cpc'],
-			};
-			const adobe = new Adobe(csvLine, config, separators, rules);
+				adobe: {
+					cid: {
+						'Tipo de Compra': ['cpa', 'cpc'],
+						Bandeira: [],
+						Veículo: [],
+					},
+				},
+			});
+			const adobe = new Adobe(csvLine, config);
 			const abodeFields = {
 				cid: 'Parâmetros não encontrados: Bandeira, Veículo',
 				'url adobe': 'Corrija os parâmetros para gerar a URL',
@@ -36,19 +38,18 @@ describe('Adobe', () => {
 				Bandeira: 'meuProduto',
 				Veículo: 'meuVeiculo',
 			};
-			const config = {
-				cid: ['Tipo de Compra', 'Bandeira', 'Veículo'],
-			};
-			const separators = {
+			const config = new Config({
 				separator: ':',
 				spaceSeparator: '_',
-			};
-			const rules = {
-				'Tipo de Compra': ['cpa', 'cpc'],
-				Bandeira: ['/meuProdut[ai]/'],
-				Veículo: ['/.*/'],
-			};
-			const adobe = new Adobe(csvLine, config, separators, rules);
+				adobe: {
+					cid: {
+						'Tipo de Compra': ['cpa', 'cpc'],
+						Bandeira: ['/meuProdut[ai]/'],
+						Veículo: ['/.*/'],
+					},
+				},
+			});
+			const adobe = new Adobe(csvLine, config);
 			const abodeFields = {
 				cid: 'Parâmetros incorretos: Bandeira',
 				'url adobe': 'Corrija os parâmetros para gerar a URL',
@@ -65,18 +66,18 @@ describe('Adobe', () => {
 				Bandeira: 'meu Produto',
 				Veículo: 'meuVeículo',
 			};
-			const config = {
-				cid: ['Tipo de Compra', 'Bandeira', 'Veículo'],
-			};
-			const separators = {
+			const config = new Config({
 				separator: ':',
 				spaceSeparator: '_',
-			};
-			const rules = {
-				'Tipo de Compra': ['cpa', 'cpc'],
-				Bandeira: ['/meu\\ ?Produto/'],
-			};
-			const adobe = new Adobe(csvLine, config, separators, rules);
+				adobe: {
+					cid: {
+						'Tipo de Compra': ['cpa', 'cpc'],
+						Bandeira: ['/meu\\ ?Produto/'],
+						Veículo: [],
+					},
+				},
+			});
+			const adobe = new Adobe(csvLine, config);
 			const abodeFields = {
 				cid: 'cpc:meu_produto:meuveiculo',
 				'url adobe': 'www.teste.com.br?cid=cpc:meu_produto:meuveiculo',

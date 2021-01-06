@@ -1,5 +1,6 @@
 import { StringUtils } from '../utils/StringUtils';
 import { Parametrizer } from './Parametrizer';
+import { Config } from './Config';
 
 /**
  csvLine: {
@@ -26,7 +27,6 @@ import { Parametrizer } from './Parametrizer';
 
 export class Adobe extends Parametrizer {
 	private _cid = '';
-	private _config: { [key: string]: string[] };
 	private _hasValidationError = false;
 	private _hasUndefinedParameterError = false;
 	private _validationErrorMessage = 'Parâmetros incorretos:';
@@ -39,14 +39,8 @@ export class Adobe extends Parametrizer {
 	 * @param separators Json contendo o separator e o spaceSeparator
 	 * @param validationRules Json contendo o nome dos campos e um array com as regras aceitas de preenchimento
 	 */
-	constructor(
-		csvLine: { [key: string]: string },
-		config: { [key: string]: string[] },
-		separators: { [key: string]: string },
-		validationRules: { [key: string]: string[] }
-	) {
-		super(csvLine, separators, validationRules);
-		this._config = config;
+	constructor(csvLine: { [key: string]: string }, config: Config) {
+		super(csvLine, config);
 		this._buildCid();
 		this.buildUrl();
 	}
@@ -86,11 +80,12 @@ export class Adobe extends Parametrizer {
 		};
 	}
 
+	//TODO padronizar columns
 	/**
 	 * Constroi o Cid da linha e preenche o atributo hasErrorAtCid
 	 */
 	private _buildCid(): void {
-		this._config.cid.forEach((column) => {
+		Object.keys(this.config.analyticsTool.adobe.cid).forEach((column) => {
 			const columnNormalized = StringUtils.normalize(column);
 			if (this._isEmpty(this.csvLine[columnNormalized])) {
 				this._hasUndefinedParameterError = true;
@@ -98,20 +93,20 @@ export class Adobe extends Parametrizer {
 				return;
 			}
 			if (
-				this.validationRules[columnNormalized] &&
+				this.config.validationRules[column].length > 0 &&
 				!StringUtils.validateString(
 					this.csvLine[columnNormalized],
-					this.validationRules[columnNormalized]
+					this.config.validationRules[column]
 				)
 			) {
 				this._hasValidationError = true;
 				this._validationErrorMessage += ` ${column},`;
 			}
-			this._cid += `${this.csvLine[columnNormalized]}${this.separator}`;
+			this._cid += `${this.csvLine[columnNormalized]}${this.config.separator}`;
 		});
 		this._cid = StringUtils.replaceWhiteSpace(
 			StringUtils.normalize(this._cid),
-			this.spaceSeparator
+			this.config.spaceSeparator
 		).slice(0, -1);
 	}
 

@@ -1,5 +1,6 @@
 import { expect } from 'chai';
 import { GA } from '../../src/ts/models/GA';
+import { Config } from '../../src/ts/models/Config';
 
 describe('GA', () => {
 	describe('Valida a geração da linha do GA', () => {
@@ -9,18 +10,20 @@ describe('GA', () => {
 				'Tipo de Compra': 'cpc',
 				Dispositivo: 'desktop e mobile',
 			};
-			const config = {
-				utm_medium: ['Tipo de Compra'],
-				utm_campaign: ['Período', 'Bandeira'],
-			};
-			const separators = {
+			const config = new Config({
 				separator: ':',
 				spaceSeparator: '_',
-			};
-			const rules = {
-				'Tipo de Compra': ['cpa', 'cpc'],
-			};
-			const ga = new GA(csvLine, config, separators, rules);
+				ga: {
+					utm_medium: {
+						'Tipo de Compra': ['cpa', 'cpc'],
+					},
+					utm_campaign: {
+						Período: [],
+						Bandeira: [],
+					},
+				},
+			});
+			const ga = new GA(csvLine, config);
 			const gaFields = {
 				utms: {
 					utm_medium: 'cpc',
@@ -41,20 +44,20 @@ describe('GA', () => {
 				Período: 'Maio 2020',
 				Bandeira: 'Minha Bandeira',
 			};
-			const config = {
-				utm_medium: ['Tipo de Compra'],
-				utm_campaign: ['Período', 'Bandeira'],
-			};
-			const separators = {
+			const config = new Config({
 				separator: ':',
 				spaceSeparator: '_',
-			};
-			const rules = {
-				'Tipo de Compra': ['cpa', 'cpc'],
-				Período: ['/[a-zA-Z]* [0-9]{4}/'],
-				Bandeira: ['bandeira2'],
-			};
-			const ga = new GA(csvLine, config, separators, rules);
+				ga: {
+					utm_medium: {
+						'Tipo de Compra': ['cpa', 'cpc'],
+					},
+					utm_campaign: {
+						Período: ['/[a-zA-Z]* [0-9]{4}/'],
+						Bandeira: ['bandeira2'],
+					},
+				},
+			});
+			const ga = new GA(csvLine, config);
 			const gaFields = {
 				utms: {
 					utm_medium: 'cpc',
@@ -74,19 +77,20 @@ describe('GA', () => {
 				Período: 'Maio 2020',
 				Bandeira: 'Minha Bandeira',
 			};
-			const config = {
-				utm_medium: ['Tipo de Compra'],
-				utm_campaign: ['Período', 'Bandeira'],
-			};
-			const separators = {
+			const config = new Config({
 				separator: ':',
 				spaceSeparator: '_',
-			};
-			const rules = {
-				'Tipo de Compra': ['cpa', 'cpc'],
-				Período: ['/[a-zA-Z]* [0-9]{4}/'],
-			};
-			const ga = new GA(csvLine, config, separators, rules);
+				ga: {
+					utm_medium: {
+						'Tipo de Compra': ['cpa', 'cpc'],
+					},
+					utm_campaign: {
+						Período: ['/[a-zA-Z]* [0-9]{4}/'],
+						Bandeira: [],
+					},
+				},
+			});
+			const ga = new GA(csvLine, config);
 			const gaFields = {
 				utms: {
 					utm_medium: 'cpc',

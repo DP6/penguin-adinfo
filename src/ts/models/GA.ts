@@ -1,4 +1,5 @@
 import { StringUtils } from '../utils/StringUtils';
+import { Config } from './Config';
 import { Parametrizer } from './Parametrizer';
 
 /**
@@ -26,7 +27,6 @@ import { Parametrizer } from './Parametrizer';
  */
 
 export class GA extends Parametrizer {
-	private _config: { [key: string]: string[] };
 	private _utms: { [key: string]: string } = {};
 	private _hasValidationError: { [key: string]: boolean } = {};
 	private _hasUndefinedParameterError: { [key: string]: boolean } = {};
@@ -40,21 +40,15 @@ export class GA extends Parametrizer {
 	 * @param separators Json contendo o separator e o spaceSeparator
 	 * @param validationRules Json contendo o nome dos campos e um array com as regras aceitas de preenchimento
 	 */
-	constructor(
-		csvLine: { [key: string]: string },
-		config: { [key: string]: string[] },
-		separators: { [key: string]: string },
-		validationRules: { [key: string]: string[] }
-	) {
-		super(csvLine, separators, validationRules);
-		Object.keys(config).map((utm) => {
+	constructor(csvLine: { [key: string]: string }, config: Config) {
+		super(csvLine, config);
+		Object.keys(this.config.analyticsTool.ga).map((utm) => {
 			this._hasValidationError[utm] = false;
 			this._hasUndefinedParameterError[utm] = false;
 			this._validationErrorMessage[utm] = 'Parâmetros incorretos:';
 			this._undefinedParameterErroMessage[utm] =
 				'Parâmetros não encontrados:';
 		});
-		this._config = config;
 		this._buildUtms();
 		this.buildUrl();
 	}
@@ -120,9 +114,9 @@ export class GA extends Parametrizer {
 	 * Constrói os utms
 	 */
 	private _buildUtms(): void {
-		Object.keys(this._config).forEach((utm) => {
+		Object.keys(this.config.analyticsTool.ga).forEach((utm) => {
 			let utmString = '';
-			this._config[utm].forEach((column) => {
+			Object.keys(this.config.analyticsTool.ga[utm]).forEach((column) => {
 				const columnNormalized = StringUtils.normalize(column);
 				if (this._isEmpty(this.csvLine[columnNormalized])) {
 					this._hasUndefinedParameterError[utm] = true;
@@ -130,20 +124,20 @@ export class GA extends Parametrizer {
 					return;
 				}
 				if (
-					this.validationRules[columnNormalized] &&
+					this.config.validationRules[column].length > 0 &&
 					!StringUtils.validateString(
 						this.csvLine[columnNormalized],
-						this.validationRules[columnNormalized]
+						this.config.validationRules[column]
 					)
 				) {
 					this._hasValidationError[utm] = true;
 					this._validationErrorMessage[utm] += ` ${column},`;
 				}
-				utmString += `${this.csvLine[columnNormalized]}${this.separator}`;
+				utmString += `${this.csvLine[columnNormalized]}${this.config.separator}`;
 			});
 			this._utms[utm] = StringUtils.replaceWhiteSpace(
 				StringUtils.normalize(utmString).slice(0, -1),
-				this.spaceSeparator
+				this.config.spaceSeparator
 			);
 		});
 	}

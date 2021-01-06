@@ -1,41 +1,36 @@
 import { expect } from 'chai';
 import { FacebookAds } from '../../src/ts/models/FacebookAds';
+import { Config } from '../../src/ts/models/Config';
 
 describe('FacebookAds', () => {
 	describe('Valida a geração da linha do FacebookAds para GA', () => {
-		it('Validar a geração de uma linha para o GA com valores dinâmicos e sem parametros compostos', () => {
-			let csvLine = {
+		it('Validar a geração de uma linha para o GA com valores dinâmicos e sem parametros compostos > Todos os parâmetros informados corretamente', () => {
+			const csvLine = {
 				Url: 'www.teste.com.br',
 				'Tipo de Compra': 'cpc',
 				Dispositivo: 'desktop e mobile',
 				Produto: 'fifinha',
 			};
-			let config = {
-				dynamicValues: 'true',
-				utm_source: '{{ad.name}}',
-				utm_campaign: '{{campaign.name}}',
-			};
-			let separators = {
+			const config = new Config({
 				separator: ':',
 				spaceSeparator: '_',
-			};
-			let rules = {
-				'Tipo de Compra': ['cpa', 'cpc'],
-				Dispositivo: ['desktop e mobile'],
-				Produto: ['/.*/'],
-			};
-			let configTool: { [key: string]: string[] } = {
-				utm_source: ['Tipo de Compra', 'Dispositivo'],
-				utm_campaign: ['Produto'],
-			};
-			let facebookAds = new FacebookAds(
-				csvLine,
-				config,
-				separators,
-				rules,
-				configTool
-			);
-			let facebookAdsFields = {
+				ga: {
+					utm_source: {
+						'Tipo de Compra': ['cpa', 'cpc'],
+						Dispositivo: ['desktop e mobile'],
+					},
+					utm_campaign: {
+						Produto: ['/.*/'],
+					},
+				},
+				facebookads: {
+					dynamicValues: 'true',
+					utm_source: '{{ad.name}}',
+					utm_campaign: '{{campaign.name}}',
+				},
+			});
+			const facebookAds = new FacebookAds(csvLine, config);
+			const facebookAdsFields = {
 				'ad name': 'cpc:desktop_e_mobile',
 				'campaign name': 'fifinha',
 				'url facebook':
@@ -44,20 +39,34 @@ describe('FacebookAds', () => {
 			expect(JSON.stringify(facebookAds.buildedLine())).to.equal(
 				JSON.stringify(facebookAdsFields)
 			);
-
-			rules = {
-				'Tipo de Compra': ['cpa', 'cpc'],
-				Dispositivo: ['desktop e mobile'],
-				Produto: ['fif'],
+		});
+		it('Validar a geração de uma linha para o GA com valores dinâmicos e sem parametros compostos', () => {
+			const csvLine = {
+				Url: 'www.teste.com.br',
+				'Tipo de Compra': 'cpc',
+				Dispositivo: 'desktop e mobile',
+				Produto: 'fifinha',
 			};
-			facebookAds = new FacebookAds(
-				csvLine,
-				config,
-				separators,
-				rules,
-				configTool
-			);
-			facebookAdsFields = {
+			const config = new Config({
+				separator: ':',
+				spaceSeparator: '_',
+				ga: {
+					utm_source: {
+						'Tipo de Compra': ['cpa', 'cpc'],
+						Dispositivo: ['desktop e mobile'],
+					},
+					utm_campaign: {
+						Produto: ['fif'],
+					},
+				},
+				facebookads: {
+					dynamicValues: 'true',
+					utm_source: '{{ad.name}}',
+					utm_campaign: '{{campaign.name}}',
+				},
+			});
+			const facebookAds = new FacebookAds(csvLine, config);
+			const facebookAdsFields = {
 				'ad name': 'cpc:desktop_e_mobile',
 				'campaign name': 'Parâmetros incorretos: Produto',
 				'url facebook':
@@ -66,23 +75,31 @@ describe('FacebookAds', () => {
 			expect(JSON.stringify(facebookAds.buildedLine())).to.equal(
 				JSON.stringify(facebookAdsFields)
 			);
-
-			rules = {
-				'Tipo de Compra': ['cpa', 'cpc'],
-				Dispositivo: ['desktop e mobile'],
-				Produto: ['fifinha'],
+		});
+		it('Validar a geração de uma linha para o GA com valores dinâmicos e sem parametros compostos > Parâmetro não encontrado', () => {
+			const csvLine = {
+				Url: 'www.teste.com.br',
+				'Tipo de Compra': 'cpc',
+				Dispositivo: 'desktop e mobile',
+				Produto: 'fifinha',
 			};
-			configTool = {
-				utm_source: ['Tipo de Compra', 'Dispositivo'],
-			};
-			facebookAds = new FacebookAds(
-				csvLine,
-				config,
-				separators,
-				rules,
-				configTool
-			);
-			facebookAdsFields = {
+			const config = new Config({
+				separator: ':',
+				spaceSeparator: '_',
+				ga: {
+					utm_source: {
+						'Tipo de Compra': ['cpa', 'cpc'],
+						Dispositivo: ['desktop e mobile'],
+					},
+				},
+				facebookads: {
+					dynamicValues: 'true',
+					utm_source: '{{ad.name}}',
+					utm_campaign: '{{campaign.name}}',
+				},
+			});
+			const facebookAds = new FacebookAds(csvLine, config);
+			const facebookAdsFields = {
 				'ad name': 'cpc:desktop_e_mobile',
 				'campaign name':
 					'Parâmetro(s) não encontrado(s) na configuração: utm_campaign',

@@ -1,6 +1,7 @@
 import { StringUtils } from '../utils/StringUtils';
 import { JsonUtils } from '../utils/JsonUtils';
 import { Parametrizer } from './Parametrizer';
+import { Config } from './Config';
 
 /**
     params: {
@@ -11,7 +12,7 @@ import { Parametrizer } from './Parametrizer';
     config: {
         "dynamic": true,
         "utm_source": "{{campaign.name}}",
-        "utm_term": "{{ad.name}}" 
+        "utm_term": "{{ad.name}}"
     }
     separators: {
         separator: ':',
@@ -21,30 +22,28 @@ import { Parametrizer } from './Parametrizer';
         'Tipo de Compra': ['cpa','cpc'],
         'Período': ['/.*']
     },
-    configTool: {
+    configAnalyticsTool: {
         utm_medium: [ 'Tipo de Compra' ],
         utm_campaign: [ 'Período','Bandeira ]
 	}
-	errorFacebookParams: { 
-		{{ad.name}}: [], 
-		{{campaign.id}}: [ 'Produto' ] 
+	errorFacebookParams: {
+		{{ad.name}}: [],
+		{{campaign.id}}: [ 'Produto' ]
 	}
-	errorUrlParams: { 
-		{{ad.name}}: [], 
-		{{campaign.id}}: [ 'Produto' ] 
+	errorUrlParams: {
+		{{ad.name}}: [],
+		{{campaign.id}}: [ 'Produto' ]
 	}
 	undefinedParameterErrorFields: {
-		{{ad.name}}: [], 
+		{{ad.name}}: [],
 		{{campaign.id}}: [ 'utm_source' ]
 	}
 */
 
 //TODO parametros compostos e parametros não dinamicos
 export class FacebookAds extends Parametrizer {
-	private _dynamicValues: boolean;
 	private _facebookParams: { [key: string]: string } = {};
-	private _config: { [key: string]: string };
-	private _configTool: { [key: string]: string[] };
+	private _configAnalyticsTool: { [key: string]: string[] };
 	private _hasValidationError = false;
 	private _hasUndefinedParameterError = false;
 	private _validationErrorMessage = 'Parâmetros incorretos: ';
@@ -56,30 +55,28 @@ export class FacebookAds extends Parametrizer {
 	/**
 	 * Geração dos campos para Facebook
 	 * @param params Json contendo as colunas preenchidas no csv e seus valores
-	 * @param config Json contendo os utms e seus campos de preenchimento
-	 * @param separators Json contendo o separator e o spaceSeparator
-	 * @param validationRules Json contendo o nome dos campos e um array com as regras aceitas de preenchimento
-	 * @param configTool Json configurações do GA ou Adobe
+	 * @param config
 	 *
 	 * Recebe os parametros e configurações do csv preenchido e preenche os atributos url
 	 */
-	constructor(
-		csvLine: { [key: string]: string },
-		config: { [key: string]: string },
-		separators: { [key: string]: string },
-		validationRules: { [key: string]: string[] },
-		configTool: { [key: string]: string[] }
-	) {
-		super(csvLine, separators, validationRules);
-		this._dynamicValues =
-			config['dynamicValues'].toLowerCase() === 'true' ? true : false;
-		this._config = Object.assign({}, config);
-		delete this._config['dynamicValues'];
-		this._configTool = configTool;
+	constructor(csvLine: { [key: string]: string }, config: Config) {
+		super(csvLine, config);
+		this._configAnalyticsTool = this._buildConfigAnalyticsTool();
 		this._buildUrlParams();
 		this.buildUrl();
 		this._clearFacebookParamsNames();
 		// this._transformCompoundParameter();
+	}
+
+	private _buildConfigAnalyticsTool(): { [key: string]: string[] } {
+		const type = this.config.analyticsToolName;
+		const configAnalyticsTool: { [key: string]: string[] } = {};
+		Object.keys(this.config.analyticsTool[type]).forEach((param) => {
+			configAnalyticsTool[param] = Object.keys(
+				this.config.analyticsTool[type][param]
+			);
+		});
+		return configAnalyticsTool;
 	}
 
 	public buildedLine(): { [key: string]: string } {
@@ -89,43 +86,47 @@ export class FacebookAds extends Parametrizer {
 	}
 
 	private _buildUrlParams(): void {
-		if (this._dynamicValues) {
-			Object.keys(this._config).forEach((urlParam) => {
-				const facebookParam = this._config[urlParam];
+		if (this.config.medias.facebookads.dynamicValues) {
+			const facebookadsConfig = { ...this.config.medias.facebookads };
+			delete facebookadsConfig.dynamicValues;
+			Object.keys(facebookadsConfig).forEach((urlParam) => {
+				const facebookParam = facebookadsConfig[urlParam];
 				if (!this._isCompoundParameter(urlParam)) {
 					const urlParamFields: string[] = [];
 					this._errorFacebookParams[facebookParam] = [];
 					this._undefinedParameterErrorFields[facebookParam] = [];
-					if (!this._configTool[urlParam]) {
+					if (!this._configAnalyticsTool[urlParam]) {
 						this._hasUndefinedParameterError = true;
 						this._undefinedParameterErrorFields[facebookParam].push(
 							urlParam
 						);
 						this._facebookParams[facebookParam] = '';
 					} else {
-						this._configTool[urlParam].forEach((column) => {
-							const normalizedColumn = StringUtils.normalize(
-								column
-							);
-							if (
-								StringUtils.validateString(
-									this.csvLine[normalizedColumn],
-									this.validationRules[normalizedColumn]
-								)
-							) {
-								urlParamFields.push(
-									StringUtils.replaceWhiteSpace(
-										this.csvLine[normalizedColumn],
-										this.spaceSeparator
-									).toLocaleLowerCase()
-								);
-							} else {
-								this._hasValidationError = true;
-								this._errorFacebookParams[facebookParam].push(
+						this._configAnalyticsTool[urlParam].forEach(
+							(column) => {
+								const normalizedColumn = StringUtils.normalize(
 									column
 								);
+								if (
+									StringUtils.validateString(
+										this.csvLine[normalizedColumn],
+										this.config.validationRules[column]
+									)
+								) {
+									urlParamFields.push(
+										StringUtils.replaceWhiteSpace(
+											this.csvLine[normalizedColumn],
+											this.config.spaceSeparator
+										).toLocaleLowerCase()
+									);
+								} else {
+									this._hasValidationError = true;
+									this._errorFacebookParams[
+										facebookParam
+									].push(column);
+								}
 							}
-						});
+						);
 					}
 					if (this._errorFacebookParams[facebookParam].length > 0) {
 						this._facebookParams[facebookParam] =
@@ -143,7 +144,7 @@ export class FacebookAds extends Parametrizer {
 					} else {
 						this._facebookParams[
 							facebookParam
-						] = urlParamFields.join(this.separator);
+						] = urlParamFields.join(this.config.separator);
 					}
 				}
 			});
@@ -195,8 +196,10 @@ export class FacebookAds extends Parametrizer {
 		} else {
 			this.url = `${this.csvLine.url}?`;
 			const urlParams: string[] = [];
-			Object.keys(this._config).forEach((config) => {
-				urlParams.push(`${config}=${this._config[config]}`);
+			const facebookadsConfig = { ...this.config.medias.facebookads };
+			delete facebookadsConfig.dynamicValues;
+			Object.keys(facebookadsConfig).forEach((config) => {
+				urlParams.push(`${config}=${facebookadsConfig[config]}`);
 			});
 			this.url = this.url + urlParams.join('&');
 		}

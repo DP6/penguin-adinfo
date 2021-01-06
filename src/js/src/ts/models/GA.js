@@ -4,21 +4,20 @@ exports.GA = void 0;
 const StringUtils_1 = require('../utils/StringUtils');
 const Parametrizer_1 = require('./Parametrizer');
 class GA extends Parametrizer_1.Parametrizer {
-	constructor(csvLine, config, separators, validationRules) {
-		super(csvLine, separators, validationRules);
+	constructor(csvLine, config) {
+		super(csvLine, config);
 		this._utms = {};
 		this._hasValidationError = {};
 		this._hasUndefinedParameterError = {};
 		this._validationErrorMessage = {};
 		this._undefinedParameterErroMessage = {};
-		Object.keys(config).map((utm) => {
+		Object.keys(this.config.analyticsTool.ga).map((utm) => {
 			this._hasValidationError[utm] = false;
 			this._hasUndefinedParameterError[utm] = false;
 			this._validationErrorMessage[utm] = 'Parâmetros incorretos:';
 			this._undefinedParameterErroMessage[utm] =
 				'Parâmetros não encontrados:';
 		});
-		this._config = config;
 		this._buildUtms();
 		this.buildUrl();
 	}
@@ -64,9 +63,9 @@ class GA extends Parametrizer_1.Parametrizer {
 		};
 	}
 	_buildUtms() {
-		Object.keys(this._config).forEach((utm) => {
+		Object.keys(this.config.analyticsTool.ga).forEach((utm) => {
 			let utmString = '';
-			this._config[utm].forEach((column) => {
+			Object.keys(this.config.analyticsTool.ga[utm]).forEach((column) => {
 				const columnNormalized = StringUtils_1.StringUtils.normalize(
 					column
 				);
@@ -76,20 +75,20 @@ class GA extends Parametrizer_1.Parametrizer {
 					return;
 				}
 				if (
-					this.validationRules[columnNormalized] &&
+					this.config.validationRules[column].length > 0 &&
 					!StringUtils_1.StringUtils.validateString(
 						this.csvLine[columnNormalized],
-						this.validationRules[columnNormalized]
+						this.config.validationRules[column]
 					)
 				) {
 					this._hasValidationError[utm] = true;
 					this._validationErrorMessage[utm] += ` ${column},`;
 				}
-				utmString += `${this.csvLine[columnNormalized]}${this.separator}`;
+				utmString += `${this.csvLine[columnNormalized]}${this.config.separator}`;
 			});
 			this._utms[utm] = StringUtils_1.StringUtils.replaceWhiteSpace(
 				StringUtils_1.StringUtils.normalize(utmString).slice(0, -1),
-				this.spaceSeparator
+				this.config.spaceSeparator
 			);
 		});
 	}

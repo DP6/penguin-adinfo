@@ -4,14 +4,13 @@ exports.Adobe = void 0;
 const StringUtils_1 = require('../utils/StringUtils');
 const Parametrizer_1 = require('./Parametrizer');
 class Adobe extends Parametrizer_1.Parametrizer {
-	constructor(csvLine, config, separators, validationRules) {
-		super(csvLine, separators, validationRules);
+	constructor(csvLine, config) {
+		super(csvLine, config);
 		this._cid = '';
 		this._hasValidationError = false;
 		this._hasUndefinedParameterError = false;
 		this._validationErrorMessage = 'Parâmetros incorretos:';
 		this._undefinedParameterErroMessage = 'Parâmetros não encontrados:';
-		this._config = config;
 		this._buildCid();
 		this.buildUrl();
 	}
@@ -39,7 +38,7 @@ class Adobe extends Parametrizer_1.Parametrizer {
 		};
 	}
 	_buildCid() {
-		this._config.cid.forEach((column) => {
+		Object.keys(this.config.analyticsTool.adobe.cid).forEach((column) => {
 			const columnNormalized = StringUtils_1.StringUtils.normalize(
 				column
 			);
@@ -49,20 +48,20 @@ class Adobe extends Parametrizer_1.Parametrizer {
 				return;
 			}
 			if (
-				this.validationRules[columnNormalized] &&
+				this.config.validationRules[column].length > 0 &&
 				!StringUtils_1.StringUtils.validateString(
 					this.csvLine[columnNormalized],
-					this.validationRules[columnNormalized]
+					this.config.validationRules[column]
 				)
 			) {
 				this._hasValidationError = true;
 				this._validationErrorMessage += ` ${column},`;
 			}
-			this._cid += `${this.csvLine[columnNormalized]}${this.separator}`;
+			this._cid += `${this.csvLine[columnNormalized]}${this.config.separator}`;
 		});
 		this._cid = StringUtils_1.StringUtils.replaceWhiteSpace(
 			StringUtils_1.StringUtils.normalize(this._cid),
-			this.spaceSeparator
+			this.config.spaceSeparator
 		).slice(0, -1);
 	}
 	buildUrl() {

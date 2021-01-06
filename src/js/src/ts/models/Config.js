@@ -17,12 +17,15 @@ class Config {
 		delete jsonConfig.version;
 		if (jsonConfig.ga) {
 			this._analyticsTool = { ga: jsonConfig.ga };
+			this._analyticsToolName = 'ga';
 			delete jsonConfig.ga;
 		} else if (jsonConfig.adobe) {
 			this._analyticsTool = { adobe: jsonConfig.adobe };
+			this._analyticsToolName = 'adobe';
 			delete jsonConfig.adobe;
 		}
 		this._medias = jsonConfig;
+		this._validationRules = this._getValidationRules();
 	}
 	validateConfig() {
 		return !(
@@ -41,7 +44,10 @@ class Config {
 					jsonConfig,
 					Object.values(this)[index] || {}
 				);
-			} else {
+			} else if (
+				key !== '_validationRules' &&
+				key !== '_analyticsToolName'
+			) {
 				jsonConfig[key.replace('_', '')] = Object.values(this)[index];
 			}
 		});
@@ -55,7 +61,10 @@ class Config {
 					jsonConfig,
 					Object.values(this)[index]
 				);
-			} else {
+			} else if (
+				key !== '_validationRules' &&
+				key !== '_analyticsToolName'
+			) {
 				jsonConfig[key.replace('_', '')] = Object.values(this)[index];
 			}
 		});
@@ -74,6 +83,21 @@ class Config {
 			);
 		});
 		return configValues.join(this._csvSeparator);
+	}
+	_getValidationRules() {
+		const type = this._analyticsToolName;
+		const validationRules = {};
+		Object.keys(this._analyticsTool[type]).map((field) => {
+			Object.keys(this._analyticsTool[type][field]).map((column) => {
+				validationRules[column] = this._analyticsTool[type][field][
+					column
+				];
+			});
+		});
+		return validationRules;
+	}
+	get validationRules() {
+		return this._validationRules;
 	}
 	get separator() {
 		return this._separator;
@@ -98,6 +122,9 @@ class Config {
 	}
 	get medias() {
 		return this._medias;
+	}
+	get analyticsToolName() {
+		return this._analyticsToolName;
 	}
 	get csvSeparator() {
 		return this._csvSeparator;

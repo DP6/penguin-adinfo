@@ -26,17 +26,14 @@ export class Builder {
 		const linesWithContent = this._jsonFromFile.filter(
 			(line) => !CsvUtils.isLineEmpty(line)
 		);
-		const separators = {
-			separator: this._companyConfig.separator,
-			spaceSeparator: this._companyConfig.spaceSeparator,
-		};
 		const linesBuilded: { [key: string]: string }[] = linesWithContent.map(
 			(lineFromFile) => {
 				const parameters = new ParametrizerFactory(
 					lineFromFile,
-					this._companyConfig,
-					separators
-				).build(StringUtils.normalize(this._media)).buildedLine;
+					this._companyConfig
+				)
+					.build(StringUtils.normalize(this._media))
+					.buildedLine();
 				return JsonUtils.addParametersAt(lineFromFile, parameters);
 			}
 		);

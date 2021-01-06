@@ -5,8 +5,8 @@ const StringUtils_1 = require('../utils/StringUtils');
 const JsonUtils_1 = require('../utils/JsonUtils');
 const Parametrizer_1 = require('./Parametrizer');
 class GoogleAds extends Parametrizer_1.Parametrizer {
-	constructor(csvLine, config, separators, validationRules, configTool) {
-		super(csvLine, separators, validationRules);
+	constructor(csvLine, config) {
+		super(csvLine, config);
 		this._adsParams = {};
 		this._hasValidationError = false;
 		this._hasUndefinedParameterError = false;
@@ -15,8 +15,7 @@ class GoogleAds extends Parametrizer_1.Parametrizer {
 		this._undefinedParameterErrorMessage =
 			'Parâmetro(s) não encontrado(s) na configuração: ';
 		this._undefinedParameterErrorFields = {};
-		this._config = config;
-		this._configTool = configTool;
+		this._configAnalyticsTool = this._buildConfigAnalyticsTool();
 		this._buildAdsParams();
 	}
 	buildUrl() {
@@ -30,32 +29,42 @@ class GoogleAds extends Parametrizer_1.Parametrizer {
 			this.buildUrl()
 		);
 	}
+	_buildConfigAnalyticsTool() {
+		const type = this.config.analyticsToolName;
+		const configAnalyticsTool = {};
+		Object.keys(this.config.analyticsTool[type]).forEach((param) => {
+			configAnalyticsTool[param] = Object.keys(
+				this.config.analyticsTool[type][param]
+			);
+		});
+		return configAnalyticsTool;
+	}
 	_buildAdsParams() {
-		Object.keys(this._config).forEach((googleAdsParam) => {
+		Object.keys(this.config.medias.googleads).forEach((googleAdsParam) => {
 			this._adsParams[googleAdsParam] = '';
 			this._errorAdsParams[googleAdsParam] = [];
 			this._undefinedParameterErrorFields[googleAdsParam] = [];
-			const utm = this._config[googleAdsParam];
-			if (!this._configTool[utm]) {
+			const utm = this.config.medias.googleads[googleAdsParam];
+			if (!this._configAnalyticsTool[utm]) {
 				this._hasUndefinedParameterError = true;
 				this._undefinedParameterErrorFields[googleAdsParam].push(utm);
 			} else {
-				this._configTool[utm].forEach((column) => {
+				this._configAnalyticsTool[utm].forEach((column) => {
 					const normalizedColumn = StringUtils_1.StringUtils.normalize(
 						column
 					);
 					if (
 						StringUtils_1.StringUtils.validateString(
 							this.csvLine[normalizedColumn],
-							this.validationRules[normalizedColumn]
+							this.config.validationRules[column]
 						)
 					) {
 						this._adsParams[
 							googleAdsParam
 						] += `${StringUtils_1.StringUtils.replaceWhiteSpace(
 							this.csvLine[normalizedColumn],
-							this.spaceSeparator
-						).toLowerCase()}${this.separator}`;
+							this.config.spaceSeparator
+						).toLowerCase()}${this.config.separator}`;
 					} else {
 						this._hasValidationError = true;
 						this._errorAdsParams[googleAdsParam].push(column);

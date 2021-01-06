@@ -3,25 +3,15 @@ Object.defineProperty(exports, '__esModule', { value: true });
 exports.Parametrizer = void 0;
 const JsonUtils_1 = require('../utils/JsonUtils');
 class Parametrizer {
-	constructor(csvLine, separators, validationRules) {
+	constructor(csvLine, config) {
 		this._csvLine = JsonUtils_1.JsonUtils.normalizeKeys(csvLine);
-		this._separator = separators.separator;
-		this._spaceSeparator = separators.spaceSeparator;
-		this._validationRules = JsonUtils_1.JsonUtils.normalizeKeys(
-			validationRules
-		);
+		this._config = config;
 	}
 	get csvLine() {
 		return this._csvLine;
 	}
-	get separator() {
-		return this._separator;
-	}
-	get spaceSeparator() {
-		return this._spaceSeparator;
-	}
-	get validationRules() {
-		return this._validationRules;
+	get config() {
+		return this._config;
 	}
 	get url() {
 		return this._url;

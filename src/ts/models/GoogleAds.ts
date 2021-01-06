@@ -1,6 +1,7 @@
 import { StringUtils } from '../utils/StringUtils';
 import { JsonUtils } from '../utils/JsonUtils';
 import { Parametrizer } from './Parametrizer';
+import { Config } from './Config';
 
 /**
     params: {
@@ -20,18 +21,17 @@ import { Parametrizer } from './Parametrizer';
         'Tipo de Compra': ['cpa','cpc'],
         'Período': ['/.*']
     },
-    configTool: {
+    configAnalyticsTool: {
         utm_medium: [ 'Tipo de Compra' ],
         utm_campaign: [ 'Período','Bandeira ]
     }
-    _undefinedParameterErrorFields: { 
+    _undefinedParameterErrorFields: {
         ad: ['utm_campaign']
     }
 */
 
 export class GoogleAds extends Parametrizer {
-	private _configTool: { [key: string]: string[] };
-	private _config: { [key: string]: string };
+	private _configAnalyticsTool: { [key: string]: string[] };
 	private _adsParams: { [key: string]: string } = {};
 	private _hasValidationError = false;
 	private _hasUndefinedParameterError = false;
@@ -44,27 +44,17 @@ export class GoogleAds extends Parametrizer {
 	/**
 	 * Geração dos campos para GoogleAds
 	 * @param params Json contendo as colunas preenchidas no csv e seus valores
-	 * @param config Json contendo os utms e seus campos de preenchimento
-	 * @param separators Json contendo o separator e o spaceSeparator
-	 * @param validationRules Json contendo o nome dos campos e um array com as regras aceitas de preenchimento
-	 * @param configTool Json configurações do GA ou Adobe
+	 * @param config
 	 *
 	 * Recebe os parametros e configurações do csv preenchido e preenche os atributos url
 	 */
-	constructor(
-		csvLine: { [key: string]: string },
-		config: { [key: string]: string },
-		separators: { [key: string]: string },
-		validationRules: { [key: string]: string[] },
-		configTool: { [key: string]: string[] }
-	) {
-		super(csvLine, separators, validationRules);
-		this._config = config;
-		this._configTool = configTool;
+	constructor(csvLine: { [key: string]: string }, config: Config) {
+		super(csvLine, config);
+		this._configAnalyticsTool = this._buildConfigAnalyticsTool();
 		this._buildAdsParams();
 	}
 
-	public buildUrl() {
+	public buildUrl(): { [key: string]: string } {
 		return {
 			'url google ads': 'auto tagging',
 		};
@@ -74,33 +64,44 @@ export class GoogleAds extends Parametrizer {
 		return JsonUtils.addParametersAt(this._adsParams, this.buildUrl());
 	}
 
+	private _buildConfigAnalyticsTool(): { [key: string]: string[] } {
+		const type = this.config.analyticsToolName;
+		const configAnalyticsTool: { [key: string]: string[] } = {};
+		Object.keys(this.config.analyticsTool[type]).forEach((param) => {
+			configAnalyticsTool[param] = Object.keys(
+				this.config.analyticsTool[type][param]
+			);
+		});
+		return configAnalyticsTool;
+	}
+
 	/**
 	 * Constrói o adsParams
 	 */
 	private _buildAdsParams(): void {
-		Object.keys(this._config).forEach((googleAdsParam) => {
+		Object.keys(this.config.medias.googleads).forEach((googleAdsParam) => {
 			this._adsParams[googleAdsParam] = '';
 			this._errorAdsParams[googleAdsParam] = [];
 			this._undefinedParameterErrorFields[googleAdsParam] = [];
-			const utm = this._config[googleAdsParam];
-			if (!this._configTool[utm]) {
+			const utm = this.config.medias.googleads[googleAdsParam];
+			if (!this._configAnalyticsTool[utm]) {
 				this._hasUndefinedParameterError = true;
 				this._undefinedParameterErrorFields[googleAdsParam].push(utm);
 			} else {
-				this._configTool[utm].forEach((column) => {
+				this._configAnalyticsTool[utm].forEach((column) => {
 					const normalizedColumn = StringUtils.normalize(column);
 					if (
 						StringUtils.validateString(
 							this.csvLine[normalizedColumn],
-							this.validationRules[normalizedColumn]
+							this.config.validationRules[column]
 						)
 					) {
 						this._adsParams[
 							googleAdsParam
 						] += `${StringUtils.replaceWhiteSpace(
 							this.csvLine[normalizedColumn],
-							this.spaceSeparator
-						).toLowerCase()}${this.separator}`;
+							this.config.spaceSeparator
+						).toLowerCase()}${this.config.separator}`;
 					} else {
 						this._hasValidationError = true;
 						this._errorAdsParams[googleAdsParam].push(column);

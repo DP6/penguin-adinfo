@@ -8,8 +8,10 @@ export class Config {
 	private _csvSeparator = ',';
 	private _insertTime: string;
 	private _version: number;
-	private _analyticsTool: { [key: string]: { [key: string]: string[] } };
-	private _medias: { [key: string]: JSON };
+	private _analyticsTool: { [key: string]: any };
+	private _analyticsToolName: string;
+	private _medias: { [key: string]: any };
+	private _validationRules: { [key: string]: any };
 
 	constructor(jsonConfig: { [key: string]: any }) {
 		this._separator = jsonConfig.separator;
@@ -24,12 +26,15 @@ export class Config {
 		delete jsonConfig.version;
 		if (jsonConfig.ga) {
 			this._analyticsTool = { ga: jsonConfig.ga };
+			this._analyticsToolName = 'ga';
 			delete jsonConfig.ga;
 		} else if (jsonConfig.adobe) {
 			this._analyticsTool = { adobe: jsonConfig.adobe };
+			this._analyticsToolName = 'adobe';
 			delete jsonConfig.adobe;
 		}
 		this._medias = jsonConfig;
+		this._validationRules = this._getValidationRules();
 	}
 
 	/**
@@ -53,7 +58,10 @@ export class Config {
 					jsonConfig,
 					Object.values(this)[index] || {}
 				);
-			} else {
+			} else if (
+				key !== '_validationRules' &&
+				key !== '_analyticsToolName'
+			) {
 				jsonConfig[key.replace('_', '')] = Object.values(this)[index];
 			}
 		});
@@ -68,7 +76,10 @@ export class Config {
 					jsonConfig,
 					Object.values(this)[index]
 				);
-			} else {
+			} else if (
+				key !== '_validationRules' &&
+				key !== '_analyticsToolName'
+			) {
 				jsonConfig[key.replace('_', '')] = Object.values(this)[index];
 			}
 		});
@@ -93,6 +104,26 @@ export class Config {
 			);
 		});
 		return configValues.join(this._csvSeparator);
+	}
+
+	/**
+	 * Retorna as regras de validação
+	 */
+	private _getValidationRules(): { [key: string]: any } {
+		const type = this._analyticsToolName;
+		const validationRules: { [key: string]: string[] } = {};
+		Object.keys(this._analyticsTool[type]).map((field) => {
+			Object.keys(this._analyticsTool[type][field]).map((column) => {
+				validationRules[column] = this._analyticsTool[type][field][
+					column
+				];
+			});
+		});
+		return validationRules;
+	}
+
+	get validationRules(): { [key: string]: any } {
+		return this._validationRules;
 	}
 
 	get separator(): string {
@@ -123,8 +154,12 @@ export class Config {
 		return this._analyticsTool;
 	}
 
-	get medias(): { [key: string]: JSON } {
+	get medias(): { [key: string]: any } {
 		return this._medias;
+	}
+
+	get analyticsToolName(): string {
+		return this._analyticsToolName;
 	}
 
 	get csvSeparator(): string {
