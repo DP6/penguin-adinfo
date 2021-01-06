@@ -1,4 +1,3 @@
-import { json } from 'body-parser';
 import { expect } from 'chai';
 import { Config } from '../../src/ts/models/Config';
 

@@ -1,5 +1,3 @@
-import { JsonUtils } from './JsonUtils';
-
 export class CsvUtils {
 	/**
 	 * Verifica se o CSV é vazio

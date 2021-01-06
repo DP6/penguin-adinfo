@@ -1,7 +1,7 @@
 import { ConfigDAO } from '../models/DAO/ConfigDAO';
 import { Config } from '../models/Config';
 
-const config = (app: { [key: string]: any }) => {
+const config = (app: { [key: string]: any }): void => {
 	app.post(
 		'/config',
 		(req: { [key: string]: any }, res: { [key: string]: any }) => {

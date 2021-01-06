@@ -1,6 +1,6 @@
 import { ConfigDAO } from '../models/DAO/ConfigDAO';
 
-const template = (app: { [key: string]: any }) => {
+const template = (app: { [key: string]: any }): void => {
 	app.get(
 		'/template',
 		(req: { [key: string]: any }, res: { [key: string]: any }) => {

@@ -1,7 +1,7 @@
 import { FileDAO } from '../models/DAO/FileDAO';
 import { DateUtils } from '../utils/DateUtils';
 
-const csv = (app: { [key: string]: any }) => {
+const csv = (app: { [key: string]: any }): void => {
 	app.post(
 		'/csv',
 		(req: { [key: string]: any }, res: { [key: string]: any }) => {

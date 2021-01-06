@@ -6,7 +6,7 @@ import { CsvUtils } from '../utils/CsvUtils';
 import { Builder } from '../controllers/Builder';
 import * as converter from 'json-2-csv';
 
-const build = (app: { [key: string]: any }) => {
+const build = (app: { [key: string]: any }): void => {
 	app.post(
 		'/build/:media',
 		(req: { [key: string]: any }, res: { [key: string]: any }) => {
