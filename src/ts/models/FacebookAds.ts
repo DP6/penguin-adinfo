@@ -68,6 +68,9 @@ export class FacebookAds extends Parametrizer {
 		// this._transformCompoundParameter();
 	}
 
+	/**
+	 * Constrói a configuração da ferramenta de Analytics
+	 */
 	private _buildConfigAnalyticsTool(): { [key: string]: string[] } {
 		const type = this.config.analyticsToolName;
 		const configAnalyticsTool: { [key: string]: string[] } = {};
@@ -79,12 +82,18 @@ export class FacebookAds extends Parametrizer {
 		return configAnalyticsTool;
 	}
 
+	/**
+	 * Gera os campos referentes ao FacebookAds
+	 */
 	public buildedLine(): { [key: string]: string } {
 		return JsonUtils.addParametersAt(this._facebookParams, {
 			'url facebook': this.url,
 		});
 	}
 
+	/**
+	 * Constrói os parametros da URL
+	 */
 	private _buildUrlParams(): void {
 		if (this.config.medias.facebookads.dynamicValues) {
 			const facebookadsConfig = { ...this.config.medias.facebookads };

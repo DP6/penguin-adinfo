@@ -54,16 +54,25 @@ export class GoogleAds extends Parametrizer {
 		this._buildAdsParams();
 	}
 
+	/**
+	 * Constrói a URL do GoogleAds
+	 */
 	public buildUrl(): { [key: string]: string } {
 		return {
 			'url google ads': 'auto tagging',
 		};
 	}
 
+	/**
+	 * Gera os campos do GoogleAds
+	 */
 	public buildedLine(): { [key: string]: string } {
 		return JsonUtils.addParametersAt(this._adsParams, this.buildUrl());
 	}
 
+	/**
+	 * Const´roi a configuração da ferramenta de analytics
+	 */
 	private _buildConfigAnalyticsTool(): { [key: string]: string[] } {
 		const type = this.config.analyticsToolName;
 		const configAnalyticsTool: { [key: string]: string[] } = {};

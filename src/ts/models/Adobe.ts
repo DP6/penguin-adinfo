@@ -35,9 +35,7 @@ export class Adobe extends Parametrizer {
 	/**
 	 * Recebe os parametros e configurações do csv preenchido e preenche o cid e url
 	 * @param csvLine Json contendo as colunas preenchidas no csv e seus valores
-	 * @param config Json contendo o cid e seus campos de preenchimento
-	 * @param separators Json contendo o separator e o spaceSeparator
-	 * @param validationRules Json contendo o nome dos campos e um array com as regras aceitas de preenchimento
+	 * @param config
 	 */
 	constructor(csvLine: { [key: string]: string }, config: Config) {
 		super(csvLine, config);

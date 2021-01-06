@@ -50,6 +50,9 @@ export class Config {
 		);
 	}
 
+	/**
+	 * Transforma o objeto Config numa string
+	 */
 	public toString(): string {
 		let jsonConfig: { [key: string]: any } = {};
 		Object.keys(this).forEach((key: string, index: number) => {
@@ -68,6 +71,9 @@ export class Config {
 		return JSON.stringify(jsonConfig);
 	}
 
+	/**
+	 * Converte o objeto Config no JSON inserido no banco de dados
+	 */
 	public toJson(): { [key: string]: any } {
 		let jsonConfig: { [key: string]: any } = {};
 		Object.keys(this).forEach((key: string, index: number) => {
