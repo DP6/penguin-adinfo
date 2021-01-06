@@ -14,7 +14,7 @@ export class Config {
 	private _validationRules: { [key: string]: any };
 
 	constructor(jsonConfig: { [key: string]: any }) {
-		const jsonConfigTemp = {...jsonConfig};
+		const jsonConfigTemp = { ...jsonConfig };
 		this._separator = jsonConfigTemp.separator;
 		delete jsonConfigTemp.separator;
 		this._csvSeparator = jsonConfigTemp.csvSeparator;

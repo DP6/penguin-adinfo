@@ -5,26 +5,27 @@ const JsonUtils_1 = require('../utils/JsonUtils');
 class Config {
 	constructor(jsonConfig) {
 		this._csvSeparator = ',';
-		this._separator = jsonConfig.separator;
-		delete jsonConfig.separator;
-		this._csvSeparator = jsonConfig.csvSeparator;
-		delete jsonConfig.csvSeparator;
-		this._spaceSeparator = jsonConfig.spaceSeparator;
-		delete jsonConfig.spaceSeparator;
-		this._insertTime = jsonConfig.insertTime;
-		delete jsonConfig.insertTime;
-		this._version = jsonConfig.version;
-		delete jsonConfig.version;
-		if (jsonConfig.ga) {
-			this._analyticsTool = { ga: jsonConfig.ga };
+		const jsonConfigTemp = Object.assign({}, jsonConfig);
+		this._separator = jsonConfigTemp.separator;
+		delete jsonConfigTemp.separator;
+		this._csvSeparator = jsonConfigTemp.csvSeparator;
+		delete jsonConfigTemp.csvSeparator;
+		this._spaceSeparator = jsonConfigTemp.spaceSeparator;
+		delete jsonConfigTemp.spaceSeparator;
+		this._insertTime = jsonConfigTemp.insertTime;
+		delete jsonConfigTemp.insertTime;
+		this._version = jsonConfigTemp.version;
+		delete jsonConfigTemp.version;
+		if (jsonConfigTemp.ga) {
+			this._analyticsTool = { ga: jsonConfigTemp.ga };
 			this._analyticsToolName = 'ga';
-			delete jsonConfig.ga;
-		} else if (jsonConfig.adobe) {
-			this._analyticsTool = { adobe: jsonConfig.adobe };
+			delete jsonConfigTemp.ga;
+		} else if (jsonConfigTemp.adobe) {
+			this._analyticsTool = { adobe: jsonConfigTemp.adobe };
 			this._analyticsToolName = 'adobe';
-			delete jsonConfig.adobe;
+			delete jsonConfigTemp.adobe;
 		}
-		this._medias = jsonConfig;
+		this._medias = jsonConfigTemp;
 		this._validationRules = this._getValidationRules();
 	}
 	validateConfig() {
