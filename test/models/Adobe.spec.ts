@@ -24,7 +24,7 @@ describe('Adobe', () => {
 				cid: 'Parâmetros não encontrados: Bandeira, Veículo',
 				'url adobe': 'Corrija os parâmetros para gerar a URL',
 			};
-			expect(JSON.stringify(adobe.buildedFields)).to.equal(
+			expect(JSON.stringify(adobe.buildedLine())).to.equal(
 				JSON.stringify(abodeFields)
 			);
 		});
@@ -53,7 +53,7 @@ describe('Adobe', () => {
 				cid: 'Parâmetros incorretos: Bandeira',
 				'url adobe': 'Corrija os parâmetros para gerar a URL',
 			};
-			expect(JSON.stringify(adobe.buildedFields)).to.equal(
+			expect(JSON.stringify(adobe.buildedLine())).to.equal(
 				JSON.stringify(abodeFields)
 			);
 		});
@@ -81,7 +81,7 @@ describe('Adobe', () => {
 				cid: 'cpc:meu_produto:meuveiculo',
 				'url adobe': 'www.teste.com.br?cid=cpc:meu_produto:meuveiculo',
 			};
-			expect(JSON.stringify(adobe.buildedFields)).to.equal(
+			expect(JSON.stringify(adobe.buildedLine())).to.equal(
 				JSON.stringify(abodeFields)
 			);
 		});

@@ -29,7 +29,7 @@ describe('GA', () => {
 				},
 				'url ga': 'Corrija os parâmetros para gerar a URL',
 			};
-			expect(JSON.stringify(ga.buildedFields)).to.equal(
+			expect(JSON.stringify(ga.buildedLine())).to.equal(
 				JSON.stringify(gaFields)
 			);
 		});
@@ -62,7 +62,7 @@ describe('GA', () => {
 				},
 				'url ga': 'Corrija os parâmetros para gerar a URL',
 			};
-			expect(JSON.stringify(ga.buildedFields)).to.equal(
+			expect(JSON.stringify(ga.buildedLine())).to.equal(
 				JSON.stringify(gaFields)
 			);
 		});
@@ -95,7 +95,7 @@ describe('GA', () => {
 				'url ga':
 					'www.teste.com.br?utm_medium=cpc&utm_campaign=maio_2020:minha_bandeira',
 			};
-			expect(JSON.stringify(ga.buildedFields)).to.equal(
+			expect(JSON.stringify(ga.buildedLine())).to.equal(
 				JSON.stringify(gaFields)
 			);
 		});

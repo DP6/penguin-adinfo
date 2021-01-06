@@ -51,6 +51,11 @@ export abstract class Parametrizer {
 	}
 
 	/**
+	 * Método que constrói e retorna os parametros de parametrização
+	 */
+	abstract buildedLine(): { [key: string]: string };
+
+	/**
 	 * Método para construção de URLs
 	 */
 	abstract buildUrl(): void;

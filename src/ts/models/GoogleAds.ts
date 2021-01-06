@@ -70,7 +70,7 @@ export class GoogleAds extends Parametrizer {
 		};
 	}
 
-	public buildedLine() {
+	public buildedLine(): { [key: string]: string } {
 		return JsonUtils.addParametersAt(this._adsParams, this.buildUrl());
 	}
 

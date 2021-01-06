@@ -101,7 +101,7 @@ export class GA extends Parametrizer {
 	/**
 	 * Json parametrizado com os utms e a url do ga
 	 */
-	get buildedFields(): { [key: string]: any } {
+	public buildedLine(): { [key: string]: any } {
 		const utms: { [key: string]: string } = {};
 		Object.keys(this._utms).map((utm) => {
 			utms[utm] = this._hasErrorAtUtm(utm)

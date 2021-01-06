@@ -30,7 +30,7 @@ class Adobe extends Parametrizer_1.Parametrizer {
 		}
 		return errorMessages.join(' - ');
 	}
-	get buildedFields() {
+	buildedLine() {
 		return {
 			cid: this._hasErrorAtCid() ? this._errorMessage() : this._cid,
 			'url adobe': this._hasErrorAtCid()

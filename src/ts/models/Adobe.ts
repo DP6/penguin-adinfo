@@ -77,7 +77,7 @@ export class Adobe extends Parametrizer {
 	/**
 	 * @returns Json parametrizado com o cid e a url do adobe
 	 */
-	get buildedFields(): { [key: string]: string } {
+	public buildedLine(): { [key: string]: string } {
 		return {
 			cid: this._hasErrorAtCid() ? this._errorMessage() : this._cid,
 			'url adobe': this._hasErrorAtCid()

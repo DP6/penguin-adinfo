@@ -49,7 +49,7 @@ class GA extends Parametrizer_1.Parametrizer {
 		});
 		return hasError;
 	}
-	get buildedFields() {
+	buildedLine() {
 		const utms = {};
 		Object.keys(this._utms).map((utm) => {
 			utms[utm] = this._hasErrorAtUtm(utm)
