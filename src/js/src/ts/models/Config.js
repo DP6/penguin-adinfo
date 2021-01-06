@@ -99,5 +99,8 @@ class Config {
 	get medias() {
 		return this._medias;
 	}
+	get csvSeparator() {
+		return this._csvSeparator;
+	}
 }
 exports.Config = Config;

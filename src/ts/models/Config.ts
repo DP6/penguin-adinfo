@@ -1,5 +1,7 @@
 import { JsonUtils } from '../utils/JsonUtils';
 
+//TODO documentar os métodos
+
 export class Config {
 	private _separator: string;
 	private _spaceSeparator: string;
@@ -123,5 +125,9 @@ export class Config {
 
 	get medias(): { [key: string]: JSON } {
 		return this._medias;
+	}
+
+	get csvSeparator(): string {
+		return this._csvSeparator;
 	}
 }

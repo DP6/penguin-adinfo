@@ -13,6 +13,19 @@ export class CsvUtils {
 	}
 
 	/**
+	 * Verifica se a linha do CSV é vazia
+	 * @param lineOfCsv linha do csv no padrão {coluna: valor}
+	 */
+	//TODO escrever teste
+	static isLineEmpty(lineOfCsv: { [key: string]: string }): boolean {
+		return (
+			Object.keys(lineOfCsv).map(
+				(column) => lineOfCsv[column].trim() !== ''
+			).length === 0
+		);
+	}
+
+	/**
 	 * Transformação CSV > JSON
 	 * @param csvContent Conteúdo do CSV
 	 * @param separator Caracter utilizado na separação de colunas do CSV

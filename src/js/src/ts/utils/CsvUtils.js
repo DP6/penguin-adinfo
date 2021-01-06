@@ -5,6 +5,13 @@ class CsvUtils {
 	static isCsvEmpty(linesOfCsv) {
 		return linesOfCsv.filter((line) => line.trim() !== '').length === 0;
 	}
+	static isLineEmpty(lineOfCsv) {
+		return (
+			Object.keys(lineOfCsv).map(
+				(column) => lineOfCsv[column].trim() !== ''
+			).length === 0
+		);
+	}
 	static csv2json(csvContent, separator) {
 		const linesOfCsv = csvContent
 			.split('\n')
