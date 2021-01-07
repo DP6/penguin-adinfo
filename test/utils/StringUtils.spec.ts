@@ -50,4 +50,10 @@ describe('String Utils', () => {
 			).to.equal(false);
 		});
 	});
+	describe('Is Empty', () => {
+		it('Valida se a string é vazia', () => {
+			expect(StringUtils.isEmpty('')).to.equal(true);
+			expect(StringUtils.isEmpty('teste')).to.equal(false);
+		});
+	});
 });

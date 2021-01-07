@@ -116,7 +116,7 @@ export class GA extends Parametrizer {
 			let utmString = '';
 			Object.keys(this.config.analyticsTool.ga[utm]).forEach((column) => {
 				const columnNormalized = StringUtils.normalize(column);
-				if (this._isEmpty(this.csvLine[columnNormalized])) {
+				if (StringUtils.isEmpty(this.csvLine[columnNormalized])) {
 					this._hasUndefinedParameterError[utm] = true;
 					this._undefinedParameterErroMessage[utm] += ` ${column},`;
 					return;

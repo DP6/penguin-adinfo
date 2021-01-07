@@ -76,4 +76,12 @@ export class StringUtils {
 		});
 		return validate.indexOf(true) !== -1;
 	}
+
+	/**
+	 * Verifica se a string está vazia
+	 * @param string a ser checada
+	 */
+	static isEmpty(string: string): boolean {
+		return !string;
+	}
 }

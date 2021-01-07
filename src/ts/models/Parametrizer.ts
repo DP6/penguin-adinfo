@@ -41,13 +41,4 @@ export abstract class Parametrizer {
 	 * Método para construção de URLs
 	 */
 	abstract buildUrl(): void;
-
-	//TODO passar para o Stringutils
-	/**
-	 * Verifica se a string está vazia
-	 * @param parameter string para checar se está vazia
-	 */
-	protected _isEmpty(parameter: string): boolean {
-		return !parameter;
-	}
 }

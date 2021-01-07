@@ -19,8 +19,5 @@ class Parametrizer {
 	set url(url) {
 		this._url = url;
 	}
-	_isEmpty(parameter) {
-		return !parameter;
-	}
 }
 exports.Parametrizer = Parametrizer;

@@ -36,5 +36,8 @@ class StringUtils {
 		});
 		return validate.indexOf(true) !== -1;
 	}
+	static isEmpty(string) {
+		return !string;
+	}
 }
 exports.StringUtils = StringUtils;

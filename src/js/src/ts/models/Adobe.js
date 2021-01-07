@@ -42,7 +42,11 @@ class Adobe extends Parametrizer_1.Parametrizer {
 			const columnNormalized = StringUtils_1.StringUtils.normalize(
 				column
 			);
-			if (this._isEmpty(this.csvLine[columnNormalized])) {
+			if (
+				StringUtils_1.StringUtils.isEmpty(
+					this.csvLine[columnNormalized]
+				)
+			) {
 				this._hasUndefinedParameterError = true;
 				this._undefinedParameterErroMessage += ` ${column},`;
 				return;

@@ -1,7 +1,5 @@
 import { JsonUtils } from '../utils/JsonUtils';
 
-//TODO documentar os métodos
-
 export class Config {
 	private _separator: string;
 	private _spaceSeparator: string;

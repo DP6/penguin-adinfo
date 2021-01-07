@@ -85,7 +85,7 @@ export class Adobe extends Parametrizer {
 	private _buildCid(): void {
 		Object.keys(this.config.analyticsTool.adobe.cid).forEach((column) => {
 			const columnNormalized = StringUtils.normalize(column);
-			if (this._isEmpty(this.csvLine[columnNormalized])) {
+			if (StringUtils.isEmpty(this.csvLine[columnNormalized])) {
 				this._hasUndefinedParameterError = true;
 				this._undefinedParameterErroMessage += ` ${column},`;
 				return;
