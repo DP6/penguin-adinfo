@@ -96,4 +96,19 @@ describe('CSV Utils', () => {
 			);
 		});
 	});
+	describe('Is Line Empty', () => {
+		it('Verifica se a linha passada está vazia', () => {
+			const csvLine = {
+				c1: 'valor1',
+				c2: 'valor2',
+				c3: '',
+				c4: 'valor4',
+			};
+			expect(CsvUtils.isLineEmpty(csvLine)).to.equal(false);
+			csvLine.c1 = '';
+			csvLine.c2 = '';
+			csvLine.c4 = '';
+			expect(CsvUtils.isLineEmpty(csvLine)).to.equal(true);
+		});
+	});
 });

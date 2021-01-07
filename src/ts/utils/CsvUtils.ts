@@ -17,7 +17,7 @@ export class CsvUtils {
 	//TODO escrever teste
 	static isLineEmpty(lineOfCsv: { [key: string]: string }): boolean {
 		return (
-			Object.keys(lineOfCsv).map(
+			Object.keys(lineOfCsv).filter(
 				(column) => lineOfCsv[column].trim() !== ''
 			).length === 0
 		);

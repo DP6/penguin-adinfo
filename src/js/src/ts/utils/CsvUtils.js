@@ -7,7 +7,7 @@ class CsvUtils {
 	}
 	static isLineEmpty(lineOfCsv) {
 		return (
-			Object.keys(lineOfCsv).map(
+			Object.keys(lineOfCsv).filter(
 				(column) => lineOfCsv[column].trim() !== ''
 			).length === 0
 		);
