@@ -1,7 +1,7 @@
 import { Adobe } from './Adobe';
-// import { FacebookAds } from './FacebookAds';
+import { FacebookAds } from './FacebookAds';
 import { GA } from './GA';
-// import { GoogleAds } from './GoogleAds';
+import { GoogleAds } from './GoogleAds';
 import { Parametrizer } from './Parametrizer';
 import { Config } from './Config';
 
@@ -24,10 +24,10 @@ export class ParametrizerFactory {
 				return new GA(this._csvLines, this._config);
 			case 'adobe':
 				return new Adobe(this._csvLines, this._config);
-			// case 'googleads':
-			//     return new GoogleAds(this._csvLines, config, this._separators, validationRules, this._configTool);
-			// case 'facebookads':
-			//     return new FacebookAds(this._csvLines, config, this._separators, validationRules, this._configTool);
+			case 'googleads':
+				return new GoogleAds(this._csvLines, this._config);
+			case 'facebookads':
+				return new FacebookAds(this._csvLines, this._config);
 		}
 	}
 }
