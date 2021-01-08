@@ -6,7 +6,6 @@ import {
 } from '@google-cloud/firestore';
 import * as credentials from '../../../../config/gcp_key.json';
 import { ObjectStore } from '../DAO/ObjectStore';
-import { Config } from '../Config';
 
 export class FirestoreConnection extends ObjectStore {
 	private _db: Firestore;
@@ -79,12 +78,20 @@ export class FirestoreConnection extends ObjectStore {
 	 * Adiciona um documento à uma coleção
 	 * @param collection Coleção de referência
 	 * @param document Documento a ser inserido à coleção
+	 * @param documentName Nome do documento no Firestore, caso não seja necessário o uso do ID automático
 	 */
 	public addDocumentIn(
 		collection: CollectionReference,
-		document: Config
-	): void {
-		const docRef = collection.doc(`config_${document.version}`);
-		docRef.set(document.toJson());
+		document: { [key: string]: any },
+		documentName: string
+	): DocumentReference {
+		let docRef: DocumentReference;
+		if (documentName) {
+			docRef = collection.doc(documentName);
+		} else {
+			docRef = collection.doc();
+		}
+		docRef.set(document);
+		return docRef;
 	}
 }

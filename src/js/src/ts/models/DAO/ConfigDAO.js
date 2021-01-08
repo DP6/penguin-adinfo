@@ -26,23 +26,24 @@ class ConfigDAO {
 			})
 			.catch((err) => console.log(err));
 	}
-	addConfig(jsonConfig) {
+	addConfig(config) {
 		return new Promise((resolve, reject) => {
 			this.getLastConfig()
 				.then((lastConfig) => {
 					if (!lastConfig) {
-						jsonConfig.version = 1;
+						config.version = 1;
 					} else {
-						jsonConfig.version = lastConfig.version + 1;
+						config.version = lastConfig.version + 1;
 					}
-					jsonConfig.insertTime = DateUtils_1.DateUtils.generateDateString(
+					config.insertTime = DateUtils_1.DateUtils.generateDateString(
 						true
 					);
-					if (jsonConfig.validateConfig()) {
+					if (config.validateConfig()) {
 						resolve(
 							this._objectStore.addDocumentIn(
 								this._configCollection,
-								jsonConfig
+								config.toJson(),
+								`config_${config.version}`
 							)
 						);
 					} else {

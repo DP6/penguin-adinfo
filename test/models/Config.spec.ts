@@ -5,6 +5,7 @@ describe('Config', () => {
 	describe('Valida a criação do config para Adobe', () => {
 		it('Validação do método toJson', () => {
 			const jsonConfig = {
+				csvSeparator: ',',
 				separator: ':',
 				spaceSeparator: '+',
 				adobe: {
@@ -52,6 +53,7 @@ describe('Config', () => {
 		});
 		it('Validação do método toString', () => {
 			const jsonConfig = {
+				csvSeparator: ',',
 				separator: ':',
 				spaceSeparator: '+',
 				adobe: {
@@ -97,6 +99,7 @@ describe('Config', () => {
 		});
 		it('Validação do método toCsvTemplate', () => {
 			const jsonConfig = {
+				csvSeparator: ',',
 				separator: ':',
 				spaceSeparator: '+',
 				adobe: {
@@ -130,6 +133,7 @@ describe('Config', () => {
 		});
 		it('Validação da geração das regras de validação', () => {
 			const jsonConfig = {
+				csvSeparator: ',',
 				separator: ':',
 				spaceSeparator: '+',
 				adobe: {
@@ -165,6 +169,7 @@ describe('Config', () => {
 	describe('Valida a criação do config para GA', () => {
 		it('Validação do método toJson', () => {
 			const jsonConfig = {
+				csvSeparator: ',',
 				separator: ':',
 				spaceSeparator: '+',
 				ga: {
@@ -200,6 +205,7 @@ describe('Config', () => {
 		});
 		it('Validação do método toString', () => {
 			const jsonConfig = {
+				csvSeparator: ',',
 				separator: ':',
 				spaceSeparator: '+',
 				ga: {
@@ -233,6 +239,7 @@ describe('Config', () => {
 		});
 		it('Validação do método toCsvTemplate', () => {
 			const jsonConfig = {
+				csvSeparator: ',',
 				separator: ':',
 				spaceSeparator: '+',
 				ga: {
@@ -268,6 +275,7 @@ describe('Config', () => {
 		});
 		it('Validação da geração das regras de validação', () => {
 			const jsonConfig = {
+				csvSeparator: ',',
 				separator: ':',
 				spaceSeparator: '+',
 				ga: {

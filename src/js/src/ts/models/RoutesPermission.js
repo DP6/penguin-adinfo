@@ -11,7 +11,6 @@ class RoutesPermission {
 		const agencyGetRoutes = ['/config', '/template', '/csv/list', '/csv'];
 		if (auth.permission === 'agency') {
 			if (this._method === 'POST') {
-				console.log('post');
 				return (
 					agencyPostRoutes.filter((route) =>
 						new RegExp(route).test(this._route)

@@ -51,9 +51,15 @@ class FirestoreConnection extends ObjectStore_1.ObjectStore {
 				});
 		});
 	}
-	addDocumentIn(collection, document) {
-		const docRef = collection.doc(`config_${document.version}`);
-		docRef.set(document.toJson());
+	addDocumentIn(collection, document, documentName) {
+		let docRef;
+		if (documentName) {
+			docRef = collection.doc(documentName);
+		} else {
+			docRef = collection.doc();
+		}
+		docRef.set(document);
+		return docRef;
 	}
 }
 exports.FirestoreConnection = FirestoreConnection;

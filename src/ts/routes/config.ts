@@ -18,7 +18,7 @@ const config = (app: { [key: string]: any }): void => {
 			const configDAO = new ConfigDAO(company);
 			configDAO
 				.addConfig(config)
-				.then(() => {
+				.then((data) => {
 					res.status(200).send('Configuração criada com sucesso!');
 				})
 				.catch((err) => {

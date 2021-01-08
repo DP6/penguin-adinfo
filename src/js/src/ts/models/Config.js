@@ -8,8 +8,10 @@ class Config {
 		const jsonConfigTemp = Object.assign({}, jsonConfig);
 		this._separator = jsonConfigTemp.separator;
 		delete jsonConfigTemp.separator;
-		this._csvSeparator = jsonConfigTemp.csvSeparator;
-		delete jsonConfigTemp.csvSeparator;
+		if (jsonConfigTemp.csvSeparator) {
+			this._csvSeparator = jsonConfigTemp.csvSeparator;
+			delete jsonConfigTemp.csvSeparator;
+		}
 		this._spaceSeparator = jsonConfigTemp.spaceSeparator;
 		delete jsonConfigTemp.spaceSeparator;
 		this._insertTime = jsonConfigTemp.insertTime;

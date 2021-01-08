@@ -12,6 +12,7 @@ export abstract class ObjectStore {
 	): Promise<DocumentData[]>;
 	abstract addDocumentIn(
 		collection: CollectionReference,
-		document: { [key: string]: any }
-	): void;
+		document: { [key: string]: any },
+		documentName: string
+	): DocumentReference;
 }

@@ -2,7 +2,11 @@ import { ObjectStore } from '../DAO/ObjectStore';
 import { FirestoreConnection } from '../cloud/FirestoreConnection';
 import { Config } from '../Config';
 import { DateUtils } from '../../utils/DateUtils';
-import { CollectionReference, DocumentData } from '@google-cloud/firestore';
+import {
+	CollectionReference,
+	DocumentData,
+	DocumentReference,
+} from '@google-cloud/firestore';
 
 export class ConfigDAO {
 	private _objectStore: ObjectStore;
@@ -36,23 +40,24 @@ export class ConfigDAO {
 
 	/**
 	 * Adiciona uma configuração ao Banco de Dados
-	 * @param jsonConfig Configuração a ser adicionada
+	 * @param config Configuração a ser adicionada
 	 */
-	public addConfig(jsonConfig: Config): Promise<void> {
+	public addConfig(config: Config): Promise<DocumentReference> {
 		return new Promise((resolve, reject) => {
 			this.getLastConfig()
 				.then((lastConfig: Config) => {
 					if (!lastConfig) {
-						jsonConfig.version = 1;
+						config.version = 1;
 					} else {
-						jsonConfig.version = lastConfig.version + 1;
+						config.version = lastConfig.version + 1;
 					}
-					jsonConfig.insertTime = DateUtils.generateDateString(true);
-					if (jsonConfig.validateConfig()) {
+					config.insertTime = DateUtils.generateDateString(true);
+					if (config.validateConfig()) {
 						resolve(
 							this._objectStore.addDocumentIn(
 								this._configCollection,
-								jsonConfig
+								config.toJson(),
+								`config_${config.version}`
 							)
 						);
 					} else {

@@ -16,8 +16,8 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
 app.use(cors({
-  'allowedHeaders': ['agency', 'Content-Type', 'company', 'file', 'data', 'config'],
-  'exposedHeaders': ['agency', 'company', 'file', 'data', 'config'],
+  'allowedHeaders': ['token', 'agency', 'Content-Type', 'company', 'file', 'data', 'config'],
+  'exposedHeaders': ['token', 'agency', 'company', 'file', 'data', 'config'],
   'origin': '*',
   'methods': 'GET,HEAD,PUT,PATCH,POST,DELETE',
   'preflightContinue': false
@@ -26,7 +26,12 @@ app.use(cors({
 const rotas = require('./src/js/src/ts/routes/routes');
 
 app.all('*', async (req, res, next) => {
-  const authDAO = new AuthDAO('darthurltda', 'ulbQ1ELgvFqGGkG31Dng');
+  let authDAO;
+  if(req.headers.company && req.headers.token) {
+    authDAO = new AuthDAO(req.headers.company, req.headers.token);
+  } else {
+    authDAO = new AuthDAO(req.body.company, req.body.token);
+  }
   authDAO.getAuth()
     .then(auth => {
       if(auth.hasPermissionFor(req.url, req.method)) {
