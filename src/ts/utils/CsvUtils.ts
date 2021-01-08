@@ -14,7 +14,6 @@ export class CsvUtils {
 	 * Verifica se a linha do CSV é vazia
 	 * @param lineOfCsv linha do csv no padrão {coluna: valor}
 	 */
-	//TODO escrever teste
 	static isLineEmpty(lineOfCsv: { [key: string]: string }): boolean {
 		return (
 			Object.keys(lineOfCsv).filter(
