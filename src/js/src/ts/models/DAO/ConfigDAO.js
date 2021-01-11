@@ -1,12 +1,12 @@
 'use strict';
 Object.defineProperty(exports, '__esModule', { value: true });
 exports.ConfigDAO = void 0;
-const FirestoreConnection_1 = require('../cloud/FirestoreConnection');
+const FirestoreConnectionSingleton_1 = require('../cloud/FirestoreConnectionSingleton');
 const Config_1 = require('../Config');
 const DateUtils_1 = require('../../utils/DateUtils');
 class ConfigDAO {
 	constructor(companyName) {
-		this._objectStore = new FirestoreConnection_1.FirestoreConnection();
+		this._objectStore = FirestoreConnectionSingleton_1.FirestoreConnectionSingleton.getInstance();
 		this._configCollection = this._objectStore.getCollection([
 			'companies',
 			companyName,

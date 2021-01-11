@@ -1,5 +1,5 @@
 import { ObjectStore } from './ObjectStore';
-import { FirestoreConnection } from '../cloud/FirestoreConnection';
+import { FirestoreConnectionSingleton } from '../cloud/FirestoreConnectionSingleton';
 import { Auth } from '../Auth';
 import { CollectionReference } from '@google-cloud/firestore';
 
@@ -13,7 +13,7 @@ export class AuthDAO {
 	constructor(company: string, key: string) {
 		this._key = key;
 		this._company = company;
-		this._objectStore = new FirestoreConnection();
+		this._objectStore = FirestoreConnectionSingleton.getInstance();
 		this._pathToCollection = ['companies', company, 'tokens'];
 		this._authCollection = this._objectStore.getCollection(
 			this._pathToCollection

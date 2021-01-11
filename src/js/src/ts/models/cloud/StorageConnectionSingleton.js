@@ -1,14 +1,20 @@
 'use strict';
 Object.defineProperty(exports, '__esModule', { value: true });
-exports.StorageConnection = void 0;
+exports.StorageConnectionSingleton = void 0;
 const storage_1 = require('@google-cloud/storage');
 const credentials = require('../../../../config/gcp_key.json');
 const FileStore_1 = require('../DAO/FileStore');
-class StorageConnection extends FileStore_1.FileStore {
+class StorageConnectionSingleton extends FileStore_1.FileStore {
 	constructor() {
 		super();
 		this._bucket = `adinfo-dp6-files`;
 		this._db = new storage_1.Storage({ credentials });
+	}
+	static getInstance() {
+		if (!StorageConnectionSingleton._instance) {
+			StorageConnectionSingleton._instance = new StorageConnectionSingleton();
+		}
+		return StorageConnectionSingleton._instance;
 	}
 	saveFile(file, path) {
 		const destinationBucket = this._db.bucket(this._bucket);
@@ -23,4 +29,4 @@ class StorageConnection extends FileStore_1.FileStore {
 		return this._db.bucket(this._bucket).getFiles({ prefix: `${folder}/` });
 	}
 }
-exports.StorageConnection = StorageConnection;
+exports.StorageConnectionSingleton = StorageConnectionSingleton;

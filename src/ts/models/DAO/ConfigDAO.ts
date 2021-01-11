@@ -1,5 +1,5 @@
 import { ObjectStore } from '../DAO/ObjectStore';
-import { FirestoreConnection } from '../cloud/FirestoreConnection';
+import { FirestoreConnectionSingleton } from '../cloud/FirestoreConnectionSingleton';
 import { Config } from '../Config';
 import { DateUtils } from '../../utils/DateUtils';
 import {
@@ -13,7 +13,7 @@ export class ConfigDAO {
 	private _configCollection: CollectionReference;
 
 	constructor(companyName: string) {
-		this._objectStore = new FirestoreConnection();
+		this._objectStore = FirestoreConnectionSingleton.getInstance();
 		this._configCollection = this._objectStore.getCollection([
 			'companies',
 			companyName,

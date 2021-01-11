@@ -1,12 +1,12 @@
 import { FileStore } from '../DAO/FileStore';
-import { StorageConnection } from '../cloud/StorageConnection';
+import { StorageConnectionSingleton } from '../cloud/StorageConnectionSingleton';
 
 export class FileDAO {
 	private _file: Buffer;
 	private _fileStore: FileStore;
 
 	constructor() {
-		this._fileStore = new StorageConnection();
+		this._fileStore = StorageConnectionSingleton.getInstance();
 	}
 
 	get file(): Buffer {

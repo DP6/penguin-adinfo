@@ -3,13 +3,24 @@ import * as credentials from '../../../../config/gcp_key.json';
 import { FileStore } from '../DAO/FileStore';
 import { FileDAO } from '../DAO/FileDAO';
 
-export class StorageConnection extends FileStore {
+export class StorageConnectionSingleton extends FileStore {
 	private _db: Storage;
 	private _bucket = `adinfo-dp6-files`;
+	private static _instance: StorageConnectionSingleton;
 
-	constructor() {
+	private constructor() {
 		super();
 		this._db = new Storage({ credentials });
+	}
+
+	/**
+	 * Retorna a instancia atual da classe
+	 */
+	public static getInstance(): StorageConnectionSingleton {
+		if (!StorageConnectionSingleton._instance) {
+			StorageConnectionSingleton._instance = new StorageConnectionSingleton();
+		}
+		return StorageConnectionSingleton._instance;
 	}
 
 	/**

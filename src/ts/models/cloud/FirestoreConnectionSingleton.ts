@@ -7,12 +7,23 @@ import {
 import * as credentials from '../../../../config/gcp_key.json';
 import { ObjectStore } from '../DAO/ObjectStore';
 
-export class FirestoreConnection extends ObjectStore {
+export class FirestoreConnectionSingleton extends ObjectStore {
 	private _db: Firestore;
+	private static _instance: FirestoreConnectionSingleton;
 
-	constructor() {
+	private constructor() {
 		super();
 		this._db = new Firestore({ credentials });
+	}
+
+	/**
+	 * Retorna a instancia atual da classe
+	 */
+	public static getInstance(): FirestoreConnectionSingleton {
+		if (!FirestoreConnectionSingleton._instance) {
+			FirestoreConnectionSingleton._instance = new FirestoreConnectionSingleton();
+		}
+		return FirestoreConnectionSingleton._instance;
 	}
 
 	/**

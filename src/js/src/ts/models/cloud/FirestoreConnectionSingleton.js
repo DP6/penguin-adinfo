@@ -1,13 +1,19 @@
 'use strict';
 Object.defineProperty(exports, '__esModule', { value: true });
-exports.FirestoreConnection = void 0;
+exports.FirestoreConnectionSingleton = void 0;
 const firestore_1 = require('@google-cloud/firestore');
 const credentials = require('../../../../config/gcp_key.json');
 const ObjectStore_1 = require('../DAO/ObjectStore');
-class FirestoreConnection extends ObjectStore_1.ObjectStore {
+class FirestoreConnectionSingleton extends ObjectStore_1.ObjectStore {
 	constructor() {
 		super();
 		this._db = new firestore_1.Firestore({ credentials });
+	}
+	static getInstance() {
+		if (!FirestoreConnectionSingleton._instance) {
+			FirestoreConnectionSingleton._instance = new FirestoreConnectionSingleton();
+		}
+		return FirestoreConnectionSingleton._instance;
 	}
 	getCollection(path) {
 		let c;
@@ -62,4 +68,4 @@ class FirestoreConnection extends ObjectStore_1.ObjectStore {
 		return docRef;
 	}
 }
-exports.FirestoreConnection = FirestoreConnection;
+exports.FirestoreConnectionSingleton = FirestoreConnectionSingleton;

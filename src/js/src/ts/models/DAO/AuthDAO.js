@@ -1,13 +1,13 @@
 'use strict';
 Object.defineProperty(exports, '__esModule', { value: true });
 exports.AuthDAO = void 0;
-const FirestoreConnection_1 = require('../cloud/FirestoreConnection');
+const FirestoreConnectionSingleton_1 = require('../cloud/FirestoreConnectionSingleton');
 const Auth_1 = require('../Auth');
 class AuthDAO {
 	constructor(company, key) {
 		this._key = key;
 		this._company = company;
-		this._objectStore = new FirestoreConnection_1.FirestoreConnection();
+		this._objectStore = FirestoreConnectionSingleton_1.FirestoreConnectionSingleton.getInstance();
 		this._pathToCollection = ['companies', company, 'tokens'];
 		this._authCollection = this._objectStore.getCollection(
 			this._pathToCollection
