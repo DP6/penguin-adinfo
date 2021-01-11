@@ -21,9 +21,12 @@
 	"license": "ISC",
 	"dependencies": {
 		"@google-cloud/firestore": "^4.8.1",
+		"@google-cloud/logging-bunyan": "^3.0.1",
 		"@google-cloud/storage": "^5.1.1",
+		"@types/bunyan": "^1.8.6",
 		"app": "^0.1.0",
 		"body-parser": "^1.19.0",
+		"bunyan": "^1.8.15",
 		"convert-csv-to-json": "0.0.15",
 		"cors": "^2.8.5",
 		"dotenv": "^8.2.0",
