@@ -1,0 +1,182 @@
+swagger: '2.0'
+info:
+  title: DP6 Adinfo
+  description: Implementação do Novo AdInfo DP6 usando App Engine.
+  version: '0.0.1'
+host: localhost:443
+basePath: /
+#
+schemes:
+  - https
+paths:
+  "/csv":
+    get:
+      description: Get the csv file from storage
+      operationId: csv
+      parameters: 
+        - name: company
+          in: headers
+          description: Name of the company
+        - name: token
+          in: headers
+          description: API token
+        - name: fileName
+          in: headers
+          description: name of file    
+      responses:
+        200:
+          description: "Success"
+          schema:
+            type: string
+        400: 
+          description: "Bad Request"
+        500:
+          description: "Internal server error"
+    post:
+      description: Uploads de CSV file to the storage
+      operationId: csv
+      parameters: 
+        - name: company
+          in: headers
+          description: Name of the company
+        - name: token
+          in: headers
+          description: API token
+        - name: content
+          in: files
+          description: file to upload     
+      responses:
+        200:
+          description: "Success"
+          schema:
+            type: string
+        400: 
+          description: "Bad Request"
+        500:
+          description: "Internal server error"
+  "/csv/list":
+    get:
+      description: Lists all csv files within a company
+      operationId: csv_list
+      parameters: 
+        - name: company
+          in: headers
+          description: Name of the company
+        - name: token
+          in: headers
+          description: API token  
+      responses:
+        200:
+          description: "Success"
+          schema:
+            type: string
+        400: 
+          description: "Bad Request2"
+        500:
+          description: "Internal server error"
+  "/config":
+    post:
+      description: Creates a new config in the company
+      operationId: config
+      parameters: 
+        - name: company
+          in: headers
+          description: Name of the company
+        - name: token
+          in: headers
+          description: API token
+        - name: configString
+          in: body
+          description: String in JSON format
+      responses:
+        200:
+          description: "Success"
+          schema:
+            type: string
+        400: 
+          description: "Bad Request"
+        500:
+          description: "Internal server error"
+    get:
+      description: Get last config
+      operationId: config
+      parameters:
+        - name: company
+          in: headers
+          description: Name of the company
+        - name: token
+          in: headers
+          description: API token
+      responses:
+        200:
+          description: "Success"
+          schema:
+            type: string
+        400: 
+          description: "Bad Request"
+        500:
+          description: "Internal server error"
+  "/build/:media":
+    post:
+      description: Creates the output csv containing the builded parameters and urls
+      operationId: build
+      parameters: 
+        - name: company
+          in: headers
+          description: Name of the company
+        - name: token
+          in: headers
+          description: API token   
+        - name: media
+          in: params 
+          description: media for parametrizer
+      responses:
+        200:
+          description: "Success"
+          schema:
+            type: string
+        400: 
+          description: "Bad Request"
+        500:
+          description: "Internal server error"
+  "/template":
+    get:
+      description: Creates the input csv file template
+      operationId: template
+      parameters: 
+        - name: company
+          in: headers
+          description: Name of the company
+        - name: token
+          in: headers
+          description: API token  
+      responses:
+        200:
+          description: "Success"
+          schema:
+            type: string
+        500:
+          description: "Internal server error"
+  "/register":
+    get:
+      description: Creates new API Token
+      operationId: "register"
+      parameters: 
+        - name: company
+          in: headers
+          description: Name of the company
+        - name: token
+          in: headers
+          description: API token  
+        - name: permission
+          in: headers
+          description: permission to new user
+      responses:
+        200:
+          description: "Success"
+          schema:
+            type: string
+        500:
+          description: "Internal server error"
+
+
