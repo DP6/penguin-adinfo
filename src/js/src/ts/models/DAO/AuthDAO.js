@@ -4,23 +4,26 @@ exports.AuthDAO = void 0;
 const FirestoreConnectionSingleton_1 = require('../cloud/FirestoreConnectionSingleton');
 const Auth_1 = require('../Auth');
 class AuthDAO {
-	constructor(company, key) {
-		this._key = key;
-		this._company = company;
+	constructor(token) {
+		this._token = token;
 		this._objectStore = FirestoreConnectionSingleton_1.FirestoreConnectionSingleton.getInstance();
-		this._pathToCollection = ['companies', company, 'tokens'];
+		this._pathToCollection = ['tokens'];
 		this._authCollection = this._objectStore.getCollection(
 			this._pathToCollection
 		);
 	}
 	getAuth() {
-		const pathToAuth = this._pathToCollection.concat(this._key);
+		const pathToAuth = this._pathToCollection.concat(this._token);
 		return this._objectStore
 			.getDocument(pathToAuth)
 			.get()
 			.then((data) => {
 				const jsonAuth = data.data();
-				return new Auth_1.Auth(jsonAuth.permission, jsonAuth.agency);
+				return new Auth_1.Auth(
+					jsonAuth.permission,
+					jsonAuth.company,
+					jsonAuth.agency
+				);
 			})
 			.catch((err) => console.log(err));
 	}

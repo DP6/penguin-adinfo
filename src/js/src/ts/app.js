@@ -77,14 +77,13 @@ app.use(
 );
 app.all('*', (req, res, next) =>
 	__awaiter(void 0, void 0, void 0, function* () {
-		const company = req.headers.company;
 		const token = req.headers.token;
-		if (company && token) {
-			const authDAO = new AuthDAO_1.AuthDAO(company, token);
+		if (token) {
+			const authDAO = new AuthDAO_1.AuthDAO(token);
 			authDAO
 				.getAuth()
 				.then((auth) => {
-					req.company = company;
+					req.company = auth.company;
 					req.agency = auth.agency;
 					if (auth.hasPermissionFor(req.url, req.method)) {
 						next();

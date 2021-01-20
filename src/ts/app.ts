@@ -52,14 +52,13 @@ app.all(
 		res: { [key: string]: any },
 		next: any
 	) => {
-		const company = req.headers.company;
 		const token = req.headers.token;
-		if (company && token) {
-			const authDAO = new AuthDAO(company, token);
+		if (token) {
+			const authDAO = new AuthDAO(token);
 			authDAO
 				.getAuth()
 				.then((auth: Auth) => {
-					req.company = company;
+					req.company = auth.company;
 					req.agency = auth.agency;
 					if (auth.hasPermissionFor(req.url, req.method)) {
 						next();

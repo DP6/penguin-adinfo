@@ -4,30 +4,32 @@ import { Auth } from '../Auth';
 import { CollectionReference } from '@google-cloud/firestore';
 
 export class AuthDAO {
-	private _key: string;
+	private _token: string;
 	private _objectStore: ObjectStore;
-	private _company: string;
 	private _authCollection: CollectionReference;
 	private _pathToCollection: string[];
 
-	constructor(company: string, key: string) {
-		this._key = key;
-		this._company = company;
+	constructor(token: string) {
+		this._token = token;
 		this._objectStore = FirestoreConnectionSingleton.getInstance();
-		this._pathToCollection = ['companies', company, 'tokens'];
+		this._pathToCollection = ['tokens'];
 		this._authCollection = this._objectStore.getCollection(
 			this._pathToCollection
 		);
 	}
 
 	public getAuth(): Promise<Auth | void> {
-		const pathToAuth = this._pathToCollection.concat(this._key);
+		const pathToAuth = this._pathToCollection.concat(this._token);
 		return this._objectStore
 			.getDocument(pathToAuth)
 			.get()
 			.then((data) => {
 				const jsonAuth = data.data();
-				return new Auth(jsonAuth.permission, jsonAuth.agency);
+				return new Auth(
+					jsonAuth.permission,
+					jsonAuth.company,
+					jsonAuth.agency
+				);
 			})
 			.catch((err) => console.log(err));
 	}

@@ -3,10 +3,12 @@ import { RoutesPermission } from './RoutesPermission';
 export class Auth {
 	private _permission: string;
 	private _agency: string;
+	private _company: string;
 
-	constructor(permission: string, agency = '') {
+	constructor(permission: string, company: string, agency = '') {
 		this._permission = permission;
 		this._agency = agency;
+		this._company = company;
 	}
 
 	/**
@@ -18,11 +20,26 @@ export class Auth {
 		return new RoutesPermission(route, method).validatePermission(this);
 	}
 
+	/**
+	 * Retorna um JSON correspondente ao objeto Auth
+	 */
+	public toJson(): { [key: string]: string } {
+		return {
+			agency: this._agency,
+			company: this._company,
+			permission: this._permission,
+		};
+	}
+
 	get permission(): string {
 		return this._permission;
 	}
 
 	get agency(): string {
 		return this._agency;
+	}
+
+	get company(): string {
+		return this._company;
 	}
 }

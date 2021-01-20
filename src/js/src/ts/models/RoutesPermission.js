@@ -8,7 +8,13 @@ class RoutesPermission {
 	}
 	validatePermission(auth) {
 		const agencyPostRoutes = ['/build/.*', '/csv'];
-		const agencyGetRoutes = ['/config', '/template', '/csv/list', '/csv'];
+		const agencyGetRoutes = [
+			'/config',
+			'/template',
+			'/csv/list',
+			'/csv',
+			'/user',
+		];
 		if (auth.permission === 'agency') {
 			if (this._method === 'POST') {
 				return (
