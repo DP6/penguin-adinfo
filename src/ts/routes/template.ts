@@ -4,7 +4,7 @@ const template = (app: { [key: string]: any }): void => {
 	app.get(
 		'/template',
 		(req: { [key: string]: any }, res: { [key: string]: any }) => {
-			const company = req.headers.company;
+			const company = req.company;
 			const configDAO = new ConfigDAO(company);
 			configDAO
 				.getLastConfig()

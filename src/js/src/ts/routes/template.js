@@ -3,7 +3,7 @@ Object.defineProperty(exports, '__esModule', { value: true });
 const ConfigDAO_1 = require('../models/DAO/ConfigDAO');
 const template = (app) => {
 	app.get('/template', (req, res) => {
-		const company = req.headers.company;
+		const company = req.company;
 		const configDAO = new ConfigDAO_1.ConfigDAO(company);
 		configDAO
 			.getLastConfig()

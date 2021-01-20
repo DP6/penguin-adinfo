@@ -9,10 +9,12 @@ const converter = require('json-2-csv');
 const build = (app) => {
 	app.post('/build/:media', (req, res) => {
 		const media = req.params.media;
-		const company = req.body.company;
-		const agency = req.body.agency;
-		if (!company || !agency || !req.files.data) {
-			res.status(500).send({ message: 'Parâmetros incorretos!' });
+		const company = req.company;
+		const agency = req.agency;
+		if (!req.files.data) {
+			res.status(400).send({
+				message: 'Nenhum arquivo foi enviado!',
+			});
 			return;
 		}
 		const fileContent = req.files.data.data;
@@ -25,7 +27,7 @@ const build = (app) => {
 				if (config) {
 					companyConfig = config;
 					if (!companyConfig.toJson()[media]) {
-						res.status(500).send({
+						res.status(400).send({
 							message: `Mídia ${media} não configurada!`,
 						});
 						return;
@@ -34,7 +36,7 @@ const build = (app) => {
 					fileDAO.file = fileContent;
 					return fileDAO.save(filePath);
 				} else {
-					res.status(500).send('Nenhuma configuração encontrada!');
+					res.status(400).send('Nenhuma configuração encontrada!');
 					return;
 				}
 			})

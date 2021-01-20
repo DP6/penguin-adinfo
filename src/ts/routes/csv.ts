@@ -6,11 +6,7 @@ const csv = (app: { [key: string]: any }): void => {
 		'/csv',
 		(req: { [key: string]: any }, res: { [key: string]: any }) => {
 			const content = req.files.data.data;
-			const agency = req.body.agency;
-			if (!agency || !content) {
-				res.status(500).send({ message: 'Parâmetros incorretos!' });
-				return;
-			}
+			const agency = req.agency;
 			const filePath = `${agency}/${DateUtils.generateDateString()}.csv`;
 			const fileDAO = new FileDAO();
 			fileDAO.file = content;
@@ -29,9 +25,11 @@ const csv = (app: { [key: string]: any }): void => {
 		'/csv',
 		(req: { [key: string]: any }, res: { [key: string]: any }) => {
 			const fileName = req.headers.file;
-			const agency = req.headers.agency;
-			if (!agency || !fileName) {
-				res.status(500).send({ message: 'Parâmetros incorretos!' });
+			const agency = req.agency;
+			if (!fileName) {
+				res.status(400).send({
+					message: 'Nenhum arquivo foi enviado!',
+				});
 				return;
 			}
 			const filePath = `${agency}/${fileName}.csv`;
@@ -53,11 +51,7 @@ const csv = (app: { [key: string]: any }): void => {
 	app.get(
 		'/csv/list',
 		(req: { [key: string]: any }, res: { [key: string]: any }) => {
-			const agency = req.headers.agency;
-			if (!agency) {
-				res.status(500).send({ message: 'Agência não informada!' });
-				return;
-			}
+			const agency = req.agency;
 			const fileDAO = new FileDAO();
 			fileDAO
 				.getAllFilesFromStore(agency)

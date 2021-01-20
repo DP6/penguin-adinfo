@@ -16,5 +16,8 @@ class Auth {
 	get permission() {
 		return this._permission;
 	}
+	get agency() {
+		return this._agency;
+	}
 }
 exports.Auth = Auth;

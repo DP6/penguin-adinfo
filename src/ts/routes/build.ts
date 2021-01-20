@@ -11,10 +11,12 @@ const build = (app: { [key: string]: any }): void => {
 		'/build/:media',
 		(req: { [key: string]: any }, res: { [key: string]: any }) => {
 			const media = req.params.media;
-			const company = req.body.company;
-			const agency = req.body.agency;
-			if (!company || !agency || !req.files.data) {
-				res.status(500).send({ message: 'Parâmetros incorretos!' });
+			const company = req.company;
+			const agency = req.agency;
+			if (!req.files.data) {
+				res.status(400).send({
+					message: 'Nenhum arquivo foi enviado!',
+				});
 				return;
 			}
 
@@ -30,7 +32,7 @@ const build = (app: { [key: string]: any }): void => {
 					if (config) {
 						companyConfig = config;
 						if (!companyConfig.toJson()[media]) {
-							res.status(500).send({
+							res.status(400).send({
 								message: `Mídia ${media} não configurada!`,
 							});
 							return;
@@ -39,7 +41,7 @@ const build = (app: { [key: string]: any }): void => {
 						fileDAO.file = fileContent;
 						return fileDAO.save(filePath);
 					} else {
-						res.status(500).send(
+						res.status(400).send(
 							'Nenhuma configuração encontrada!'
 						);
 						return;

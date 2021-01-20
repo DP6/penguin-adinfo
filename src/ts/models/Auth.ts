@@ -21,4 +21,8 @@ export class Auth {
 	get permission(): string {
 		return this._permission;
 	}
+
+	get agency(): string {
+		return this._agency;
+	}
 }

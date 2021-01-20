@@ -4,13 +4,10 @@ const ConfigDAO_1 = require('../models/DAO/ConfigDAO');
 const Config_1 = require('../models/Config');
 const config = (app) => {
 	app.post('/config', (req, res) => {
-		const company = req.body.company;
+		const company = req.company;
 		const configString = req.body.config;
-		if (!company) {
-			res.status(500).send('Nome da empresa não foi informado!');
-			return;
-		} else if (!configString) {
-			res.status(500).send('Configuração não foi informada!');
+		if (!configString) {
+			res.status(400).send('Configuração não foi informada!');
 			return;
 		}
 		const config = new Config_1.Config(JSON.parse(configString));
@@ -25,11 +22,7 @@ const config = (app) => {
 			});
 	});
 	app.get('/config', (req, res) => {
-		const company = req.headers.company;
-		if (!company) {
-			res.status(500).send('Nome da empresa não foi informado!');
-			return;
-		}
+		const company = req.company;
 		const configDAO = new ConfigDAO_1.ConfigDAO(company);
 		configDAO
 			.getLastConfig()

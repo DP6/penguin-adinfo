@@ -5,11 +5,7 @@ const DateUtils_1 = require('../utils/DateUtils');
 const csv = (app) => {
 	app.post('/csv', (req, res) => {
 		const content = req.files.data.data;
-		const agency = req.body.agency;
-		if (!agency || !content) {
-			res.status(500).send({ message: 'Parâmetros incorretos!' });
-			return;
-		}
+		const agency = req.agency;
 		const filePath = `${agency}/${DateUtils_1.DateUtils.generateDateString()}.csv`;
 		const fileDAO = new FileDAO_1.FileDAO();
 		fileDAO.file = content;
@@ -24,9 +20,11 @@ const csv = (app) => {
 	});
 	app.get('/csv', (req, res) => {
 		const fileName = req.headers.file;
-		const agency = req.headers.agency;
-		if (!agency || !fileName) {
-			res.status(500).send({ message: 'Parâmetros incorretos!' });
+		const agency = req.agency;
+		if (!fileName) {
+			res.status(400).send({
+				message: 'Nenhum arquivo foi enviado!',
+			});
 			return;
 		}
 		const filePath = `${agency}/${fileName}.csv`;
@@ -43,11 +41,7 @@ const csv = (app) => {
 			});
 	});
 	app.get('/csv/list', (req, res) => {
-		const agency = req.headers.agency;
-		if (!agency) {
-			res.status(500).send({ message: 'Agência não informada!' });
-			return;
-		}
+		const agency = req.agency;
 		const fileDAO = new FileDAO_1.FileDAO();
 		fileDAO
 			.getAllFilesFromStore(agency)
