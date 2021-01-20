@@ -40,5 +40,5 @@ export abstract class Parametrizer {
 	/**
 	 * Método para construção de URLs
 	 */
-	abstract buildUrl(): void;
+	protected abstract _buildUrl(): string;
 }

@@ -39,8 +39,8 @@ export class Adobe extends Parametrizer {
 	 */
 	constructor(csvLine: { [key: string]: string }, config: Config) {
 		super(csvLine, config);
-		this._buildCid();
-		this.buildUrl();
+		this._cid = this._buildCid();
+		this.url = this._buildUrl();
 	}
 
 	/**
@@ -82,7 +82,8 @@ export class Adobe extends Parametrizer {
 	/**
 	 * Constroi o Cid da linha e preenche o atributo hasErrorAtCid
 	 */
-	private _buildCid(): void {
+	private _buildCid(): string {
+		let cid = '';
 		Object.keys(this.config.analyticsTool.adobe.cid).forEach((column) => {
 			const columnNormalized = StringUtils.normalize(column);
 			if (StringUtils.isEmpty(this.csvLine[columnNormalized])) {
@@ -100,18 +101,19 @@ export class Adobe extends Parametrizer {
 				this._hasValidationError = true;
 				this._validationErrorMessage += ` ${column},`;
 			}
-			this._cid += `${this.csvLine[columnNormalized]}${this.config.separator}`;
+			cid += `${this.csvLine[columnNormalized]}${this.config.separator}`;
 		});
-		this._cid = StringUtils.replaceWhiteSpace(
-			StringUtils.normalize(this._cid),
+		cid = StringUtils.replaceWhiteSpace(
+			StringUtils.normalize(cid),
 			this.config.spaceSeparator
 		).slice(0, -1);
+		return cid;
 	}
 
 	/**
 	 * Construção da url para adobe
 	 */
-	public buildUrl(): void {
-		this.url = `${this.csvLine.url}?cid=${this._cid}`;
+	protected _buildUrl(): string {
+		return `${this.csvLine.url}?cid=${this._cid}`;
 	}
 }

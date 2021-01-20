@@ -16,18 +16,16 @@ class GoogleAds extends Parametrizer_1.Parametrizer {
 			'Parâmetro(s) não encontrado(s) na configuração: ';
 		this._undefinedParameterErrorFields = {};
 		this._configAnalyticsTool = this._buildConfigAnalyticsTool();
+		this.url = this._buildUrl();
 		this._buildAdsParams();
 	}
-	buildUrl() {
-		return {
-			'url google ads': 'auto tagging',
-		};
+	_buildUrl() {
+		return 'auto tagging';
 	}
 	buildedLine() {
-		return JsonUtils_1.JsonUtils.addParametersAt(
-			this._adsParams,
-			this.buildUrl()
-		);
+		return JsonUtils_1.JsonUtils.addParametersAt(this._adsParams, {
+			'url google ads': this.url,
+		});
 	}
 	_buildConfigAnalyticsTool() {
 		const type = this.config.analyticsToolName;

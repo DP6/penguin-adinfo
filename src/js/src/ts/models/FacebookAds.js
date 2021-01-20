@@ -17,7 +17,7 @@ class FacebookAds extends Parametrizer_1.Parametrizer {
 		this._undefinedParameterErrorFields = {};
 		this._configAnalyticsTool = this._buildConfigAnalyticsTool();
 		this._buildUrlParams();
-		this.buildUrl();
+		this.url = this._buildUrl();
 		this._clearFacebookParamsNames();
 	}
 	_buildConfigAnalyticsTool() {
@@ -103,13 +103,14 @@ class FacebookAds extends Parametrizer_1.Parametrizer {
 			});
 		}
 	}
-	buildUrl() {
+	_buildUrl() {
+		let url;
 		if (this._hasValidationError) {
 			const errorFields = Object.keys(this._errorFacebookParams).filter(
 				(facebookParam) =>
 					this._errorFacebookParams[facebookParam].length > 0
 			);
-			this.url =
+			url =
 				'Para gerar a URL corrija o(s) parâmetro(s): ' +
 				this._clearFacebookParamName(errorFields.join(', '));
 		} else if (this._hasUndefinedParameterError) {
@@ -120,11 +121,11 @@ class FacebookAds extends Parametrizer_1.Parametrizer {
 					this._undefinedParameterErrorFields[facebookParam].length >
 					0
 			);
-			this.url =
+			url =
 				'Para gerar a URL corrija o(s) parâmetro(s): ' +
 				this._clearFacebookParamName(errorFields.join(', '));
 		} else {
-			this.url = `${this.csvLine.url}?`;
+			url = `${this.csvLine.url}?`;
 			const urlParams = [];
 			const facebookadsConfig = Object.assign(
 				{},
@@ -134,8 +135,9 @@ class FacebookAds extends Parametrizer_1.Parametrizer {
 			Object.keys(facebookadsConfig).forEach((config) => {
 				urlParams.push(`${config}=${facebookadsConfig[config]}`);
 			});
-			this.url = this.url + urlParams.join('&');
+			url = url + urlParams.join('&');
 		}
+		return url;
 	}
 	_clearFacebookParamsNames() {
 		const newParams = {};

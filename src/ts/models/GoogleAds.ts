@@ -51,23 +51,24 @@ export class GoogleAds extends Parametrizer {
 	constructor(csvLine: { [key: string]: string }, config: Config) {
 		super(csvLine, config);
 		this._configAnalyticsTool = this._buildConfigAnalyticsTool();
+		this.url = this._buildUrl();
 		this._buildAdsParams();
 	}
 
 	/**
 	 * Constrói a URL do GoogleAds
 	 */
-	public buildUrl(): { [key: string]: string } {
-		return {
-			'url google ads': 'auto tagging',
-		};
+	protected _buildUrl(): string {
+		return 'auto tagging';
 	}
 
 	/**
 	 * Gera os campos do GoogleAds
 	 */
 	public buildedLine(): { [key: string]: string } {
-		return JsonUtils.addParametersAt(this._adsParams, this.buildUrl());
+		return JsonUtils.addParametersAt(this._adsParams, {
+			'url google ads': this.url,
+		});
 	}
 
 	/**

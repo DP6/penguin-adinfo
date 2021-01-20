@@ -63,7 +63,7 @@ export class FacebookAds extends Parametrizer {
 		super(csvLine, config);
 		this._configAnalyticsTool = this._buildConfigAnalyticsTool();
 		this._buildUrlParams();
-		this.buildUrl();
+		this.url = this._buildUrl();
 		this._clearFacebookParamsNames();
 		// this._transformCompoundParameter();
 	}
@@ -91,6 +91,7 @@ export class FacebookAds extends Parametrizer {
 		});
 	}
 
+	//TODO retornar valores
 	/**
 	 * Constrói os parametros da URL
 	 */
@@ -182,13 +183,14 @@ export class FacebookAds extends Parametrizer {
 	/**
 	 * Constrói a url do facebook
 	 */
-	public buildUrl(): void {
+	protected _buildUrl(): string {
+		let url: string;
 		if (this._hasValidationError) {
 			const errorFields = Object.keys(this._errorFacebookParams).filter(
 				(facebookParam) =>
 					this._errorFacebookParams[facebookParam].length > 0
 			);
-			this.url =
+			url =
 				'Para gerar a URL corrija o(s) parâmetro(s): ' +
 				this._clearFacebookParamName(errorFields.join(', '));
 		} else if (this._hasUndefinedParameterError) {
@@ -199,19 +201,20 @@ export class FacebookAds extends Parametrizer {
 					this._undefinedParameterErrorFields[facebookParam].length >
 					0
 			);
-			this.url =
+			url =
 				'Para gerar a URL corrija o(s) parâmetro(s): ' +
 				this._clearFacebookParamName(errorFields.join(', '));
 		} else {
-			this.url = `${this.csvLine.url}?`;
+			url = `${this.csvLine.url}?`;
 			const urlParams: string[] = [];
 			const facebookadsConfig = { ...this.config.medias.facebookads };
 			delete facebookadsConfig.dynamicValues;
 			Object.keys(facebookadsConfig).forEach((config) => {
 				urlParams.push(`${config}=${facebookadsConfig[config]}`);
 			});
-			this.url = this.url + urlParams.join('&');
+			url = url + urlParams.join('&');
 		}
+		return url;
 	}
 
 	/**

@@ -18,8 +18,8 @@ class GA extends Parametrizer_1.Parametrizer {
 			this._undefinedParameterErroMessage[utm] =
 				'Parâmetros não encontrados:';
 		});
-		this._buildUtms();
-		this.buildUrl();
+		this._utms = this._buildUtms();
+		this.url = this._buildUrl();
 	}
 	_hasErrorAtUtm(utm) {
 		return (
@@ -63,6 +63,7 @@ class GA extends Parametrizer_1.Parametrizer {
 		};
 	}
 	_buildUtms() {
+		const utms = {};
 		Object.keys(this.config.analyticsTool.ga).forEach((utm) => {
 			let utmString = '';
 			Object.keys(this.config.analyticsTool.ga[utm]).forEach((column) => {
@@ -90,18 +91,19 @@ class GA extends Parametrizer_1.Parametrizer {
 				}
 				utmString += `${this.csvLine[columnNormalized]}${this.config.separator}`;
 			});
-			this._utms[utm] = StringUtils_1.StringUtils.replaceWhiteSpace(
+			utms[utm] = StringUtils_1.StringUtils.replaceWhiteSpace(
 				StringUtils_1.StringUtils.normalize(utmString).slice(0, -1),
 				this.config.spaceSeparator
 			);
 		});
+		return utms;
 	}
-	buildUrl() {
+	_buildUrl() {
 		let utmString = '';
 		Object.keys(this._utms).forEach((utm) => {
 			utmString += `${utm}=${this._utms[utm]}&`;
 		});
-		this.url = `${this.csvLine.url}?${utmString.slice(0, -1)}`;
+		return `${this.csvLine.url}?${utmString.slice(0, -1)}`;
 	}
 }
 exports.GA = GA;

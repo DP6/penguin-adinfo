@@ -11,8 +11,8 @@ class Adobe extends Parametrizer_1.Parametrizer {
 		this._hasUndefinedParameterError = false;
 		this._validationErrorMessage = 'Parâmetros incorretos:';
 		this._undefinedParameterErroMessage = 'Parâmetros não encontrados:';
-		this._buildCid();
-		this.buildUrl();
+		this._cid = this._buildCid();
+		this.url = this._buildUrl();
 	}
 	_hasErrorAtCid() {
 		return this._hasValidationError || this._hasUndefinedParameterError;
@@ -38,6 +38,7 @@ class Adobe extends Parametrizer_1.Parametrizer {
 		};
 	}
 	_buildCid() {
+		let cid = '';
 		Object.keys(this.config.analyticsTool.adobe.cid).forEach((column) => {
 			const columnNormalized = StringUtils_1.StringUtils.normalize(
 				column
@@ -61,15 +62,16 @@ class Adobe extends Parametrizer_1.Parametrizer {
 				this._hasValidationError = true;
 				this._validationErrorMessage += ` ${column},`;
 			}
-			this._cid += `${this.csvLine[columnNormalized]}${this.config.separator}`;
+			cid += `${this.csvLine[columnNormalized]}${this.config.separator}`;
 		});
-		this._cid = StringUtils_1.StringUtils.replaceWhiteSpace(
-			StringUtils_1.StringUtils.normalize(this._cid),
+		cid = StringUtils_1.StringUtils.replaceWhiteSpace(
+			StringUtils_1.StringUtils.normalize(cid),
 			this.config.spaceSeparator
 		).slice(0, -1);
+		return cid;
 	}
-	buildUrl() {
-		this.url = `${this.csvLine.url}?cid=${this._cid}`;
+	_buildUrl() {
+		return `${this.csvLine.url}?cid=${this._cid}`;
 	}
 }
 exports.Adobe = Adobe;
