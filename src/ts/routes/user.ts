@@ -1,5 +1,4 @@
 import { AuthDAO } from '../models/DAO/AuthDAO';
-import { ConfigDAO } from '../models/DAO/ConfigDAO';
 
 const user = (app: { [key: string]: any }): void => {
 	app.get(

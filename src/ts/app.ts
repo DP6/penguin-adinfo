@@ -30,6 +30,7 @@ app.use(
 			'file',
 			'data',
 			'config',
+			'permission',
 		],
 		exposedHeaders: [
 			'token',
@@ -38,9 +39,10 @@ app.use(
 			'file',
 			'data',
 			'config',
+			'permission',
 		],
 		origin: '*',
-		methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+		methods: 'GET,POST',
 		preflightContinue: false,
 	})
 );
@@ -71,6 +73,8 @@ app.all(
 				.catch((err) => {
 					res.status(403).send('Usuário Inválido');
 				});
+		} else {
+			res.status(403).send('Token não informado!');
 		}
 	}
 );

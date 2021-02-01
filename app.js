@@ -23,7 +23,7 @@ app.use(cors({
   'preflightContinue': false
 }));
 
-const rotas = require('./src/js/src/ts/routes/routes');
+const routes = require('./src/js/src/ts/routes/routes');
 
 app.all('*', async (req, res, next) => {
   let authDAO;
@@ -45,7 +45,7 @@ app.all('*', async (req, res, next) => {
     });
 });
 
-rotas(app);
+routes.default(app);
 
 app.get('/', (req, res) => res.status(200).send('OK'));
 
