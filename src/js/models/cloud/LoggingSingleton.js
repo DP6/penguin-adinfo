@@ -1,20 +1,14 @@
-import { Log } from '../Log';
-// import * as credentials from '../../../../config/gcp_key.json';
-import * as bunyan from 'bunyan';
-import { LoggingBunyan } from '@google-cloud/logging-bunyan';
-
-export class LoggingSingleton extends Log {
-	private static _loggingBunyan = new LoggingBunyan();
-	private static _loggerName = 'adinfo';
-	private static _infoInstance: bunyan;
-	private static _errorInstance: bunyan;
-	private static _warningInstance: bunyan;
-
-	private constructor() {
+'use strict';
+Object.defineProperty(exports, '__esModule', { value: true });
+exports.LoggingSingleton = void 0;
+const Log_1 = require('../Log');
+const bunyan = require('bunyan');
+const logging_bunyan_1 = require('@google-cloud/logging-bunyan');
+class LoggingSingleton extends Log_1.Log {
+	constructor() {
 		super();
 	}
-
-	public static logInfo(message: string): void {
+	static logInfo(message) {
 		if (!LoggingSingleton._infoInstance) {
 			LoggingSingleton._infoInstance = bunyan.createLogger({
 				name: LoggingSingleton._loggerName,
@@ -26,8 +20,7 @@ export class LoggingSingleton extends Log {
 		}
 		LoggingSingleton._infoInstance.info(message);
 	}
-
-	public static logError(message: string): void {
+	static logError(message) {
 		if (!LoggingSingleton._errorInstance) {
 			LoggingSingleton._errorInstance = bunyan.createLogger({
 				name: LoggingSingleton._loggerName,
@@ -39,8 +32,7 @@ export class LoggingSingleton extends Log {
 		}
 		LoggingSingleton._errorInstance.info(message);
 	}
-
-	public static logWarning(message: string): void {
+	static logWarning(message) {
 		if (!LoggingSingleton._warningInstance) {
 			LoggingSingleton._warningInstance = bunyan.createLogger({
 				name: LoggingSingleton._loggerName,
@@ -53,3 +45,6 @@ export class LoggingSingleton extends Log {
 		LoggingSingleton._warningInstance.info(message);
 	}
 }
+exports.LoggingSingleton = LoggingSingleton;
+LoggingSingleton._loggingBunyan = new logging_bunyan_1.LoggingBunyan();
+LoggingSingleton._loggerName = 'adinfo';

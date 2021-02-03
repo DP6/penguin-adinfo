@@ -1,5 +1,5 @@
 import { DownloadResponse, Storage } from '@google-cloud/storage';
-import * as credentials from '../../../../config/gcp_key.json';
+// import * as credentials from '../../../../config/gcp_key.json';
 import { FileStore } from '../DAO/FileStore';
 import { FileDAO } from '../DAO/FileDAO';
 
@@ -10,7 +10,7 @@ export class StorageConnectionSingleton extends FileStore {
 
 	private constructor() {
 		super();
-		this._db = new Storage({ credentials });
+		this._db = new Storage();
 	}
 
 	/**
