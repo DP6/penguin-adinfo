@@ -15,7 +15,7 @@ class RoutesPermission {
 			'/csv',
 			'/user',
 		];
-		if (auth.permission === 'agency') {
+		if (auth.permission === 'user') {
 			if (this._method === 'POST') {
 				return (
 					agencyPostRoutes.filter((route) =>
@@ -31,7 +31,7 @@ class RoutesPermission {
 			} else {
 				return false;
 			}
-		} else if (auth.permission === 'global') {
+		} else if (auth.permission === 'admin' || auth.permission === 'owner') {
 			return true;
 		} else {
 			return false;

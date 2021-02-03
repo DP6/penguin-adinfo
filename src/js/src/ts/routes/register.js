@@ -7,7 +7,7 @@ const register = (app) => {
 		const company = req.company;
 		const token = req.headers.token;
 		const permission = req.headers.permission;
-		if ((!agency && permission === 'agency') || !company || !permission) {
+		if ((!agency && permission === 'user') || !company || !permission) {
 			res.status(400).send({ message: 'Parâmetros incorretos!' });
 			return;
 		}
@@ -15,7 +15,7 @@ const register = (app) => {
 			permission,
 		};
 		jsonPermission.company = company;
-		if (permission === 'agency') {
+		if (permission === 'user') {
 			jsonPermission.agency = agency;
 		}
 		const authDAO = new AuthDAO_1.AuthDAO(token);
