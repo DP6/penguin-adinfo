@@ -28,13 +28,33 @@ export class Builder {
 		);
 		const linesBuilded: { [key: string]: string }[] = linesWithContent.map(
 			(lineFromFile) => {
-				const parameters = new ParametrizerFactory(
+				const parametrizerObject = new ParametrizerFactory(
 					lineFromFile,
 					this._companyConfig
-				)
-					.build(StringUtils.normalize(this._media))
-					.buildedLine();
-				return JsonUtils.addParametersAt(lineFromFile, parameters);
+				).build(StringUtils.normalize(this._media));
+				const parameters = parametrizerObject.buildedLine();
+				if (
+					Object.getPrototypeOf(parametrizerObject.constructor)
+						.name === 'Vehicle'
+				) {
+					const analyticsToolParameters = new ParametrizerFactory(
+						lineFromFile,
+						this._companyConfig
+					)
+						.build(
+							StringUtils.normalize(
+								this._companyConfig.analyticsToolName
+							)
+						)
+						.buildedLine();
+					return JsonUtils.addParametersAt(
+						lineFromFile,
+						parameters,
+						analyticsToolParameters
+					);
+				} else {
+					return JsonUtils.addParametersAt(lineFromFile, parameters);
+				}
 			}
 		);
 		return linesBuilded;

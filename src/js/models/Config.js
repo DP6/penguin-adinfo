@@ -27,8 +27,9 @@ class Config {
 			this._analyticsToolName = 'adobe';
 			delete jsonConfigTemp.adobe;
 		}
+		this._validationRules = jsonConfigTemp.columns;
+		delete jsonConfigTemp.columns;
 		this._medias = jsonConfigTemp;
-		this._validationRules = this._getValidationRules();
 	}
 	validateConfig() {
 		return !(
@@ -47,9 +48,13 @@ class Config {
 					jsonConfig,
 					Object.values(this)[index] || {}
 				);
+			} else if (key === '_validationRules') {
+				jsonConfig = JsonUtils_1.JsonUtils.addParametersAt(jsonConfig, {
+					columns: this._validationRules,
+				});
 			} else if (
-				key !== '_validationRules' &&
-				key !== '_analyticsToolName'
+				key !== '_analyticsToolName' &&
+				Object.values(this)[index]
 			) {
 				jsonConfig[key.replace('_', '')] = Object.values(this)[index];
 			}
@@ -64,9 +69,13 @@ class Config {
 					jsonConfig,
 					Object.values(this)[index]
 				);
+			} else if (key === '_validationRules') {
+				jsonConfig = JsonUtils_1.JsonUtils.addParametersAt(jsonConfig, {
+					columns: this._validationRules,
+				});
 			} else if (
-				key !== '_validationRules' &&
-				key !== '_analyticsToolName'
+				key !== '_analyticsToolName' &&
+				Object.values(this)[index]
 			) {
 				jsonConfig[key.replace('_', '')] = Object.values(this)[index];
 			}
@@ -76,28 +85,10 @@ class Config {
 	toCsvTemplate() {
 		const configValues = [];
 		configValues.push('Url');
-		const vehicle = Object.keys(this._analyticsTool)[0];
-		Object.keys(this._analyticsTool[vehicle]).map((campaignParam) => {
-			Object.keys(this._analyticsTool[vehicle][campaignParam]).map(
-				(param) => {
-					if (configValues.indexOf(param) === -1)
-						configValues.push(param);
-				}
-			);
+		Object.keys(this._validationRules).forEach((column) => {
+			configValues.push(column);
 		});
 		return configValues.join(this._csvSeparator);
-	}
-	_getValidationRules() {
-		const type = this._analyticsToolName;
-		const validationRules = {};
-		Object.keys(this._analyticsTool[type]).map((field) => {
-			Object.keys(this._analyticsTool[type][field]).map((column) => {
-				validationRules[column] = this._analyticsTool[type][field][
-					column
-				];
-			});
-		});
-		return validationRules;
 	}
 	get validationRules() {
 		return this._validationRules;

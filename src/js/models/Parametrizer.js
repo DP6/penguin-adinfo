@@ -13,11 +13,5 @@ class Parametrizer {
 	get config() {
 		return this._config;
 	}
-	get url() {
-		return this._url;
-	}
-	set url(url) {
-		this._url = url;
-	}
 }
 exports.Parametrizer = Parametrizer;

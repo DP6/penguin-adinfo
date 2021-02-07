@@ -14,27 +14,24 @@ describe('FacebookAds', () => {
 			const config = new Config({
 				separator: ':',
 				spaceSeparator: '_',
+				columns: {
+					'Tipo de Compra': ['cpa', 'cpc'],
+					Dispositivo: ['desktop e mobile'],
+					Produto: ['/.*/'],
+				},
 				ga: {
-					utm_source: {
-						'Tipo de Compra': ['cpa', 'cpc'],
-						Dispositivo: ['desktop e mobile'],
-					},
-					utm_campaign: {
-						Produto: ['/.*/'],
-					},
+					utm_source: ['Tipo de Compra', 'Dispositivo'],
+					utm_campaign: ['Produto'],
 				},
 				facebookads: {
-					dynamicValues: 'true',
-					utm_source: '{{ad.name}}',
-					utm_campaign: '{{campaign.name}}',
+					'ad.name': ['Tipo de Compra', 'Dispositivo'],
+					'campaign.name': ['Produto'],
 				},
 			});
 			const facebookAds = new FacebookAds(csvLine, config);
 			const facebookAdsFields = {
 				'ad name': 'cpc:desktop_e_mobile',
 				'campaign name': 'fifinha',
-				'url facebook':
-					'www.teste.com.br?utm_source={{ad.name}}&utm_campaign={{campaign.name}}',
 			};
 			expect(JSON.stringify(facebookAds.buildedLine())).to.equal(
 				JSON.stringify(facebookAdsFields)
@@ -50,27 +47,24 @@ describe('FacebookAds', () => {
 			const config = new Config({
 				separator: ':',
 				spaceSeparator: '_',
+				columns: {
+					'Tipo de Compra': ['cpa', 'cpc'],
+					Dispositivo: ['desktop e mobile'],
+					Produto: ['fif'],
+				},
 				ga: {
-					utm_source: {
-						'Tipo de Compra': ['cpa', 'cpc'],
-						Dispositivo: ['desktop e mobile'],
-					},
-					utm_campaign: {
-						Produto: ['fif'],
-					},
+					utm_source: ['Tipo de Compra', 'Dispositivo'],
+					utm_campaign: ['Produto'],
 				},
 				facebookads: {
-					dynamicValues: 'true',
-					utm_source: '{{ad.name}}',
-					utm_campaign: '{{campaign.name}}',
+					'ad.name': ['Tipo de Compra', 'Dispositivo'],
+					'campaign.name': ['Produto'],
 				},
 			});
 			const facebookAds = new FacebookAds(csvLine, config);
 			const facebookAdsFields = {
 				'ad name': 'cpc:desktop_e_mobile',
 				'campaign name': 'Parâmetros incorretos: Produto',
-				'url facebook':
-					'Para gerar a URL corrija o(s) parâmetro(s): campaign name',
 			};
 			expect(JSON.stringify(facebookAds.buildedLine())).to.equal(
 				JSON.stringify(facebookAdsFields)
@@ -86,25 +80,23 @@ describe('FacebookAds', () => {
 			const config = new Config({
 				separator: ':',
 				spaceSeparator: '_',
+				columns: {
+					'Tipo de Compra': ['cpa', 'cpc'],
+					Dispositivo: ['desktop e mobile'],
+				},
 				ga: {
-					utm_source: {
-						'Tipo de Compra': ['cpa', 'cpc'],
-						Dispositivo: ['desktop e mobile'],
-					},
+					utm_source: ['Tipo de Compra', 'Dispositivo'],
 				},
 				facebookads: {
-					dynamicValues: 'true',
-					utm_source: '{{ad.name}}',
-					utm_campaign: '{{campaign.name}}',
+					'ad.name': ['Tipo de Compra', 'Dispositivo'],
+					'campaign.name': ['Produto'],
 				},
 			});
 			const facebookAds = new FacebookAds(csvLine, config);
 			const facebookAdsFields = {
 				'ad name': 'cpc:desktop_e_mobile',
 				'campaign name':
-					'Parâmetro(s) não encontrado(s) na configuração: utm_campaign',
-				'url facebook':
-					'Para gerar a URL corrija o(s) parâmetro(s): campaign name',
+					'Parâmetro(s) não encontrado(s) na configuração: Produto',
 			};
 			expect(JSON.stringify(facebookAds.buildedLine())).to.equal(
 				JSON.stringify(facebookAdsFields)

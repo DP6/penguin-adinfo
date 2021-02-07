@@ -9,41 +9,50 @@ describe('Config', () => {
 				separator: ':',
 				spaceSeparator: '+',
 				adobe: {
-					cid: {
-						Veículo: [
-							'google_ads',
-							'facebook',
-							'verizon',
-							'globo',
-							'afilio',
-						],
-						Inserção: [
-							'CPC',
-							'feed',
-							'story',
-							'native ads',
-							'afiliado',
-						],
-						campanha: [
-							'fifinha-na-copa',
-							'fifinha na copa da emoção',
-						],
-						categoriaDoProduto: ['videogame', 'game'],
-						produto: ['FIFA', 'PÉS', 'ronaldinho soccer 64'],
-						segmentação: ['fifeiros', 'nao_fifeiros', 'smasheiros'],
-						criativo: [
-							'FIFA20',
-							'PÉS20',
-							'smash',
-							'amiibo',
-							'takeshi',
-							'pikachi',
-							'kakachi',
-						],
-						formato: ['darkpost', '/\\d{3}x\\d{3}/'],
-						campaignId: ['/\\d/'],
-						adId: ['/\\d/'],
-					},
+					cid: [
+						'Veículo',
+						'Inserção',
+						'campanha',
+						'categoriaDoProduto',
+						'produto',
+						'segmentação',
+						'criativo',
+						'formato',
+						'campaignId',
+						'adId',
+					],
+				},
+				columns: {
+					Veículo: [
+						'google_ads',
+						'facebook',
+						'verizon',
+						'globo',
+						'afilio',
+					],
+					Inserção: [
+						'CPC',
+						'feed',
+						'story',
+						'native ads',
+						'afiliado',
+					],
+					campanha: ['fifinha-na-copa', 'fifinha na copa da emoção'],
+					categoriaDoProduto: ['videogame', 'game'],
+					produto: ['FIFA', 'PÉS', 'ronaldinho soccer 64'],
+					segmentação: ['fifeiros', 'nao_fifeiros', 'smasheiros'],
+					criativo: [
+						'FIFA20',
+						'PÉS20',
+						'smash',
+						'amiibo',
+						'takeshi',
+						'pikachi',
+						'kakachi',
+					],
+					formato: ['darkpost', '/\\d{3}x\\d{3}/'],
+					campaignId: ['/\\d/'],
+					adId: ['/\\d/'],
 				},
 			};
 			const config = new Config(jsonConfig);
@@ -57,41 +66,50 @@ describe('Config', () => {
 				separator: ':',
 				spaceSeparator: '+',
 				adobe: {
-					cid: {
-						Veículo: [
-							'google_ads',
-							'facebook',
-							'verizon',
-							'globo',
-							'afilio',
-						],
-						Inserção: [
-							'CPC',
-							'feed',
-							'story',
-							'native ads',
-							'afiliado',
-						],
-						campanha: [
-							'fifinha-na-copa',
-							'fifinha na copa da emoção',
-						],
-						categoriaDoProduto: ['videogame', 'game'],
-						produto: ['FIFA', 'PÉS', 'ronaldinho soccer 64'],
-						segmentação: ['fifeiros', 'nao_fifeiros', 'smasheiros'],
-						criativo: [
-							'FIFA20',
-							'PÉS20',
-							'smash',
-							'amiibo',
-							'takeshi',
-							'pikachi',
-							'kakachi',
-						],
-						formato: ['darkpost', '/\\d{3}x\\d{3}/'],
-						campaignId: ['/\\d/'],
-						adId: ['/\\d/'],
-					},
+					cid: [
+						'Veículo',
+						'Inserção',
+						'campanha',
+						'categoriaDoProduto',
+						'produto',
+						'segmentação',
+						'criativo',
+						'formato',
+						'campaignId',
+						'adId',
+					],
+				},
+				columns: {
+					Veículo: [
+						'google_ads',
+						'facebook',
+						'verizon',
+						'globo',
+						'afilio',
+					],
+					Inserção: [
+						'CPC',
+						'feed',
+						'story',
+						'native ads',
+						'afiliado',
+					],
+					campanha: ['fifinha-na-copa', 'fifinha na copa da emoção'],
+					categoriaDoProduto: ['videogame', 'game'],
+					produto: ['FIFA', 'PÉS', 'ronaldinho soccer 64'],
+					segmentação: ['fifeiros', 'nao_fifeiros', 'smasheiros'],
+					criativo: [
+						'FIFA20',
+						'PÉS20',
+						'smash',
+						'amiibo',
+						'takeshi',
+						'pikachi',
+						'kakachi',
+					],
+					formato: ['darkpost', '/\\d{3}x\\d{3}/'],
+					campaignId: ['/\\d/'],
+					adId: ['/\\d/'],
 				},
 			};
 			const config = new Config(jsonConfig);
@@ -102,28 +120,31 @@ describe('Config', () => {
 				csvSeparator: ',',
 				separator: ':',
 				spaceSeparator: '+',
+				columns: {
+					Veículo: [
+						'google_ads',
+						'facebook',
+						'verizon',
+						'globo',
+						'afilio',
+					],
+					Inserção: [
+						'CPC',
+						'feed',
+						'story',
+						'native ads',
+						'afiliado',
+					],
+					campanha: ['fifinha-na-copa', 'fifinha na copa da emoção'],
+					categoriaDoProduto: ['videogame', 'game'],
+				},
 				adobe: {
-					cid: {
-						Veículo: [
-							'google_ads',
-							'facebook',
-							'verizon',
-							'globo',
-							'afilio',
-						],
-						Inserção: [
-							'CPC',
-							'feed',
-							'story',
-							'native ads',
-							'afiliado',
-						],
-						campanha: [
-							'fifinha-na-copa',
-							'fifinha na copa da emoção',
-						],
-						categoriaDoProduto: ['videogame', 'game'],
-					},
+					cid: [
+						'Veículo',
+						'Inserção',
+						'campanha',
+						'categoriaDoProduto',
+					],
 				},
 			};
 			const config = new Config(jsonConfig);
@@ -137,32 +158,35 @@ describe('Config', () => {
 				separator: ':',
 				spaceSeparator: '+',
 				adobe: {
-					cid: {
-						Veículo: [
-							'google_ads',
-							'facebook',
-							'verizon',
-							'globo',
-							'afilio',
-						],
-						Inserção: [
-							'CPC',
-							'feed',
-							'story',
-							'native ads',
-							'afiliado',
-						],
-						campanha: [
-							'fifinha-na-copa',
-							'fifinha na copa da emoção',
-						],
-						categoriaDoProduto: ['videogame', 'game'],
-					},
+					cid: [
+						'Veículo',
+						'Inserção',
+						'campanha',
+						'categoriaDoProduto',
+					],
+				},
+				columns: {
+					Veículo: [
+						'google_ads',
+						'facebook',
+						'verizon',
+						'globo',
+						'afilio',
+					],
+					Inserção: [
+						'CPC',
+						'feed',
+						'story',
+						'native ads',
+						'afiliado',
+					],
+					campanha: ['fifinha-na-copa', 'fifinha na copa da emoção'],
+					categoriaDoProduto: ['videogame', 'game'],
 				},
 			};
 			const config = new Config(jsonConfig);
 			expect(JSON.stringify(config.validationRules)).to.equal(
-				JSON.stringify(jsonConfig.adobe.cid)
+				JSON.stringify(jsonConfig.columns)
 			);
 		});
 	});
@@ -173,29 +197,26 @@ describe('Config', () => {
 				separator: ':',
 				spaceSeparator: '+',
 				ga: {
-					utm_source: {
-						Veículo: [
-							'google_ads',
-							'facebook',
-							'verizon',
-							'globo',
-							'afilio',
-						],
-						Inserção: [
-							'CPC',
-							'feed',
-							'story',
-							'native ads',
-							'afiliado',
-						],
-					},
-					utm_campaign: {
-						campanha: [
-							'fifinha-na-copa',
-							'fifinha na copa da emoção',
-						],
-						categoriaDoProduto: ['videogame', 'game'],
-					},
+					utm_source: ['Veículo', 'Inserção'],
+					utm_campaign: ['campanha', 'categoriaDoProduto'],
+				},
+				columns: {
+					Veículo: [
+						'google_ads',
+						'facebook',
+						'verizon',
+						'globo',
+						'afilio',
+					],
+					Inserção: [
+						'CPC',
+						'feed',
+						'story',
+						'native ads',
+						'afiliado',
+					],
+					campanha: ['fifinha-na-copa', 'fifinha na copa da emoção'],
+					categoriaDoProduto: ['videogame', 'game'],
 				},
 			};
 			const config = new Config(jsonConfig);
@@ -209,29 +230,26 @@ describe('Config', () => {
 				separator: ':',
 				spaceSeparator: '+',
 				ga: {
-					utm_source: {
-						Veículo: [
-							'google_ads',
-							'facebook',
-							'verizon',
-							'globo',
-							'afilio',
-						],
-						Inserção: [
-							'CPC',
-							'feed',
-							'story',
-							'native ads',
-							'afiliado',
-						],
-					},
-					utm_campaign: {
-						campanha: [
-							'fifinha-na-copa',
-							'fifinha na copa da emoção',
-						],
-						categoriaDoProduto: ['videogame', 'game'],
-					},
+					utm_source: ['Veículo', 'Inserção'],
+					utm_campaign: ['campanha', 'categoriaDoProduto'],
+				},
+				columns: {
+					Veículo: [
+						'google_ads',
+						'facebook',
+						'verizon',
+						'globo',
+						'afilio',
+					],
+					Inserção: [
+						'CPC',
+						'feed',
+						'story',
+						'native ads',
+						'afiliado',
+					],
+					campanha: ['fifinha-na-copa', 'fifinha na copa da emoção'],
+					categoriaDoProduto: ['videogame', 'game'],
 				},
 			};
 			const config = new Config(jsonConfig);
@@ -242,30 +260,27 @@ describe('Config', () => {
 				csvSeparator: ',',
 				separator: ':',
 				spaceSeparator: '+',
+				columns: {
+					Veículo: [
+						'google_ads',
+						'facebook',
+						'verizon',
+						'globo',
+						'afilio',
+					],
+					Inserção: [
+						'CPC',
+						'feed',
+						'story',
+						'native ads',
+						'afiliado',
+					],
+					campanha: ['fifinha-na-copa', 'fifinha na copa da emoção'],
+					categoriaDoProduto: ['videogame', 'game'],
+				},
 				ga: {
-					utm_source: {
-						Veículo: [
-							'google_ads',
-							'facebook',
-							'verizon',
-							'globo',
-							'afilio',
-						],
-						Inserção: [
-							'CPC',
-							'feed',
-							'story',
-							'native ads',
-							'afiliado',
-						],
-					},
-					utm_campaign: {
-						campanha: [
-							'fifinha-na-copa',
-							'fifinha na copa da emoção',
-						],
-						categoriaDoProduto: ['videogame', 'game'],
-					},
+					utm_source: ['Veículo', 'Inserção'],
+					utm_campaign: ['campanha', 'categoriaDoProduto'],
 				},
 			};
 			const config = new Config(jsonConfig);
@@ -278,30 +293,27 @@ describe('Config', () => {
 				csvSeparator: ',',
 				separator: ':',
 				spaceSeparator: '+',
+				columns: {
+					Veículo: [
+						'google_ads',
+						'facebook',
+						'verizon',
+						'globo',
+						'afilio',
+					],
+					Inserção: [
+						'CPC',
+						'feed',
+						'story',
+						'native ads',
+						'afiliado',
+					],
+					campanha: ['fifinha-na-copa', 'fifinha na copa da emoção'],
+					categoriaDoProduto: ['videogame', 'game'],
+				},
 				ga: {
-					utm_source: {
-						Veículo: [
-							'google_ads',
-							'facebook',
-							'verizon',
-							'globo',
-							'afilio',
-						],
-						Inserção: [
-							'CPC',
-							'feed',
-							'story',
-							'native ads',
-							'afiliado',
-						],
-					},
-					utm_campaign: {
-						campanha: [
-							'fifinha-na-copa',
-							'fifinha na copa da emoção',
-						],
-						categoriaDoProduto: ['videogame', 'game'],
-					},
+					utm_source: ['Veículo', 'Inserção'],
+					utm_campaign: ['campanha', 'categoriaDoProduto'],
 				},
 			};
 			const config = new Config(jsonConfig);

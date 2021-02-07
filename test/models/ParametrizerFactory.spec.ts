@@ -15,12 +15,13 @@ describe('ParametrizerFactory', () => {
 			const config = new Config({
 				separator: ':',
 				spaceSeparator: '_',
+				columns: {
+					'Tipo de Compra': ['cpa', 'cpc'],
+					Bandeira: ['/meu\\ ?Produto/'],
+					Veículo: [],
+				},
 				adobe: {
-					cid: {
-						'Tipo de Compra': ['cpa', 'cpc'],
-						Bandeira: ['/meu\\ ?Produto/'],
-						Veículo: [],
-					},
+					cid: ['Tipo de Compra', 'Bandeira', 'Veículo'],
 				},
 			});
 			const object = new ParametrizerFactory(csvLine, config).build(
@@ -39,11 +40,12 @@ describe('ParametrizerFactory', () => {
 			const config = new Config({
 				separator: ':',
 				spaceSeparator: '_',
+				columns: {
+					'Tipo de Compra': ['cpa', 'cpc'],
+					Bandeira: ['/meu\\ ?Produto/'],
+				},
 				ga: {
-					utm_source: {
-						'Tipo de Compra': ['cpa', 'cpc'],
-						Bandeira: ['/meu\\ ?Produto/'],
-					},
+					utm_source: ['Tipo de Compra', 'Bandeira'],
 				},
 			});
 			const object = new ParametrizerFactory(csvLine, config).build('ga');
@@ -60,15 +62,16 @@ describe('ParametrizerFactory', () => {
 			const config = new Config({
 				separator: ':',
 				spaceSeparator: '_',
+				columns: {
+					'Tipo de Compra': ['cpa', 'cpc'],
+					Dispositivo: ['desktop e mobile'],
+				},
 				ga: {
-					utm_source: {
-						'Tipo de Compra': ['cpa', 'cpc'],
-						Dispositivo: ['desktop e mobile'],
-					},
+					utm_source: ['Tipo de Compra', 'Dispositivo'],
 				},
 				googleads: {
-					campanha: 'utm_source',
-					ad: 'utm_campaign',
+					campanha: ['Tipo de Compra', 'Dispositivo'],
+					ad: ['Produto'],
 				},
 			});
 			const object = new ParametrizerFactory(csvLine, config).build(
@@ -87,16 +90,16 @@ describe('ParametrizerFactory', () => {
 			const config = new Config({
 				separator: ':',
 				spaceSeparator: '_',
+				columns: {
+					'Tipo de Compra': ['cpa', 'cpc'],
+					Dispositivo: ['desktop e mobile'],
+				},
 				ga: {
-					utm_source: {
-						'Tipo de Compra': ['cpa', 'cpc'],
-						Dispositivo: ['desktop e mobile'],
-					},
+					utm_source: ['Tipo de Compra', 'Dispositivo'],
 				},
 				facebookads: {
-					dynamicValues: 'true',
-					utm_source: '{{ad.name}}',
-					utm_campaign: '{{campaign.name}}',
+					'ad.name': ['Tipo de Compra', 'Dispositivo'],
+					'campaign.name': ['Produto'],
 				},
 			});
 			const object = new ParametrizerFactory(csvLine, config).build(

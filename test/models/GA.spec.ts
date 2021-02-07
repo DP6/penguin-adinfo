@@ -13,14 +13,14 @@ describe('GA', () => {
 			const config = new Config({
 				separator: ':',
 				spaceSeparator: '_',
+				columns: {
+					'Tipo de Compra': ['cpa', 'cpc'],
+					Período: [],
+					Bandeira: [],
+				},
 				ga: {
-					utm_medium: {
-						'Tipo de Compra': ['cpa', 'cpc'],
-					},
-					utm_campaign: {
-						Período: [],
-						Bandeira: [],
-					},
+					utm_medium: ['Tipo de Compra'],
+					utm_campaign: ['Período', 'Bandeira'],
 				},
 			});
 			const ga = new GA(csvLine, config);
@@ -47,14 +47,14 @@ describe('GA', () => {
 			const config = new Config({
 				separator: ':',
 				spaceSeparator: '_',
+				columns: {
+					'Tipo de Compra': ['cpa', 'cpc'],
+					Período: ['/[a-zA-Z]* [0-9]{4}/'],
+					Bandeira: ['bandeira2'],
+				},
 				ga: {
-					utm_medium: {
-						'Tipo de Compra': ['cpa', 'cpc'],
-					},
-					utm_campaign: {
-						Período: ['/[a-zA-Z]* [0-9]{4}/'],
-						Bandeira: ['bandeira2'],
-					},
+					utm_medium: ['Tipo de Compra'],
+					utm_campaign: ['Bandeira', 'Período'],
 				},
 			});
 			const ga = new GA(csvLine, config);
@@ -80,14 +80,14 @@ describe('GA', () => {
 			const config = new Config({
 				separator: ':',
 				spaceSeparator: '_',
+				columns: {
+					'Tipo de Compra': ['cpa', 'cpc'],
+					Período: ['/[a-zA-Z]* [0-9]{4}/'],
+					Bandeira: [],
+				},
 				ga: {
-					utm_medium: {
-						'Tipo de Compra': ['cpa', 'cpc'],
-					},
-					utm_campaign: {
-						Período: ['/[a-zA-Z]* [0-9]{4}/'],
-						Bandeira: [],
-					},
+					utm_medium: ['Tipo de Compra'],
+					utm_campaign: ['Período', 'Bandeira'],
 				},
 			});
 			const ga = new GA(csvLine, config);

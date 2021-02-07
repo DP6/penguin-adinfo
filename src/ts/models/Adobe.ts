@@ -1,6 +1,6 @@
 import { StringUtils } from '../utils/StringUtils';
-import { Parametrizer } from './Parametrizer';
 import { Config } from './Config';
+import { AnalyticsTool } from './AnalyticsTool';
 
 /**
  csvLine: {
@@ -25,7 +25,7 @@ import { Config } from './Config';
  }
  */
 
-export class Adobe extends Parametrizer {
+export class Adobe extends AnalyticsTool {
 	private _cid = '';
 	private _hasValidationError = false;
 	private _hasUndefinedParameterError = false;
@@ -84,7 +84,7 @@ export class Adobe extends Parametrizer {
 	 */
 	private _buildCid(): string {
 		let cid = '';
-		Object.keys(this.config.analyticsTool.adobe.cid).forEach((column) => {
+		this.config.analyticsTool.adobe.cid.forEach((column) => {
 			const columnNormalized = StringUtils.normalize(column);
 			if (StringUtils.isEmpty(this.csvLine[columnNormalized])) {
 				this._hasUndefinedParameterError = true;

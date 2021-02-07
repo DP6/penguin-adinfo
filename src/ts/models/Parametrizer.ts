@@ -3,7 +3,6 @@ import { Config } from './Config';
 
 export abstract class Parametrizer {
 	private _csvLine: { [key: string]: string };
-	private _url: string;
 	private _config: Config;
 
 	/**
@@ -24,21 +23,8 @@ export abstract class Parametrizer {
 		return this._config;
 	}
 
-	get url(): string {
-		return this._url;
-	}
-
-	set url(url: string) {
-		this._url = url;
-	}
-
 	/**
 	 * Método que constrói e retorna os parametros de parametrização
 	 */
 	abstract buildedLine(): { [key: string]: string };
-
-	/**
-	 * Método para construção de URLs
-	 */
-	protected abstract _buildUrl(): string;
 }

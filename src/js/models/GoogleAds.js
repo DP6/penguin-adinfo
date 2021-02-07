@@ -2,9 +2,8 @@
 Object.defineProperty(exports, '__esModule', { value: true });
 exports.GoogleAds = void 0;
 const StringUtils_1 = require('../utils/StringUtils');
-const JsonUtils_1 = require('../utils/JsonUtils');
-const Parametrizer_1 = require('./Parametrizer');
-class GoogleAds extends Parametrizer_1.Parametrizer {
+const Vehicle_1 = require('./Vehicle');
+class GoogleAds extends Vehicle_1.Vehicle {
 	constructor(csvLine, config) {
 		super(csvLine, config);
 		this._adsParams = {};
@@ -15,60 +14,46 @@ class GoogleAds extends Parametrizer_1.Parametrizer {
 		this._undefinedParameterErrorMessage =
 			'Parâmetro(s) não encontrado(s) na configuração: ';
 		this._undefinedParameterErrorFields = {};
-		this._configAnalyticsTool = this._buildConfigAnalyticsTool();
-		this.url = this._buildUrl();
 		this._buildAdsParams();
 	}
-	_buildUrl() {
-		return 'auto tagging';
-	}
 	buildedLine() {
-		return JsonUtils_1.JsonUtils.addParametersAt(this._adsParams, {
-			'url google ads': this.url,
-		});
-	}
-	_buildConfigAnalyticsTool() {
-		const type = this.config.analyticsToolName;
-		const configAnalyticsTool = {};
-		Object.keys(this.config.analyticsTool[type]).forEach((param) => {
-			configAnalyticsTool[param] = Object.keys(
-				this.config.analyticsTool[type][param]
-			);
-		});
-		return configAnalyticsTool;
+		return this._adsParams;
 	}
 	_buildAdsParams() {
 		Object.keys(this.config.medias.googleads).forEach((googleAdsParam) => {
 			this._adsParams[googleAdsParam] = '';
 			this._errorAdsParams[googleAdsParam] = [];
 			this._undefinedParameterErrorFields[googleAdsParam] = [];
-			const utm = this.config.medias.googleads[googleAdsParam];
-			if (!this._configAnalyticsTool[utm]) {
-				this._hasUndefinedParameterError = true;
-				this._undefinedParameterErrorFields[googleAdsParam].push(utm);
-			} else {
-				this._configAnalyticsTool[utm].forEach((column) => {
+			const fields = this.config.medias.googleads[googleAdsParam];
+			fields.forEach((column) => {
+				if (!this.config.validationRules[column]) {
+					this._hasUndefinedParameterError = true;
+					this._undefinedParameterErrorFields[googleAdsParam].push(
+						column
+					);
+				} else {
 					const normalizedColumn = StringUtils_1.StringUtils.normalize(
 						column
 					);
 					if (
-						StringUtils_1.StringUtils.validateString(
+						this.config.validationRules[column].length > 0 &&
+						!StringUtils_1.StringUtils.validateString(
 							this.csvLine[normalizedColumn],
 							this.config.validationRules[column]
 						)
 					) {
+						this._hasValidationError = true;
+						this._errorAdsParams[googleAdsParam].push(column);
+					} else {
 						this._adsParams[
 							googleAdsParam
 						] += `${StringUtils_1.StringUtils.replaceWhiteSpace(
 							this.csvLine[normalizedColumn],
 							this.config.spaceSeparator
 						).toLowerCase()}${this.config.separator}`;
-					} else {
-						this._hasValidationError = true;
-						this._errorAdsParams[googleAdsParam].push(column);
 					}
-				});
-			}
+				}
+			});
 			if (this._hasValidationError) {
 				this._adsParams[googleAdsParam] =
 					this._validationErrorMessage +

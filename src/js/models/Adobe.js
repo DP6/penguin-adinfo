@@ -2,8 +2,8 @@
 Object.defineProperty(exports, '__esModule', { value: true });
 exports.Adobe = void 0;
 const StringUtils_1 = require('../utils/StringUtils');
-const Parametrizer_1 = require('./Parametrizer');
-class Adobe extends Parametrizer_1.Parametrizer {
+const AnalyticsTool_1 = require('./AnalyticsTool');
+class Adobe extends AnalyticsTool_1.AnalyticsTool {
 	constructor(csvLine, config) {
 		super(csvLine, config);
 		this._cid = '';
@@ -39,7 +39,7 @@ class Adobe extends Parametrizer_1.Parametrizer {
 	}
 	_buildCid() {
 		let cid = '';
-		Object.keys(this.config.analyticsTool.adobe.cid).forEach((column) => {
+		this.config.analyticsTool.adobe.cid.forEach((column) => {
 			const columnNormalized = StringUtils_1.StringUtils.normalize(
 				column
 			);

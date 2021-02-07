@@ -1,7 +1,6 @@
 import { StringUtils } from '../utils/StringUtils';
-import { JsonUtils } from '../utils/JsonUtils';
-import { Parametrizer } from './Parametrizer';
 import { Config } from './Config';
+import { Vehicle } from './Vehicle';
 
 /**
     params: {
@@ -30,8 +29,7 @@ import { Config } from './Config';
     }
 */
 
-export class GoogleAds extends Parametrizer {
-	private _configAnalyticsTool: { [key: string]: string[] };
+export class GoogleAds extends Vehicle {
 	private _adsParams: { [key: string]: string } = {};
 	private _hasValidationError = false;
 	private _hasUndefinedParameterError = false;
@@ -50,39 +48,22 @@ export class GoogleAds extends Parametrizer {
 	 */
 	constructor(csvLine: { [key: string]: string }, config: Config) {
 		super(csvLine, config);
-		this._configAnalyticsTool = this._buildConfigAnalyticsTool();
-		this.url = this._buildUrl();
+		// this.url = this._buildUrl();
 		this._buildAdsParams();
 	}
 
 	/**
 	 * Constrói a URL do GoogleAds
 	 */
-	protected _buildUrl(): string {
-		return 'auto tagging';
-	}
+	// protected _buildUrl(): string {
+	// 	return 'auto tagging';
+	// }
 
 	/**
 	 * Gera os campos do GoogleAds
 	 */
 	public buildedLine(): { [key: string]: string } {
-		return JsonUtils.addParametersAt(this._adsParams, {
-			'url google ads': this.url,
-		});
-	}
-
-	/**
-	 * Const´roi a configuração da ferramenta de analytics
-	 */
-	private _buildConfigAnalyticsTool(): { [key: string]: string[] } {
-		const type = this.config.analyticsToolName;
-		const configAnalyticsTool: { [key: string]: string[] } = {};
-		Object.keys(this.config.analyticsTool[type]).forEach((param) => {
-			configAnalyticsTool[param] = Object.keys(
-				this.config.analyticsTool[type][param]
-			);
-		});
-		return configAnalyticsTool;
+		return this._adsParams;
 	}
 
 	/**
@@ -93,31 +74,37 @@ export class GoogleAds extends Parametrizer {
 			this._adsParams[googleAdsParam] = '';
 			this._errorAdsParams[googleAdsParam] = [];
 			this._undefinedParameterErrorFields[googleAdsParam] = [];
-			const utm = this.config.medias.googleads[googleAdsParam];
-			if (!this._configAnalyticsTool[utm]) {
-				this._hasUndefinedParameterError = true;
-				this._undefinedParameterErrorFields[googleAdsParam].push(utm);
-			} else {
-				this._configAnalyticsTool[utm].forEach((column) => {
+			const fields: string[] = this.config.medias.googleads[
+				googleAdsParam
+			];
+			fields.forEach((column: string) => {
+				if (!this.config.validationRules[column]) {
+					this._hasUndefinedParameterError = true;
+					this._undefinedParameterErrorFields[googleAdsParam].push(
+						column
+					);
+				} else {
 					const normalizedColumn = StringUtils.normalize(column);
+					//TODO testar caso a coluna não existir no csv
 					if (
-						StringUtils.validateString(
+						this.config.validationRules[column].length > 0 &&
+						!StringUtils.validateString(
 							this.csvLine[normalizedColumn],
 							this.config.validationRules[column]
 						)
 					) {
+						this._hasValidationError = true;
+						this._errorAdsParams[googleAdsParam].push(column);
+					} else {
 						this._adsParams[
 							googleAdsParam
 						] += `${StringUtils.replaceWhiteSpace(
 							this.csvLine[normalizedColumn],
 							this.config.spaceSeparator
 						).toLowerCase()}${this.config.separator}`;
-					} else {
-						this._hasValidationError = true;
-						this._errorAdsParams[googleAdsParam].push(column);
 					}
-				});
-			}
+				}
+			});
 			if (this._hasValidationError) {
 				this._adsParams[googleAdsParam] =
 					this._validationErrorMessage +

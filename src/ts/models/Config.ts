@@ -6,10 +6,10 @@ export class Config {
 	private _csvSeparator = ',';
 	private _insertTime: string;
 	private _version: number;
-	private _analyticsTool: { [key: string]: any };
+	private _analyticsTool: { [key: string]: { [key: string]: string[] } };
 	private _analyticsToolName: string;
 	private _medias: { [key: string]: any };
-	private _validationRules: { [key: string]: any };
+	private _validationRules: { [key: string]: string[] };
 
 	constructor(jsonConfig: { [key: string]: any }) {
 		const jsonConfigTemp = { ...jsonConfig };
@@ -34,8 +34,9 @@ export class Config {
 			this._analyticsToolName = 'adobe';
 			delete jsonConfigTemp.adobe;
 		}
+		this._validationRules = jsonConfigTemp.columns;
+		delete jsonConfigTemp.columns;
 		this._medias = jsonConfigTemp;
-		this._validationRules = this._getValidationRules();
 	}
 
 	/**
@@ -62,9 +63,13 @@ export class Config {
 					jsonConfig,
 					Object.values(this)[index] || {}
 				);
+			} else if (key === '_validationRules') {
+				jsonConfig = JsonUtils.addParametersAt(jsonConfig, {
+					columns: this._validationRules,
+				});
 			} else if (
-				key !== '_validationRules' &&
-				key !== '_analyticsToolName'
+				key !== '_analyticsToolName' &&
+				Object.values(this)[index]
 			) {
 				jsonConfig[key.replace('_', '')] = Object.values(this)[index];
 			}
@@ -83,9 +88,13 @@ export class Config {
 					jsonConfig,
 					Object.values(this)[index]
 				);
+			} else if (key === '_validationRules') {
+				jsonConfig = JsonUtils.addParametersAt(jsonConfig, {
+					columns: this._validationRules,
+				});
 			} else if (
-				key !== '_validationRules' &&
-				key !== '_analyticsToolName'
+				key !== '_analyticsToolName' &&
+				Object.values(this)[index]
 			) {
 				jsonConfig[key.replace('_', '')] = Object.values(this)[index];
 			}
@@ -101,35 +110,13 @@ export class Config {
 	public toCsvTemplate(): string {
 		const configValues: string[] = [];
 		configValues.push('Url');
-		const vehicle = Object.keys(this._analyticsTool)[0];
-		Object.keys(this._analyticsTool[vehicle]).map((campaignParam) => {
-			Object.keys(this._analyticsTool[vehicle][campaignParam]).map(
-				(param) => {
-					if (configValues.indexOf(param) === -1)
-						configValues.push(param);
-				}
-			);
+		Object.keys(this._validationRules).forEach((column) => {
+			configValues.push(column);
 		});
 		return configValues.join(this._csvSeparator);
 	}
 
-	/**
-	 * Retorna as regras de validação
-	 */
-	private _getValidationRules(): { [key: string]: any } {
-		const type = this._analyticsToolName;
-		const validationRules: { [key: string]: string[] } = {};
-		Object.keys(this._analyticsTool[type]).map((field) => {
-			Object.keys(this._analyticsTool[type][field]).map((column) => {
-				validationRules[column] = this._analyticsTool[type][field][
-					column
-				];
-			});
-		});
-		return validationRules;
-	}
-
-	get validationRules(): { [key: string]: any } {
+	get validationRules(): { [key: string]: string[] } {
 		return this._validationRules;
 	}
 

@@ -2,8 +2,8 @@
 Object.defineProperty(exports, '__esModule', { value: true });
 exports.GA = void 0;
 const StringUtils_1 = require('../utils/StringUtils');
-const Parametrizer_1 = require('./Parametrizer');
-class GA extends Parametrizer_1.Parametrizer {
+const AnalyticsTool_1 = require('./AnalyticsTool');
+class GA extends AnalyticsTool_1.AnalyticsTool {
 	constructor(csvLine, config) {
 		super(csvLine, config);
 		this._utms = {};
@@ -66,7 +66,7 @@ class GA extends Parametrizer_1.Parametrizer {
 		const utms = {};
 		Object.keys(this.config.analyticsTool.ga).forEach((utm) => {
 			let utmString = '';
-			Object.keys(this.config.analyticsTool.ga[utm]).forEach((column) => {
+			this.config.analyticsTool.ga[utm].forEach((column) => {
 				const columnNormalized = StringUtils_1.StringUtils.normalize(
 					column
 				);

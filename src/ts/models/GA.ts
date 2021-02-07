@@ -1,6 +1,6 @@
 import { StringUtils } from '../utils/StringUtils';
 import { Config } from './Config';
-import { Parametrizer } from './Parametrizer';
+import { AnalyticsTool } from './AnalyticsTool';
 
 /**
  csvLine: {
@@ -26,7 +26,7 @@ import { Parametrizer } from './Parametrizer';
  }
  */
 
-export class GA extends Parametrizer {
+export class GA extends AnalyticsTool {
 	private _utms: { [key: string]: string } = {};
 	private _hasValidationError: { [key: string]: boolean } = {};
 	private _hasUndefinedParameterError: { [key: string]: boolean } = {};
@@ -115,7 +115,7 @@ export class GA extends Parametrizer {
 		const utms: { [key: string]: string } = {};
 		Object.keys(this.config.analyticsTool.ga).forEach((utm) => {
 			let utmString = '';
-			Object.keys(this.config.analyticsTool.ga[utm]).forEach((column) => {
+			this.config.analyticsTool.ga[utm].forEach((column) => {
 				const columnNormalized = StringUtils.normalize(column);
 				if (StringUtils.isEmpty(this.csvLine[columnNormalized])) {
 					this._hasUndefinedParameterError[utm] = true;

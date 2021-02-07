@@ -13,12 +13,13 @@ describe('Adobe', () => {
 			const config = new Config({
 				separator: ':',
 				spaceSeparator: '_',
+				columns: {
+					'Tipo de Compra': ['cpa', 'cpc'],
+					Bandeira: [],
+					Veículo: [],
+				},
 				adobe: {
-					cid: {
-						'Tipo de Compra': ['cpa', 'cpc'],
-						Bandeira: [],
-						Veículo: [],
-					},
+					cid: ['Tipo de Compra', 'Bandeira', 'Veículo'],
 				},
 			});
 			const adobe = new Adobe(csvLine, config);
@@ -41,12 +42,13 @@ describe('Adobe', () => {
 			const config = new Config({
 				separator: ':',
 				spaceSeparator: '_',
+				columns: {
+					'Tipo de Compra': ['cpa', 'cpc'],
+					Bandeira: ['/meuProdut[ai]/'],
+					Veículo: ['/.*/'],
+				},
 				adobe: {
-					cid: {
-						'Tipo de Compra': ['cpa', 'cpc'],
-						Bandeira: ['/meuProdut[ai]/'],
-						Veículo: ['/.*/'],
-					},
+					cid: ['Tipo de Compra', 'Bandeira', 'Veículo'],
 				},
 			});
 			const adobe = new Adobe(csvLine, config);
@@ -69,12 +71,13 @@ describe('Adobe', () => {
 			const config = new Config({
 				separator: ':',
 				spaceSeparator: '_',
+				columns: {
+					'Tipo de Compra': ['cpa', 'cpc'],
+					Bandeira: ['/meu\\ ?Produto/'],
+					Veículo: [],
+				},
 				adobe: {
-					cid: {
-						'Tipo de Compra': ['cpa', 'cpc'],
-						Bandeira: ['/meu\\ ?Produto/'],
-						Veículo: [],
-					},
+					cid: ['Tipo de Compra', 'Bandeira', 'Veículo'],
 				},
 			});
 			const adobe = new Adobe(csvLine, config);

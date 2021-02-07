@@ -14,25 +14,24 @@ describe('GoogleAds', () => {
 			const config = new Config({
 				separator: ':',
 				spaceSeparator: '_',
+				columns: {
+					'Tipo de Compra': ['cpa', 'cpc'],
+					Dispositivo: ['desktop e mobile'],
+					Produto: ['/.*/'],
+				},
 				ga: {
-					utm_source: {
-						'Tipo de Compra': ['cpa', 'cpc'],
-						Dispositivo: ['desktop e mobile'],
-					},
-					utm_campaign: {
-						Produto: ['/.*/'],
-					},
+					utm_source: ['Tipo de Compra', 'Dispositivo'],
+					utm_campaign: ['Produto'],
 				},
 				googleads: {
-					campanha: 'utm_source',
-					ad: 'utm_campaign',
+					campanha: ['Tipo de Compra', 'Dispositivo'],
+					ad: ['Produto'],
 				},
 			});
 			const googleAds = new GoogleAds(csvLine, config);
 			let googleAdsFields = {
 				campanha: 'cpc:desktop_e_mobile',
 				ad: 'fifinha',
-				'url google ads': 'auto tagging',
 			};
 			expect(JSON.stringify(googleAds.buildedLine())).to.equal(
 				JSON.stringify(googleAdsFields)
@@ -48,25 +47,24 @@ describe('GoogleAds', () => {
 			const config = new Config({
 				separator: ':',
 				spaceSeparator: '_',
+				columns: {
+					'Tipo de Compra': ['cpa', 'cpc'],
+					Dispositivo: ['desktop e mobile'],
+					Produto: ['fif'],
+				},
 				ga: {
-					utm_source: {
-						'Tipo de Compra': ['cpa', 'cpc'],
-						Dispositivo: ['desktop e mobile'],
-					},
-					utm_campaign: {
-						Produto: ['fif'],
-					},
+					utm_source: ['Tipo de Compra', 'Dispositivo'],
+					utm_campaign: ['Produto'],
 				},
 				googleads: {
-					campanha: 'utm_source',
-					ad: 'utm_campaign',
+					campanha: ['Tipo de Compra', 'Dispositivo'],
+					ad: ['Produto'],
 				},
 			});
 			const googleAds = new GoogleAds(csvLine, config);
 			const googleAdsFields = {
 				campanha: 'cpc:desktop_e_mobile',
 				ad: 'Parâmetro(s) incorreto(s): Produto',
-				'url google ads': 'auto tagging',
 			};
 			expect(JSON.stringify(googleAds.buildedLine())).to.equal(
 				JSON.stringify(googleAdsFields)
@@ -82,23 +80,22 @@ describe('GoogleAds', () => {
 			const config = new Config({
 				separator: ':',
 				spaceSeparator: '_',
+				columns: {
+					'Tipo de Compra': ['cpa', 'cpc'],
+					Dispositivo: ['desktop e mobile'],
+				},
 				ga: {
-					utm_source: {
-						'Tipo de Compra': ['cpa', 'cpc'],
-						Dispositivo: ['desktop e mobile'],
-					},
+					utm_source: ['Tipo de Compra', 'Dispositivo'],
 				},
 				googleads: {
-					campanha: 'utm_source',
-					ad: 'utm_campaign',
+					campanha: ['Tipo de Compra', 'Dispositivo'],
+					ad: ['Produto'],
 				},
 			});
 			const googleAds = new GoogleAds(csvLine, config);
 			const googleAdsFields = {
 				campanha: 'cpc:desktop_e_mobile',
-				ad:
-					'Parâmetro(s) não encontrado(s) na configuração: utm_campaign',
-				'url google ads': 'auto tagging',
+				ad: 'Parâmetro(s) não encontrado(s) na configuração: Produto',
 			};
 			expect(JSON.stringify(googleAds.buildedLine())).to.equal(
 				JSON.stringify(googleAdsFields)

@@ -1,7 +1,6 @@
 import { StringUtils } from '../utils/StringUtils';
-import { JsonUtils } from '../utils/JsonUtils';
-import { Parametrizer } from './Parametrizer';
 import { Config } from './Config';
+import { Vehicle } from './Vehicle';
 
 /**
     params: {
@@ -41,9 +40,8 @@ import { Config } from './Config';
 */
 
 //TODO parametros compostos e parametros não dinamicos
-export class FacebookAds extends Parametrizer {
+export class FacebookAds extends Vehicle {
 	private _facebookParams: { [key: string]: string } = {};
-	private _configAnalyticsTool: { [key: string]: string[] };
 	private _hasValidationError = false;
 	private _hasUndefinedParameterError = false;
 	private _validationErrorMessage = 'Parâmetros incorretos: ';
@@ -61,34 +59,17 @@ export class FacebookAds extends Parametrizer {
 	 */
 	constructor(csvLine: { [key: string]: string }, config: Config) {
 		super(csvLine, config);
-		this._configAnalyticsTool = this._buildConfigAnalyticsTool();
 		this._buildUrlParams();
-		this.url = this._buildUrl();
+		// this.url = this._buildUrl();
 		this._clearFacebookParamsNames();
 		// this._transformCompoundParameter();
-	}
-
-	/**
-	 * Constrói a configuração da ferramenta de Analytics
-	 */
-	private _buildConfigAnalyticsTool(): { [key: string]: string[] } {
-		const type = this.config.analyticsToolName;
-		const configAnalyticsTool: { [key: string]: string[] } = {};
-		Object.keys(this.config.analyticsTool[type]).forEach((param) => {
-			configAnalyticsTool[param] = Object.keys(
-				this.config.analyticsTool[type][param]
-			);
-		});
-		return configAnalyticsTool;
 	}
 
 	/**
 	 * Gera os campos referentes ao FacebookAds
 	 */
 	public buildedLine(): { [key: string]: string } {
-		return JsonUtils.addParametersAt(this._facebookParams, {
-			'url facebook': this.url,
-		});
+		return this._facebookParams;
 	}
 
 	//TODO retornar valores
@@ -96,66 +77,72 @@ export class FacebookAds extends Parametrizer {
 	 * Constrói os parametros da URL
 	 */
 	private _buildUrlParams(): void {
-		if (this.config.medias.facebookads.dynamicValues) {
+		if (!this.config.medias.facebookads.dynamicValues) {
 			const facebookadsConfig = { ...this.config.medias.facebookads };
-			delete facebookadsConfig.dynamicValues;
-			Object.keys(facebookadsConfig).forEach((urlParam) => {
-				const facebookParam = facebookadsConfig[urlParam];
-				if (!this._isCompoundParameter(urlParam)) {
-					const urlParamFields: string[] = [];
+			Object.keys(facebookadsConfig).forEach((facebookParam) => {
+				if (!this._isCompoundParameter(facebookParam)) {
+					const columnFields: string[] = [];
 					this._errorFacebookParams[facebookParam] = [];
 					this._undefinedParameterErrorFields[facebookParam] = [];
-					if (!this._configAnalyticsTool[urlParam]) {
-						this._hasUndefinedParameterError = true;
-						this._undefinedParameterErrorFields[facebookParam].push(
-							urlParam
-						);
-						this._facebookParams[facebookParam] = '';
-					} else {
-						this._configAnalyticsTool[urlParam].forEach(
-							(column) => {
+					facebookadsConfig[facebookParam].forEach(
+						(column: string) => {
+							if (!this.config.validationRules[column]) {
+								this._hasUndefinedParameterError = true;
+								this._undefinedParameterErrorFields[
+									facebookParam
+								].push(column);
+								this._facebookParams[facebookParam] = '';
+							} else {
 								const normalizedColumn = StringUtils.normalize(
 									column
 								);
 								if (
-									StringUtils.validateString(
+									this.config.validationRules[column].length >
+										0 &&
+									!StringUtils.validateString(
 										this.csvLine[normalizedColumn],
 										this.config.validationRules[column]
 									)
 								) {
-									urlParamFields.push(
+									this._hasValidationError = true;
+									this._errorFacebookParams[
+										facebookParam
+									].push(column);
+								} else {
+									columnFields.push(
 										StringUtils.replaceWhiteSpace(
 											this.csvLine[normalizedColumn],
 											this.config.spaceSeparator
 										).toLocaleLowerCase()
 									);
-								} else {
-									this._hasValidationError = true;
-									this._errorFacebookParams[
-										facebookParam
-									].push(column);
 								}
 							}
-						);
-					}
-					if (this._errorFacebookParams[facebookParam].length > 0) {
-						this._facebookParams[facebookParam] =
-							this._validationErrorMessage +
-							this._errorFacebookParams[facebookParam].join(', ');
-					} else if (
-						this._undefinedParameterErrorFields[facebookParam]
-							.length > 0
-					) {
-						this._facebookParams[facebookParam] =
-							this._undefinedParameterErrorMessage +
-							this._undefinedParameterErrorFields[
-								facebookParam
-							].join(', ');
-					} else {
-						this._facebookParams[
-							facebookParam
-						] = urlParamFields.join(this.config.separator);
-					}
+							if (
+								this._errorFacebookParams[facebookParam]
+									.length > 0
+							) {
+								this._facebookParams[facebookParam] =
+									this._validationErrorMessage +
+									this._errorFacebookParams[
+										facebookParam
+									].join(', ');
+							} else if (
+								this._undefinedParameterErrorFields[
+									facebookParam
+								].length > 0
+							) {
+								this._facebookParams[facebookParam] =
+									this._undefinedParameterErrorMessage +
+									this._undefinedParameterErrorFields[
+										facebookParam
+									].join(', ');
+							} else {
+								this._facebookParams[
+									facebookParam
+								] = columnFields.join(this.config.separator);
+							}
+						}
+					);
 				}
 			});
 		}
@@ -183,39 +170,40 @@ export class FacebookAds extends Parametrizer {
 	/**
 	 * Constrói a url do facebook
 	 */
-	protected _buildUrl(): string {
-		let url: string;
-		if (this._hasValidationError) {
-			const errorFields = Object.keys(this._errorFacebookParams).filter(
-				(facebookParam) =>
-					this._errorFacebookParams[facebookParam].length > 0
-			);
-			url =
-				'Para gerar a URL corrija o(s) parâmetro(s): ' +
-				this._clearFacebookParamName(errorFields.join(', '));
-		} else if (this._hasUndefinedParameterError) {
-			const errorFields = Object.keys(
-				this._undefinedParameterErrorFields
-			).filter(
-				(facebookParam) =>
-					this._undefinedParameterErrorFields[facebookParam].length >
-					0
-			);
-			url =
-				'Para gerar a URL corrija o(s) parâmetro(s): ' +
-				this._clearFacebookParamName(errorFields.join(', '));
-		} else {
-			url = `${this.csvLine.url}?`;
-			const urlParams: string[] = [];
-			const facebookadsConfig = { ...this.config.medias.facebookads };
-			delete facebookadsConfig.dynamicValues;
-			Object.keys(facebookadsConfig).forEach((config) => {
-				urlParams.push(`${config}=${facebookadsConfig[config]}`);
-			});
-			url = url + urlParams.join('&');
-		}
-		return url;
-	}
+	// protected _buildUrl(): string {
+	// 	let url: string;
+	// 	if (this._hasValidationError) {
+	// 		const errorFields = Object.keys(this._errorFacebookParams).filter(
+	// 			(facebookParam) =>
+	// 				this._errorFacebookParams[facebookParam].length > 0
+	// 		);
+	// 		url =
+	// 			'Para gerar a URL corrija o(s) parâmetro(s): ' +
+	// 			this._clearFacebookParamName(errorFields.join(', '));
+	// 	} else if (this._hasUndefinedParameterError) {
+	// 		const errorFields = Object.keys(
+	// 			this._undefinedParameterErrorFields
+	// 		).filter(
+	// 			(facebookParam) =>
+	// 				this._undefinedParameterErrorFields[facebookParam].length >
+	// 				0
+	// 		);
+	// 		url =
+	// 			'Para gerar a URL corrija o(s) parâmetro(s): ' +
+	// 			this._clearFacebookParamName(errorFields.join(', '));
+	// 	} else {
+	// 		url = `${this.csvLine.url}?`;
+	// 		const urlParams: string[] = [];
+	// 		const facebookadsConfig = { ...this.config.medias.facebookads };
+	// 		delete facebookadsConfig.dynamicValues;
+	// 		Object.keys(facebookadsConfig).forEach((urlParam) => {
+	// 			const urlParamFormated = "{{" + urlParam + "}}";
+	// 			urlParams.push(`${config}=${urlParamFormated}`);
+	// 		});
+	// 		url = url + urlParams.join('&');
+	// 	}
+	// 	return url;
+	// }
 
 	/**
 	 * Limpa as chaves do JSON do facebook

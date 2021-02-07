@@ -16,16 +16,36 @@ class Builder {
 			(line) => !CsvUtils_1.CsvUtils.isLineEmpty(line)
 		);
 		const linesBuilded = linesWithContent.map((lineFromFile) => {
-			const parameters = new ParametrizerFactory_1.ParametrizerFactory(
+			const parametrizerObject = new ParametrizerFactory_1.ParametrizerFactory(
 				lineFromFile,
 				this._companyConfig
-			)
-				.build(StringUtils_1.StringUtils.normalize(this._media))
-				.buildedLine();
-			return JsonUtils_1.JsonUtils.addParametersAt(
-				lineFromFile,
-				parameters
-			);
+			).build(StringUtils_1.StringUtils.normalize(this._media));
+			const parameters = parametrizerObject.buildedLine();
+			if (
+				Object.getPrototypeOf(parametrizerObject.constructor).name ===
+				'Vehicle'
+			) {
+				const analyticsToolParameters = new ParametrizerFactory_1.ParametrizerFactory(
+					lineFromFile,
+					this._companyConfig
+				)
+					.build(
+						StringUtils_1.StringUtils.normalize(
+							this._companyConfig.analyticsToolName
+						)
+					)
+					.buildedLine();
+				return JsonUtils_1.JsonUtils.addParametersAt(
+					lineFromFile,
+					parameters,
+					analyticsToolParameters
+				);
+			} else {
+				return JsonUtils_1.JsonUtils.addParametersAt(
+					lineFromFile,
+					parameters
+				);
+			}
 		});
 		return linesBuilded;
 	}
