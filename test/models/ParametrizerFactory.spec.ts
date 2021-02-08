@@ -107,5 +107,31 @@ describe('ParametrizerFactory', () => {
 			);
 			expect(object.constructor.name).to.equal('FacebookAds');
 		});
+		it('Criação do Factory para Veículo Genérico', () => {
+			const csvLine = {
+				Url: 'www.teste.com.br',
+				'Tipo de Compra': 'cpc',
+				Dispositivo: 'desktop e mobile',
+				Bandeira: 'meu Produto',
+				Veículo: 'meuVeículo',
+			};
+			const config = new Config({
+				separator: ':',
+				spaceSeparator: '_',
+				columns: {
+					'Tipo de Compra': ['cpa', 'cpc'],
+					Dispositivo: ['desktop e mobile'],
+					Veículo: ['/.*/'],
+				},
+				criteo: {
+					ad: ['Dispositivo'],
+					campaign: ['Tipo de Compra', 'Veículo'],
+				},
+			});
+			const object = new ParametrizerFactory(csvLine, config).build(
+				'criteo'
+			);
+			expect(object.constructor.name).to.equal('GeneralVehicle');
+		});
 	});
 });

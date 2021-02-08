@@ -28,7 +28,7 @@ describe('GA', () => {
 				utms: {
 					utm_medium: 'cpc',
 					utm_campaign:
-						'Parâmetros não encontrados: Período, Bandeira',
+						'Parâmetros não encontrados: Período - Bandeira',
 				},
 				'url ga': 'Corrija os parâmetros para gerar a URL',
 			};

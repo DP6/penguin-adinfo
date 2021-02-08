@@ -90,6 +90,12 @@ class Config {
 		});
 		return configValues.join(this._csvSeparator);
 	}
+	existsValidationRuleFor(csvColumn) {
+		return this.validationRules[csvColumn].length > 0;
+	}
+	existsColumn(csvColumn) {
+		return !!this.validationRules[csvColumn];
+	}
 	get validationRules() {
 		return this._validationRules;
 	}

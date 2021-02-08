@@ -69,7 +69,7 @@ class FacebookAds extends Vehicle_1.Vehicle {
 							this._facebookParams[facebookParam] =
 								this._validationErrorMessage +
 								this._errorFacebookParams[facebookParam].join(
-									', '
+									' - '
 								);
 						} else if (
 							this._undefinedParameterErrorFields[facebookParam]
@@ -79,7 +79,7 @@ class FacebookAds extends Vehicle_1.Vehicle {
 								this._undefinedParameterErrorMessage +
 								this._undefinedParameterErrorFields[
 									facebookParam
-								].join(', ');
+								].join(' = ');
 						} else {
 							this._facebookParams[
 								facebookParam

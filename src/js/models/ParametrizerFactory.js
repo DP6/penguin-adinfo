@@ -5,6 +5,7 @@ const Adobe_1 = require('./Adobe');
 const FacebookAds_1 = require('./FacebookAds');
 const GA_1 = require('./GA');
 const GoogleAds_1 = require('./GoogleAds');
+const GeneralVehicle_1 = require('./GeneralVehicle');
 class ParametrizerFactory {
 	constructor(csvLines, config) {
 		this._csvLines = csvLines;
@@ -22,6 +23,12 @@ class ParametrizerFactory {
 				return new FacebookAds_1.FacebookAds(
 					this._csvLines,
 					this._config
+				);
+			default:
+				return new GeneralVehicle_1.GeneralVehicle(
+					this._csvLines,
+					this._config,
+					type
 				);
 		}
 	}

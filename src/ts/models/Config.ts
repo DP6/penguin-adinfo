@@ -116,6 +116,22 @@ export class Config {
 		return configValues.join(this._csvSeparator);
 	}
 
+	/**
+	 * Verifica se existe alguam regra de validação cadastrada para a coluna especificada do csv
+	 * @param csvColumn coluna do CSV a ser conferida
+	 */
+	public existsValidationRuleFor(csvColumn: string): boolean {
+		return this.validationRules[csvColumn].length > 0;
+	}
+
+	/**
+	 * Verifica se a coluna informada existe no atributo columns da configuração
+	 * @param csvColumn
+	 */
+	public existsColumn(csvColumn: string): boolean {
+		return !!this.validationRules[csvColumn];
+	}
+
 	get validationRules(): { [key: string]: string[] } {
 		return this._validationRules;
 	}

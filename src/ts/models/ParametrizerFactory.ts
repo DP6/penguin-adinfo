@@ -4,6 +4,7 @@ import { GA } from './GA';
 import { GoogleAds } from './GoogleAds';
 import { Parametrizer } from './Parametrizer';
 import { Config } from './Config';
+import { GeneralVehicle } from './GeneralVehicle';
 
 export class ParametrizerFactory {
 	private _csvLines: { [key: string]: string };
@@ -28,6 +29,8 @@ export class ParametrizerFactory {
 				return new GoogleAds(this._csvLines, this._config);
 			case 'facebookads':
 				return new FacebookAds(this._csvLines, this._config);
+			default:
+				return new GeneralVehicle(this._csvLines, this._config, type);
 		}
 	}
 }

@@ -57,11 +57,11 @@ export class Adobe extends AnalyticsTool {
 		const errorMessages = [];
 		if (this._hasUndefinedParameterError) {
 			errorMessages.push(
-				this._undefinedParameterErroMessage.slice(0, -1)
+				this._undefinedParameterErroMessage.slice(0, -2)
 			);
 		}
 		if (this._hasValidationError) {
-			errorMessages.push(this._validationErrorMessage.slice(0, -1));
+			errorMessages.push(this._validationErrorMessage.slice(0, -2));
 		}
 		return errorMessages.join(' - ');
 	}
@@ -88,7 +88,7 @@ export class Adobe extends AnalyticsTool {
 			const columnNormalized = StringUtils.normalize(column);
 			if (StringUtils.isEmpty(this.csvLine[columnNormalized])) {
 				this._hasUndefinedParameterError = true;
-				this._undefinedParameterErroMessage += ` ${column},`;
+				this._undefinedParameterErroMessage += ` ${column} -`;
 				return;
 			}
 			if (
@@ -99,7 +99,7 @@ export class Adobe extends AnalyticsTool {
 				)
 			) {
 				this._hasValidationError = true;
-				this._validationErrorMessage += ` ${column},`;
+				this._validationErrorMessage += ` ${column} -`;
 			}
 			cid += `${this.csvLine[columnNormalized]}${this.config.separator}`;
 		});

@@ -24,7 +24,7 @@ describe('Adobe', () => {
 			});
 			const adobe = new Adobe(csvLine, config);
 			const abodeFields = {
-				cid: 'Parâmetros não encontrados: Bandeira, Veículo',
+				cid: 'Parâmetros não encontrados: Bandeira - Veículo',
 				'url adobe': 'Corrija os parâmetros para gerar a URL',
 			};
 			expect(JSON.stringify(adobe.buildedLine())).to.equal(

@@ -31,11 +31,11 @@ class GA extends AnalyticsTool_1.AnalyticsTool {
 		const errorMessages = [];
 		if (this._hasUndefinedParameterError[utm]) {
 			errorMessages.push(
-				this._undefinedParameterErroMessage[utm].slice(0, -1)
+				this._undefinedParameterErroMessage[utm].slice(0, -2)
 			);
 		}
 		if (this._hasValidationError[utm]) {
-			errorMessages.push(this._validationErrorMessage[utm].slice(0, -1));
+			errorMessages.push(this._validationErrorMessage[utm].slice(0, -2));
 		}
 		return errorMessages.join(' - ');
 	}
@@ -76,7 +76,7 @@ class GA extends AnalyticsTool_1.AnalyticsTool {
 					)
 				) {
 					this._hasUndefinedParameterError[utm] = true;
-					this._undefinedParameterErroMessage[utm] += ` ${column},`;
+					this._undefinedParameterErroMessage[utm] += ` ${column} -`;
 					return;
 				}
 				if (
@@ -87,7 +87,7 @@ class GA extends AnalyticsTool_1.AnalyticsTool {
 					)
 				) {
 					this._hasValidationError[utm] = true;
-					this._validationErrorMessage[utm] += ` ${column},`;
+					this._validationErrorMessage[utm] += ` ${column} -`;
 				}
 				utmString += `${this.csvLine[columnNormalized]}${this.config.separator}`;
 			});

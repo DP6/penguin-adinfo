@@ -108,12 +108,12 @@ export class GoogleAds extends Vehicle {
 			if (this._hasValidationError) {
 				this._adsParams[googleAdsParam] =
 					this._validationErrorMessage +
-					this._errorAdsParams[googleAdsParam].join(', ');
+					this._errorAdsParams[googleAdsParam].join(' - ');
 			} else if (this._hasUndefinedParameterError) {
 				this._adsParams[googleAdsParam] =
 					this._undefinedParameterErrorMessage +
 					this._undefinedParameterErrorFields[googleAdsParam].join(
-						', '
+						' - '
 					);
 			} else {
 				this._adsParams[googleAdsParam] = this._adsParams[
