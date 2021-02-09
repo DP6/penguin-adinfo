@@ -31,7 +31,7 @@ export class Builder {
 				const parametrizerObject = new ParametrizerFactory(
 					lineFromFile,
 					this._companyConfig
-				).build(StringUtils.normalize(this._media));
+				).build(this._media);
 				const parameters = parametrizerObject.buildedLine();
 				if (
 					Object.getPrototypeOf(parametrizerObject.constructor)

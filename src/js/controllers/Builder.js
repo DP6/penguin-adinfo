@@ -19,7 +19,7 @@ class Builder {
 			const parametrizerObject = new ParametrizerFactory_1.ParametrizerFactory(
 				lineFromFile,
 				this._companyConfig
-			).build(StringUtils_1.StringUtils.normalize(this._media));
+			).build(this._media);
 			const parameters = parametrizerObject.buildedLine();
 			if (
 				Object.getPrototypeOf(parametrizerObject.constructor).name ===
