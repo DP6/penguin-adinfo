@@ -3,3 +3,4 @@ node_modules/
 .vscode/
 config/gcp_key.json
 src/js/config/gcp_key.json
+src/ts/config/gcp_key.json

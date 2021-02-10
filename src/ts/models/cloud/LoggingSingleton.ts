@@ -1,5 +1,5 @@
 import { Log } from '../Log';
-// import * as credentials from '../../../../config/gcp_key.json';
+// import * as credentials from '../../config/gcp_key.json';
 import * as bunyan from 'bunyan';
 import { LoggingBunyan } from '@google-cloud/logging-bunyan';
 
