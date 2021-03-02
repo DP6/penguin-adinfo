@@ -12,10 +12,14 @@ export class FirestoreConnectionSingleton extends ObjectStore {
 
 	private constructor() {
 		super();
-		/* eslint-disable @typescript-eslint/no-var-requires */
-		const credentials = require('../../../../gcp_key.json');
-		/* eslint-enable @typescript-eslint/no-var-requires */
-		this._db = new Firestore({ credentials });
+		if (process.env.DEVELOPMENT) {
+			/* eslint-disable @typescript-eslint/no-var-requires */
+			const credentials = require('../../../../gcp_key.json');
+			/* eslint-enable @typescript-eslint/no-var-requires */
+			this._db = new Firestore({ credentials });
+		} else {
+			this._db = new Firestore();
+		}
 	}
 
 	/**
