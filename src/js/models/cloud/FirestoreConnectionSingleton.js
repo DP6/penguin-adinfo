@@ -2,11 +2,16 @@
 Object.defineProperty(exports, '__esModule', { value: true });
 exports.FirestoreConnectionSingleton = void 0;
 const firestore_1 = require('@google-cloud/firestore');
+const credentials = require('../../config/gcp_key.json');
 const ObjectStore_1 = require('../DAO/ObjectStore');
 class FirestoreConnectionSingleton extends ObjectStore_1.ObjectStore {
 	constructor() {
 		super();
-		this._db = new firestore_1.Firestore();
+		if (process.env.DEVELOPMENT) {
+			this._db = new firestore_1.Firestore({ credentials });
+		} else {
+			this._db = new firestore_1.Firestore();
+		}
 	}
 	static getInstance() {
 		if (!FirestoreConnectionSingleton._instance) {

@@ -42,7 +42,7 @@ const fileUpload = require('express-fileupload');
 const routes_1 = require('./routes/routes');
 const dotenv_1 = require('dotenv');
 const AuthDAO_1 = require('./models/DAO/AuthDAO');
-dotenv_1.config({ path: __dirname + '/.env' });
+dotenv_1.config({ path: __dirname + '/../../.env' });
 const app = express();
 app.use(
 	fileUpload({

@@ -4,7 +4,7 @@ import {
 	Firestore,
 	DocumentData,
 } from '@google-cloud/firestore';
-// import * as credentials from '../../config/gcp_key.json';
+import * as credentials from '../../config/gcp_key.json';
 import { ObjectStore } from '../DAO/ObjectStore';
 
 export class FirestoreConnectionSingleton extends ObjectStore {
@@ -13,7 +13,11 @@ export class FirestoreConnectionSingleton extends ObjectStore {
 
 	private constructor() {
 		super();
-		this._db = new Firestore();
+		if (process.env.DEVELOPMENT) {
+			this._db = new Firestore({ credentials });
+		} else {
+			this._db = new Firestore();
+		}
 	}
 
 	/**
