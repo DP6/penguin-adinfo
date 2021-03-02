@@ -1,5 +1,4 @@
 import { DownloadResponse, Storage } from '@google-cloud/storage';
-import * as credentials from '../../config/gcp_key.json';
 import { FileStore } from '../DAO/FileStore';
 import { FileDAO } from '../DAO/FileDAO';
 
@@ -11,6 +10,9 @@ export class StorageConnectionSingleton extends FileStore {
 	private constructor() {
 		super();
 		if (process.env.DEVELOPMENT) {
+			/* eslint-disable @typescript-eslint/no-var-requires */
+			const credentials = require('../../../../gcp_key.json');
+			/* eslint-enable @typescript-eslint/no-var-requires */
 			this._db = new Storage({ credentials });
 		} else {
 			this._db = new Storage();
