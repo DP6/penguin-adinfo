@@ -6,8 +6,12 @@ const ObjectStore_1 = require('../DAO/ObjectStore');
 class FirestoreConnectionSingleton extends ObjectStore_1.ObjectStore {
 	constructor() {
 		super();
-		const credentials = require('../../../../gcp_key.json');
-		this._db = new firestore_1.Firestore({ credentials });
+		if (process.env.DEVELOPMENT) {
+			const credentials = require('../../../../gcp_key.json');
+			this._db = new firestore_1.Firestore({ credentials });
+		} else {
+			this._db = new firestore_1.Firestore();
+		}
 	}
 	static getInstance() {
 		if (!FirestoreConnectionSingleton._instance) {
