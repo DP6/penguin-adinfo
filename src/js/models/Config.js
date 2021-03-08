@@ -2,6 +2,8 @@
 Object.defineProperty(exports, '__esModule', { value: true });
 exports.Config = void 0;
 const JsonUtils_1 = require('../utils/JsonUtils');
+const DependencyConfig_1 = require('./DependencyConfig');
+const StringUtils_1 = require('../utils/StringUtils');
 class Config {
 	constructor(jsonConfig) {
 		this._csvSeparator = ',';
@@ -12,6 +14,10 @@ class Config {
 			this._csvSeparator = jsonConfigTemp.csvSeparator;
 			delete jsonConfigTemp.csvSeparator;
 		}
+		this._dependenciesConfig = this._buildDependenciesConfig(
+			jsonConfigTemp.dependenciesConfig
+		);
+		delete jsonConfigTemp.dependenciesConfig;
 		this._spaceSeparator = jsonConfigTemp.spaceSeparator;
 		delete jsonConfigTemp.spaceSeparator;
 		this._insertTime = jsonConfigTemp.insertTime;
@@ -40,26 +46,17 @@ class Config {
 			!this._analyticsTool
 		);
 	}
+	_buildDependenciesConfig(dependenciesConfig) {
+		if (!dependenciesConfig) {
+			return [];
+		}
+		return dependenciesConfig.map(
+			(dependencyConfig) =>
+				new DependencyConfig_1.DependencyConfig(dependencyConfig)
+		);
+	}
 	toString() {
-		let jsonConfig = {};
-		Object.keys(this).forEach((key, index) => {
-			if (key === '_analyticsTool' || key === '_medias') {
-				jsonConfig = JsonUtils_1.JsonUtils.addParametersAt(
-					jsonConfig,
-					Object.values(this)[index] || {}
-				);
-			} else if (key === '_validationRules') {
-				jsonConfig = JsonUtils_1.JsonUtils.addParametersAt(jsonConfig, {
-					columns: this._validationRules,
-				});
-			} else if (
-				key !== '_analyticsToolName' &&
-				Object.values(this)[index]
-			) {
-				jsonConfig[key.replace('_', '')] = Object.values(this)[index];
-			}
-		});
-		return JSON.stringify(jsonConfig);
+		return JSON.stringify(this.toJson());
 	}
 	toJson() {
 		let jsonConfig = {};
@@ -73,6 +70,14 @@ class Config {
 				jsonConfig = JsonUtils_1.JsonUtils.addParametersAt(jsonConfig, {
 					columns: this._validationRules,
 				});
+			} else if (key === '_dependenciesConfig') {
+				if (this._dependenciesConfig.length > 0) {
+					jsonConfig[
+						'dependenciesConfig'
+					] = this._dependenciesConfig.map((dependencyConfig) => {
+						return dependencyConfig.toJson();
+					});
+				}
 			} else if (
 				key !== '_analyticsToolName' &&
 				Object.values(this)[index]
@@ -90,8 +95,61 @@ class Config {
 		});
 		return configValues.join(this._csvSeparator);
 	}
-	existsValidationRuleFor(csvColumn) {
+	_existsValidationRuleFor(csvColumn) {
 		return this.validationRules[csvColumn].length > 0;
+	}
+	_validateRulesFor(csvColumn, value) {
+		if (!this._existsValidationRuleFor(csvColumn)) {
+			return true;
+		}
+		return StringUtils_1.StringUtils.validateString(
+			value,
+			this._validationRules[csvColumn]
+		);
+	}
+	_getDependencyConfigFor(csvColumn) {
+		let dependencyColumnConfig;
+		this._dependenciesConfig.forEach((dependencyConfig) => {
+			if (dependencyConfig.columnDestiny === csvColumn) {
+				dependencyColumnConfig = dependencyConfig;
+			}
+		});
+		return dependencyColumnConfig;
+	}
+	_validateDependencyRulesFor(csvLine, csvColumn, value) {
+		const dependencyConfigForCsvColumn = this._getDependencyConfigFor(
+			csvColumn
+		);
+		if (
+			!dependencyConfigForCsvColumn ||
+			!StringUtils_1.StringUtils.validateString(
+				csvLine[
+					StringUtils_1.StringUtils.normalize(
+						dependencyConfigForCsvColumn.columnReference
+					)
+				],
+				dependencyConfigForCsvColumn.valuesReference
+			)
+		) {
+			return true;
+		}
+		if (dependencyConfigForCsvColumn.hasMatch) {
+			return StringUtils_1.StringUtils.validateString(
+				value,
+				dependencyConfigForCsvColumn.matches
+			);
+		} else {
+			return !StringUtils_1.StringUtils.validateString(
+				value,
+				dependencyConfigForCsvColumn.matches
+			);
+		}
+	}
+	validateField(csvLine, csvColumn, value) {
+		return (
+			this._validateRulesFor(csvColumn, value) &&
+			this._validateDependencyRulesFor(csvLine, csvColumn, value)
+		);
 	}
 	existsColumn(csvColumn) {
 		return !!this.validationRules[csvColumn];

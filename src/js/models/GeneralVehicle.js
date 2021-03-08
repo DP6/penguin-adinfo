@@ -34,10 +34,10 @@ class GeneralVehicle extends Vehicle_1.Vehicle {
 						csvColumn
 					);
 					if (
-						this.config.existsValidationRuleFor(csvColumn) &&
-						!StringUtils_1.StringUtils.validateString(
-							this.csvLine[normalizedColumn],
-							this.config.validationRules[csvColumn]
+						!this.config.validateField(
+							this.csvLine,
+							csvColumn,
+							this.csvLine[normalizedColumn]
 						)
 					) {
 						this._validationErrorFounded(param, csvColumn);

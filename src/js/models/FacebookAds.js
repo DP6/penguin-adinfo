@@ -43,11 +43,10 @@ class FacebookAds extends Vehicle_1.Vehicle {
 								column
 							);
 							if (
-								this.config.validationRules[column].length >
-									0 &&
-								!StringUtils_1.StringUtils.validateString(
-									this.csvLine[normalizedColumn],
-									this.config.validationRules[column]
+								!this.config.validateField(
+									this.csvLine,
+									column,
+									this.csvLine[normalizedColumn]
 								)
 							) {
 								this._hasValidationError = true;

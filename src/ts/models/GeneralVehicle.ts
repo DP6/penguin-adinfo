@@ -52,10 +52,10 @@ export class GeneralVehicle extends Vehicle {
 				} else {
 					const normalizedColumn = StringUtils.normalize(csvColumn);
 					if (
-						this.config.existsValidationRuleFor(csvColumn) &&
-						!StringUtils.validateString(
-							this.csvLine[normalizedColumn],
-							this.config.validationRules[csvColumn]
+						!this.config.validateField(
+							this.csvLine,
+							csvColumn,
+							this.csvLine[normalizedColumn]
 						)
 					) {
 						this._validationErrorFounded(param, csvColumn);

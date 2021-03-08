@@ -78,7 +78,6 @@ export class Adobe extends AnalyticsTool {
 		};
 	}
 
-	//TODO padronizar columns
 	/**
 	 * Constroi o Cid da linha e preenche o atributo hasErrorAtCid
 	 */
@@ -92,10 +91,10 @@ export class Adobe extends AnalyticsTool {
 				return;
 			}
 			if (
-				this.config.validationRules[column].length > 0 &&
-				!StringUtils.validateString(
-					this.csvLine[columnNormalized],
-					this.config.validationRules[column]
+				!this.config.validateField(
+					this.csvLine,
+					column,
+					this.csvLine[columnNormalized]
 				)
 			) {
 				this._hasValidationError = true;
