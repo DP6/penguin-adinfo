@@ -13,7 +13,7 @@ export class StorageConnectionSingleton extends FileStore {
 			/* eslint-disable @typescript-eslint/no-var-requires */
 			const credentials = require('../../../../gcp_key.json');
 			/* eslint-enable @typescript-eslint/no-var-requires */
-			this._db = new Storage({ credentials });
+			this._db = new Storage({ projectId: 'adinfo', credentials });
 		} else {
 			this._db = new Storage();
 		}

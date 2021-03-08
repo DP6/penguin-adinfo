@@ -9,7 +9,10 @@ class StorageConnectionSingleton extends FileStore_1.FileStore {
 		this._bucket = `adinfo-dp6-files`;
 		if (process.env.DEVELOPMENT) {
 			const credentials = require('../../../../gcp_key.json');
-			this._db = new storage_1.Storage({ credentials });
+			this._db = new storage_1.Storage({
+				projectId: 'adinfo',
+				credentials,
+			});
 		} else {
 			this._db = new storage_1.Storage();
 		}

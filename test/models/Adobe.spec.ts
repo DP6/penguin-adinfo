@@ -90,4 +90,80 @@ describe('Adobe', () => {
 			);
 		});
 	});
+	describe('Valida a geração da linha do Adobe com configuração de dependência', () => {
+		it('Validação caso todos os parâmetros sejam informados corretamente', () => {
+			const csvLine = {
+				Url: 'www.teste.com.br',
+				'Tipo de Compra': 'cpc',
+				Dispositivo: 'desktop e mobile',
+			};
+			const config = new Config({
+				separator: ':',
+				spaceSeparator: '_',
+				columns: {
+					'Tipo de Compra': ['cpa', 'cpc'],
+					Bandeira: [],
+					Veículo: [],
+				},
+				adobe: {
+					cid: ['Tipo de Compra', 'Bandeira', 'Veículo'],
+				},
+				dependenciesConfig: [
+					{
+						columnReference: 'Tipo de Compra',
+						valuesReference: ['cpc'],
+						hasMatch: true,
+						columnDestiny: 'Dipositivo',
+						matches: ['/desktop/'],
+					},
+				],
+			});
+			const adobe = new Adobe(csvLine, config);
+			const abodeFields = {
+				cid: 'Parâmetros não encontrados: Bandeira - Veículo',
+				'url adobe': 'Corrija os parâmetros para gerar a URL',
+			};
+			expect(JSON.stringify(adobe.buildedLine())).to.equal(
+				JSON.stringify(abodeFields)
+			);
+		});
+		it('Validação caso os parâmetros não correspondam as configurações de dependência', () => {
+			const csvLine = {
+				Url: 'www.teste.com.br',
+				'Tipo de Compra': 'cpc',
+				Dispositivo: 'desktop e mobile',
+				Bandeira: 'meu Produto',
+				Veículo: 'meuVeículo',
+			};
+			const config = new Config({
+				separator: ':',
+				spaceSeparator: '_',
+				columns: {
+					'Tipo de Compra': ['cpa', 'cpc'],
+					Bandeira: ['/meu\\ ?Produto/'],
+					Veículo: [],
+				},
+				adobe: {
+					cid: ['Tipo de Compra', 'Bandeira', 'Veículo'],
+				},
+				dependenciesConfig: [
+					{
+						columnReference: 'Tipo de Compra',
+						valuesReference: ['cpa'],
+						hasMatch: true,
+						columnDestiny: 'Dipositivo',
+						matches: ['dispositivo'],
+					},
+				],
+			});
+			const adobe = new Adobe(csvLine, config);
+			const abodeFields = {
+				cid: 'cpc:meu_produto:meuveiculo',
+				'url adobe': 'www.teste.com.br?cid=cpc:meu_produto:meuveiculo',
+			};
+			expect(JSON.stringify(adobe.buildedLine())).to.equal(
+				JSON.stringify(abodeFields)
+			);
+		});
+	});
 });

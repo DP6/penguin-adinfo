@@ -53,10 +53,10 @@ class Adobe extends AnalyticsTool_1.AnalyticsTool {
 				return;
 			}
 			if (
-				this.config.validationRules[column].length > 0 &&
-				!StringUtils_1.StringUtils.validateString(
-					this.csvLine[columnNormalized],
-					this.config.validationRules[column]
+				!this.config.validateField(
+					this.csvLine,
+					column,
+					this.csvLine[columnNormalized]
 				)
 			) {
 				this._hasValidationError = true;

@@ -7,6 +7,22 @@ describe('Config', () => {
 			const jsonConfig = {
 				csvSeparator: ',',
 				separator: ':',
+				dependenciesConfig: [
+					{
+						columnReference: 'Tipo de Compra',
+						valuesReference: ['cpc', 'cpa'],
+						hasMatch: true,
+						columnDestiny: 'Produto',
+						matches: ['fif'],
+					},
+					{
+						columnReference: 'Dispositivo',
+						valuesReference: ['/.*mobile.*/'],
+						hasMatch: true,
+						columnDestiny: 'Tipo de Compra',
+						matches: ['cpc', 'cpa'],
+					},
+				],
 				spaceSeparator: '+',
 				adobe: {
 					cid: [
@@ -64,6 +80,22 @@ describe('Config', () => {
 			const jsonConfig = {
 				csvSeparator: ',',
 				separator: ':',
+				dependenciesConfig: [
+					{
+						columnReference: 'Tipo de Compra',
+						valuesReference: ['cpc', 'cpa'],
+						hasMatch: true,
+						columnDestiny: 'Produto',
+						matches: ['fif'],
+					},
+					{
+						columnReference: 'Dispositivo',
+						valuesReference: ['/.*mobile.*/'],
+						hasMatch: true,
+						columnDestiny: 'Tipo de Compra',
+						matches: ['cpc', 'cpa'],
+					},
+				],
 				spaceSeparator: '+',
 				adobe: {
 					cid: [
@@ -119,6 +151,22 @@ describe('Config', () => {
 			const jsonConfig = {
 				csvSeparator: ',',
 				separator: ':',
+				dependenciesConfig: [
+					{
+						columnReference: 'Tipo de Compra',
+						valuesReference: ['cpc', 'cpa'],
+						hasMatch: true,
+						columnDestiny: 'Produto',
+						matches: ['fif'],
+					},
+					{
+						columnReference: 'Dispositivo',
+						valuesReference: ['/.*mobile.*/'],
+						hasMatch: true,
+						columnDestiny: 'Tipo de Compra',
+						matches: ['cpc', 'cpa'],
+					},
+				],
 				spaceSeparator: '+',
 				columns: {
 					Veículo: [
@@ -157,6 +205,22 @@ describe('Config', () => {
 				csvSeparator: ',',
 				separator: ':',
 				spaceSeparator: '+',
+				dependenciesConfig: [
+					{
+						columnReference: 'Tipo de Compra',
+						valuesReference: ['cpc', 'cpa'],
+						hasMatch: true,
+						columnDestiny: 'Produto',
+						matches: ['fif'],
+					},
+					{
+						columnReference: 'Dispositivo',
+						valuesReference: ['/.*mobile.*/'],
+						hasMatch: true,
+						columnDestiny: 'Tipo de Compra',
+						matches: ['cpc', 'cpa'],
+					},
+				],
 				adobe: {
 					cid: [
 						'Veículo',
@@ -195,6 +259,22 @@ describe('Config', () => {
 			const jsonConfig = {
 				csvSeparator: ',',
 				separator: ':',
+				dependenciesConfig: [
+					{
+						columnReference: 'Tipo de Compra',
+						valuesReference: ['cpc', 'cpa'],
+						hasMatch: true,
+						columnDestiny: 'Produto',
+						matches: ['fif'],
+					},
+					{
+						columnReference: 'Dispositivo',
+						valuesReference: ['/.*mobile.*/'],
+						hasMatch: true,
+						columnDestiny: 'Tipo de Compra',
+						matches: ['cpc', 'cpa'],
+					},
+				],
 				spaceSeparator: '+',
 				ga: {
 					utm_source: ['Veículo', 'Inserção'],
@@ -228,6 +308,22 @@ describe('Config', () => {
 			const jsonConfig = {
 				csvSeparator: ',',
 				separator: ':',
+				dependenciesConfig: [
+					{
+						columnReference: 'Tipo de Compra',
+						valuesReference: ['cpc', 'cpa'],
+						hasMatch: true,
+						columnDestiny: 'Produto',
+						matches: ['fif'],
+					},
+					{
+						columnReference: 'Dispositivo',
+						valuesReference: ['/.*mobile.*/'],
+						hasMatch: true,
+						columnDestiny: 'Tipo de Compra',
+						matches: ['cpc', 'cpa'],
+					},
+				],
 				spaceSeparator: '+',
 				ga: {
 					utm_source: ['Veículo', 'Inserção'],
@@ -282,6 +378,22 @@ describe('Config', () => {
 					utm_source: ['Veículo', 'Inserção'],
 					utm_campaign: ['campanha', 'categoriaDoProduto'],
 				},
+				dependenciesConfig: [
+					{
+						columnReference: 'Tipo de Compra',
+						valuesReference: ['cpc', 'cpa'],
+						hasMatch: true,
+						columnDestiny: 'Produto',
+						matches: ['fif'],
+					},
+					{
+						columnReference: 'Dispositivo',
+						valuesReference: ['/.*mobile.*/'],
+						hasMatch: true,
+						columnDestiny: 'Tipo de Compra',
+						matches: ['cpc', 'cpa'],
+					},
+				],
 			};
 			const config = new Config(jsonConfig);
 			expect(config.toCsvTemplate()).to.equal(
@@ -315,6 +427,22 @@ describe('Config', () => {
 					utm_source: ['Veículo', 'Inserção'],
 					utm_campaign: ['campanha', 'categoriaDoProduto'],
 				},
+				dependenciesConfig: [
+					{
+						columnReference: 'Tipo de Compra',
+						valuesReference: ['cpc', 'cpa'],
+						hasMatch: true,
+						columnDestiny: 'Produto',
+						matches: ['fif'],
+					},
+					{
+						columnReference: 'Dispositivo',
+						valuesReference: ['/.*mobile.*/'],
+						hasMatch: true,
+						columnDestiny: 'Tipo de Compra',
+						matches: ['cpc', 'cpa'],
+					},
+				],
 			};
 			const config = new Config(jsonConfig);
 			expect(JSON.stringify(config.validationRules)).to.equal(
