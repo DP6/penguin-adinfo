@@ -1,8 +1,8 @@
 # adinfo
 
-#Repositório do Adinfo DP6
+## Repositório do Adinfo DP6
 
-##Configuração do ambiente de desenvolvimento
+### Configuração do ambiente de desenvolvimento
 
 1. Arquivo .env
 
