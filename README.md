@@ -1,5 +1,3 @@
-# adinfo
-
 ## Repositório do Adinfo DP6
 
 ### Configuração do ambiente de desenvolvimento
@@ -7,9 +5,6 @@
 1. Arquivo .env
 
 O arquivo .env deve estar localizado na raiz do projeto.
-
-2. Configurações do .env
-
 É necessário editar as seguintes variáveis
 
 - DEVELOPMENT: Deve apresentar o valor true, caso o ambiente atual seja o ambiente de desenvolvimento local. Caso nenhum valor seja informado, a API irá assumir como padrão o valor false, indicando o ambiente de produção;
