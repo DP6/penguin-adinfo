@@ -149,6 +149,105 @@ describe('GA', () => {
 				JSON.stringify(gaFields)
 			);
 		});
+		it('Validação caso todos os parâmetros sejam informados corretamente com duas dependências para o mesmo campo', () => {
+			const csvLine = {
+				Url: 'www.teste.com.br',
+				'Tipo de Compra': 'cpa',
+				Dispositivo: 'desktop e mobile',
+				Período: 'Maio 2020',
+				Bandeira: 'Minha_Bandeira',
+			};
+			const config = new Config({
+				separator: ':',
+				spaceSeparator: '_',
+				columns: {
+					'Tipo de Compra': ['cpa', 'cpc'],
+					Período: ['/[a-zA-Z]* [0-9]{4}/'],
+					Bandeira: [],
+				},
+				ga: {
+					utm_medium: ['Tipo de Compra'],
+					utm_campaign: ['Período', 'Bandeira'],
+				},
+				dependenciesConfig: [
+					{
+						columnReference: 'Tipo de Compra',
+						valuesReference: ['cpa'],
+						hasMatch: true,
+						columnDestiny: 'Bandeira',
+						matches: ['/Minha/'],
+					},
+					{
+						columnReference: 'Dispositivo',
+						valuesReference: ['/.*desktop.*/'],
+						hasMatch: true,
+						columnDestiny: 'Bandeira',
+						matches: ['/Bandeira/'],
+					},
+				],
+			});
+			const ga = new GA(csvLine, config);
+			const gaFields = {
+				utms: {
+					utm_medium: 'cpa',
+					utm_campaign: 'maio_2020:minha_bandeira',
+				},
+				'url ga':
+					'www.teste.com.br?utm_medium=cpa&utm_campaign=maio_2020:minha_bandeira',
+			};
+			expect(JSON.stringify(ga.buildedLine())).to.equal(
+				JSON.stringify(gaFields)
+			);
+		});
+		it('Validação com erro na validação de uma das dependências para um mesmo campo', () => {
+			const csvLine = {
+				Url: 'www.teste.com.br',
+				'Tipo de Compra': 'cpa',
+				Dispositivo: 'desktop e mobile',
+				Período: 'Maio 2020',
+				Bandeira: 'Bandeira',
+			};
+			const config = new Config({
+				separator: ':',
+				spaceSeparator: '_',
+				columns: {
+					'Tipo de Compra': ['cpa', 'cpc'],
+					Período: ['/[a-zA-Z]* [0-9]{4}/'],
+					Bandeira: [],
+				},
+				ga: {
+					utm_medium: ['Tipo de Compra'],
+					utm_campaign: ['Período', 'Bandeira'],
+				},
+				dependenciesConfig: [
+					{
+						columnReference: 'Tipo de Compra',
+						valuesReference: ['cpa'],
+						hasMatch: true,
+						columnDestiny: 'Bandeira',
+						matches: ['/Minha/'],
+					},
+					{
+						columnReference: 'Dispositivo',
+						valuesReference: ['/.*desktop.*/'],
+						hasMatch: true,
+						columnDestiny: 'Bandeira',
+						matches: ['/Bandeira/'],
+					},
+				],
+			});
+			const ga = new GA(csvLine, config);
+			const gaFields = {
+				utms: {
+					utm_medium: 'cpa',
+					utm_campaign: 'Parâmetros incorretos: Bandeira',
+				},
+				'url ga': 'Corrija os parâmetros para gerar a URL',
+			};
+			expect(JSON.stringify(ga.buildedLine())).to.equal(
+				JSON.stringify(gaFields)
+			);
+		});
 		it('Validação caso os parâmetros não correspondam as configurações de dependência', () => {
 			const csvLine = {
 				Url: 'www.teste.com.br',

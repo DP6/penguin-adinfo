@@ -7,13 +7,20 @@ class GoogleAds extends Vehicle_1.Vehicle {
 	constructor(csvLine, config) {
 		super(csvLine, config);
 		this._adsParams = {};
-		this._hasValidationError = false;
-		this._hasUndefinedParameterError = false;
-		this._validationErrorMessage = 'Parâmetro(s) incorreto(s): ';
+		this._hasValidationError = {};
+		this._hasUndefinedParameterError = {};
+		this._validationErrorMessage = {};
+		this._undefinedParameterErrorMessage = {};
 		this._errorAdsParams = {};
-		this._undefinedParameterErrorMessage =
-			'Parâmetro(s) não encontrado(s) na configuração: ';
 		this._undefinedParameterErrorFields = {};
+		Object.keys(this.config.medias.googleads).map((adsParam) => {
+			this._hasValidationError[adsParam] = false;
+			this._hasUndefinedParameterError[adsParam] = false;
+			this._validationErrorMessage[adsParam] =
+				'Parâmetro(s) incorreto(s): ';
+			this._undefinedParameterErrorMessage[adsParam] =
+				'Parâmetro(s) não encontrado(s): ';
+		});
 		this._buildAdsParams();
 	}
 	buildedLine() {
@@ -27,7 +34,7 @@ class GoogleAds extends Vehicle_1.Vehicle {
 			const fields = this.config.medias.googleads[googleAdsParam];
 			fields.forEach((column) => {
 				if (!this.config.validationRules[column]) {
-					this._hasUndefinedParameterError = true;
+					this._hasUndefinedParameterError[googleAdsParam] = true;
 					this._undefinedParameterErrorFields[googleAdsParam].push(
 						column
 					);
@@ -42,7 +49,7 @@ class GoogleAds extends Vehicle_1.Vehicle {
 							this.csvLine[normalizedColumn]
 						)
 					) {
-						this._hasValidationError = true;
+						this._hasValidationError[googleAdsParam] = true;
 						this._errorAdsParams[googleAdsParam].push(column);
 					} else {
 						this._adsParams[
@@ -54,13 +61,13 @@ class GoogleAds extends Vehicle_1.Vehicle {
 					}
 				}
 			});
-			if (this._hasValidationError) {
+			if (this._hasValidationError[googleAdsParam]) {
 				this._adsParams[googleAdsParam] =
-					this._validationErrorMessage +
+					this._validationErrorMessage[googleAdsParam] +
 					this._errorAdsParams[googleAdsParam].join(' - ');
-			} else if (this._hasUndefinedParameterError) {
+			} else if (this._hasUndefinedParameterError[googleAdsParam]) {
 				this._adsParams[googleAdsParam] =
-					this._undefinedParameterErrorMessage +
+					this._undefinedParameterErrorMessage[googleAdsParam] +
 					this._undefinedParameterErrorFields[googleAdsParam].join(
 						' - '
 					);
