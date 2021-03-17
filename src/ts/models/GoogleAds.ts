@@ -31,12 +31,11 @@ import { Vehicle } from './Vehicle';
 
 export class GoogleAds extends Vehicle {
 	private _adsParams: { [key: string]: string } = {};
-	private _hasValidationError = false;
-	private _hasUndefinedParameterError = false;
-	private _validationErrorMessage = 'Parâmetro(s) incorreto(s): ';
+	private _hasValidationError: { [key: string]: boolean } = {};
+	private _hasUndefinedParameterError: { [key: string]: boolean } = {};
+	private _validationErrorMessage: { [key: string]: string } = {};
+	private _undefinedParameterErrorMessage: { [key: string]: string } = {};
 	private _errorAdsParams: { [key: string]: string[] } = {};
-	private _undefinedParameterErrorMessage =
-		'Parâmetro(s) não encontrado(s) na configuração: ';
 	private _undefinedParameterErrorFields: { [key: string]: string[] } = {};
 
 	/**
@@ -48,7 +47,14 @@ export class GoogleAds extends Vehicle {
 	 */
 	constructor(csvLine: { [key: string]: string }, config: Config) {
 		super(csvLine, config);
-		// this.url = this._buildUrl();
+		Object.keys(this.config.medias.googleads).map((adsParam) => {
+			this._hasValidationError[adsParam] = false;
+			this._hasUndefinedParameterError[adsParam] = false;
+			this._validationErrorMessage[adsParam] =
+				'Parâmetro(s) incorreto(s): ';
+			this._undefinedParameterErrorMessage[adsParam] =
+				'Parâmetro(s) não encontrado(s): ';
+		});
 		this._buildAdsParams();
 	}
 
@@ -79,7 +85,7 @@ export class GoogleAds extends Vehicle {
 			];
 			fields.forEach((column: string) => {
 				if (!this.config.validationRules[column]) {
-					this._hasUndefinedParameterError = true;
+					this._hasUndefinedParameterError[googleAdsParam] = true;
 					this._undefinedParameterErrorFields[googleAdsParam].push(
 						column
 					);
@@ -93,7 +99,7 @@ export class GoogleAds extends Vehicle {
 							this.csvLine[normalizedColumn]
 						)
 					) {
-						this._hasValidationError = true;
+						this._hasValidationError[googleAdsParam] = true;
 						this._errorAdsParams[googleAdsParam].push(column);
 					} else {
 						this._adsParams[
@@ -105,13 +111,13 @@ export class GoogleAds extends Vehicle {
 					}
 				}
 			});
-			if (this._hasValidationError) {
+			if (this._hasValidationError[googleAdsParam]) {
 				this._adsParams[googleAdsParam] =
-					this._validationErrorMessage +
+					this._validationErrorMessage[googleAdsParam] +
 					this._errorAdsParams[googleAdsParam].join(' - ');
-			} else if (this._hasUndefinedParameterError) {
+			} else if (this._hasUndefinedParameterError[googleAdsParam]) {
 				this._adsParams[googleAdsParam] =
-					this._undefinedParameterErrorMessage +
+					this._undefinedParameterErrorMessage[googleAdsParam] +
 					this._undefinedParameterErrorFields[googleAdsParam].join(
 						' - '
 					);

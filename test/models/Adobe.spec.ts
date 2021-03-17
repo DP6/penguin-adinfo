@@ -96,17 +96,18 @@ describe('Adobe', () => {
 				Url: 'www.teste.com.br',
 				'Tipo de Compra': 'cpc',
 				Dispositivo: 'desktop e mobile',
+				Veículo: 'facebook',
 			};
 			const config = new Config({
 				separator: ':',
 				spaceSeparator: '_',
 				columns: {
 					'Tipo de Compra': ['cpa', 'cpc'],
-					Bandeira: [],
+					Dispositivo: [],
 					Veículo: [],
 				},
 				adobe: {
-					cid: ['Tipo de Compra', 'Bandeira', 'Veículo'],
+					cid: ['Tipo de Compra', 'Dispositivo', 'Veículo'],
 				},
 				dependenciesConfig: [
 					{
@@ -120,7 +121,99 @@ describe('Adobe', () => {
 			});
 			const adobe = new Adobe(csvLine, config);
 			const abodeFields = {
-				cid: 'Parâmetros não encontrados: Bandeira - Veículo',
+				cid: 'cpc:desktop_e_mobile:facebook',
+				'url adobe':
+					'www.teste.com.br?cid=cpc:desktop_e_mobile:facebook',
+			};
+			expect(JSON.stringify(adobe.buildedLine())).to.equal(
+				JSON.stringify(abodeFields)
+			);
+		});
+		it('Validação caso todos os parâmetros sejam informados corretamente com duas dependências para o mesmo campo', () => {
+			const csvLine = {
+				Url: 'www.teste.com.br',
+				'Tipo de Compra': 'cpc',
+				Dispositivo: 'desktop e mobile',
+				Veículo: 'facebook',
+			};
+			const config = new Config({
+				separator: ':',
+				spaceSeparator: '_',
+				columns: {
+					'Tipo de Compra': ['cpa', 'cpc'],
+					Bandeira: [],
+					Dispositivo: [],
+					Veículo: [],
+				},
+				adobe: {
+					cid: ['Tipo de Compra', 'Dispositivo', 'Veículo'],
+				},
+				dependenciesConfig: [
+					{
+						columnReference: 'Tipo de Compra',
+						valuesReference: ['cpc'],
+						hasMatch: true,
+						columnDestiny: 'Dipositivo',
+						matches: ['/desktop/'],
+					},
+					{
+						columnReference: 'Veículo',
+						valuesReference: ['/face/'],
+						hasMatch: false,
+						columnDestiny: 'Dispositivo',
+						matches: ['google'],
+					},
+				],
+			});
+			const adobe = new Adobe(csvLine, config);
+			const abodeFields = {
+				cid: 'cpc:desktop_e_mobile:facebook',
+				'url adobe':
+					'www.teste.com.br?cid=cpc:desktop_e_mobile:facebook',
+			};
+			expect(JSON.stringify(adobe.buildedLine())).to.equal(
+				JSON.stringify(abodeFields)
+			);
+		});
+		it('Validação com duas dependências para o mesmo campo e um erro em uma delas', () => {
+			const csvLine = {
+				Url: 'www.teste.com.br',
+				'Tipo de Compra': 'cpc',
+				Dispositivo: 'desktop e mobile',
+				Veículo: 'facebook',
+			};
+			const config = new Config({
+				separator: ':',
+				spaceSeparator: '_',
+				columns: {
+					'Tipo de Compra': ['cpa', 'cpc'],
+					Bandeira: [],
+					Dispositivo: [],
+					Veículo: [],
+				},
+				adobe: {
+					cid: ['Tipo de Compra', 'Dispositivo', 'Veículo'],
+				},
+				dependenciesConfig: [
+					{
+						columnReference: 'Tipo de Compra',
+						valuesReference: ['cpc'],
+						hasMatch: true,
+						columnDestiny: 'Dipositivo',
+						matches: ['/desktop/'],
+					},
+					{
+						columnReference: 'Veículo',
+						valuesReference: ['/face/'],
+						hasMatch: false,
+						columnDestiny: 'Dispositivo',
+						matches: ['/mobile/'],
+					},
+				],
+			});
+			const adobe = new Adobe(csvLine, config);
+			const abodeFields = {
+				cid: 'Parâmetros incorretos: Dispositivo',
 				'url adobe': 'Corrija os parâmetros para gerar a URL',
 			};
 			expect(JSON.stringify(adobe.buildedLine())).to.equal(

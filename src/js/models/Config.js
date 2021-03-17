@@ -107,43 +107,48 @@ class Config {
 			this._validationRules[csvColumn]
 		);
 	}
-	_getDependencyConfigFor(csvColumn) {
-		let dependencyColumnConfig;
+	_getAllDependencyConfigFor(csvColumn) {
+		const dependenciesColumnConfig = [];
 		this._dependenciesConfig.forEach((dependencyConfig) => {
 			if (dependencyConfig.columnDestiny === csvColumn) {
-				dependencyColumnConfig = dependencyConfig;
+				dependenciesColumnConfig.push(dependencyConfig);
 			}
 		});
-		return dependencyColumnConfig;
+		return dependenciesColumnConfig;
 	}
 	_validateDependencyRulesFor(csvLine, csvColumn, value) {
-		const dependencyConfigForCsvColumn = this._getDependencyConfigFor(
+		const dependenciesConfigForCsvColumn = this._getAllDependencyConfigFor(
 			csvColumn
 		);
-		if (
-			!dependencyConfigForCsvColumn ||
-			!StringUtils_1.StringUtils.validateString(
-				csvLine[
-					StringUtils_1.StringUtils.normalize(
-						dependencyConfigForCsvColumn.columnReference
-					)
-				],
-				dependencyConfigForCsvColumn.valuesReference
-			)
-		) {
+		if (dependenciesConfigForCsvColumn.length === 0) {
 			return true;
 		}
-		if (dependencyConfigForCsvColumn.hasMatch) {
-			return StringUtils_1.StringUtils.validateString(
-				value,
-				dependencyConfigForCsvColumn.matches
-			);
-		} else {
-			return !StringUtils_1.StringUtils.validateString(
-				value,
-				dependencyConfigForCsvColumn.matches
-			);
-		}
+		const dependenciesToValidate = dependenciesConfigForCsvColumn.filter(
+			(dependencyConfig) =>
+				StringUtils_1.StringUtils.validateString(
+					csvLine[
+						StringUtils_1.StringUtils.normalize(
+							dependencyConfig.columnReference
+						)
+					],
+					dependencyConfig.valuesReference
+				)
+		);
+		return (
+			dependenciesToValidate.filter((dependencyConfig) => {
+				if (dependencyConfig.hasMatch) {
+					return StringUtils_1.StringUtils.validateString(
+						value,
+						dependencyConfig.matches
+					);
+				} else {
+					return !StringUtils_1.StringUtils.validateString(
+						value,
+						dependencyConfig.matches
+					);
+				}
+			}).length === dependenciesToValidate.length
+		);
 	}
 	validateField(csvLine, csvColumn, value) {
 		return (

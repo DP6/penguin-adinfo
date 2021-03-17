@@ -159,14 +159,14 @@ export class Config {
 	 * Pega a regra de dependência para a coluna do CSV
 	 * @param csvColumn Coluan do csv de referência
 	 */
-	private _getDependencyConfigFor(csvColumn: string): DependencyConfig {
-		let dependencyColumnConfig: DependencyConfig;
+	private _getAllDependencyConfigFor(csvColumn: string): DependencyConfig[] {
+		const dependenciesColumnConfig: DependencyConfig[] = [];
 		this._dependenciesConfig.forEach((dependencyConfig) => {
 			if (dependencyConfig.columnDestiny === csvColumn) {
-				dependencyColumnConfig = dependencyConfig;
+				dependenciesColumnConfig.push(dependencyConfig);
 			}
 		});
-		return dependencyColumnConfig;
+		return dependenciesColumnConfig;
 	}
 
 	/**
@@ -180,33 +180,39 @@ export class Config {
 		csvColumn: string,
 		value: string
 	): boolean {
-		const dependencyConfigForCsvColumn = this._getDependencyConfigFor(
+		const dependenciesConfigForCsvColumn = this._getAllDependencyConfigFor(
 			csvColumn
 		);
-		if (
-			!dependencyConfigForCsvColumn ||
-			!StringUtils.validateString(
-				csvLine[
-					StringUtils.normalize(
-						dependencyConfigForCsvColumn.columnReference
-					)
-				],
-				dependencyConfigForCsvColumn.valuesReference
-			)
-		) {
+
+		if (dependenciesConfigForCsvColumn.length === 0) {
 			return true;
 		}
-		if (dependencyConfigForCsvColumn.hasMatch) {
-			return StringUtils.validateString(
-				value,
-				dependencyConfigForCsvColumn.matches
-			);
-		} else {
-			return !StringUtils.validateString(
-				value,
-				dependencyConfigForCsvColumn.matches
-			);
-		}
+
+		const dependenciesToValidate = dependenciesConfigForCsvColumn.filter(
+			(dependencyConfig) =>
+				StringUtils.validateString(
+					csvLine[
+						StringUtils.normalize(dependencyConfig.columnReference)
+					],
+					dependencyConfig.valuesReference
+				)
+		);
+
+		return (
+			dependenciesToValidate.filter((dependencyConfig) => {
+				if (dependencyConfig.hasMatch) {
+					return StringUtils.validateString(
+						value,
+						dependencyConfig.matches
+					);
+				} else {
+					return !StringUtils.validateString(
+						value,
+						dependencyConfig.matches
+					);
+				}
+			}).length === dependenciesToValidate.length
+		);
 	}
 
 	/**
