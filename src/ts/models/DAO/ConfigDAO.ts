@@ -46,7 +46,7 @@ export class ConfigDAO {
 		return new Promise((resolve, reject) => {
 			this.getLastConfig()
 				.then((lastConfig: Config) => {
-					if (!lastConfig) {
+					if (!lastConfig.version) {
 						config.version = 1;
 					} else {
 						config.version = lastConfig.version + 1;
