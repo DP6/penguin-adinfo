@@ -52,11 +52,7 @@ export class StringUtils {
 	 * Dado um array com strings ou padrões de regex, verifica se a string passada é exatamente igual a alguma string contida no array,
 	 * ou se corresponde a alguma regex presente no array
 	 */
-	static validateString(
-		stringToValidate: string,
-		rules: string[],
-		separator = ' '
-	): boolean {
+	static validateString(stringToValidate: string, rules: string[], separator = ' '): boolean {
 		const validate: [boolean] = [false];
 		rules.forEach((rule) => {
 			if (this._isStringForRegex(rule)) {
@@ -66,11 +62,7 @@ export class StringUtils {
 			} else {
 				//String
 				validate.push(
-					stringToValidate.toLocaleLowerCase() ===
-						this.replaceWhiteSpace(
-							rule.toLocaleLowerCase(),
-							separator
-						)
+					stringToValidate.toLocaleLowerCase() === this.replaceWhiteSpace(rule.toLocaleLowerCase(), separator)
 				);
 			}
 		});

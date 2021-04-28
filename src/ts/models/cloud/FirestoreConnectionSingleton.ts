@@ -1,9 +1,4 @@
-import {
-	CollectionReference,
-	DocumentReference,
-	Firestore,
-	DocumentData,
-} from '@google-cloud/firestore';
+import { CollectionReference, DocumentReference, Firestore, DocumentData } from '@google-cloud/firestore';
 import { ObjectStore } from '../DAO/ObjectStore';
 
 export class FirestoreConnectionSingleton extends ObjectStore {
@@ -72,9 +67,7 @@ export class FirestoreConnectionSingleton extends ObjectStore {
 	 * Pega todos os documentos de uma coleção
 	 * @param collection Coleção contendo os documentos desejados
 	 */
-	public getAllDocumentsFrom(
-		collection: CollectionReference
-	): Promise<DocumentData[]> {
+	public getAllDocumentsFrom(collection: CollectionReference): Promise<DocumentData[]> {
 		return new Promise((resolve, reject) => {
 			collection
 				.get()

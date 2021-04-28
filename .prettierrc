@@ -7,8 +7,8 @@
 	"printWidth": 120,
 	"overrides": [
 		{
-		  "files": ".prettierr",
-		  "options": { "parser": "json" }
+			"files": ".prettierr",
+			"options": { "parser": "json" }
 		}
 	]
 }

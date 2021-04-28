@@ -16,11 +16,7 @@ export class DateUtils {
 	 * O caracter deve ser repetido de acordo com quantos caracteres representam aquela informação
 	 * Exemplo: 30/12/2020 Padrão da string: dd/mm/yyyy
 	 */
-	static newDateStringFormat(
-		stringDate: string,
-		oldFormat: string,
-		newFormat: string
-	): string {
+	static newDateStringFormat(stringDate: string, oldFormat: string, newFormat: string): string {
 		let second = '';
 		let minute = '';
 		let hour = '';
@@ -72,8 +68,6 @@ export class DateUtils {
 			hh = date.getHours().toString().padStart(2, '0'),
 			min = date.getMinutes().toString().padStart(2, '0'),
 			ss = date.getSeconds().toString().padStart(2, '0');
-		return seconds
-			? `${date.getFullYear()}${mm}${dd}${hh}${min}${ss}`
-			: `${date.getFullYear()}${mm}${dd}${hh}${min}`;
+		return seconds ? `${date.getFullYear()}${mm}${dd}${hh}${min}${ss}` : `${date.getFullYear()}${mm}${dd}${hh}${min}`;
 	}
 }

@@ -2,7 +2,7 @@ import { StringUtils } from '../utils/StringUtils';
 import { Config } from './Config';
 import { Vehicle } from './Vehicle';
 
-/**
+/*
     params: {
         'Url': 'www.teste.com.br',
         'Tipo de Compra': 'cpc',
@@ -46,8 +46,7 @@ export class FacebookAds extends Vehicle {
 	private _hasUndefinedParameterError = false;
 	private _validationErrorMessage = 'Parâmetros incorretos: ';
 	private _errorFacebookParams: { [key: string]: string[] } = {};
-	private _undefinedParameterErrorMessage =
-		'Parâmetro(s) não encontrado(s) na configuração: ';
+	private _undefinedParameterErrorMessage = 'Parâmetro(s) não encontrado(s) na configuração: ';
 	private _undefinedParameterErrorFields: { [key: string]: string[] } = {};
 
 	/**
@@ -84,64 +83,35 @@ export class FacebookAds extends Vehicle {
 					const columnFields: string[] = [];
 					this._errorFacebookParams[facebookParam] = [];
 					this._undefinedParameterErrorFields[facebookParam] = [];
-					facebookadsConfig[facebookParam].forEach(
-						(column: string) => {
-							if (!this.config.validationRules[column]) {
-								this._hasUndefinedParameterError = true;
-								this._undefinedParameterErrorFields[
-									facebookParam
-								].push(column);
-								this._facebookParams[facebookParam] = '';
+					facebookadsConfig[facebookParam].forEach((column: string) => {
+						if (!this.config.validationRules[column]) {
+							this._hasUndefinedParameterError = true;
+							this._undefinedParameterErrorFields[facebookParam].push(column);
+							this._facebookParams[facebookParam] = '';
+						} else {
+							const normalizedColumn = StringUtils.normalize(column);
+							if (!this.config.validateField(this.csvLine, column, this.csvLine[normalizedColumn])) {
+								this._hasValidationError = true;
+								this._errorFacebookParams[facebookParam].push(column);
 							} else {
-								const normalizedColumn = StringUtils.normalize(
-									column
+								columnFields.push(
+									StringUtils.replaceWhiteSpace(
+										this.csvLine[normalizedColumn],
+										this.config.spaceSeparator
+									).toLocaleLowerCase()
 								);
-								if (
-									!this.config.validateField(
-										this.csvLine,
-										column,
-										this.csvLine[normalizedColumn]
-									)
-								) {
-									this._hasValidationError = true;
-									this._errorFacebookParams[
-										facebookParam
-									].push(column);
-								} else {
-									columnFields.push(
-										StringUtils.replaceWhiteSpace(
-											this.csvLine[normalizedColumn],
-											this.config.spaceSeparator
-										).toLocaleLowerCase()
-									);
-								}
-							}
-							if (
-								this._errorFacebookParams[facebookParam]
-									.length > 0
-							) {
-								this._facebookParams[facebookParam] =
-									this._validationErrorMessage +
-									this._errorFacebookParams[
-										facebookParam
-									].join(' - ');
-							} else if (
-								this._undefinedParameterErrorFields[
-									facebookParam
-								].length > 0
-							) {
-								this._facebookParams[facebookParam] =
-									this._undefinedParameterErrorMessage +
-									this._undefinedParameterErrorFields[
-										facebookParam
-									].join(' = ');
-							} else {
-								this._facebookParams[
-									facebookParam
-								] = columnFields.join(this.config.separator);
 							}
 						}
-					);
+						if (this._errorFacebookParams[facebookParam].length > 0) {
+							this._facebookParams[facebookParam] =
+								this._validationErrorMessage + this._errorFacebookParams[facebookParam].join(' - ');
+						} else if (this._undefinedParameterErrorFields[facebookParam].length > 0) {
+							this._facebookParams[facebookParam] =
+								this._undefinedParameterErrorMessage + this._undefinedParameterErrorFields[facebookParam].join(' = ');
+						} else {
+							this._facebookParams[facebookParam] = columnFields.join(this.config.separator);
+						}
+					});
 				}
 			});
 		}

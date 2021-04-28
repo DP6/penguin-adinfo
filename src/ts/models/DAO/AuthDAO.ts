@@ -13,9 +13,7 @@ export class AuthDAO {
 		this._token = token;
 		this._objectStore = FirestoreConnectionSingleton.getInstance();
 		this._pathToCollection = ['tokens'];
-		this._authCollection = this._objectStore.getCollection(
-			this._pathToCollection
-		);
+		this._authCollection = this._objectStore.getCollection(this._pathToCollection);
 	}
 
 	public getAuth(): Promise<Auth | void> {
@@ -25,18 +23,12 @@ export class AuthDAO {
 			.get()
 			.then((data) => {
 				const jsonAuth = data.data();
-				return new Auth(
-					jsonAuth.permission,
-					jsonAuth.company,
-					jsonAuth.agency
-				);
+				return new Auth(jsonAuth.permission, jsonAuth.company, jsonAuth.agency);
 			})
 			.catch((err) => console.log(err));
 	}
 
-	public addAuth(jsonAuth: {
-		[key: string]: string;
-	}): Promise<string | void> {
+	public addAuth(jsonAuth: { [key: string]: string }): Promise<string | void> {
 		return this._objectStore
 			.addDocumentIn(this._authCollection, jsonAuth, '')
 			.get()

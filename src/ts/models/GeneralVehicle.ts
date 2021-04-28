@@ -17,15 +17,10 @@ export class GeneralVehicle extends Vehicle {
 	private _hasUndefinedParameterError = false;
 	private _errorParams: { [key: string]: string[] } = {};
 	private _validationErrorMessage = 'Parâmetro(s) incorreto(s): ';
-	private _undefinedParameterErrorMessage =
-		'Parâmetro(s) não encontrado(s) na configuração: ';
+	private _undefinedParameterErrorMessage = 'Parâmetro(s) não encontrado(s) na configuração: ';
 	private _undefinedParameterErrorFields: { [key: string]: string[] } = {};
 
-	constructor(
-		csvLine: { [key: string]: string },
-		config: Config,
-		vehicleName: string
-	) {
+	constructor(csvLine: { [key: string]: string }, config: Config, vehicleName: string) {
 		super(csvLine, config);
 		this._vehicleName = vehicleName;
 		this._buildGeneralParams();
@@ -43,21 +38,13 @@ export class GeneralVehicle extends Vehicle {
 			this._params[param] = '';
 			this._errorParams[param] = [];
 			this._undefinedParameterErrorFields[param] = [];
-			const csvColumns: string[] = this.config.medias[this._vehicleName][
-				param
-			];
+			const csvColumns: string[] = this.config.medias[this._vehicleName][param];
 			csvColumns.forEach((csvColumn) => {
 				if (!this.config.existsColumn(csvColumn)) {
 					this._undefinedParameterFounded(param, csvColumn);
 				} else {
 					const normalizedColumn = StringUtils.normalize(csvColumn);
-					if (
-						!this.config.validateField(
-							this.csvLine,
-							csvColumn,
-							this.csvLine[normalizedColumn]
-						)
-					) {
+					if (!this.config.validateField(this.csvLine, csvColumn, this.csvLine[normalizedColumn])) {
 						this._validationErrorFounded(param, csvColumn);
 					} else {
 						this._params[param] += `${StringUtils.replaceWhiteSpace(
@@ -68,13 +55,10 @@ export class GeneralVehicle extends Vehicle {
 				}
 			});
 			if (this._hasValidationError) {
-				this._params[param] =
-					this._validationErrorMessage +
-					this._errorParams[param].join(' - ');
+				this._params[param] = this._validationErrorMessage + this._errorParams[param].join(' - ');
 			} else if (this._hasUndefinedParameterError) {
 				this._params[param] =
-					this._undefinedParameterErrorMessage +
-					this._undefinedParameterErrorFields[param].join(' - ');
+					this._undefinedParameterErrorMessage + this._undefinedParameterErrorFields[param].join(' - ');
 			} else {
 				this._params[param] = this._params[param].slice(0, -1);
 			}

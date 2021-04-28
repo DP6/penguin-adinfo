@@ -2,7 +2,7 @@ import { StringUtils } from '../utils/StringUtils';
 import { Config } from './Config';
 import { AnalyticsTool } from './AnalyticsTool';
 
-/**
+/*
  csvLine: {
     'Url': 'www.teste.com.br',
     'Tipo de Compra': 'cpc',
@@ -44,8 +44,7 @@ export class GA extends AnalyticsTool {
 			this._hasValidationError[utm] = false;
 			this._hasUndefinedParameterError[utm] = false;
 			this._validationErrorMessage[utm] = 'Parâmetros incorretos:';
-			this._undefinedParameterErroMessage[utm] =
-				'Parâmetros não encontrados:';
+			this._undefinedParameterErroMessage[utm] = 'Parâmetros não encontrados:';
 		});
 		this._utms = this._buildUtms();
 		this.url = this._buildUrl();
@@ -55,10 +54,7 @@ export class GA extends AnalyticsTool {
 	 * Retorna se houve erro na geração dos utms
 	 */
 	private _hasErrorAtUtm(utm: string): boolean {
-		return (
-			this._hasUndefinedParameterError[utm] ||
-			this._hasValidationError[utm]
-		);
+		return this._hasUndefinedParameterError[utm] || this._hasValidationError[utm];
 	}
 
 	/**
@@ -67,9 +63,7 @@ export class GA extends AnalyticsTool {
 	private _errorMessageAtUtm(utm: string): string {
 		const errorMessages = [];
 		if (this._hasUndefinedParameterError[utm]) {
-			errorMessages.push(
-				this._undefinedParameterErroMessage[utm].slice(0, -2)
-			);
+			errorMessages.push(this._undefinedParameterErroMessage[utm].slice(0, -2));
 		}
 		if (this._hasValidationError[utm]) {
 			errorMessages.push(this._validationErrorMessage[utm].slice(0, -2));
@@ -96,15 +90,11 @@ export class GA extends AnalyticsTool {
 	public buildedLine(): { [key: string]: any } {
 		const utms: { [key: string]: string } = {};
 		Object.keys(this._utms).map((utm) => {
-			utms[utm] = this._hasErrorAtUtm(utm)
-				? this._errorMessageAtUtm(utm)
-				: this._utms[utm];
+			utms[utm] = this._hasErrorAtUtm(utm) ? this._errorMessageAtUtm(utm) : this._utms[utm];
 		});
 		return {
 			utms: utms,
-			'url ga': this._hasAnyErrorAtUtms()
-				? 'Corrija os parâmetros para gerar a URL'
-				: this.url,
+			'url ga': this._hasAnyErrorAtUtms() ? 'Corrija os parâmetros para gerar a URL' : this.url,
 		};
 	}
 
@@ -122,13 +112,7 @@ export class GA extends AnalyticsTool {
 					this._undefinedParameterErroMessage[utm] += ` ${column} -`;
 					return;
 				}
-				if (
-					!this.config.validateField(
-						this.csvLine,
-						column,
-						this.csvLine[columnNormalized]
-					)
-				) {
+				if (!this.config.validateField(this.csvLine, column, this.csvLine[columnNormalized])) {
 					this._hasValidationError[utm] = true;
 					this._validationErrorMessage[utm] += ` ${column} -`;
 				}

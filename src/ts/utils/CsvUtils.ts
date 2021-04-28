@@ -15,11 +15,7 @@ export class CsvUtils {
 	 * @param lineOfCsv linha do csv no padrão {coluna: valor}
 	 */
 	static isLineEmpty(lineOfCsv: { [key: string]: string }): boolean {
-		return (
-			Object.keys(lineOfCsv).filter(
-				(column) => lineOfCsv[column].trim() !== ''
-			).length === 0
-		);
+		return Object.keys(lineOfCsv).filter((column) => lineOfCsv[column].trim() !== '').length === 0;
 	}
 
 	/**
@@ -30,13 +26,8 @@ export class CsvUtils {
 	 *
 	 * Função que converte uma string de um conteúdo CSV em um objeto JSON
 	 */
-	static csv2json(
-		csvContent: string,
-		separator: string
-	): { [key: string]: string }[] {
-		const linesOfCsv = csvContent
-			.split('\n')
-			.filter((line) => line.trim() !== '');
+	static csv2json(csvContent: string, separator: string): { [key: string]: string }[] {
+		const linesOfCsv = csvContent.split('\n').filter((line) => line.trim() !== '');
 
 		if (this.isCsvEmpty(linesOfCsv)) return [];
 

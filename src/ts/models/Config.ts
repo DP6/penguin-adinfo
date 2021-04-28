@@ -22,9 +22,7 @@ export class Config {
 			this._csvSeparator = jsonConfigTemp.csvSeparator;
 			delete jsonConfigTemp.csvSeparator;
 		}
-		this._dependenciesConfig = this._buildDependenciesConfig(
-			jsonConfigTemp.dependenciesConfig
-		);
+		this._dependenciesConfig = this._buildDependenciesConfig(jsonConfigTemp.dependenciesConfig);
 		delete jsonConfigTemp.dependenciesConfig;
 		this._spaceSeparator = jsonConfigTemp.spaceSeparator;
 		delete jsonConfigTemp.spaceSeparator;
@@ -50,13 +48,7 @@ export class Config {
 	 * Checa se a configuração é válida
 	 */
 	public validateConfig(): boolean {
-		return !(
-			!this._separator ||
-			!this._spaceSeparator ||
-			!this._insertTime ||
-			!this._version ||
-			!this._analyticsTool
-		);
+		return !(!this._separator || !this._spaceSeparator || !this._insertTime || !this._version || !this._analyticsTool);
 	}
 
 	private _buildDependenciesConfig(
@@ -71,9 +63,7 @@ export class Config {
 		if (!dependenciesConfig) {
 			return [];
 		}
-		return dependenciesConfig.map(
-			(dependencyConfig) => new DependencyConfig(dependencyConfig)
-		);
+		return dependenciesConfig.map((dependencyConfig) => new DependencyConfig(dependencyConfig));
 	}
 
 	/**
@@ -90,28 +80,18 @@ export class Config {
 		let jsonConfig: { [key: string]: any } = {};
 		Object.keys(this).forEach((key: string, index: number) => {
 			if (key === '_analyticsTool' || key === '_medias') {
-				jsonConfig = JsonUtils.addParametersAt(
-					jsonConfig,
-					Object.values(this)[index]
-				);
+				jsonConfig = JsonUtils.addParametersAt(jsonConfig, Object.values(this)[index]);
 			} else if (key === '_validationRules') {
 				jsonConfig = JsonUtils.addParametersAt(jsonConfig, {
 					columns: this._validationRules,
 				});
 			} else if (key === '_dependenciesConfig') {
 				if (this._dependenciesConfig.length > 0) {
-					jsonConfig[
-						'dependenciesConfig'
-					] = this._dependenciesConfig.map(
-						(dependencyConfig: DependencyConfig) => {
-							return dependencyConfig.toJson();
-						}
-					);
+					jsonConfig['dependenciesConfig'] = this._dependenciesConfig.map((dependencyConfig: DependencyConfig) => {
+						return dependencyConfig.toJson();
+					});
 				}
-			} else if (
-				key !== '_analyticsToolName' &&
-				Object.values(this)[index]
-			) {
+			} else if (key !== '_analyticsToolName' && Object.values(this)[index]) {
 				jsonConfig[key.replace('_', '')] = Object.values(this)[index];
 			}
 		});
@@ -149,10 +129,7 @@ export class Config {
 		if (!this._existsValidationRuleFor(csvColumn)) {
 			return true;
 		}
-		return StringUtils.validateString(
-			value,
-			this._validationRules[csvColumn]
-		);
+		return StringUtils.validateString(value, this._validationRules[csvColumn]);
 	}
 
 	/**
@@ -175,41 +152,26 @@ export class Config {
 	 * @param csvColumn Coluna do CSV a ser validada
 	 * @param value Valor da coluna
 	 */
-	private _validateDependencyRulesFor(
-		csvLine: { [key: string]: string },
-		csvColumn: string,
-		value: string
-	): boolean {
-		const dependenciesConfigForCsvColumn = this._getAllDependencyConfigFor(
-			csvColumn
-		);
+	private _validateDependencyRulesFor(csvLine: { [key: string]: string }, csvColumn: string, value: string): boolean {
+		const dependenciesConfigForCsvColumn = this._getAllDependencyConfigFor(csvColumn);
 
 		if (dependenciesConfigForCsvColumn.length === 0) {
 			return true;
 		}
 
-		const dependenciesToValidate = dependenciesConfigForCsvColumn.filter(
-			(dependencyConfig) =>
-				StringUtils.validateString(
-					csvLine[
-						StringUtils.normalize(dependencyConfig.columnReference)
-					],
-					dependencyConfig.valuesReference
-				)
+		const dependenciesToValidate = dependenciesConfigForCsvColumn.filter((dependencyConfig) =>
+			StringUtils.validateString(
+				csvLine[StringUtils.normalize(dependencyConfig.columnReference)],
+				dependencyConfig.valuesReference
+			)
 		);
 
 		return (
 			dependenciesToValidate.filter((dependencyConfig) => {
 				if (dependencyConfig.hasMatch) {
-					return StringUtils.validateString(
-						value,
-						dependencyConfig.matches
-					);
+					return StringUtils.validateString(value, dependencyConfig.matches);
 				} else {
-					return !StringUtils.validateString(
-						value,
-						dependencyConfig.matches
-					);
+					return !StringUtils.validateString(value, dependencyConfig.matches);
 				}
 			}).length === dependenciesToValidate.length
 		);
@@ -221,15 +183,8 @@ export class Config {
 	 * @param csvColumn Coluna do CSV de referência
 	 * @param value Valor da coluna
 	 */
-	public validateField(
-		csvLine: { [key: string]: string },
-		csvColumn: string,
-		value: string
-	): boolean {
-		return (
-			this._validateRulesFor(csvColumn, value) &&
-			this._validateDependencyRulesFor(csvLine, csvColumn, value)
-		);
+	public validateField(csvLine: { [key: string]: string }, csvColumn: string, value: string): boolean {
+		return this._validateRulesFor(csvColumn, value) && this._validateDependencyRulesFor(csvLine, csvColumn, value);
 	}
 
 	/**

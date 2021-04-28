@@ -18,10 +18,7 @@ export class LoggingSingleton extends Log {
 		if (!LoggingSingleton._infoInstance) {
 			LoggingSingleton._infoInstance = bunyan.createLogger({
 				name: LoggingSingleton._loggerName,
-				streams: [
-					{ stream: process.stdout, level: 'info' },
-					this._loggingBunyan.stream('info'),
-				],
+				streams: [{ stream: process.stdout, level: 'info' }, this._loggingBunyan.stream('info')],
 			});
 		}
 		LoggingSingleton._infoInstance.info(message);
@@ -31,10 +28,7 @@ export class LoggingSingleton extends Log {
 		if (!LoggingSingleton._errorInstance) {
 			LoggingSingleton._errorInstance = bunyan.createLogger({
 				name: LoggingSingleton._loggerName,
-				streams: [
-					{ stream: process.stdout, level: 'error' },
-					this._loggingBunyan.stream('error'),
-				],
+				streams: [{ stream: process.stdout, level: 'error' }, this._loggingBunyan.stream('error')],
 			});
 		}
 		LoggingSingleton._errorInstance.info(message);
@@ -44,10 +38,7 @@ export class LoggingSingleton extends Log {
 		if (!LoggingSingleton._warningInstance) {
 			LoggingSingleton._warningInstance = bunyan.createLogger({
 				name: LoggingSingleton._loggerName,
-				streams: [
-					{ stream: process.stdout, level: 'warn' },
-					this._loggingBunyan.stream('warn'),
-				],
+				streams: [{ stream: process.stdout, level: 'warn' }, this._loggingBunyan.stream('warn')],
 			});
 		}
 		LoggingSingleton._warningInstance.info(message);

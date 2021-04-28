@@ -1,7 +1,7 @@
 {
 	"compilerOptions": {
 		"target": "ES6",
-		"outDir": "src/js",
+		"outDir": "dist/",
 		"noEmitOnError": true,
 		"noImplicitAny": true,
 		"module": "CommonJS",

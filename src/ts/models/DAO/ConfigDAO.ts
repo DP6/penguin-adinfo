@@ -2,11 +2,7 @@ import { ObjectStore } from '../DAO/ObjectStore';
 import { FirestoreConnectionSingleton } from '../cloud/FirestoreConnectionSingleton';
 import { Config } from '../Config';
 import { DateUtils } from '../../utils/DateUtils';
-import {
-	CollectionReference,
-	DocumentData,
-	DocumentReference,
-} from '@google-cloud/firestore';
+import { CollectionReference, DocumentData, DocumentReference } from '@google-cloud/firestore';
 
 export class ConfigDAO {
 	private _objectStore: ObjectStore;
@@ -14,11 +10,7 @@ export class ConfigDAO {
 
 	constructor(companyName: string) {
 		this._objectStore = FirestoreConnectionSingleton.getInstance();
-		this._configCollection = this._objectStore.getCollection([
-			'companies',
-			companyName,
-			'config',
-		]);
+		this._configCollection = this._objectStore.getCollection(['companies', companyName, 'config']);
 	}
 
 	/**
@@ -54,11 +46,7 @@ export class ConfigDAO {
 					config.insertTime = DateUtils.generateDateString(true);
 					if (config.validateConfig()) {
 						resolve(
-							this._objectStore.addDocumentIn(
-								this._configCollection,
-								config.toJson(),
-								`config_${config.version}`
-							)
+							this._objectStore.addDocumentIn(this._configCollection, config.toJson(), `config_${config.version}`)
 						);
 					} else {
 						reject('Configuração inválida');

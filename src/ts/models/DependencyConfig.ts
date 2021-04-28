@@ -12,13 +12,7 @@ export class DependencyConfig {
 		columnDestiny: string;
 		matches: string[];
 	}) {
-		const {
-			columnReference,
-			hasMatch,
-			matches,
-			valuesReference,
-			columnDestiny,
-		} = dependencyConfig;
+		const { columnReference, hasMatch, matches, valuesReference, columnDestiny } = dependencyConfig;
 		this._columnReference = columnReference;
 		this._hasMatch = hasMatch;
 		this._matches = matches;
