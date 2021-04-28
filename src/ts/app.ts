@@ -22,67 +22,39 @@ app.use(bodyParser.json());
 
 app.use(
 	cors({
-		allowedHeaders: [
-			'token',
-			'agency',
-			'Content-Type',
-			'company',
-			'file',
-			'data',
-			'config',
-			'permission',
-		],
-		exposedHeaders: [
-			'token',
-			'agency',
-			'company',
-			'file',
-			'data',
-			'config',
-			'permission',
-		],
+		allowedHeaders: ['token', 'agency', 'Content-Type', 'company', 'file', 'data', 'config', 'permission'],
+		exposedHeaders: ['token', 'agency', 'company', 'file', 'data', 'config', 'permission'],
 		origin: '*',
 		methods: 'GET,POST',
 		preflightContinue: false,
 	})
 );
 
-app.all(
-	'*',
-	async (
-		req: { [key: string]: any },
-		res: { [key: string]: any },
-		next: any
-	) => {
-		const token = req.headers.token;
-		if (token) {
-			const authDAO = new AuthDAO(token);
-			authDAO
-				.getAuth()
-				.then((auth: Auth) => {
-					req.company = auth.company;
-					req.agency = auth.agency;
-					if (auth.hasPermissionFor(req.url, req.method)) {
-						next();
-					} else {
-						res.status(403).send(
-							'Usuário sem permissão para realizar a ação!'
-						);
-					}
-				})
-				.catch((err) => {
-					res.status(403).send('Usuário Inválido');
-				});
-		} else {
-			res.status(403).send('Token não informado!');
-		}
+app.all('*', async (req: { [key: string]: any }, res: { [key: string]: any }, next: any) => {
+	const token = req.headers.token;
+	if (token) {
+		const authDAO = new AuthDAO(token);
+		authDAO
+			.getAuth()
+			.then((auth: Auth) => {
+				req.company = auth.company;
+				req.agency = auth.agency;
+				if (auth.hasPermissionFor(req.url, req.method)) {
+					next();
+				} else {
+					res.status(403).send('Usuário sem permissão para realizar a ação!');
+				}
+			})
+			.catch((err) => {
+				res.status(403).send('Usuário Inválido');
+			});
+	} else {
+		res.status(403).send('Token não informado!');
 	}
-);
+});
 
 routes(app);
 
-app.get('/', (req: { [key: string]: any }, res: { [key: string]: any }) =>
-	res.status(200).send('OK')
-);
+app.get('/', (req: { [key: string]: any }, res: { [key: string]: any }) => res.status(200).send('OK'));
 
 module.exports = app;

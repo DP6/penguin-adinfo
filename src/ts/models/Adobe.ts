@@ -2,7 +2,7 @@ import { StringUtils } from '../utils/StringUtils';
 import { Config } from './Config';
 import { AnalyticsTool } from './AnalyticsTool';
 
-/**
+/*
  csvLine: {
     'Url': 'www.teste.com.br',
     'Tipo de Compra': 'cpc',
@@ -56,9 +56,7 @@ export class Adobe extends AnalyticsTool {
 	private _errorMessage(): string {
 		const errorMessages = [];
 		if (this._hasUndefinedParameterError) {
-			errorMessages.push(
-				this._undefinedParameterErroMessage.slice(0, -2)
-			);
+			errorMessages.push(this._undefinedParameterErroMessage.slice(0, -2));
 		}
 		if (this._hasValidationError) {
 			errorMessages.push(this._validationErrorMessage.slice(0, -2));
@@ -72,9 +70,7 @@ export class Adobe extends AnalyticsTool {
 	public buildedLine(): { [key: string]: string } {
 		return {
 			cid: this._hasErrorAtCid() ? this._errorMessage() : this._cid,
-			'url adobe': this._hasErrorAtCid()
-				? 'Corrija os parâmetros para gerar a URL'
-				: this.url,
+			'url adobe': this._hasErrorAtCid() ? 'Corrija os parâmetros para gerar a URL' : this.url,
 		};
 	}
 
@@ -90,22 +86,13 @@ export class Adobe extends AnalyticsTool {
 				this._undefinedParameterErroMessage += ` ${column} -`;
 				return;
 			}
-			if (
-				!this.config.validateField(
-					this.csvLine,
-					column,
-					this.csvLine[columnNormalized]
-				)
-			) {
+			if (!this.config.validateField(this.csvLine, column, this.csvLine[columnNormalized])) {
 				this._hasValidationError = true;
 				this._validationErrorMessage += ` ${column} -`;
 			}
 			cid += `${this.csvLine[columnNormalized]}${this.config.separator}`;
 		});
-		cid = StringUtils.replaceWhiteSpace(
-			StringUtils.normalize(cid),
-			this.config.spaceSeparator
-		).slice(0, -1);
+		cid = StringUtils.replaceWhiteSpace(StringUtils.normalize(cid), this.config.spaceSeparator).slice(0, -1);
 		return cid;
 	}
 

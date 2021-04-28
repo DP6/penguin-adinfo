@@ -10,7 +10,7 @@
 		"lint": "eslint ./src --ext .ts",
 		"lint-prettier": "npx prettier --check .",
 		"lint-fix": "eslint ./src --ext .ts --fix",
-		"compile": "del /s /q src\\js && tsc",
+		"compile": "del /s /q dist && tsc",
 		"auto-compile": "tsc -w",
 		"format": "npx prettier --write .",
 		"build": "npm run compile",
@@ -23,8 +23,8 @@
 	"author": "DP6",
 	"contributors": [
 		{
-		  "name": "Lucas Tonetto Firmo",
-		  "email": "lucasfirmo@hotmail.com"
+			"name": "Lucas Tonetto Firmo",
+			"email": "lucasfirmo@hotmail.com"
 		}
 	],
 	"keywords": [

@@ -2,7 +2,7 @@ import { StringUtils } from '../utils/StringUtils';
 import { Config } from './Config';
 import { Vehicle } from './Vehicle';
 
-/**
+/*
     params: {
         'Url': 'www.teste.com.br',
         'Tipo de Compra': 'cpc',
@@ -50,10 +50,8 @@ export class GoogleAds extends Vehicle {
 		Object.keys(this.config.medias.googleads).map((adsParam) => {
 			this._hasValidationError[adsParam] = false;
 			this._hasUndefinedParameterError[adsParam] = false;
-			this._validationErrorMessage[adsParam] =
-				'Parâmetro(s) incorreto(s): ';
-			this._undefinedParameterErrorMessage[adsParam] =
-				'Parâmetro(s) não encontrado(s): ';
+			this._validationErrorMessage[adsParam] = 'Parâmetro(s) incorreto(s): ';
+			this._undefinedParameterErrorMessage[adsParam] = 'Parâmetro(s) não encontrado(s): ';
 		});
 		this._buildAdsParams();
 	}
@@ -80,31 +78,19 @@ export class GoogleAds extends Vehicle {
 			this._adsParams[googleAdsParam] = '';
 			this._errorAdsParams[googleAdsParam] = [];
 			this._undefinedParameterErrorFields[googleAdsParam] = [];
-			const fields: string[] = this.config.medias.googleads[
-				googleAdsParam
-			];
+			const fields: string[] = this.config.medias.googleads[googleAdsParam];
 			fields.forEach((column: string) => {
 				if (!this.config.validationRules[column]) {
 					this._hasUndefinedParameterError[googleAdsParam] = true;
-					this._undefinedParameterErrorFields[googleAdsParam].push(
-						column
-					);
+					this._undefinedParameterErrorFields[googleAdsParam].push(column);
 				} else {
 					const normalizedColumn = StringUtils.normalize(column);
 					//TODO testar caso a coluna não existir no csv
-					if (
-						!this.config.validateField(
-							this.csvLine,
-							column,
-							this.csvLine[normalizedColumn]
-						)
-					) {
+					if (!this.config.validateField(this.csvLine, column, this.csvLine[normalizedColumn])) {
 						this._hasValidationError[googleAdsParam] = true;
 						this._errorAdsParams[googleAdsParam].push(column);
 					} else {
-						this._adsParams[
-							googleAdsParam
-						] += `${StringUtils.replaceWhiteSpace(
+						this._adsParams[googleAdsParam] += `${StringUtils.replaceWhiteSpace(
 							this.csvLine[normalizedColumn],
 							this.config.spaceSeparator
 						).toLowerCase()}${this.config.separator}`;
@@ -113,18 +99,13 @@ export class GoogleAds extends Vehicle {
 			});
 			if (this._hasValidationError[googleAdsParam]) {
 				this._adsParams[googleAdsParam] =
-					this._validationErrorMessage[googleAdsParam] +
-					this._errorAdsParams[googleAdsParam].join(' - ');
+					this._validationErrorMessage[googleAdsParam] + this._errorAdsParams[googleAdsParam].join(' - ');
 			} else if (this._hasUndefinedParameterError[googleAdsParam]) {
 				this._adsParams[googleAdsParam] =
 					this._undefinedParameterErrorMessage[googleAdsParam] +
-					this._undefinedParameterErrorFields[googleAdsParam].join(
-						' - '
-					);
+					this._undefinedParameterErrorFields[googleAdsParam].join(' - ');
 			} else {
-				this._adsParams[googleAdsParam] = this._adsParams[
-					googleAdsParam
-				].slice(0, -1);
+				this._adsParams[googleAdsParam] = this._adsParams[googleAdsParam].slice(0, -1);
 			}
 		});
 	}

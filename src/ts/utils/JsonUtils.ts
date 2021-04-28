@@ -16,14 +16,8 @@ export class JsonUtils {
 		const jsonNormalized: { [key: string]: any } = {};
 		Object.keys(json).map((key) => {
 			jsonNormalized[StringUtils.normalize(key)] = json[key];
-			if (
-				this._keyValueIsAnObject(
-					jsonNormalized[StringUtils.normalize(key)]
-				)
-			) {
-				jsonNormalized[StringUtils.normalize(key)] = this.normalizeKeys(
-					jsonNormalized[StringUtils.normalize(key)]
-				);
+			if (this._keyValueIsAnObject(jsonNormalized[StringUtils.normalize(key)])) {
+				jsonNormalized[StringUtils.normalize(key)] = this.normalizeKeys(jsonNormalized[StringUtils.normalize(key)]);
 			}
 		});
 		return jsonNormalized;

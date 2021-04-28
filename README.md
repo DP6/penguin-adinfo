@@ -4,16 +4,16 @@
 <img src="https://raw.githubusercontent.com/DP6/templates-centro-de-inovacoes/main/public/images/centro_de_inovacao_dp6.png" height="100px" />
 </div>
 
-O Penguin Adinfo é um recurso que tem como objetivo o **controle** e **padronização** do uso de parametrização e nomenclatura de mídia digital. 
+O Penguin Adinfo é um recurso que tem como objetivo o **controle** e **padronização** do uso de parametrização e nomenclatura de mídia digital.
 
-A solução proposta é uma **API** open source que através de rotas de requisição trabalha *inputs* de URLs a parametrizar e seus respectivos campos para devolver a parametrização já com uma **validação** dos campos preenchidos e de status de requisição dos links.
+A solução proposta é uma **API** open source que através de rotas de requisição trabalha _inputs_ de URLs a parametrizar e seus respectivos campos para devolver a parametrização já com uma **validação** dos campos preenchidos e de status de requisição dos links.
 
 Os principais componentes no uso da aplicação são a **configuração**, um JSON contendo quais campos são aceitos na taxonomia de mídia, o **permissionamento** para controle de ações permitidas por nível de acesso, e o **arquivo de parametrização**, um CSV contendo a lista de URLs e os campos preenchidos conforme o que foi configurado.
 
 ## Principais propostas de valor
 
 - Independência de qualquer programa para a abertura das planilhas durante o processo de parametrização, o que comumente compromete a performance pelo uso extensivo de fórmulas.
-- Possibilidade do uso da API em planilhas, externalizando o processamento para uma transformação puramente sobre os dados.Controle de permissões com 3 níveis, cada qual incluindo os seguintes: Controle de **acessos**, edição de **configurações**, realização da **parametrização**. 
+- Possibilidade do uso da API em planilhas, externalizando o processamento para uma transformação puramente sobre os dados.Controle de permissões com 3 níveis, cada qual incluindo os seguintes: Controle de **acessos**, edição de **configurações**, realização da **parametrização**.
 - Os acessos podem ser divididos em grupos ou projetos, para que por exemplo diferentes agências possam todas ter seu nível de configuração, mas apenas para suas próprias campanhas.
 - Escalabilidade de uso por suportar grandes tamanhos de arquivo e histórico.
 
@@ -61,15 +61,15 @@ Por padrão, ao utilizar o adinfo dentro do App Engine, basta conceder acesso à
 
 ##### Configuração inicial do Storage
 
-Crie um bucket para armazenar os arquivos do adinfo. O bucket em questão deve ser informado no atributo _bucket da classe **StorageConnectionSingleton**, por padrão os arquivos serão salvos dentro do bucket informado e separados dentro de pastas para cada agência.
+Crie um bucket para armazenar os arquivos do adinfo. O bucket em questão deve ser informado no atributo \_bucket da classe **StorageConnectionSingleton**, por padrão os arquivos serão salvos dentro do bucket informado e separados dentro de pastas para cada agência.
 
 ##### Configuração inicial do Firestore
 
 Para a configuração inicial do Firestore, são necessárias duas coleções.
 
-- **companies**: essa coleção deve ser criada na raiz do firestore e deve conter um documento com o nome da empresa. Dentro desse documento, uma segunda coleção deve ser criada com o nome *config*. Seguindo a estrutura: companies > [nome_empresa] > config;
+- **companies**: essa coleção deve ser criada na raiz do firestore e deve conter um documento com o nome da empresa. Dentro desse documento, uma segunda coleção deve ser criada com o nome _config_. Seguindo a estrutura: companies > [nome_empresa] > config;
 
-- **tokens**: essa coleção também deve ser criada na raiz do firestore com um documento seguindo a estrutura: 
+- **tokens**: essa coleção também deve ser criada na raiz do firestore com um documento seguindo a estrutura:
 
   ```
   {
