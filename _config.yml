@@ -1,0 +1,9 @@
+title: DP6 - Centro de inovações
+initiative: 'penguin-adinfo'
+
+markdown: kramdown
+remote_theme: dp6/dp6.github.io
+
+plugins:
+  - jekyll-sitemap
+  - jekyll-gzip

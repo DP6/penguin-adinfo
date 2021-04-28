@@ -1,7 +1,14 @@
 {
-	"tabWidth": 4,
+	"tabWidth": 2,
 	"singleQuote": true,
 	"useTabs": true,
 	"semi": true,
-	"bracketSpacing": true
+	"bracketSpacing": true,
+	"printWidth": 120,
+	"overrides": [
+		{
+		  "files": ".prettierr",
+		  "options": { "parser": "json" }
+		}
+	]
 }

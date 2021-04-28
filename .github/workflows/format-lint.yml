@@ -1,0 +1,26 @@
+name: Lint and format
+on: ['push']
+jobs:
+  format:
+    name: Lint and format
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          ref: ${{ github.head_ref }}
+      - uses: actions/setup-node@v2.1.5
+        with:
+          node-version: '12.x'
+      - name: Install dependencies
+        run: npm install
+      - name: Lint
+        run: npm run lint
+      - name: Format
+        run: |
+          npm ci
+          npm run format
+      - name: Commit changes
+        uses: stefanzweifel/git-auto-commit-action@v4.10.0
+        with:
+          commit_message: 'style: :lipstick: Apply formatting changes'
+          branch: ${{ github.head_ref }}

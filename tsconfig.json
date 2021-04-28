@@ -8,5 +8,9 @@
 		"removeComments": true,
 		"resolveJsonModule": true
 	},
-	"include": ["src/ts/**/*"]
+	"include": ["src/ts/**/*"],
+	"typedocOptions": {
+		"entryPoints": ["src/ts/"],
+		"out": "docs"
+	}
 }
