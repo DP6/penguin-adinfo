@@ -1,0 +1,336 @@
+<!doctype html>
+<html class="default no-js">
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title>penguin-adinfo</title>
+	<meta name="description" content="Documentation for penguin-adinfo">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet" href="assets/css/main.css">
+	<script async src="assets/js/search.js" id="search-script"></script>
+</head>
+<body>
+<header>
+	<div class="tsd-page-toolbar">
+		<div class="container">
+			<div class="table-wrap">
+				<div class="table-cell" id="tsd-search" data-index="assets/js/search.json" data-base=".">
+					<div class="field">
+						<label for="tsd-search-field" class="tsd-widget search no-caption">Search</label>
+						<input id="tsd-search-field" type="text" />
+					</div>
+					<ul class="results">
+						<li class="state loading">Preparing search index...</li>
+						<li class="state failure">The search index is not available</li>
+					</ul>
+					<a href="index.html" class="title">penguin-adinfo</a>
+				</div>
+				<div class="table-cell" id="tsd-widgets">
+					<div id="tsd-filter">
+						<a href="#" class="tsd-widget options no-caption" data-toggle="options">Options</a>
+						<div class="tsd-filter-group">
+							<div class="tsd-select" id="tsd-filter-visibility">
+								<span class="tsd-select-label">All</span>
+								<ul class="tsd-select-list">
+									<li data-value="public">Public</li>
+									<li data-value="protected">Public/Protected</li>
+									<li data-value="private" class="selected">All</li>
+								</ul>
+							</div>
+							<input type="checkbox" id="tsd-filter-inherited" checked />
+							<label class="tsd-widget" for="tsd-filter-inherited">Inherited</label>
+							<input type="checkbox" id="tsd-filter-externals" checked />
+							<label class="tsd-widget" for="tsd-filter-externals">Externals</label>
+						</div>
+					</div>
+					<a href="#" class="tsd-widget menu no-caption" data-toggle="menu">Menu</a>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="tsd-page-title">
+		<div class="container">
+			<h1>penguin-adinfo</h1>
+		</div>
+	</div>
+</header>
+<div class="container container-main">
+	<div class="row">
+		<div class="col-8 col-content">
+			<div class="tsd-panel tsd-typography">
+				<a href="#penguin-adinfo" id="penguin-adinfo" style="color: inherit; text-decoration: none;">
+					<h1>Penguin Adinfo</h1>
+				</a>
+				<div align="center">
+					<img src="https://raw.githubusercontent.com/DP6/templates-centro-de-inovacoes/main/public/images/centro_de_inovacao_dp6.png" height="100px" />
+				</div>
+				<p>O Penguin Adinfo é um recurso que tem como objetivo o <strong>controle</strong> e <strong>padronização</strong> do uso de parametrização e nomenclatura de mídia digital. </p>
+				<p>A solução proposta é uma <strong>API</strong> open source que através de rotas de requisição trabalha <em>inputs</em> de URLs a parametrizar e seus respectivos campos para devolver a parametrização já com uma <strong>validação</strong> dos campos preenchidos e de status de requisição dos links.</p>
+				<p>Os principais componentes no uso da aplicação são a <strong>configuração</strong>, um JSON contendo quais campos são aceitos na taxonomia de mídia, o <strong>permissionamento</strong> para controle de ações permitidas por nível de acesso, e o <strong>arquivo de parametrização</strong>, um CSV contendo a lista de URLs e os campos preenchidos conforme o que foi configurado.</p>
+				<a href="#principais-propostas-de-valor" id="principais-propostas-de-valor" style="color: inherit; text-decoration: none;">
+					<h2>Principais propostas de valor</h2>
+				</a>
+				<ul>
+					<li>Independência de qualquer programa para a abertura das planilhas durante o processo de parametrização, o que comumente compromete a performance pelo uso extensivo de fórmulas.</li>
+					<li>Possibilidade do uso da API em planilhas, externalizando o processamento para uma transformação puramente sobre os dados.Controle de permissões com 3 níveis, cada qual incluindo os seguintes: Controle de <strong>acessos</strong>, edição de <strong>configurações</strong>, realização da <strong>parametrização</strong>. </li>
+					<li>Os acessos podem ser divididos em grupos ou projetos, para que por exemplo diferentes agências possam todas ter seu nível de configuração, mas apenas para suas próprias campanhas.</li>
+					<li>Escalabilidade de uso por suportar grandes tamanhos de arquivo e histórico.</li>
+				</ul>
+				<a href="#npm-run" id="npm-run" style="color: inherit; text-decoration: none;">
+					<h2>NPM Run</h2>
+				</a>
+				<ul>
+					<li><strong>start</strong>: executa a aplicação;</li>
+					<li><strong>unit-test</strong>: Realiza uma bateria de testes unitários dos arquivos de typescript presentes na pasta test/;</li>
+					<li><strong>test</strong>: Realiza uma bateria de testes unitários dos arquivos de typescript presentes na pasta test/;</li>
+					<li><strong>lint</strong>: Submete o código a uma avaliação do <a href="https://eslint.org/">ESLint</a>;</li>
+					<li><strong>lint-fix</strong>: Submete o código a uma avaliação do <a href="https://eslint.org/">ESLint</a> e aplica correções automaticamente ao código;</li>
+					<li><strong>compile</strong>: Exclui os arquivos da pasta /src/js e compila o código do typescript para javascript, guardando-o na pasta src/js;</li>
+					<li><strong>auto-compile</strong>: Realiza a compilação dos arquivos typescript em tempo real, armazenando o resultado dentro da pasta src/js, sem excluir o conteúdo anterior;</li>
+					<li><strong>prettier</strong>: Formata todo o código das pastas src/ e test/, utilizando o <a href="https://prettier.io/">Prettier</a>, de acordo com a configuração descrita no arquivo .prettierrc;</li>
+					<li><strong>build</strong>: Executa o compile do código typescript para javascript.</li>
+				</ul>
+				<a href="#requisitos-para-utilização" id="requisitos-para-utilização" style="color: inherit; text-decoration: none;">
+					<h2>Requisitos para utilização</h2>
+				</a>
+				<ul>
+					<li>Ambiente de hospedagem de aplicações, em nuvem ou on-premise;</li>
+					<li>Banco de dados para armazenamento de arquivos no formato csv;</li>
+					<li>Banco de dados NoSQL para armazenamento de objetos JSON.</li>
+				</ul>
+				<a href="#produtos-do-gcp-sugestão" id="produtos-do-gcp-sugestão" style="color: inherit; text-decoration: none;">
+					<h3>Produtos do GCP (sugestão)</h3>
+				</a>
+				<p>O adinfo pode ser implementado em diferentes provedores de nuvem ou em ambientes on-premise. Listaremos aqui sugestões de serviços do GCP que podem ser utilizados para complementar a infraestrutura da API.</p>
+				<ul>
+					<li>App Engine</li>
+					<li>Cloud Storage</li>
+					<li>Firestore</li>
+				</ul>
+				<a href="#instalação" id="instalação" style="color: inherit; text-decoration: none;">
+					<h2>Instalação</h2>
+				</a>
+				<p>Clone o projeto do github para sua máquina local ou Cloud Shell</p>
+				<pre><code class="language-console">git clone https://github.com/DP6/penguin-adinfo.git
+</code></pre>
+				<a href="#instalação-gcp-sugerida" id="instalação-gcp-sugerida" style="color: inherit; text-decoration: none;">
+					<h3>Instalação GCP (sugerida)</h3>
+				</a>
+				<p>Durante toda a etapa de desenvolvimento do adinfo ele é hospedado no serviço de App Engine do GCP, além de armazenar informações no Firestore e Storage.</p>
+				<a href="#configuração-do-firestore-e-storage" id="configuração-do-firestore-e-storage" style="color: inherit; text-decoration: none;">
+					<h4>Configuração do Firestore e Storage</h4>
+				</a>
+				<p>Por padrão, ao utilizar o adinfo dentro do App Engine, basta conceder acesso à conta de serviço para o Storage e Firestore para que todos os recursos funcionem corretamente. Caso o adinfo esteja hospedado fora do GCP ou em outro projeto, é necessário informar a chave de autenticação na inicialização das classes, dentro nos arquivos <strong>FirestoreConnectionSingleton</strong> e <strong>StorageConnectionSingleton</strong>.</p>
+				<a href="#configuração-inicial-do-storage" id="configuração-inicial-do-storage" style="color: inherit; text-decoration: none;">
+					<h5>Configuração inicial do Storage</h5>
+				</a>
+				<p>Crie um bucket para armazenar os arquivos do adinfo. O bucket em questão deve ser informado no atributo _bucket da classe <strong>StorageConnectionSingleton</strong>, por padrão os arquivos serão salvos dentro do bucket informado e separados dentro de pastas para cada agência.</p>
+				<a href="#configuração-inicial-do-firestore" id="configuração-inicial-do-firestore" style="color: inherit; text-decoration: none;">
+					<h5>Configuração inicial do Firestore</h5>
+				</a>
+				<p>Para a configuração inicial do Firestore, são necessárias duas coleções.</p>
+				<ul>
+					<li><p><strong>companies</strong>: essa coleção deve ser criada na raiz do firestore e deve conter um documento com o nome da empresa. Dentro desse documento, uma segunda coleção deve ser criada com o nome <em>config</em>. Seguindo a estrutura: companies &gt; [nome_empresa] &gt; config;</p>
+					</li>
+					<li><p><strong>tokens</strong>: essa coleção também deve ser criada na raiz do firestore com um documento seguindo a estrutura: </p>
+						<pre><code><span style="color: #000000">{</span>
+<span style="color: #000000">    company: </span><span style="color: #A31515">&quot;arthurltda&quot;</span><span style="color: #000000"> (</span><span style="color: #001080">string</span><span style="color: #000000">)</span>
+<span style="color: #000000">    permission: </span><span style="color: #A31515">&quot;owner&quot;</span><span style="color: #000000">(</span><span style="color: #001080">string</span><span style="color: #000000">)</span>
+<span style="color: #000000">}</span>
+</code></pre>
+						<p>Para esse documento, é importante manter o Código do Documento gerado automaticamente pelo google. O código gerado para cada documento será o token de acesso utilizado na API.</p>
+					</li>
+				</ul>
+				<a href="#banco-de-dados-alternativos" id="banco-de-dados-alternativos" style="color: inherit; text-decoration: none;">
+					<h3>Banco de dados alternativos</h3>
+				</a>
+				<p>Atualmente o adinfo não disponibiliza por padrão um código de acesso à banco de dados diferentes do Storage e Firestore. Para conexões com outros ambientes a criação dos scripts se faz necessária.</p>
+				<a href="#criação-dos-novos-scripts" id="criação-dos-novos-scripts" style="color: inherit; text-decoration: none;">
+					<h3>Criação dos novos scripts</h3>
+				</a>
+				<p>Caso o usuário opte por utilizar um banco de arquivos diferentes do Storage, é necessário que o script da nova classe herde de <strong>FileStore</strong>.</p>
+				<p>No caso de substituir o uso do Firestore para armazenamento de chaves. A nova classe deve herdar de <strong>ObjectStore</strong>.</p>
+				<a href="#configuração-do-ambiente-de-desenvolvimento" id="configuração-do-ambiente-de-desenvolvimento" style="color: inherit; text-decoration: none;">
+					<h2>Configuração do ambiente de desenvolvimento</h2>
+				</a>
+				<ol>
+					<li><strong>Arquivo .env</strong>: O arquivo .env deve estar localizado na raiz do projeto. É necessário editar as seguintes variáveis</li>
+				</ol>
+				<ul>
+					<li><p>DEVELOPMENT: Deve apresentar o valor true, caso o ambiente atual seja o ambiente de desenvolvimento local. Caso nenhum valor seja informado, a API irá assumir como padrão o valor false, indicando o ambiente de produção;</p>
+					</li>
+					<li><p>PORT: Deve conter o número da porta onde a API será acessada. Em caso de omissão desse parâmetro, a porta considerada será 443.</p>
+					</li>
+				</ul>
+				<ol start="2">
+					<li><p><strong>Chave de acesso - GCP</strong>: A chave de acesso aos serviços do gcp também deve estar localizada na pasta raiz do projeto, assim como o .env. O arquivo json da chave de acesso deve ser nomeado como gcp_key.json.</p>
+					</li>
+					<li><p><strong>Arquivo .gitignore</strong>: Checar se o arquivo .gitignore está ignorando o versionamento da chave e do arquivo .env.</p>
+					</li>
+				</ol>
+				<a href="#como-contribuir" id="como-contribuir" style="color: inherit; text-decoration: none;">
+					<h2>Como contribuir</h2>
+				</a>
+				<p>Pull requests são bem-vindos! Nós vamos adorar ajuda para evoluir esse modulo. Sinta-se livre para navegar por issues abertas buscando por algo que possa fazer. Caso tenha uma nova feature ou bug, por favor abra uma nova issue para ser acompanhada pelo nosso time.</p>
+				<a href="#requisitos-obrigatórios" id="requisitos-obrigatórios" style="color: inherit; text-decoration: none;">
+					<h3>Requisitos obrigatórios</h3>
+				</a>
+				<p>Só serão aceitas contribuições que estiverem seguindo os seguintes requisitos:</p>
+				<ul>
+					<li><a href="https://www.conventionalcommits.org/en/v1.0.0/">Padrão de commit</a></li>
+					<li><a href="https://www.atlassian.com/br/git/tutorials/comparing-workflows/gitflow-workflow">Padrão de criação de branches</a></li>
+				</ul>
+				<a href="#api-docs" id="api-docs" style="color: inherit; text-decoration: none;">
+					<h3>Api Docs</h3>
+				</a>
+				<ul>
+					<li><a href="https://github.com/dp6/template-js-cloudfunction-with-terraform/blob/master/docs/index.md">Index.js</a></li>
+				</ul>
+				<a href="#suporte" id="suporte" style="color: inherit; text-decoration: none;">
+					<h2>Suporte:</h2>
+				</a>
+				<p><strong>DP6 Koopa-troopa Team</strong></p>
+				<p><em>e-mail: <a href="mailto:koopas@dp6.com.br">koopas@dp6.com.br</a></em></p>
+				<img src="https://raw.githubusercontent.com/DP6/templates-centro-de-inovacoes/main/public/images/koopa.png" height="100px" width=50px/>
+			</div>
+		</div>
+		<div class="col-4 col-menu menu-sticky-wrap menu-highlight">
+			<nav class="tsd-navigation primary">
+				<ul>
+					<li class=" ">
+						<a href="modules.html">Exports</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/app.html">app</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/controllers_builder.html">controllers/<wbr>Builder</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/models_adobe.html">models/<wbr>Adobe</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/models_analyticstool.html">models/<wbr>Analytics<wbr>Tool</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/models_auth.html">models/<wbr>Auth</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/models_config.html">models/<wbr>Config</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/models_dao_authdao.html">models/DAO/<wbr>AuthDAO</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/models_dao_configdao.html">models/DAO/<wbr>ConfigDAO</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/models_dao_filedao.html">models/DAO/<wbr>FileDAO</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/models_dao_filestore.html">models/DAO/<wbr>File<wbr>Store</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/models_dao_objectstore.html">models/DAO/<wbr>Object<wbr>Store</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/models_dependencyconfig.html">models/<wbr>Dependency<wbr>Config</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/models_facebookads.html">models/<wbr>Facebook<wbr>Ads</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/models_ga.html">models/GA</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/models_generalvehicle.html">models/<wbr>General<wbr>Vehicle</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/models_googleads.html">models/<wbr>Google<wbr>Ads</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/models_log.html">models/<wbr>Log</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/models_parametrizer.html">models/<wbr>Parametrizer</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/models_parametrizerfactory.html">models/<wbr>Parametrizer<wbr>Factory</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/models_routespermission.html">models/<wbr>Routes<wbr>Permission</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/models_vehicle.html">models/<wbr>Vehicle</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/models_cloud_firestoreconnectionsingleton.html">models/cloud/<wbr>Firestore<wbr>Connection<wbr>Singleton</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/models_cloud_loggingsingleton.html">models/cloud/<wbr>Logging<wbr>Singleton</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/models_cloud_storageconnectionsingleton.html">models/cloud/<wbr>Storage<wbr>Connection<wbr>Singleton</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/routes_build.html">routes/build</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/routes_config.html">routes/config</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/routes_csv.html">routes/csv</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/routes_register.html">routes/register</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/routes_routes.html">routes/routes</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/routes_template.html">routes/template</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/routes_user.html">routes/user</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/utils_csvutils.html">utils/<wbr>Csv<wbr>Utils</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/utils_dateutils.html">utils/<wbr>Date<wbr>Utils</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/utils_jsonutils.html">utils/<wbr>Json<wbr>Utils</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/utils_stringutils.html">utils/<wbr>String<wbr>Utils</a>
+					</li>
+				</ul>
+			</nav>
+			<nav class="tsd-navigation secondary menu-sticky">
+				<ul class="before-current">
+				</ul>
+			</nav>
+		</div>
+	</div>
+</div>
+<footer class="with-border-bottom">
+	<div class="container">
+		<h2>Legend</h2>
+		<div class="tsd-legend-group">
+			<ul class="tsd-legend">
+				<li class="tsd-kind-function"><span class="tsd-kind-icon">Function</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-class"><span class="tsd-kind-icon">Class</span></li>
+			</ul>
+		</div>
+	</div>
+</footer>
+<div class="container tsd-generator">
+	<p>Generated using <a href="https://typedoc.org/" target="_blank">TypeDoc</a></p>
+</div>
+<div class="overlay"></div>
+<script src="assets/js/main.js"></script>
+</body>
+</html>
