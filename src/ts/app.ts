@@ -7,7 +7,7 @@ import { config } from 'dotenv';
 import { Auth } from './models/Auth';
 import { AuthDAO } from './models/DAO/AuthDAO';
 
-config({ path: __dirname + '/../../.env' });
+config({ path: __dirname + '/../.env' });
 
 const app = express();
 

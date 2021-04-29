@@ -3,9 +3,21 @@ import { DateUtils } from '../utils/DateUtils';
 
 const csv = (app: { [key: string]: any }): void => {
 	app.post('/csv', (req: { [key: string]: any }, res: { [key: string]: any }) => {
+		const campaign = req.headers.campaign;
 		const content = req.files.data.data;
 		const agency = req.agency;
-		const filePath = `${agency}/${DateUtils.generateDateString()}.csv`;
+		const company = req.company;
+
+		if (!campaign) {
+			res.status(400).send({
+				message: 'Nenhuma campanha foi informada!',
+			});
+		}
+
+		const filePath = agency
+			? `${company}/${agency}/${campaign}/${DateUtils.generateDateString()}.csv`
+			: `${company}/${campaign}/${DateUtils.generateDateString()}.csv`;
+
 		const fileDAO = new FileDAO();
 		fileDAO.file = content;
 		fileDAO
@@ -21,13 +33,24 @@ const csv = (app: { [key: string]: any }): void => {
 	app.get('/csv', (req: { [key: string]: any }, res: { [key: string]: any }) => {
 		const fileName = req.headers.file;
 		const agency = req.agency;
+		const campaign = req.headers.campaign;
+		const company = req.company;
+
 		if (!fileName) {
 			res.status(400).send({
 				message: 'Nenhum arquivo foi enviado!',
 			});
 			return;
+		} else if (!campaign) {
+			res.status(400).send({
+				message: 'Nenhuma campanha foi informada!',
+			});
 		}
-		const filePath = `${agency}/${fileName}.csv`;
+
+		const filePath = agency
+			? `${company}/${agency}/${campaign}/${fileName}.csv`
+			: `${company}/${campaign}/${fileName}.csv`;
+
 		const fileDAO = new FileDAO();
 		fileDAO
 			.getFromStore(filePath)
@@ -42,9 +65,17 @@ const csv = (app: { [key: string]: any }): void => {
 
 	app.get('/csv/list', (req: { [key: string]: any }, res: { [key: string]: any }) => {
 		const agency = req.agency;
+		const company = req.company;
+		const campaign = req.headers.campaign;
 		const fileDAO = new FileDAO();
+
+		let filePath = `${company}/`;
+
+		if (agency) filePath += `${agency}/`;
+		if (campaign) filePath += `${campaign}/`;
+
 		fileDAO
-			.getAllFilesFromStore(agency)
+			.getAllFilesFromStore(filePath)
 			.then((data) => {
 				const files = data[0].filter((file) => /\.csv$/.test(file.name)).map((file) => file.name);
 				res.status(200).send(files);

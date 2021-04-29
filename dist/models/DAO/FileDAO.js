@@ -18,8 +18,8 @@ class FileDAO {
 	getFromStore(filePath) {
 		return this._fileStore.getFile(filePath);
 	}
-	getAllFilesFromStore(agency) {
-		return this._fileStore.getAllFiles(agency);
+	getAllFilesFromStore(path) {
+		return this._fileStore.getAllFiles(path);
 	}
 }
 exports.FileDAO = FileDAO;
