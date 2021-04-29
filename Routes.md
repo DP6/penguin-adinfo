@@ -1,20 +1,17 @@
 # API - Rotas
 
-
-
 ## Dicionário de Parâmetros
 
-| Parâmetro  | Header/Body | Tipo   | Descrição                                                    |
-| ---------- | ----------- | ------ | ------------------------------------------------------------ |
-| token      | Header      | String | Token de permissão do usuário                                |
-| agency     | Header      | String | Agência do usuário                                           |
-| company    | Header      | String | Empresa proprietária do adinfo                               |
+| Parâmetro  | Header/Body | Tipo   | Descrição                                                                    |
+| ---------- | ----------- | ------ | ---------------------------------------------------------------------------- |
+| token      | Header      | String | Token de permissão do usuário                                                |
+| agency     | Header      | String | Agência do usuário                                                           |
+| company    | Header      | String | Empresa proprietária do adinfo                                               |
 | permission | Header      | String | Nível de permissão do usuário, podendo ser: **user**, **admin** ou **owner** |
-| data       | Body        | File   | Arquivo CSV                                                  |
-| file       | Header      | String | Nome do arquivo salvo no banco de arquivos (não informar a extensão) |
-| config     | Body        | String | String correspondente ao JSON de configuração                |
-
-
+| data       | Body        | File   | Arquivo CSV                                                                  |
+| file       | Header      | String | Nome do arquivo salvo no banco de arquivos (não informar a extensão)         |
+| config     | Body        | String | String correspondente ao JSON de configuração                                |
+| campaign   | Header      | String | Nome da campanha                                                             |
 
 ## Rotas
 
@@ -22,7 +19,7 @@
 
 **Parâmetros**: token
 
-**Descrição**: Recupera os dados do usuários(agência, nível de permissão e empresa) por meio do token informado. 
+**Descrição**: Recupera os dados do usuários(agência, nível de permissão e empresa) por meio do token informado.
 
 ### (GET) /template
 
@@ -40,19 +37,19 @@
 
 ### (POST) /csv
 
-**Parâmetros**: token, data.
+**Parâmetros**: token, data, campaign.
 
 **Descrição**: Armazena o arquivo CSV passado no data no banco arquivos.
 
 ### (GET) /csv
 
-**Parâmetros**: token, file.
+**Parâmetros**: token, file, campaign.
 
 **Descrição**: Recupera o arquivo CSV especificado no parâmetro **file**.
 
 ### (GET) /csv/list
 
-**Parâmetros**: token.
+**Parâmetros**: token, campaign.
 
 **Descrição**: Retorna uma lista de todos os CSVs disponíveis no banco de arquivos, exibindo apenas os CSVs enviados pela agência do usuário solicitante.
 
