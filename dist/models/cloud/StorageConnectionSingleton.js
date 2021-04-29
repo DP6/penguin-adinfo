@@ -8,7 +8,7 @@ class StorageConnectionSingleton extends FileStore_1.FileStore {
 		super();
 		this._bucket = `adinfo-dp6-files`;
 		if (process.env.DEVELOPMENT) {
-			const credentials = require('../../../../gcp_key.json');
+			const credentials = require('../../../gcp_key.json');
 			this._db = new storage_1.Storage({ projectId: 'adinfo', credentials });
 		} else {
 			this._db = new storage_1.Storage();
@@ -30,7 +30,7 @@ class StorageConnectionSingleton extends FileStore_1.FileStore {
 		return destinationPath.download();
 	}
 	getAllFiles(folder) {
-		return this._db.bucket(this._bucket).getFiles({ prefix: `${folder}/` });
+		return this._db.bucket(this._bucket).getFiles({ prefix: folder });
 	}
 }
 exports.StorageConnectionSingleton = StorageConnectionSingleton;

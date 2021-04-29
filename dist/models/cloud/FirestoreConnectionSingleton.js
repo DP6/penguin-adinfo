@@ -7,7 +7,7 @@ class FirestoreConnectionSingleton extends ObjectStore_1.ObjectStore {
 	constructor() {
 		super();
 		if (process.env.DEVELOPMENT) {
-			const credentials = require('../../../../gcp_key.json');
+			const credentials = require('../../../gcp_key.json');
 			this._db = new firestore_1.Firestore({ projectId: 'adinfo', credentials });
 		} else {
 			this._db = new firestore_1.Firestore();

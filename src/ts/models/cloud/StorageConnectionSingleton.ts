@@ -11,7 +11,7 @@ export class StorageConnectionSingleton extends FileStore {
 		super();
 		if (process.env.DEVELOPMENT) {
 			/* eslint-disable @typescript-eslint/no-var-requires */
-			const credentials = require('../../../../gcp_key.json');
+			const credentials = require('../../../gcp_key.json');
 			/* eslint-enable @typescript-eslint/no-var-requires */
 			this._db = new Storage({ projectId: 'adinfo', credentials });
 		} else {
@@ -54,6 +54,6 @@ export class StorageConnectionSingleton extends FileStore {
 	 * @param folder pasta dos arquivos
 	 */
 	public getAllFiles(folder: string): Promise<File[][]> {
-		return this._db.bucket(this._bucket).getFiles({ prefix: `${folder}/` });
+		return this._db.bucket(this._bucket).getFiles({ prefix: folder });
 	}
 }

@@ -11,14 +11,21 @@ const build = (app) => {
 		const media = req.params.media;
 		const company = req.company;
 		const agency = req.agency;
+		const campaign = req.headers.campaign;
 		if (!req.files.data) {
 			res.status(400).send({
 				message: 'Nenhum arquivo foi enviado!',
 			});
 			return;
+		} else if (!campaign) {
+			res.status(400).send({
+				message: 'Nenhuma campanha foi informada!',
+			});
 		}
 		const fileContent = req.files.data.data;
-		const filePath = `${agency}/${DateUtils_1.DateUtils.generateDateString()}.csv`;
+		const filePath = agency
+			? `${company}/${agency}/${campaign}/${DateUtils_1.DateUtils.generateDateString()}.csv`
+			: `${company}/${campaign}/${DateUtils_1.DateUtils.generateDateString()}.csv`;
 		let companyConfig;
 		const configDAO = new ConfigDAO_1.ConfigDAO(company);
 		configDAO

@@ -37,7 +37,7 @@ export class FileDAO {
 	 * Pegar todos os arquivos de uma agencia
 	 * @param agency nome da agencia
 	 */
-	public getAllFilesFromStore(agency: string): Promise<File[][]> {
-		return this._fileStore.getAllFiles(agency);
+	public getAllFilesFromStore(path: string): Promise<File[][]> {
+		return this._fileStore.getAllFiles(path);
 	}
 }
