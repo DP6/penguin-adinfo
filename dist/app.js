@@ -49,8 +49,8 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(
 	cors({
-		allowedHeaders: ['token', 'agency', 'Content-Type', 'company', 'file', 'data', 'config', 'permission'],
-		exposedHeaders: ['token', 'agency', 'company', 'file', 'data', 'config', 'permission'],
+		allowedHeaders: ['token', 'agency', 'company', 'campaign', 'Content-Type', 'file', 'data', 'config', 'permission'],
+		exposedHeaders: ['token', 'agency', 'company', 'campaign', 'file', 'data', 'config', 'permission'],
 		origin: '*',
 		methods: 'GET,POST',
 		preflightContinue: false,
