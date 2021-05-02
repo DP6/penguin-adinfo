@@ -24,9 +24,10 @@ Os principais componentes no uso da aplicação são a **configuração**, um JS
 - **test**: Realiza uma bateria de testes unitários dos arquivos de typescript presentes na pasta test/;
 - **lint**: Submete o código a uma avaliação do [ESLint](https://eslint.org/);
 - **lint-fix**: Submete o código a uma avaliação do [ESLint](https://eslint.org/) e aplica correções automaticamente ao código;
-- **compile**: Exclui os arquivos da pasta /src/js e compila o código do typescript para javascript, guardando-o na pasta src/js;
-- **auto-compile**: Realiza a compilação dos arquivos typescript em tempo real, armazenando o resultado dentro da pasta src/js, sem excluir o conteúdo anterior;
+- **compile**: Exclui os arquivos da pasta dist/ e compila o código do typescript para javascript, guardando-o na pasta dist/;
+- **auto-compile**: Realiza a compilação dos arquivos typescript em tempo real, armazenando o resultado dentro da pasta dist/, sem excluir o conteúdo anterior;
 - **prettier**: Formata todo o código das pastas src/ e test/, utilizando o [Prettier](https://prettier.io/), de acordo com a configuração descrita no arquivo .prettierrc;
+- **coverage**: Análise da cobertura dos testes;
 - **build**: Executa o compile do código typescript para javascript.
 
 ## Requisitos para utilização
@@ -80,6 +81,77 @@ Para a configuração inicial do Firestore, são necessárias duas coleções.
 
   Para esse documento, é importante manter o Código do Documento gerado automaticamente pelo google. O código gerado para cada documento será o token de acesso utilizado na API.
 
+###### Padrão do Objeto de Configuração
+
+Para utilizar a API, é necessário criar um documento de configuração no Firestore dentro da coleção: companies > [nome_empresa] > config. O nome do documento deve ser **config_1** e ele deve conter os campos: **csvSeparator**, **separator**, **spaceSeparator**, **columns** e um campo para a ferramenta de analytics, sendo esse o valor de **ga** ou **adobe**.
+
+Abaixo segue uma explicação e um exemplo de todos os campos das configurações.
+
+| Chave                       | Tipo   | Descrição                                                                                                                                                                       | Obrigatório |
+| --------------------------- | ------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------- |
+| csvSeparator                | String | Separador de colunas do arquivo CSV.                                                                                                                                            | Sim         |
+| separator                   | String | String que será utilizada na concatenação dos campos.                                                                                                                           | Sim         |
+| spaceSeparator              | String | String que substituirá o espaço na URL, caso alguma campo tenha preenchido com mais de uma palavra.                                                                             | Sim         |
+| columns                     | Objeto | Objeto contendo as colunas do CSV e seus valores de aceitação.                                                                                                                  | Sim         |
+| dependenciesConfig          | Objeto | Objeto contendo as regras de dependências de validação.                                                                                                                         | Não         |
+| {{veículo}}                 | Objeto | Chave do veículo de mídia com suas configurações e quais colunas pertencem a cada configuração.                                                                                 | Não         |
+| {{ferramenta de analytics}} | Objeto | Chave da ferramenta de analytics com suas configurações e quais colunas pertencem a cada configuração. Essa chave precisa obrigatoriamente receber o valor **ga** ou **adobe**. | Sim         |
+
+**Exemplo de configuração**:
+
+```json
+{
+	"separator": ":",
+	"spaceSeparator": "_",
+	"columns": {
+		//Colunas que aparecerão no CSV
+		//A chave representa a coluna do CSV e o vetor de valores
+		//representam os possíveis valores de preenchimento dos campos.
+		//É possível informar valores ou expressões regulares para a validação.
+		//As expressão regulares devem estar entre /,
+		//assim como na chave "Produto"
+		"Tipo de Compra": ["cpa", "cpc"],
+		"Dispositivo": ["desktop e mobile"],
+		"Produto": ["/.*/"]
+	},
+	"ga": {
+		//Ferramenta de analytics, um outro valor possível seria "adobe"
+		//As chaves são os parâmetros que a ferramenta aceita
+		//Os valores passados no vetor são referentes às
+		//colunas do CSV que o formam
+		"utm_source": ["Tipo de Compra", "Dispositivo"],
+		"utm_campaign": ["Produto"]
+	},
+	"googleads": {
+		//Configuração do veículo de mídia
+		//As chaves são os parâmetros do veículos.
+		//Os valores passados no vetor são referentes às
+		//colunas do CSV que o formam,
+		//semelhante à ferramenta de analytics.
+		"campanha": ["Tipo de Compra", "Dispositivo"],
+		"ad": ["Produto"]
+	},
+	"dependenciesConfig": [
+		//Campo de configurações de depêndencias
+		{
+			//De acordo com o exemplo, se a coluna "Dispositivo"
+			//for preenchida com algum valor que contenha
+			//a palavra "mobile", então a coluna "Tipo de Compra"
+			//só poderá ser preenchida com os valores: cpc ou cpa.
+			//Se a chave hasMatch estivesse com o valor "false"
+			//significaria que a regra para a coluna "Tipo de Compra"
+			//só seria aplicada, caso o valor preenchido na coluna "Dispositivo"
+			//não contivesse a palavra "mobile".
+			"columnReference": "Dispositivo",
+			"valuesReference": ["/.*mobile.*/"],
+			"hasMatch": true,
+			"columnDestiny": "Tipo de Compra",
+			"matches": ["cpc", "cpa"]
+		}
+	]
+}
+```
+
 ### Banco de dados alternativos
 
 Atualmente o adinfo não disponibiliza por padrão um código de acesso à banco de dados diferentes do Storage e Firestore. Para conexões com outros ambientes a criação dos scripts se faz necessária.
@@ -113,9 +185,11 @@ Só serão aceitas contribuições que estiverem seguindo os seguintes requisito
 - [Padrão de commit](https://www.conventionalcommits.org/en/v1.0.0/)
 - [Padrão de criação de branches](https://www.atlassian.com/br/git/tutorials/comparing-workflows/gitflow-workflow)
 
-### Api Docs
+### Documentação de desenvolvimento
 
-- [Index.js](https://github.com/dp6/template-js-cloudfunction-with-terraform/blob/master/docs/index.md)
+A [documentação do código](./docs/index.html) pode ser encontrada em docs/index.html.
+
+A [documentação de rotas da API](./Routes.md) se encontra no arquivo Routes.md.
 
 ## Suporte:
 

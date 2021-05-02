@@ -57,7 +57,7 @@
 
 **Parâmetros**: token, config.
 
-**Descrição**: Cria uma nova versão da configuração, de acordo com o parâmetro **config** informado.
+**Descrição**: Cria uma nova versão da configuração, de acordo com o parâmetro **config** informado. A nova configuração deve conter **obrigatoriamente** os campos: columns, csvSeparator, separator, spaceSeparator e pelo menos uma ferramenta de análise (ga ou adobe).
 
 ### (GET) /config
 
