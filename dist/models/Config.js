@@ -36,7 +36,15 @@ class Config {
 		this._medias = jsonConfigTemp;
 	}
 	validateConfig() {
-		return !(!this._separator || !this._spaceSeparator || !this._insertTime || !this._version || !this._analyticsTool);
+		return !(
+			!this._separator ||
+			!this._spaceSeparator ||
+			!this._insertTime ||
+			!this._version ||
+			!this._analyticsTool ||
+			!this._csvSeparator ||
+			!this._validationRules
+		);
 	}
 	_buildDependenciesConfig(dependenciesConfig) {
 		if (!dependenciesConfig) {
