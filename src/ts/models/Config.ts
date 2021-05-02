@@ -48,7 +48,15 @@ export class Config {
 	 * Checa se a configuração é válida
 	 */
 	public validateConfig(): boolean {
-		return !(!this._separator || !this._spaceSeparator || !this._insertTime || !this._version || !this._analyticsTool);
+		return !(
+			!this._separator ||
+			!this._spaceSeparator ||
+			!this._insertTime ||
+			!this._version ||
+			!this._analyticsTool ||
+			!this._csvSeparator ||
+			!this._validationRules
+		);
 	}
 
 	private _buildDependenciesConfig(
