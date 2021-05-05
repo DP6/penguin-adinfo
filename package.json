@@ -1,5 +1,6 @@
 {
 	"name": "penguin-adinfo",
+	"private": "true",
 	"version": "1.0.0",
 	"description": "O Ad Info Penguin é um recurso que tem como objetivo o controle e padronização do uso de parametrização e nomenclatura de mídia digital. ",
 	"main": "index.js",
@@ -29,8 +30,26 @@
 		}
 	],
 	"keywords": [
-		"dp6"
+		"dp6",
+		"adinfo"
 	],
+	"homepage": "https://github.com/DP6/penguin-adinfo#readme",
+  	"release": {
+		"branch": "master",
+		"plugins": [
+			"@semantic-release/commit-analyzer",
+			"@semantic-release/release-notes-generator",
+			[
+				"@semantic-release/npm",
+				{
+					"npmPublish": false
+				}
+			],
+			[
+				"@semantic-release/github"
+			]
+		]
+	},
 	"license": "ISC",
 	"dependencies": {
 		"@google-cloud/firestore": "^4.8.1",
