@@ -34,7 +34,7 @@
 		"adinfo"
 	],
 	"homepage": "https://github.com/DP6/penguin-adinfo#readme",
-  	"release": {
+	"release": {
 		"branch": "master",
 		"plugins": [
 			"@semantic-release/commit-analyzer",
