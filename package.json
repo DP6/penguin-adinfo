@@ -52,7 +52,7 @@
 	},
 	"license": "ISC",
 	"dependencies": {
-		"@google-cloud/firestore": "^4.8.1",
+		"@google-cloud/firestore": "^4.11.0",
 		"@google-cloud/logging-bunyan": "^3.0.1",
 		"@google-cloud/storage": "^5.1.1",
 		"@types/bunyan": "^1.8.6",
