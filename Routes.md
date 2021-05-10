@@ -29,11 +29,11 @@
 
 ### (POST) /register
 
-**Parâmetros**: token, agency, permission, company.
+**Parâmetros**: token, agency, permission, company, email.
 
 **Restrição**: Apenas tokens de usuários com nível de permissão **adm** ou **owner** podem acessar esta rota.
 
-**Descrição**: Cria um novo usuário da API de acordo com os parâmetros de: **agency**, **company** e **permission** informados, e retorna um o tkoen de acesso do novo usuário. Caso o nível de permissão informado para o novo usuário seja **admin**, não é necessário informar o parâmetro **agency**.
+**Descrição**: Cria um novo usuário da API de acordo com os parâmetros de: **agency**, **company**, **permission** e **email** informados, e retorna um token de acesso do novo usuário. Caso o nível de permissão informado para o novo usuário seja **admin**, não é necessário informar o parâmetro **agency**.
 
 ### (POST) /csv
 
