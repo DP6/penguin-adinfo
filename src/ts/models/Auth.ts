@@ -30,7 +30,7 @@ export class Auth {
 			agency: this._agency,
 			company: this._company,
 			permission: this._permission,
-			email: this._email
+			email: this._email,
 		};
 	}
 
@@ -49,5 +49,4 @@ export class Auth {
 	get email(): string {
 		return this._email;
 	}
-
 }
