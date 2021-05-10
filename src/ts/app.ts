@@ -22,7 +22,18 @@ app.use(bodyParser.json());
 
 app.use(
 	cors({
-		allowedHeaders: ['token', 'agency', 'company', 'campaign', 'Content-Type', 'file', 'data', 'config', 'permission', 'email'],
+		allowedHeaders: [
+			'token',
+			'agency',
+			'company',
+			'campaign',
+			'Content-Type',
+			'file',
+			'data',
+			'config',
+			'permission',
+			'email',
+		],
 		exposedHeaders: ['token', 'agency', 'company', 'campaign', 'file', 'data', 'config', 'permission', 'email'],
 		origin: '*',
 		methods: 'GET,POST',
