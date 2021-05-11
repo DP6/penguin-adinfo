@@ -52,7 +52,7 @@
 	},
 	"license": "ISC",
 	"dependencies": {
-		"@google-cloud/firestore": "^4.8.1",
+		"@google-cloud/firestore": "^4.11.0",
 		"@google-cloud/logging-bunyan": "^3.0.1",
 		"@google-cloud/storage": "^5.1.1",
 		"@types/bunyan": "^1.8.6",
@@ -64,7 +64,7 @@
 		"dotenv": "^8.2.0",
 		"express": "^4.17.1",
 		"express-fileupload": "^1.2.0",
-		"json-2-csv": "^3.7.4",
+		"json-2-csv": "^3.11.1",
 		"multer": "^1.4.2",
 		"remark": "^13.0.0"
 	},
