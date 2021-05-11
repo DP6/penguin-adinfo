@@ -4,11 +4,13 @@ export class Auth {
 	private _permission: string;
 	private _agency: string;
 	private _company: string;
+	private _email: string;
 
-	constructor(permission: string, company: string, agency = '') {
+	constructor(permission: string, company: string, agency = '', email: string) {
 		this._permission = permission;
 		this._agency = agency;
 		this._company = company;
+		this._email = email;
 	}
 
 	/**
@@ -28,6 +30,7 @@ export class Auth {
 			agency: this._agency,
 			company: this._company,
 			permission: this._permission,
+			email: this._email,
 		};
 	}
 
@@ -41,5 +44,9 @@ export class Auth {
 
 	get company(): string {
 		return this._company;
+	}
+
+	get email(): string {
+		return this._email;
 	}
 }
