@@ -69,7 +69,7 @@ git clone https://github.com/DP6/penguin-adinfo.git
 
 3. Crie uma coleção no Firestore com o nome de **tokens** e insira um primeiro token com os seguintes campos (deixe o id do documento vazio para que seja gerado automaticamente):
 
-   ```json
+   ```
    {
    	company: "NOME_EMPRESA" (string)
    	permission: "owner"(string)
@@ -96,7 +96,7 @@ Para a configuração inicial do Firestore, são necessárias duas coleções.
 
 - **tokens**: essa coleção também deve ser criada na raiz do firestore com um documento seguindo a estrutura:
 
-  ```json
+  ```
   {
   	company: "NOME_EMPRESA" (string)
   	permission: "owner"(string)
