@@ -7,11 +7,11 @@ export class FirestoreConnectionSingleton extends ObjectStore {
 
 	private constructor() {
 		super();
-		if (process.env.DEVELOPMENT) {
-			/* eslint-disable @typescript-eslint/no-var-requires */
-			const credentials = require('../../../gcp_key.json');
-			/* eslint-enable @typescript-eslint/no-var-requires */
-			this._db = new Firestore({ projectId: 'adinfo', credentials });
+		if (process.env.ENV === 'development') {
+			this._db = new Firestore({
+				projectId: process.env.GCP_PROJECT_ID,
+				credentials: JSON.parse(process.env.GCP_KEY),
+			});
 		} else {
 			this._db = new Firestore();
 		}

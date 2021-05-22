@@ -11,7 +11,7 @@
 		"lint": "eslint ./src --ext .ts",
 		"lint-prettier": "npx prettier --check .",
 		"lint-fix": "eslint ./src --ext .ts --fix",
-		"compile": "del /s /q dist && tsc",
+		"compile": "tsc",
 		"auto-compile": "tsc -w",
 		"format": "npx prettier --write .",
 		"build": "npm run compile",
