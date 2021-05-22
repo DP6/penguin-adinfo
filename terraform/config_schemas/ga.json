@@ -1,0 +1,37 @@
+{
+	"csvSeparator": {
+		"stringValue": ","
+	},
+	"separator": {
+		"stringValue": ":"
+	},
+	"spaceSeparator": {
+		"stringValue": "_"
+	},
+	"columns": {
+		"mapValue": {
+			"fields": {
+				"Exemplo": {
+					"arrayValue": {
+						"values": {
+							"stringValue": "/.*/"
+						}
+					}
+				}
+			}
+		}
+	},
+	"ga": {
+		"mapValue": {
+			"fields": {
+				"utm_source": {
+					"arrayValue": {
+						"values": {
+							"stringValue": "Exemplo"
+						}
+					}
+				}
+			}
+		}
+	}
+}

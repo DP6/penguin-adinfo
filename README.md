@@ -24,7 +24,7 @@ Os principais componentes no uso da aplicação são a **configuração**, um JS
 - **test**: Realiza uma bateria de testes unitários dos arquivos de typescript presentes na pasta test/;
 - **lint**: Submete o código a uma avaliação do [ESLint](https://eslint.org/);
 - **lint-fix**: Submete o código a uma avaliação do [ESLint](https://eslint.org/) e aplica correções automaticamente ao código;
-- **compile**: Exclui os arquivos da pasta dist/ e compila o código do typescript para javascript, guardando-o na pasta dist/;
+- **compile**: Compila o código do typescript para javascript, guardando-o na pasta dist/;
 - **auto-compile**: Realiza a compilação dos arquivos typescript em tempo real, armazenando o resultado dentro da pasta dist/, sem excluir o conteúdo anterior;
 - **prettier**: Formata todo o código das pastas src/ e test/, utilizando o [Prettier](https://prettier.io/), de acordo com a configuração descrita no arquivo .prettierrc;
 - **coverage**: Análise da cobertura dos testes;
@@ -52,7 +52,31 @@ Clone o projeto do github para sua máquina local ou Cloud Shell
 git clone https://github.com/DP6/penguin-adinfo.git
 ```
 
-### Instalação GCP (sugerida)
+### Instalação GCP via Terraform
+
+#### Pré-requisitos
+
+1. [Google Cloud SDK](https://cloud.google.com/sdk/docs/install?hl=pt-br);
+2. Pacote zip;
+3. [Terraform](https://www.terraform.io/);
+4. Habilitar o App Engine em ambiente de execução Node.js, Firestore e Cloud Storage (necessário ter um billing ativo), no GCP.
+
+#### Passos
+
+1. Execute o script **terraform_deploy.sh**;
+
+2. Informe o nome da empresa, ferramenta analítica utilizada para a criação de um exemplo de configuração (Adobe Analytics ou Google Analytics) e o id do projeto. Também é possível informar o número da porta onde o adinfo irá rodar, entretanto esse último valor é opcional, caso nenhuma porta seja específica, por padrão ele executará na porta 443;
+
+3. Crie uma coleção no Firestore com o nome de **tokens** e insira um primeiro token com os seguintes campos (deixe o id do documento vazio para que seja gerado automaticamente):
+
+   ```json
+   {
+   	company: "NOME_EMPRESA" (string)
+   	permission: "owner"(string)
+   }
+   ```
+
+### Instalação manual - GCP
 
 Durante toda a etapa de desenvolvimento do adinfo ele é hospedado no serviço de App Engine do GCP, além de armazenar informações no Firestore e Storage.
 
@@ -62,7 +86,7 @@ Por padrão, ao utilizar o adinfo dentro do App Engine, basta conceder acesso à
 
 ##### Configuração inicial do Storage
 
-Crie um bucket para armazenar os arquivos do adinfo. O bucket em questão deve ser informado no atributo \_bucket da classe **StorageConnectionSingleton**, por padrão os arquivos serão salvos dentro do bucket informado e separados dentro de pastas para cada agência.
+Crie um bucket para armazenar os arquivos do adinfo, o bucket em questão deve ser informado no .env. Por padrão os arquivos serão salvos dentro do bucket informado e separados dentro de pastas para cada agência.
 
 ##### Configuração inicial do Firestore
 
@@ -72,9 +96,9 @@ Para a configuração inicial do Firestore, são necessárias duas coleções.
 
 - **tokens**: essa coleção também deve ser criada na raiz do firestore com um documento seguindo a estrutura:
 
-  ```
+  ```json
   {
-  	company: "arthurltda" (string)
+  	company: "NOME_EMPRESA" (string)
   	permission: "owner"(string)
   }
   ```
@@ -99,7 +123,7 @@ Abaixo segue uma explicação e um exemplo de todos os campos das configuraçõe
 
 **Exemplo de configuração**:
 
-```json
+```javascript
 {
 	"separator": ":",
 	"spaceSeparator": "_",
@@ -166,13 +190,13 @@ No caso de substituir o uso do Firestore para armazenamento de chaves. A nova cl
 
 1. **Arquivo .env**: O arquivo .env deve estar localizado na raiz do projeto. É necessário editar as seguintes variáveis
 
-- DEVELOPMENT: Deve apresentar o valor true, caso o ambiente atual seja o ambiente de desenvolvimento local. Caso nenhum valor seja informado, a API irá assumir como padrão o valor false, indicando o ambiente de produção;
+- ENV: Deve apresentar o valor 'development', caso o ambiente atual seja o ambiente de desenvolvimento local, ou 'prod', caso o ambiente seja de produção;
+- PORT: Deve conter o número da porta onde a API será acessada. Em caso de omissão desse parâmetro, a porta considerada será 443;
+- BUCKET: Deve conter o nome do bucket do storage onde os arquivos CSVs serão salvos;
+- GCP_PROJECT_ID: Deve conter o id do projeto no GCP, caso o adinfo esteja hospedado no GCP;
+- GCP_KEY: Deve conter o JSON da chave de acesso aos serviços do GCP;
 
-- PORT: Deve conter o número da porta onde a API será acessada. Em caso de omissão desse parâmetro, a porta considerada será 443.
-
-2. **Chave de acesso - GCP**: A chave de acesso aos serviços do gcp também deve estar localizada na pasta raiz do projeto, assim como o .env. O arquivo json da chave de acesso deve ser nomeado como gcp_key.json.
-
-3. **Arquivo .gitignore**: Checar se o arquivo .gitignore está ignorando o versionamento da chave e do arquivo .env.
+2. **Arquivo .gitignore**: Checar se o arquivo .gitignore está ignorando do arquivo .env.
 
 ## Como contribuir
 

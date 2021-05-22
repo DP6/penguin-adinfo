@@ -4,16 +4,16 @@ import { FileDAO } from '../DAO/FileDAO';
 
 export class StorageConnectionSingleton extends FileStore {
 	private _db: Storage;
-	private _bucket = `adinfo-dp6-files`;
+	private _bucket = process.env.BUCKET;
 	private static _instance: StorageConnectionSingleton;
 
 	private constructor() {
 		super();
-		if (process.env.DEVELOPMENT) {
-			/* eslint-disable @typescript-eslint/no-var-requires */
-			const credentials = require('../../../gcp_key.json');
-			/* eslint-enable @typescript-eslint/no-var-requires */
-			this._db = new Storage({ projectId: 'adinfo', credentials });
+		if (process.env.ENV === 'development') {
+			this._db = new Storage({
+				projectId: process.env.GCP_PROJECT_ID,
+				credentials: JSON.parse(process.env.GCP_KEY),
+			});
 		} else {
 			this._db = new Storage();
 		}
