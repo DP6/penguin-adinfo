@@ -19,7 +19,9 @@ class AuthDAO {
 				const jsonAuth = data.data();
 				return new Auth_1.Auth(jsonAuth.permission, jsonAuth.company, jsonAuth.agency, jsonAuth.email);
 			})
-			.catch((err) => console.log(err));
+			.catch((err) => {
+				throw err;
+			});
 	}
 	addAuth(auth) {
 		return this._objectStore

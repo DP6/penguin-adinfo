@@ -38,6 +38,7 @@ const fileUpload = require('express-fileupload');
 const routes_1 = require('./routes/routes');
 const dotenv_1 = require('dotenv');
 const AuthDAO_1 = require('./models/DAO/AuthDAO');
+const ApiResponse_1 = require('./models/ApiResponse');
 dotenv_1.config({ path: __dirname + '/../.env' });
 const app = express();
 app.use(
@@ -63,13 +64,14 @@ app.use(
 		],
 		exposedHeaders: ['token', 'agency', 'company', 'campaign', 'file', 'data', 'config', 'permission', 'email'],
 		origin: '*',
-		methods: 'GET,POST',
+		methods: 'GET, POST',
 		preflightContinue: false,
 	})
 );
 app.all('*', (req, res, next) =>
 	__awaiter(void 0, void 0, void 0, function* () {
 		const token = req.headers.token;
+		const apiResponse = new ApiResponse_1.ApiResponse();
 		if (token) {
 			const authDAO = new AuthDAO_1.AuthDAO(token);
 			authDAO
@@ -80,14 +82,24 @@ app.all('*', (req, res, next) =>
 					if (auth.hasPermissionFor(req.url, req.method)) {
 						next();
 					} else {
-						res.status(403).send('Usuário sem permissão para realizar a ação!');
+						apiResponse.responseText = 'Usuário sem permissão para realizar a ação!';
+						apiResponse.statusCode = 403;
 					}
 				})
 				.catch((err) => {
-					res.status(403).send('Usuário Inválido');
+					apiResponse.responseText = 'Usuário Inválido!';
+					apiResponse.statusCode = 401;
+					apiResponse.errorMessage = err.message;
+				})
+				.finally(() => {
+					if (apiResponse.statusCode !== 200) {
+						res.status(apiResponse.statusCode).send(apiResponse.jsonResponse);
+					}
 				});
 		} else {
-			res.status(403).send('Token não informado!');
+			apiResponse.responseText = 'Token não informado!';
+			apiResponse.statusCode = 401;
+			res.status(apiResponse.statusCode).send(apiResponse.jsonResponse);
 		}
 	})
 );

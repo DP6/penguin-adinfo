@@ -5,6 +5,7 @@ const FileDAO_1 = require('../models/DAO/FileDAO');
 const DateUtils_1 = require('../utils/DateUtils');
 const CsvUtils_1 = require('../utils/CsvUtils');
 const Builder_1 = require('../controllers/Builder');
+const ApiResponse_1 = require('../models/ApiResponse');
 const converter = require('json-2-csv');
 const build = (app) => {
 	app.post('/build/:media', (req, res) => {
@@ -12,15 +13,17 @@ const build = (app) => {
 		const company = req.company;
 		const agency = req.agency;
 		const campaign = req.headers.campaign;
-		if (!req.files.data) {
-			res.status(400).send({
-				message: 'Nenhum arquivo foi enviado!',
-			});
+		const apiResponse = new ApiResponse_1.ApiResponse();
+		if (!req.files || !req.files.data) {
+			apiResponse.responseText = 'Nenhum arquivo foi enviado!';
+			apiResponse.statusCode = 400;
+			res.status(apiResponse.statusCode).send(apiResponse.jsonResponse);
 			return;
 		} else if (!campaign) {
-			res.status(400).send({
-				message: 'Nenhuma campanha foi informada!',
-			});
+			apiResponse.responseText = 'Nenhuma campanha foi informada!';
+			apiResponse.statusCode = 400;
+			res.status(apiResponse.statusCode).send(apiResponse.jsonResponse);
+			return;
 		}
 		const fileContent = req.files.data.data;
 		const filePath = agency
@@ -31,20 +34,18 @@ const build = (app) => {
 		configDAO
 			.getLastConfig()
 			.then((config) => {
-				if (config) {
-					companyConfig = config;
+				companyConfig = config;
+				if (companyConfig) {
 					if (!companyConfig.toJson()[media]) {
-						res.status(400).send({
-							message: `Mídia ${media} não configurada!`,
-						});
-						return;
+						apiResponse.statusCode = 400;
+						throw new Error(`Mídia ${media} não foi configurada!`);
 					}
 					const fileDAO = new FileDAO_1.FileDAO();
 					fileDAO.file = fileContent;
 					return fileDAO.save(filePath);
 				} else {
-					res.status(400).send('Nenhuma configuração encontrada!');
-					return;
+					apiResponse.statusCode = 500;
+					throw new Error('Nenhuma configuração encontrada!');
 				}
 			})
 			.then(() => {
@@ -63,7 +64,9 @@ const build = (app) => {
 						csv += '\nConfiguracao inserida em;' + configTimestamp;
 						res.setHeader('Content-disposition', 'attachment; filename=data.csv');
 						res.set('Content-Type', 'text/csv; charset=utf-8');
-						res.status(200).send(csv);
+						apiResponse.responseText = csv;
+						apiResponse.statusCode = 200;
+						res.status(apiResponse.statusCode).send(apiResponse.responseText);
 					},
 					{
 						delimiter: {
@@ -73,7 +76,16 @@ const build = (app) => {
 				);
 			})
 			.catch((err) => {
-				res.status(500).send('Falha ao salvar arquivo!');
+				if (apiResponse.statusCode === 200) {
+					apiResponse.statusCode = 500;
+				}
+				apiResponse.responseText = 'Falha ao salvar o arquivo!';
+				apiResponse.errorMessage = err.message;
+			})
+			.finally(() => {
+				if (apiResponse.statusCode !== 200) {
+					res.status(apiResponse.statusCode).send(apiResponse.jsonResponse);
+				}
 			});
 	});
 };

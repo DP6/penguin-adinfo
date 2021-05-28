@@ -2,17 +2,25 @@
 Object.defineProperty(exports, '__esModule', { value: true });
 const FileDAO_1 = require('../models/DAO/FileDAO');
 const DateUtils_1 = require('../utils/DateUtils');
+const ApiResponse_1 = require('../models/ApiResponse');
 const csv = (app) => {
 	app.post('/csv', (req, res) => {
 		const campaign = req.headers.campaign;
-		const content = req.files.data.data;
 		const agency = req.agency;
 		const company = req.company;
+		const apiResponse = new ApiResponse_1.ApiResponse();
 		if (!campaign) {
-			res.status(400).send({
-				message: 'Nenhuma campanha foi informada!',
-			});
+			apiResponse.responseText = 'Nenhuma campanha foi informada!';
+			apiResponse.statusCode = 400;
+			res.status(apiResponse.statusCode).send(apiResponse.jsonResponse);
+			return;
+		} else if (!req.files || !req.files.data) {
+			apiResponse.responseText = 'Nenhum arquivo foi enviado!';
+			apiResponse.statusCode = 400;
+			res.status(apiResponse.statusCode).send(apiResponse.jsonResponse);
+			return;
 		}
+		const content = req.files.data.data;
 		const filePath = agency
 			? `${company}/${agency}/${campaign}/${DateUtils_1.DateUtils.generateDateString()}.csv`
 			: `${company}/${campaign}/${DateUtils_1.DateUtils.generateDateString()}.csv`;
@@ -21,10 +29,16 @@ const csv = (app) => {
 		fileDAO
 			.save(filePath)
 			.then(() => {
-				res.status(200).send('Arquivo salvo com sucesso!');
+				apiResponse.responseText = 'Arquivo salvo com sucesso!';
+				apiResponse.statusCode = 200;
 			})
 			.catch((err) => {
-				res.status(500).send('Falha ao salvar arquivo!');
+				apiResponse.responseText = 'Falha ao salvar arquivo!';
+				apiResponse.statusCode = 500;
+				apiResponse.errorMessage = err.message;
+			})
+			.finally(() => {
+				res.status(apiResponse.statusCode).send(apiResponse.jsonResponse);
 			});
 	});
 	app.get('/csv', (req, res) => {
@@ -32,15 +46,17 @@ const csv = (app) => {
 		const agency = req.agency;
 		const campaign = req.headers.campaign;
 		const company = req.company;
+		const apiResponse = new ApiResponse_1.ApiResponse();
 		if (!fileName) {
-			res.status(400).send({
-				message: 'Nenhum arquivo foi enviado!',
-			});
+			apiResponse.responseText = 'Nenhum arquivo foi informado!';
+			apiResponse.statusCode = 400;
+			res.status(apiResponse.statusCode).send(apiResponse.jsonResponse);
 			return;
 		} else if (!campaign) {
-			res.status(400).send({
-				message: 'Nenhuma campanha foi informada!',
-			});
+			apiResponse.responseText = 'Nenhuma campanha foi informada!';
+			apiResponse.statusCode = 400;
+			res.status(apiResponse.statusCode).send(apiResponse.jsonResponse);
+			return;
 		}
 		const filePath = agency
 			? `${company}/${agency}/${campaign}/${fileName}.csv`
@@ -48,11 +64,23 @@ const csv = (app) => {
 		const fileDAO = new FileDAO_1.FileDAO();
 		fileDAO
 			.getFromStore(filePath)
-			.then((data) => {
-				res.status(200).send(data.toString());
+			.then((file) => {
+				res.setHeader('Content-disposition', 'attachment; filename=template.csv');
+				res.set('Content-Type', 'text/csv; charset=utf-8');
+				apiResponse.statusCode = 200;
+				apiResponse.responseText = file.toString();
 			})
 			.catch((err) => {
-				res.status(500).send(`Falha ao restaurar o arquivo ${fileName}!`);
+				apiResponse.statusCode = 500;
+				apiResponse.responseText = `Falha ao restaurar o arquivo ${fileName}!`;
+				apiResponse.errorMessage = err.message;
+			})
+			.finally(() => {
+				if (apiResponse.statusCode === 200) {
+					res.status(apiResponse.statusCode).send(apiResponse.responseText);
+				} else {
+					res.status(apiResponse.statusCode).send(apiResponse.jsonResponse);
+				}
 			});
 	});
 	app.get('/csv/list', (req, res) => {
@@ -61,16 +89,23 @@ const csv = (app) => {
 		const campaign = req.headers.campaign;
 		const fileDAO = new FileDAO_1.FileDAO();
 		let filePath = `${company}/`;
+		const apiResponse = new ApiResponse_1.ApiResponse();
 		if (agency) filePath += `${agency}/`;
 		if (campaign) filePath += `${campaign}/`;
 		fileDAO
 			.getAllFilesFromStore(filePath)
 			.then((data) => {
 				const files = data[0].filter((file) => /\.csv$/.test(file.name)).map((file) => file.name);
-				res.status(200).send(files);
+				apiResponse.responseText = files.join(',');
+				apiResponse.statusCode = 200;
 			})
 			.catch((err) => {
-				res.status(500).send(`Falha ao restaurar os arquivos!`);
+				apiResponse.errorMessage = err.message;
+				apiResponse.responseText = `Falha ao restaurar os arquivos!`;
+				apiResponse.statusCode = 500;
+			})
+			.finally(() => {
+				res.status(apiResponse.statusCode).send(apiResponse.jsonResponse);
 			});
 	});
 };
