@@ -1,7 +1,6 @@
 import { expect } from 'chai';
 import { GA } from '../../src/ts/models/GA';
 import { Config } from '../../src/ts/models/Config';
-import { DependencyConfig } from '../../src/ts/models/DependencyConfig';
 
 describe('GA', () => {
 	describe('Valida a geração da linha do GA', () => {
