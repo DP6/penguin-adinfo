@@ -1,15 +1,18 @@
 import { header, validationResult } from 'express-validator';
 import { Auth } from '../models/Auth';
 import { AuthDAO } from '../models/DAO/AuthDAO';
+import { ApiResponse } from '../models/ApiResponse';
 
 const register = (app: { [key: string]: any }): void => {
 	app.post(
 		'/register',
 		header('permission').exists().withMessage('Parâmetro permission é obrigatório.'),
-		header('company').exists().withMessage('Parâmetro company é obrigatório.'),
 		header('email').exists().withMessage('Parâmetro email é obrigatório.').isEmail().withMessage('Email inválido.'),
 		(req: { [key: string]: any }, res: { [key: string]: any }) => {
 			const validationErrors = validationResult(req).array();
+
+			const apiResponse = new ApiResponse();
+
 			if (!req.headers.agency) {
 				validationErrors.push({
 					param: 'email',
@@ -19,14 +22,16 @@ const register = (app: { [key: string]: any }): void => {
 				});
 			}
 			if (validationErrors.length > 0) {
-				const msg = validationErrors.map((err) => err.msg).join(' ');
-				res.status(400).json({ message: msg });
+				const message = validationErrors.map((err) => err.msg).join(' ');
+				apiResponse.responseText = message;
+				apiResponse.statusCode = 400;
+				res.status(apiResponse.statusCode).send(apiResponse.jsonResponse);
 				return;
 			}
 
 			const newUserAuth = new Auth(
 				req.headers.permission,
-				req.headers.company,
+				req.company,
 				req.headers.permission === 'user' ? req.headers.agency : '',
 				req.headers.email
 			);
@@ -36,10 +41,18 @@ const register = (app: { [key: string]: any }): void => {
 			authDAO
 				.addAuth(newUserAuth)
 				.then((token) => {
-					res.status(200).send(`Permissão adicionada para o email ${newUserAuth.email}, senha: ${token}`);
+					const message = `Permissão adicionada para o email ${newUserAuth.email}, senha: ${token}`;
+					apiResponse.responseText = message;
+					apiResponse.statusCode = 200;
 				})
 				.catch((err) => {
-					res.status(500).send('Falha ao criar permissão!');
+					const message = 'Falha ao criar permissão!';
+					apiResponse.responseText = message;
+					apiResponse.errorMessage = err.message;
+					apiResponse.statusCode = 500;
+				})
+				.finally(() => {
+					res.status(apiResponse.statusCode).send(apiResponse.jsonResponse);
 				});
 		}
 	);

@@ -6,6 +6,7 @@ import routes from './routes/routes';
 import { config } from 'dotenv';
 import { Auth } from './models/Auth';
 import { AuthDAO } from './models/DAO/AuthDAO';
+import { ApiResponse } from './models/ApiResponse';
 
 config({ path: __dirname + '/../.env' });
 
@@ -36,13 +37,16 @@ app.use(
 		],
 		exposedHeaders: ['token', 'agency', 'company', 'campaign', 'file', 'data', 'config', 'permission', 'email'],
 		origin: '*',
-		methods: 'GET,POST',
+		methods: 'GET, POST',
 		preflightContinue: false,
 	})
 );
 
 app.all('*', async (req: { [key: string]: any }, res: { [key: string]: any }, next: any) => {
 	const token = req.headers.token;
+
+	const apiResponse = new ApiResponse();
+
 	if (token) {
 		const authDAO = new AuthDAO(token);
 		authDAO
@@ -53,14 +57,24 @@ app.all('*', async (req: { [key: string]: any }, res: { [key: string]: any }, ne
 				if (auth.hasPermissionFor(req.url, req.method)) {
 					next();
 				} else {
-					res.status(403).send('Usuário sem permissão para realizar a ação!');
+					apiResponse.responseText = 'Usuário sem permissão para realizar a ação!';
+					apiResponse.statusCode = 403;
 				}
 			})
 			.catch((err) => {
-				res.status(403).send('Usuário Inválido');
+				apiResponse.responseText = 'Usuário Inválido!';
+				apiResponse.statusCode = 401;
+				apiResponse.errorMessage = err.message;
+			})
+			.finally(() => {
+				if (apiResponse.statusCode !== 200) {
+					res.status(apiResponse.statusCode).send(apiResponse.jsonResponse);
+				}
 			});
 	} else {
-		res.status(403).send('Token não informado!');
+		apiResponse.responseText = 'Token não informado!';
+		apiResponse.statusCode = 401;
+		res.status(apiResponse.statusCode).send(apiResponse.jsonResponse);
 	}
 });
 

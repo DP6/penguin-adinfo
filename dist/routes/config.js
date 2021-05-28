@@ -2,12 +2,16 @@
 Object.defineProperty(exports, '__esModule', { value: true });
 const ConfigDAO_1 = require('../models/DAO/ConfigDAO');
 const Config_1 = require('../models/Config');
+const ApiResponse_1 = require('../models/ApiResponse');
 const config = (app) => {
 	app.post('/config', (req, res) => {
 		const company = req.company;
 		const configString = req.body.config;
+		const apiResponse = new ApiResponse_1.ApiResponse();
 		if (!configString) {
-			res.status(400).send('Configuração não foi informada!');
+			apiResponse.responseText = 'Configuração não foi informada!';
+			apiResponse.statusCode = 400;
+			res.status(apiResponse.statusCode).send(apiResponse.jsonResponse);
 			return;
 		}
 		const config = new Config_1.Config(JSON.parse(configString));
@@ -15,26 +19,35 @@ const config = (app) => {
 		configDAO
 			.addConfig(config)
 			.then((data) => {
-				res.status(200).send('Configuração criada com sucesso!');
+				apiResponse.responseText = 'Configuração criada com sucesso!';
+				apiResponse.statusCode = 200;
 			})
 			.catch((err) => {
-				res.status(500).send('Erro ao criar a configuração!');
+				apiResponse.responseText = 'Erro ao criar a configuração!';
+				apiResponse.statusCode = 500;
+				apiResponse.errorMessage = err.message;
+			})
+			.finally(() => {
+				res.status(apiResponse.statusCode).send(apiResponse.jsonResponse);
 			});
 	});
 	app.get('/config', (req, res) => {
 		const company = req.company;
 		const configDAO = new ConfigDAO_1.ConfigDAO(company);
+		const apiResponse = new ApiResponse_1.ApiResponse();
 		configDAO
 			.getLastConfig()
 			.then((config) => {
-				if (config) {
-					res.status(200).send(config.toString());
-				} else {
-					res.status(200).send('{}');
-				}
+				apiResponse.responseText = config.toString();
+				apiResponse.statusCode = 200;
 			})
 			.catch((err) => {
-				res.status(500).send('Erro ao recuperar configuração!');
+				apiResponse.statusCode = 500;
+				apiResponse.responseText = 'Erro ao recuperar configuração!';
+				apiResponse.errorMessage = err.message;
+			})
+			.finally(() => {
+				res.status(apiResponse.statusCode).send(apiResponse.jsonResponse);
 			});
 	});
 };

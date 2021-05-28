@@ -25,7 +25,9 @@ export class AuthDAO {
 				const jsonAuth = data.data();
 				return new Auth(jsonAuth.permission, jsonAuth.company, jsonAuth.agency, jsonAuth.email);
 			})
-			.catch((err) => console.log(err));
+			.catch((err) => {
+				throw err;
+			});
 	}
 
 	public addAuth(auth: Auth): Promise<string | void> {
