@@ -35,7 +35,6 @@ export class CsvUtils {
 		linesOfCsv[0].split(separator).map((header) => {
 			headers.push(header.replace('\\r', '').trim());
 		});
-		headers[headers.length - 1] = headers[headers.length - 1];
 
 		const jsonFromCsv: { [key: string]: string }[] = [];
 		const body = linesOfCsv.slice(1);
