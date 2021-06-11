@@ -7,10 +7,13 @@ import { config } from 'dotenv';
 import { Auth } from './models/Auth';
 import { AuthDAO } from './models/DAO/AuthDAO';
 import { ApiResponse } from './models/ApiResponse';
+import { LoggingSingleton } from './models/cloud/LoggingSingleton';
 
 config({ path: __dirname + '/../.env' });
 
 const app = express();
+
+LoggingSingleton.getInstance().logInfo('Iniciando Adinfo!');
 
 app.use(
 	fileUpload({
@@ -44,6 +47,15 @@ app.use(
 
 app.all('*', async (req: { [key: string]: any }, res: { [key: string]: any }, next: any) => {
 	const token = req.headers.token;
+
+	const log = {
+		route: req.originalUrl,
+		token,
+		heades: req.headers,
+		body: req.body,
+	};
+
+	LoggingSingleton.getInstance().logInfo(JSON.stringify(log));
 
 	const apiResponse = new ApiResponse();
 

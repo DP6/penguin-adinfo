@@ -39,8 +39,10 @@ const routes_1 = require('./routes/routes');
 const dotenv_1 = require('dotenv');
 const AuthDAO_1 = require('./models/DAO/AuthDAO');
 const ApiResponse_1 = require('./models/ApiResponse');
+const LoggingSingleton_1 = require('./models/cloud/LoggingSingleton');
 dotenv_1.config({ path: __dirname + '/../.env' });
 const app = express();
+LoggingSingleton_1.LoggingSingleton.getInstance().logInfo('Iniciando Adinfo!');
 app.use(
 	fileUpload({
 		createParentPath: true,
@@ -71,6 +73,13 @@ app.use(
 app.all('*', (req, res, next) =>
 	__awaiter(void 0, void 0, void 0, function* () {
 		const token = req.headers.token;
+		const log = {
+			route: req.originalUrl,
+			token,
+			heades: req.headers,
+			body: req.body,
+		};
+		LoggingSingleton_1.LoggingSingleton.getInstance().logInfo(JSON.stringify(log));
 		const apiResponse = new ApiResponse_1.ApiResponse();
 		if (token) {
 			const authDAO = new AuthDAO_1.AuthDAO(token);

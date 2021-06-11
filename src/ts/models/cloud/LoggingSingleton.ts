@@ -4,43 +4,57 @@ import * as bunyan from 'bunyan';
 import { LoggingBunyan } from '@google-cloud/logging-bunyan';
 
 export class LoggingSingleton extends Log {
-	private static _loggingBunyan = new LoggingBunyan();
-	private static _loggerName = 'adinfo';
-	private static _infoInstance: bunyan;
-	private static _errorInstance: bunyan;
-	private static _warningInstance: bunyan;
+	private _loggingBunyan = new LoggingBunyan();
+	private _loggerName = 'adinfo';
+	private _infoInstance: bunyan;
+	private _errorInstance: bunyan;
+	private _warningInstance: bunyan;
+	private static _instance: LoggingSingleton;
 
 	private constructor() {
 		super();
+		this._infoInstance = bunyan.createLogger({
+			name: this._loggerName,
+			streams: [{ stream: process.stdout, level: 'info' }, this._loggingBunyan.stream('info')],
+		});
+		this._errorInstance = bunyan.createLogger({
+			name: this._loggerName,
+			streams: [{ stream: process.stdout, level: 'error' }, this._loggingBunyan.stream('error')],
+		});
+		this._warningInstance = bunyan.createLogger({
+			name: this._loggerName,
+			streams: [{ stream: process.stdout, level: 'warn' }, this._loggingBunyan.stream('warn')],
+		});
 	}
 
-	public static logInfo(message: string): void {
-		if (!LoggingSingleton._infoInstance) {
-			LoggingSingleton._infoInstance = bunyan.createLogger({
-				name: LoggingSingleton._loggerName,
-				streams: [{ stream: process.stdout, level: 'info' }, this._loggingBunyan.stream('info')],
-			});
+	public static getInstance(): LoggingSingleton {
+		if (!LoggingSingleton._instance) {
+			LoggingSingleton._instance = new LoggingSingleton();
 		}
-		LoggingSingleton._infoInstance.info(message);
+		return LoggingSingleton._instance;
 	}
 
-	public static logError(message: string): void {
-		if (!LoggingSingleton._errorInstance) {
-			LoggingSingleton._errorInstance = bunyan.createLogger({
-				name: LoggingSingleton._loggerName,
-				streams: [{ stream: process.stdout, level: 'error' }, this._loggingBunyan.stream('error')],
-			});
+	public logInfo(message: string): void {
+		if (process.env.ENV === 'development') {
+			console.info(message);
+		} else {
+			this._infoInstance.info(message);
 		}
-		LoggingSingleton._errorInstance.info(message);
 	}
 
-	public static logWarning(message: string): void {
-		if (!LoggingSingleton._warningInstance) {
-			LoggingSingleton._warningInstance = bunyan.createLogger({
-				name: LoggingSingleton._loggerName,
-				streams: [{ stream: process.stdout, level: 'warn' }, this._loggingBunyan.stream('warn')],
-			});
+	public logError(message: string): void {
+		if (process.env.ENV === 'development') {
+			console.error(message);
+		} else {
+			this._errorInstance.error(message);
 		}
-		LoggingSingleton._warningInstance.info(message);
+	}
+
+	public logWarning(message: string): void {
+		if (process.env.ENV === 'development') {
+			console.warn(message);
+		} else {
+			this._warningInstance.warn(message);
+		}
 	}
 }

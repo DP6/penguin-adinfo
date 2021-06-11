@@ -1,3 +1,5 @@
+import { LoggingSingleton } from './cloud/LoggingSingleton';
+
 export class ApiResponse {
 	private _statusCode: number;
 	private _responseText: string;
@@ -30,9 +32,13 @@ export class ApiResponse {
 	}
 
 	get jsonResponse(): { [key: string]: string } {
-		return {
+		const response = {
 			responseText: this._responseText,
 			errorMessage: this._errorMessage,
 		};
+		if (this._statusCode !== 200) {
+			LoggingSingleton.getInstance().logError(JSON.stringify(response));
+		}
+		return response;
 	}
 }
