@@ -47,4 +47,18 @@ export class CsvUtils {
 		});
 		return jsonFromCsv;
 	}
+	/**
+	 * Identificador do separador a ser usado no CSV
+	 * @param csvHeader Conteúdo do header do CSV
+	 * @param csvSeparatorDefault Separador configurado para ser o padrão
+	 * @returns Separador a ser utilizado
+	 */
+
+	static identifyCsvSepartor(csvHeader: string, csvSeparatorDefault: string): string {
+		if (csvSeparatorDefault) {
+			return csvSeparatorDefault;
+		} else {
+			return csvHeader.includes(',') ? ',' : ';';
+		}
+	}
 }

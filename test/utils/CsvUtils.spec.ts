@@ -111,4 +111,26 @@ describe('CSV Utils', () => {
 			expect(CsvUtils.isLineEmpty(csvLine)).to.equal(true);
 		});
 	});
+	describe('CSV Separator Identify', () => {
+		it('Verifica se há um valor predefinido de separador e o retorna (Separador = ,)', ()=>{
+			const separadorDefault = ',';
+			const arquivo = 'Url,Responsavel,Dispositivo,Formato ou Canal,Nome da Campanha,Bandeira,Tipo de Compra,Periodo,Campo Livre,Veiculo'
+			expect(CsvUtils.identifyCsvSepartor(arquivo, separadorDefault)).to.equal(separadorDefault);
+		});
+		it('Verifica se há um valor predefinido de separador e o retorna (Separador = ;)', ()=>{
+			const separadorDefault = ';';
+			const arquivo = 'Url;Responsavel;Dispositivo;Formato ou Canal;Nome da Campanha;Bandeira;Tipo de Compra;Periodo;Campo Livre;Veiculo'
+			expect(CsvUtils.identifyCsvSepartor(arquivo, separadorDefault)).to.equal(separadorDefault);
+		});
+		it('Identifica automaticamente o separador utilizado no arquivo, caso não haja um separador predefinido (Separador = ,)', ()=>{
+			const separadorDefault:undefined = undefined;
+			const arquivo = 'Url,Responsavel,Dispositivo,Formato ou Canal,Nome da Campanha,Bandeira,Tipo de Compra,Periodo,Campo Livre,Veiculo'
+			expect(CsvUtils.identifyCsvSepartor(arquivo, separadorDefault)).to.equal(',');
+		});
+		it('Identifica automaticamente o separador utilizado no arquivo, caso não haja um separador predefinido (Separador = ;)', ()=>{
+			const separadorDefault:undefined = undefined;
+			const arquivo = 'Url;Responsavel;Dispositivo;Formato ou Canal;Nome da Campanha;Bandeira;Tipo de Compra;Periodo;Campo Livre;Veiculo'
+			expect(CsvUtils.identifyCsvSepartor(arquivo, separadorDefault)).to.equal(';');
+		});
+	});
 });
