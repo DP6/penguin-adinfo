@@ -1,7 +1,7 @@
 {
 	"name": "penguin-adinfo",
-	"private": "true",
-	"version": "1.0.0",
+	"private": "false",
+	"version": "1.1.0",
 	"description": "O Ad Info Penguin é um recurso que tem como objetivo o controle e padronização do uso de parametrização e nomenclatura de mídia digital. ",
 	"main": "index.js",
 	"scripts": {
@@ -11,7 +11,7 @@
 		"lint": "eslint ./src --ext .ts",
 		"lint-prettier": "npx prettier --check .",
 		"lint-fix": "eslint ./src --ext .ts --fix",
-		"compile": "del /s /q dist && tsc",
+		"compile": "tsc",
 		"auto-compile": "tsc -w",
 		"format": "npx prettier --write .",
 		"build": "npm run compile",
@@ -53,7 +53,7 @@
 	"license": "ISC",
 	"dependencies": {
 		"@google-cloud/firestore": "^4.11.0",
-		"@google-cloud/logging-bunyan": "^3.0.1",
+		"@google-cloud/logging-bunyan": "^3.1.0",
 		"@google-cloud/storage": "^5.1.1",
 		"@types/bunyan": "^1.8.6",
 		"app": "^0.1.0",
