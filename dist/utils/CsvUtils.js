@@ -26,5 +26,12 @@ class CsvUtils {
 		});
 		return jsonFromCsv;
 	}
+	static identifyCsvSepartor(csvHeader, csvSeparatorDefault) {
+		if (csvSeparatorDefault) {
+			return csvSeparatorDefault;
+		} else {
+			return csvHeader.includes(',') ? ',' : ';';
+		}
+	}
 }
 exports.CsvUtils = CsvUtils;

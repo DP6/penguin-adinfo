@@ -6,7 +6,6 @@ const DependencyConfig_1 = require('./DependencyConfig');
 const StringUtils_1 = require('../utils/StringUtils');
 class Config {
 	constructor(jsonConfig) {
-		this._csvSeparator = ',';
 		const jsonConfigTemp = Object.assign({}, jsonConfig);
 		this._separator = jsonConfigTemp.separator;
 		delete jsonConfigTemp.separator;
@@ -42,7 +41,6 @@ class Config {
 			!this._insertTime ||
 			!this._version ||
 			!this._analyticsTool ||
-			!this._csvSeparator ||
 			!this._validationRules
 		);
 	}

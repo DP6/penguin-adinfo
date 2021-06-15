@@ -54,7 +54,11 @@ const build = (app: { [key: string]: any }): void => {
 				}
 			})
 			.then(() => {
-				const jsonFromFile = CsvUtils.csv2json(fileContent.toString(), companyConfig.csvSeparator);
+				const csvContent = fileContent.toString();
+				const jsonFromFile = CsvUtils.csv2json(
+					csvContent,
+					CsvUtils.identifyCsvSepartor(csvContent.split('\n')[0], companyConfig.csvSeparator)
+				);
 				const jsonParameterized = new Builder(jsonFromFile, companyConfig, media).build();
 				const configVersion = companyConfig.version;
 				const configTimestamp = DateUtils.newDateStringFormat(
