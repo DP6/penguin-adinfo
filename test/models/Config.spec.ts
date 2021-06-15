@@ -5,8 +5,8 @@ describe('Config', () => {
 	describe('Valida a criação do config para Adobe', () => {
 		it('Validação do método toJson', () => {
 			const jsonConfig = {
-				csvSeparator: ',',
 				separator: ':',
+				csvSeparator: ',',
 				dependenciesConfig: [
 					{
 						columnReference: 'Tipo de Compra',
@@ -78,8 +78,8 @@ describe('Config', () => {
 		});
 		it('Validação do método toString', () => {
 			const jsonConfig = {
-				csvSeparator: ',',
 				separator: ':',
+				csvSeparator: ',',
 				dependenciesConfig: [
 					{
 						columnReference: 'Tipo de Compra',
@@ -202,8 +202,8 @@ describe('Config', () => {
 		});
 		it('Validação da geração das regras de validação', () => {
 			const jsonConfig = {
-				csvSeparator: ',',
 				separator: ':',
+				csvSeparator: ',',
 				spaceSeparator: '+',
 				dependenciesConfig: [
 					{
@@ -257,8 +257,8 @@ describe('Config', () => {
 	describe('Valida a criação do config para GA', () => {
 		it('Validação do método toJson', () => {
 			const jsonConfig = {
-				csvSeparator: ',',
 				separator: ':',
+				csvSeparator: ',',
 				dependenciesConfig: [
 					{
 						columnReference: 'Tipo de Compra',
@@ -306,8 +306,8 @@ describe('Config', () => {
 		});
 		it('Validação do método toString', () => {
 			const jsonConfig = {
-				csvSeparator: ',',
 				separator: ':',
+				csvSeparator: ',',
 				dependenciesConfig: [
 					{
 						columnReference: 'Tipo de Compra',
