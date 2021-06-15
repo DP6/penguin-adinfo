@@ -15,7 +15,6 @@ class CsvUtils {
 		linesOfCsv[0].split(separator).map((header) => {
 			headers.push(header.replace('\\r', '').trim());
 		});
-		headers[headers.length - 1] = headers[headers.length - 1];
 		const jsonFromCsv = [];
 		const body = linesOfCsv.slice(1);
 		body.map((line) => {
@@ -26,6 +25,13 @@ class CsvUtils {
 			jsonFromCsv.push(lineInJson);
 		});
 		return jsonFromCsv;
+	}
+	static identifyCsvSepartor(csvHeader, csvSeparatorDefault) {
+		if (csvSeparatorDefault) {
+			return csvSeparatorDefault;
+		} else {
+			return csvHeader.includes(',') ? ',' : ';';
+		}
 	}
 }
 exports.CsvUtils = CsvUtils;

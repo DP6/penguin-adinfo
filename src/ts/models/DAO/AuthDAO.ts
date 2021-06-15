@@ -23,14 +23,16 @@ export class AuthDAO {
 			.get()
 			.then((data) => {
 				const jsonAuth = data.data();
-				return new Auth(jsonAuth.permission, jsonAuth.company, jsonAuth.agency);
+				return new Auth(jsonAuth.permission, jsonAuth.company, jsonAuth.agency, jsonAuth.email);
 			})
-			.catch((err) => console.log(err));
+			.catch((err) => {
+				throw err;
+			});
 	}
 
-	public addAuth(jsonAuth: { [key: string]: string }): Promise<string | void> {
+	public addAuth(auth: Auth): Promise<string | void> {
 		return this._objectStore
-			.addDocumentIn(this._authCollection, jsonAuth, '')
+			.addDocumentIn(this._authCollection, auth.toJson(), '')
 			.get()
 			.then((data) => {
 				return data.id;

@@ -17,13 +17,15 @@ class AuthDAO {
 			.get()
 			.then((data) => {
 				const jsonAuth = data.data();
-				return new Auth_1.Auth(jsonAuth.permission, jsonAuth.company, jsonAuth.agency);
+				return new Auth_1.Auth(jsonAuth.permission, jsonAuth.company, jsonAuth.agency, jsonAuth.email);
 			})
-			.catch((err) => console.log(err));
+			.catch((err) => {
+				throw err;
+			});
 	}
-	addAuth(jsonAuth) {
+	addAuth(auth) {
 		return this._objectStore
-			.addDocumentIn(this._authCollection, jsonAuth, '')
+			.addDocumentIn(this._authCollection, auth.toJson(), '')
 			.get()
 			.then((data) => {
 				return data.id;

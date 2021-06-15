@@ -147,11 +147,22 @@ paths:
         - name: permission
           in: headers
           description: permission to new user
+        - name: company
+          in: headers
+          description: current company
+        - name: agency
+          in: headers
+          description: agency of the new user
+        - name: email
+          in: headers
+          description: email of the new user for login
       responses:
         200:
           description: 'Success'
           schema:
             type: string
+        400:
+          description: 'Bad request'
         500:
           description: 'Internal server error'
   '/user':

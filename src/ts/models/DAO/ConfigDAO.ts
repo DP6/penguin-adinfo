@@ -20,6 +20,9 @@ export class ConfigDAO {
 		return this._objectStore
 			.getAllDocumentsFrom(this._configCollection)
 			.then((documents) => {
+				if (documents.length === 0) {
+					throw new Error('A empresa não possui nenhuma configuração!');
+				}
 				let lastDocument: DocumentData;
 				documents.forEach((doc, index) => {
 					if (index === 0) lastDocument = doc;
@@ -27,7 +30,9 @@ export class ConfigDAO {
 				});
 				return new Config(lastDocument);
 			})
-			.catch((err) => console.log(err));
+			.catch((err) => {
+				throw new Error(err.message);
+			});
 	}
 
 	/**
@@ -49,7 +54,7 @@ export class ConfigDAO {
 							this._objectStore.addDocumentIn(this._configCollection, config.toJson(), `config_${config.version}`)
 						);
 					} else {
-						reject('Configuração inválida');
+						throw new Error('Configuração inválida!');
 					}
 				})
 				.catch((err: { [key: string]: any }) => reject(err));

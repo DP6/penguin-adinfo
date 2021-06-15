@@ -35,7 +35,6 @@ export class CsvUtils {
 		linesOfCsv[0].split(separator).map((header) => {
 			headers.push(header.replace('\\r', '').trim());
 		});
-		headers[headers.length - 1] = headers[headers.length - 1];
 
 		const jsonFromCsv: { [key: string]: string }[] = [];
 		const body = linesOfCsv.slice(1);
@@ -47,5 +46,19 @@ export class CsvUtils {
 			jsonFromCsv.push(lineInJson);
 		});
 		return jsonFromCsv;
+	}
+	/**
+	 * Identificador do separador a ser usado no CSV
+	 * @param csvHeader Conteúdo do header do CSV
+	 * @param csvSeparatorDefault Separador configurado para ser o padrão
+	 * @returns Separador a ser utilizado
+	 */
+
+	static identifyCsvSepartor(csvHeader: string, csvSeparatorDefault: string): string {
+		if (csvSeparatorDefault) {
+			return csvSeparatorDefault;
+		} else {
+			return csvHeader.includes(',') ? ',' : ';';
+		}
 	}
 }

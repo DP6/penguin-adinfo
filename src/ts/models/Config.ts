@@ -5,7 +5,7 @@ import { StringUtils } from '../utils/StringUtils';
 export class Config {
 	private _separator: string;
 	private _spaceSeparator: string;
-	private _csvSeparator = ',';
+	private _csvSeparator: string;
 	private _insertTime: string;
 	private _version: number;
 	private _analyticsTool: { [key: string]: { [key: string]: string[] } };
@@ -54,7 +54,6 @@ export class Config {
 			!this._insertTime ||
 			!this._version ||
 			!this._analyticsTool ||
-			!this._csvSeparator ||
 			!this._validationRules
 		);
 	}

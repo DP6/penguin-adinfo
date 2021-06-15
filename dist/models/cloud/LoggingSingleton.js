@@ -7,35 +7,47 @@ const logging_bunyan_1 = require('@google-cloud/logging-bunyan');
 class LoggingSingleton extends Log_1.Log {
 	constructor() {
 		super();
+		this._loggingBunyan = new logging_bunyan_1.LoggingBunyan();
+		this._loggerName = 'adinfo';
+		this._infoInstance = bunyan.createLogger({
+			name: this._loggerName,
+			streams: [{ stream: process.stdout, level: 'info' }, this._loggingBunyan.stream('info')],
+		});
+		this._errorInstance = bunyan.createLogger({
+			name: this._loggerName,
+			streams: [{ stream: process.stdout, level: 'error' }, this._loggingBunyan.stream('error')],
+		});
+		this._warningInstance = bunyan.createLogger({
+			name: this._loggerName,
+			streams: [{ stream: process.stdout, level: 'warn' }, this._loggingBunyan.stream('warn')],
+		});
 	}
-	static logInfo(message) {
-		if (!LoggingSingleton._infoInstance) {
-			LoggingSingleton._infoInstance = bunyan.createLogger({
-				name: LoggingSingleton._loggerName,
-				streams: [{ stream: process.stdout, level: 'info' }, this._loggingBunyan.stream('info')],
-			});
+	static getInstance() {
+		if (!LoggingSingleton._instance) {
+			LoggingSingleton._instance = new LoggingSingleton();
 		}
-		LoggingSingleton._infoInstance.info(message);
+		return LoggingSingleton._instance;
 	}
-	static logError(message) {
-		if (!LoggingSingleton._errorInstance) {
-			LoggingSingleton._errorInstance = bunyan.createLogger({
-				name: LoggingSingleton._loggerName,
-				streams: [{ stream: process.stdout, level: 'error' }, this._loggingBunyan.stream('error')],
-			});
+	logInfo(message) {
+		if (process.env.ENV === 'development') {
+			console.info(message);
+		} else {
+			this._infoInstance.info(message);
 		}
-		LoggingSingleton._errorInstance.info(message);
 	}
-	static logWarning(message) {
-		if (!LoggingSingleton._warningInstance) {
-			LoggingSingleton._warningInstance = bunyan.createLogger({
-				name: LoggingSingleton._loggerName,
-				streams: [{ stream: process.stdout, level: 'warn' }, this._loggingBunyan.stream('warn')],
-			});
+	logError(message) {
+		if (process.env.ENV === 'development') {
+			console.error(message);
+		} else {
+			this._errorInstance.error(message);
 		}
-		LoggingSingleton._warningInstance.info(message);
+	}
+	logWarning(message) {
+		if (process.env.ENV === 'development') {
+			console.warn(message);
+		} else {
+			this._warningInstance.warn(message);
+		}
 	}
 }
 exports.LoggingSingleton = LoggingSingleton;
-LoggingSingleton._loggingBunyan = new logging_bunyan_1.LoggingBunyan();
-LoggingSingleton._loggerName = 'adinfo';

@@ -17,7 +17,7 @@ describe('String Utils', () => {
 			);
 		});
 	});
-	describe('Replace Withe Space', () => {
+	describe('Replace White Space', () => {
 		it('Substituir o espaço em branco pelo caracter passado', () => {
 			expect(StringUtils.replaceWhiteSpace('Hello World', '')).to.equal(
 				'HelloWorld'
