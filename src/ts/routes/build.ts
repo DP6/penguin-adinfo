@@ -59,12 +59,6 @@ const build = (app: { [key: string]: any }): void => {
 					csvContent,
 					CsvUtils.identifyCsvSepartor(csvContent.split('\n')[0], companyConfig.csvSeparator)
 				);
-				console.log('separador do config: ' + companyConfig.csvSeparator);
-				console.log(
-					'separador da funcao se passado undefined: ' +
-						CsvUtils.identifyCsvSepartor(csvContent.split('\n')[0], companyConfig.csvSeparator)
-				);
-				// const jsonFromFile = CsvUtils.csv2json(fileContent.split('\n')[0], companyConfig.csvSeparator);
 				const jsonParameterized = new Builder(jsonFromFile, companyConfig, media).build();
 				const configVersion = companyConfig.version;
 				const configTimestamp = DateUtils.newDateStringFormat(
