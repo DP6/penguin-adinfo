@@ -12,6 +12,7 @@ export class Config {
 	private _analyticsToolName: string;
 	private _medias: { [key: string]: any };
 	private _validationRules: { [key: string]: string[] };
+	private _columnNames: string[];
 	private _dependenciesConfig: DependencyConfig[];
 
 	constructor(jsonConfig: { [key: string]: any }) {
@@ -40,6 +41,7 @@ export class Config {
 			delete jsonConfigTemp.adobe;
 		}
 		this._validationRules = jsonConfigTemp.columns;
+		this._columnNames = Object.keys(jsonConfigTemp.columns);
 		delete jsonConfigTemp.columns;
 		this._medias = jsonConfigTemp;
 	}
@@ -194,6 +196,10 @@ export class Config {
 
 	get validationRules(): { [key: string]: string[] } {
 		return this._validationRules;
+	}
+
+	get columnNames(): string[] {
+		return this._columnNames;
 	}
 
 	get separator(): string {
