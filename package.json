@@ -62,6 +62,7 @@
 		"convert-csv-to-json": "0.0.15",
 		"cors": "^2.8.5",
 		"dotenv": "^8.2.0",
+		"exceljs": "^4.2.1",
 		"express": "^4.17.1",
 		"express-fileupload": "^1.2.0",
 		"express-validator": "^6.11.1",
