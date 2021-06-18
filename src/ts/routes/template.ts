@@ -40,24 +40,27 @@ const template = (app: { [key: string]: any }): void => {
 			.getLastConfig()
 			.then((config: Config) => {
 				const templateExcel = new TemplateExcel(config);
-				templateExcel.getExcelBuffer()
-				.then((buffer: Buffer) => {
-					apiResponse.statusCode = 200;
-					res.contentType('application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
-					res.attachment('template.xlsx');
-					res.send(buffer);
-				}).catch((err) => {
-					apiResponse.responseText = 'Erro ao baixar o template!';
-					apiResponse.statusCode = 500;
-					apiResponse.errorMessage = err.message;
-					res.status(apiResponse.statusCode).send(apiResponse.jsonResponse);
-				})
-			}).catch((err) => {
+				templateExcel
+					.getExcelBuffer()
+					.then((buffer: Buffer) => {
+						apiResponse.statusCode = 200;
+						res.contentType('application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+						res.attachment('template.xlsx');
+						res.send(buffer);
+					})
+					.catch((err) => {
+						apiResponse.responseText = 'Erro ao baixar o template!';
+						apiResponse.statusCode = 500;
+						apiResponse.errorMessage = err.message;
+						res.status(apiResponse.statusCode).send(apiResponse.jsonResponse);
+					});
+			})
+			.catch((err) => {
 				apiResponse.responseText = 'Erro ao recuperar a configuração!';
 				apiResponse.statusCode = 500;
 				apiResponse.errorMessage = err.message;
 				res.status(apiResponse.statusCode).send(apiResponse.jsonResponse);
-			})
+			});
 	});
 };
 
