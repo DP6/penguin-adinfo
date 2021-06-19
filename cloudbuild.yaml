@@ -6,6 +6,9 @@ steps:
   # Run tests
   - name: node
     entrypoint: npm
+    args: ['run', 'lint']
+  - name: node
+    entrypoint: npm
     args: ['run', 'test']
   - name: 'gcr.io/cloud-builders/gcloud'
     args: ['app', 'deploy']
