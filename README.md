@@ -1,7 +1,13 @@
 # Penguin Adinfo
 
 <div align="center">
-<img src="https://raw.githubusercontent.com/DP6/templates-centro-de-inovacoes/main/public/images/centro_de_inovacao_dp6.png" height="100px" />
+	<img src="https://raw.githubusercontent.com/DP6/templates-centro-de-inovacoes/main/public/images/centro_de_inovacao_dp6.png" height="100px" />
+</div>
+<div align="center">
+    <img src="https://img.shields.io/codacy/grade/6276f660577e41e0a7b7e4605c4f0434">
+    <img src="https://img.shields.io/codacy/coverage/6276f660577e41e0a7b7e4605c4f0434">
+    <img src="https://img.shields.io/github/issues/DP6/penguin-adinfo">
+	<img src="https://img.shields.io/github/license/DP6/penguin-adinfo">
 </div>
 
 O Penguin Adinfo é um recurso que tem como objetivo o **controle** e **padronização** do uso de parametrização e nomenclatura de mídia digital.
