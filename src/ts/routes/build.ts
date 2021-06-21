@@ -69,8 +69,14 @@ const build = (app: { [key: string]: any }): void => {
 				converter.json2csv(
 					jsonParameterized,
 					(err, csv) => {
-						csv += '\n\nConfiguracao versao;' + configVersion;
-						csv += '\nConfiguracao inserida em;' + configTimestamp;
+						csv +=
+							'\n\nConfiguracao versao' +
+							CsvUtils.identifyCsvSepartor(csvContent.split('\n')[0], companyConfig.csvSeparator) +
+							configVersion;
+						csv +=
+							'\nConfiguracao inserida em' +
+							CsvUtils.identifyCsvSepartor(csvContent.split('\n')[0], companyConfig.csvSeparator) +
+							configTimestamp;
 						res.setHeader('Content-disposition', 'attachment; filename=data.csv');
 						res.set('Content-Type', 'text/csv; charset=utf-8');
 						apiResponse.responseText = csv;
@@ -79,7 +85,7 @@ const build = (app: { [key: string]: any }): void => {
 					},
 					{
 						delimiter: {
-							field: companyConfig.csvSeparator,
+							field: CsvUtils.identifyCsvSepartor(csvContent.split('\n')[0], companyConfig.csvSeparator),
 						},
 					}
 				);
