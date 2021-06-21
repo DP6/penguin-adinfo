@@ -1,6 +1,9 @@
 import { StringUtils } from '../utils/StringUtils';
 import { Config } from './Config';
 import { Vehicle } from './Vehicle';
+import { ValidateRulesForColumnHandler } from '../Handlers/validateRulesForColumnHandler';
+import { ValidateFieldHandler } from '../Handlers/ValidateFieldHandler';
+import { ValidateFieldDependecyHandler } from '../Handlers/ValidateFieldDependecyHandler';
 
 /*
     params: {
@@ -84,30 +87,40 @@ export class FacebookAds extends Vehicle {
 					this._errorFacebookParams[facebookParam] = [];
 					this._undefinedParameterErrorFields[facebookParam] = [];
 					facebookadsConfig[facebookParam].forEach((column: string) => {
-						if (!this.config.validationRules[column]) {
-							this._hasUndefinedParameterError = true;
-							this._undefinedParameterErrorFields[facebookParam].push(column);
-							this._facebookParams[facebookParam] = '';
-						} else {
-							const normalizedColumn = StringUtils.normalize(column);
-							if (!this.config.validateField(this.csvLine, column, this.csvLine[normalizedColumn])) {
+						const columnNormalized = StringUtils.normalize(column);
+
+						const validateRulesForColumnHandler = new ValidateRulesForColumnHandler(this.config, column);
+						const validateFieldHandler = new ValidateFieldHandler(this.config, column);
+						const validateFieldDependecyHandler = new ValidateFieldDependecyHandler(this.config, this.csvLine, column);
+
+						validateRulesForColumnHandler.setNext(validateFieldHandler).setNext(validateFieldDependecyHandler);
+
+						try {
+							validateRulesForColumnHandler.handle(this.csvLine[columnNormalized]);
+
+							columnFields.push(
+								StringUtils.replaceWhiteSpace(
+									this.csvLine[columnNormalized],
+									this.config.spaceSeparator
+								).toLocaleLowerCase()
+							);
+						} catch (e) {
+							if (e.name === 'ValidateRulesForColumnError') {
+								this._hasUndefinedParameterError = true;
+								this._undefinedParameterErrorFields[facebookParam].push(column);
+								this._facebookParams[facebookParam] = '';
+							} else if (e.name === 'ValidateFieldError' || e.name === 'ValidateFieldDependecyError') {
 								this._hasValidationError = true;
 								this._errorFacebookParams[facebookParam].push(column);
-							} else {
-								columnFields.push(
-									StringUtils.replaceWhiteSpace(
-										this.csvLine[normalizedColumn],
-										this.config.spaceSeparator
-									).toLocaleLowerCase()
-								);
 							}
 						}
-						if (this._errorFacebookParams[facebookParam].length > 0) {
-							this._facebookParams[facebookParam] =
-								this._validationErrorMessage + this._errorFacebookParams[facebookParam].join(' - ');
-						} else if (this._undefinedParameterErrorFields[facebookParam].length > 0) {
+
+						if (this._undefinedParameterErrorFields[facebookParam].length > 0) {
 							this._facebookParams[facebookParam] =
 								this._undefinedParameterErrorMessage + this._undefinedParameterErrorFields[facebookParam].join(' = ');
+						} else if (this._errorFacebookParams[facebookParam].length > 0) {
+							this._facebookParams[facebookParam] =
+								this._validationErrorMessage + this._errorFacebookParams[facebookParam].join(' - ');
 						} else {
 							this._facebookParams[facebookParam] = columnFields.join(this.config.separator);
 						}

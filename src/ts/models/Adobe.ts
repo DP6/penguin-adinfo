@@ -1,6 +1,9 @@
 import { StringUtils } from '../utils/StringUtils';
 import { Config } from './Config';
 import { AnalyticsTool } from './AnalyticsTool';
+import { StringEmptyHandler } from '../Handlers/StringEmptyHandler';
+import { ValidateFieldHandler } from '../Handlers/ValidateFieldHandler';
+import { ValidateFieldDependecyHandler } from '../Handlers/ValidateFieldDependecyHandler';
 
 /*
  csvLine: {
@@ -81,15 +84,25 @@ export class Adobe extends AnalyticsTool {
 		let cid = '';
 		this.config.analyticsTool.adobe.cid.forEach((column) => {
 			const columnNormalized = StringUtils.normalize(column);
-			if (StringUtils.isEmpty(this.csvLine[columnNormalized])) {
-				this._hasUndefinedParameterError = true;
-				this._undefinedParameterErroMessage += ` ${column} -`;
-				return;
+
+			const stringEmptyHandler = new StringEmptyHandler();
+			const validateFieldHandler = new ValidateFieldHandler(this.config, column);
+			const validateFieldDependecyHandler = new ValidateFieldDependecyHandler(this.config, this.csvLine, column);
+
+			stringEmptyHandler.setNext(validateFieldHandler).setNext(validateFieldDependecyHandler);
+
+			try {
+				stringEmptyHandler.handle(this.csvLine[columnNormalized]);
+			} catch (e) {
+				if (e.name === 'StringEmptyError') {
+					this._hasUndefinedParameterError = true;
+					this._undefinedParameterErroMessage += ` ${column} -`;
+				} else if (e.name === 'ValidateFieldError' || e.name === 'ValidateFieldDependecyError') {
+					this._hasValidationError = true;
+					this._validationErrorMessage += ` ${column} -`;
+				}
 			}
-			if (!this.config.validateField(this.csvLine, column, this.csvLine[columnNormalized])) {
-				this._hasValidationError = true;
-				this._validationErrorMessage += ` ${column} -`;
-			}
+
 			cid += `${this.csvLine[columnNormalized]}${this.config.separator}`;
 		});
 		cid = StringUtils.replaceWhiteSpace(StringUtils.normalize(cid), this.config.spaceSeparator).slice(0, -1);

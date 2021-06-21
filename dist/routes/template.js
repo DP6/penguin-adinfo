@@ -4,7 +4,6 @@ const ConfigDAO_1 = require('../models/DAO/ConfigDAO');
 const ApiResponse_1 = require('../models/ApiResponse');
 const template = (app) => {
 	app.get('/template', (req, res) => {
-		const company = req.company;
 		const configDAO = new ConfigDAO_1.ConfigDAO('company');
 		const apiResponse = new ApiResponse_1.ApiResponse();
 		configDAO

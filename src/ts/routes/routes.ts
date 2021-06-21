@@ -5,7 +5,7 @@ import build from './build';
 import register from './register';
 import user from './user';
 
-const routes = (app: { [key: string]: any }) => {
+const routes = (app: { [key: string]: any }): void => {
 	config(app);
 	csv(app);
 	template(app);

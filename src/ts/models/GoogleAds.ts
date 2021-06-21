@@ -1,6 +1,9 @@
 import { StringUtils } from '../utils/StringUtils';
 import { Config } from './Config';
 import { Vehicle } from './Vehicle';
+import { ValidateRulesForColumnHandler } from '../Handlers/validateRulesForColumnHandler';
+import { ValidateFieldHandler } from '../Handlers/ValidateFieldHandler';
+import { ValidateFieldDependecyHandler } from '../Handlers/ValidateFieldDependecyHandler';
 
 /*
     params: {
@@ -80,20 +83,28 @@ export class GoogleAds extends Vehicle {
 			this._undefinedParameterErrorFields[googleAdsParam] = [];
 			const fields: string[] = this.config.medias.googleads[googleAdsParam];
 			fields.forEach((column: string) => {
-				if (!this.config.validationRules[column]) {
-					this._hasUndefinedParameterError[googleAdsParam] = true;
-					this._undefinedParameterErrorFields[googleAdsParam].push(column);
-				} else {
-					const normalizedColumn = StringUtils.normalize(column);
-					//TODO testar caso a coluna não existir no csv
-					if (!this.config.validateField(this.csvLine, column, this.csvLine[normalizedColumn])) {
+				const columnNormalized = StringUtils.normalize(column);
+
+				const validateRulesForColumnHandler = new ValidateRulesForColumnHandler(this.config, column);
+				const validateFieldHandler = new ValidateFieldHandler(this.config, column);
+				const validateFieldDependecyHandler = new ValidateFieldDependecyHandler(this.config, this.csvLine, column);
+
+				validateRulesForColumnHandler.setNext(validateFieldHandler).setNext(validateFieldDependecyHandler);
+
+				try {
+					validateRulesForColumnHandler.handle(this.csvLine[columnNormalized]);
+
+					this._adsParams[googleAdsParam] += `${StringUtils.replaceWhiteSpace(
+						this.csvLine[columnNormalized],
+						this.config.spaceSeparator
+					).toLowerCase()}${this.config.separator}`;
+				} catch (e) {
+					if (e.name === 'ValidateRulesForColumnError') {
+						this._hasUndefinedParameterError[googleAdsParam] = true;
+						this._undefinedParameterErrorFields[googleAdsParam].push(column);
+					} else if (e.name === 'ValidateFieldError' || e.name === 'ValidateFieldDependecyError') {
 						this._hasValidationError[googleAdsParam] = true;
 						this._errorAdsParams[googleAdsParam].push(column);
-					} else {
-						this._adsParams[googleAdsParam] += `${StringUtils.replaceWhiteSpace(
-							this.csvLine[normalizedColumn],
-							this.config.spaceSeparator
-						).toLowerCase()}${this.config.separator}`;
 					}
 				}
 			});

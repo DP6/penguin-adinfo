@@ -132,7 +132,7 @@ export class Config {
 	 * @param csvColumn Coluna do CSV a ser validada
 	 * @param value Valor da coluna
 	 */
-	private _validateRulesFor(csvColumn: string, value: string): boolean {
+	public validateRulesFor(csvColumn: string, value: string): boolean {
 		if (!this._existsValidationRuleFor(csvColumn)) {
 			return true;
 		}
@@ -159,7 +159,7 @@ export class Config {
 	 * @param csvColumn Coluna do CSV a ser validada
 	 * @param value Valor da coluna
 	 */
-	private _validateDependencyRulesFor(csvLine: { [key: string]: string }, csvColumn: string, value: string): boolean {
+	public validateDependencyRulesFor(csvLine: { [key: string]: string }, csvColumn: string, value: string): boolean {
 		const dependenciesConfigForCsvColumn = this._getAllDependencyConfigFor(csvColumn);
 
 		if (dependenciesConfigForCsvColumn.length === 0) {
@@ -182,16 +182,6 @@ export class Config {
 				}
 			}).length === dependenciesToValidate.length
 		);
-	}
-
-	/**
-	 * Valida se o campo está de acordo com as regras de validação e de dependência
-	 * @param csvLine Linha do CSV
-	 * @param csvColumn Coluna do CSV de referência
-	 * @param value Valor da coluna
-	 */
-	public validateField(csvLine: { [key: string]: string }, csvColumn: string, value: string): boolean {
-		return this._validateRulesFor(csvColumn, value) && this._validateDependencyRulesFor(csvLine, csvColumn, value);
 	}
 
 	/**

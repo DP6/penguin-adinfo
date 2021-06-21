@@ -3,6 +3,9 @@ Object.defineProperty(exports, '__esModule', { value: true });
 exports.GoogleAds = void 0;
 const StringUtils_1 = require('../utils/StringUtils');
 const Vehicle_1 = require('./Vehicle');
+const validateRulesForColumnHandler_1 = require('../Handlers/validateRulesForColumnHandler');
+const ValidateFieldHandler_1 = require('../Handlers/ValidateFieldHandler');
+const ValidateFieldDependecyHandler_1 = require('../Handlers/ValidateFieldDependecyHandler');
 class GoogleAds extends Vehicle_1.Vehicle {
 	constructor(csvLine, config) {
 		super(csvLine, config);
@@ -31,19 +34,31 @@ class GoogleAds extends Vehicle_1.Vehicle {
 			this._undefinedParameterErrorFields[googleAdsParam] = [];
 			const fields = this.config.medias.googleads[googleAdsParam];
 			fields.forEach((column) => {
-				if (!this.config.validationRules[column]) {
-					this._hasUndefinedParameterError[googleAdsParam] = true;
-					this._undefinedParameterErrorFields[googleAdsParam].push(column);
-				} else {
-					const normalizedColumn = StringUtils_1.StringUtils.normalize(column);
-					if (!this.config.validateField(this.csvLine, column, this.csvLine[normalizedColumn])) {
+				const columnNormalized = StringUtils_1.StringUtils.normalize(column);
+				const validateRulesForColumnHandler = new validateRulesForColumnHandler_1.ValidateRulesForColumnHandler(
+					this.config,
+					column
+				);
+				const validateFieldHandler = new ValidateFieldHandler_1.ValidateFieldHandler(this.config, column);
+				const validateFieldDependecyHandler = new ValidateFieldDependecyHandler_1.ValidateFieldDependecyHandler(
+					this.config,
+					this.csvLine,
+					column
+				);
+				validateRulesForColumnHandler.setNext(validateFieldHandler).setNext(validateFieldDependecyHandler);
+				try {
+					validateRulesForColumnHandler.handle(this.csvLine[columnNormalized]);
+					this._adsParams[googleAdsParam] += `${StringUtils_1.StringUtils.replaceWhiteSpace(
+						this.csvLine[columnNormalized],
+						this.config.spaceSeparator
+					).toLowerCase()}${this.config.separator}`;
+				} catch (e) {
+					if (e.name === 'ValidateRulesForColumnError') {
+						this._hasUndefinedParameterError[googleAdsParam] = true;
+						this._undefinedParameterErrorFields[googleAdsParam].push(column);
+					} else if (e.name === 'ValidateFieldError' || e.name === 'ValidateFieldDependecyError') {
 						this._hasValidationError[googleAdsParam] = true;
 						this._errorAdsParams[googleAdsParam].push(column);
-					} else {
-						this._adsParams[googleAdsParam] += `${StringUtils_1.StringUtils.replaceWhiteSpace(
-							this.csvLine[normalizedColumn],
-							this.config.spaceSeparator
-						).toLowerCase()}${this.config.separator}`;
 					}
 				}
 			});

@@ -85,7 +85,7 @@ class Config {
 	_existsValidationRuleFor(csvColumn) {
 		return this.validationRules[csvColumn].length > 0;
 	}
-	_validateRulesFor(csvColumn, value) {
+	validateRulesFor(csvColumn, value) {
 		if (!this._existsValidationRuleFor(csvColumn)) {
 			return true;
 		}
@@ -100,7 +100,7 @@ class Config {
 		});
 		return dependenciesColumnConfig;
 	}
-	_validateDependencyRulesFor(csvLine, csvColumn, value) {
+	validateDependencyRulesFor(csvLine, csvColumn, value) {
 		const dependenciesConfigForCsvColumn = this._getAllDependencyConfigFor(csvColumn);
 		if (dependenciesConfigForCsvColumn.length === 0) {
 			return true;
@@ -120,9 +120,6 @@ class Config {
 				}
 			}).length === dependenciesToValidate.length
 		);
-	}
-	validateField(csvLine, csvColumn, value) {
-		return this._validateRulesFor(csvColumn, value) && this._validateDependencyRulesFor(csvLine, csvColumn, value);
 	}
 	existsColumn(csvColumn) {
 		return !!this.validationRules[csvColumn];
