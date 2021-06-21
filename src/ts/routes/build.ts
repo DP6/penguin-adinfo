@@ -55,10 +55,8 @@ const build = (app: { [key: string]: any }): void => {
 			})
 			.then(() => {
 				const csvContent = fileContent.toString();
-				const jsonFromFile = CsvUtils.csv2json(
-					csvContent,
-					CsvUtils.identifyCsvSepartor(csvContent.split('\n')[0], companyConfig.csvSeparator)
-				);
+				const separador = CsvUtils.identifyCsvSepartor(csvContent.split('\n')[0], companyConfig.csvSeparator);
+				const jsonFromFile = CsvUtils.csv2json(csvContent, separador);
 				const jsonParameterized = new Builder(jsonFromFile, companyConfig, media).build();
 				const configVersion = companyConfig.version;
 				const configTimestamp = DateUtils.newDateStringFormat(
@@ -69,14 +67,8 @@ const build = (app: { [key: string]: any }): void => {
 				converter.json2csv(
 					jsonParameterized,
 					(err, csv) => {
-						csv +=
-							'\n\nConfiguracao versao' +
-							CsvUtils.identifyCsvSepartor(csvContent.split('\n')[0], companyConfig.csvSeparator) +
-							configVersion;
-						csv +=
-							'\nConfiguracao inserida em' +
-							CsvUtils.identifyCsvSepartor(csvContent.split('\n')[0], companyConfig.csvSeparator) +
-							configTimestamp;
+						csv += '\n\nConfiguracao versao' + separador + configVersion;
+						csv += '\nConfiguracao inserida em' + separador + configTimestamp;
 						res.setHeader('Content-disposition', 'attachment; filename=data.csv');
 						res.set('Content-Type', 'text/csv; charset=utf-8');
 						apiResponse.responseText = csv;
@@ -85,7 +77,7 @@ const build = (app: { [key: string]: any }): void => {
 					},
 					{
 						delimiter: {
-							field: CsvUtils.identifyCsvSepartor(csvContent.split('\n')[0], companyConfig.csvSeparator),
+							field: separador,
 						},
 					}
 				);
