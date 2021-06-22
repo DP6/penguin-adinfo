@@ -1,5 +1,4 @@
 import { Log } from '../Log';
-// import * as credentials from '../../config/gcp_key.json';
 import * as bunyan from 'bunyan';
 import { LoggingBunyan } from '@google-cloud/logging-bunyan';
 
@@ -27,6 +26,10 @@ export class LoggingSingleton extends Log {
 		});
 	}
 
+	/**
+	 * Pega a instância ativa do logging
+	 * @returns retorna a instância do Logging
+	 */
 	public static getInstance(): LoggingSingleton {
 		if (!LoggingSingleton._instance) {
 			LoggingSingleton._instance = new LoggingSingleton();
@@ -34,6 +37,10 @@ export class LoggingSingleton extends Log {
 		return LoggingSingleton._instance;
 	}
 
+	/**
+	 * Escreve o log de uma mensagem com o status INFO
+	 * @param message Mensagem a ser escrita no log
+	 */
 	public logInfo(message: string): void {
 		if (process.env.ENV === 'development') {
 			console.info(message);
@@ -42,6 +49,10 @@ export class LoggingSingleton extends Log {
 		}
 	}
 
+	/**
+	 * Escreve o log de uma mensagem com o status ERROR
+	 * @param message Mensagem a ser escrita no log
+	 */
 	public logError(message: string): void {
 		if (process.env.ENV === 'development') {
 			console.error(message);
@@ -50,6 +61,10 @@ export class LoggingSingleton extends Log {
 		}
 	}
 
+	/**
+	 * Escreve o log de uma mensagem com o status WARNING
+	 * @param message Mensagem a ser escrita no log
+	 */
 	public logWarning(message: string): void {
 		if (process.env.ENV === 'development') {
 			console.warn(message);

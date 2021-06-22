@@ -64,6 +64,12 @@
 				<div align="center">
 					<img src="https://raw.githubusercontent.com/DP6/templates-centro-de-inovacoes/main/public/images/centro_de_inovacao_dp6.png" height="100px" />
 				</div>
+				<div align="center">
+					<img src="https://img.shields.io/codacy/grade/6276f660577e41e0a7b7e4605c4f0434">
+					<img src="https://img.shields.io/codacy/coverage/6276f660577e41e0a7b7e4605c4f0434">
+					<img src="https://img.shields.io/github/issues/DP6/penguin-adinfo">
+					<img src="https://img.shields.io/github/license/DP6/penguin-adinfo">
+				</div>
 				<p>O Penguin Adinfo é um recurso que tem como objetivo o <strong>controle</strong> e <strong>padronização</strong> do uso de parametrização e nomenclatura de mídia digital.</p>
 				<p>A solução proposta é uma <strong>API</strong> open source que através de rotas de requisição trabalha <em>inputs</em> de URLs a parametrizar e seus respectivos campos para devolver a parametrização já com uma <strong>validação</strong> dos campos preenchidos e de status de requisição dos links.</p>
 				<p>Os principais componentes no uso da aplicação são a <strong>configuração</strong>, um JSON contendo quais campos são aceitos na taxonomia de mídia, o <strong>permissionamento</strong> para controle de ações permitidas por nível de acesso, e o <strong>arquivo de parametrização</strong>, um CSV contendo a lista de URLs e os campos preenchidos conforme o que foi configurado.</p>
@@ -85,10 +91,10 @@
 					<li><strong>test</strong>: Realiza uma bateria de testes unitários dos arquivos de typescript presentes na pasta test/;</li>
 					<li><strong>lint</strong>: Submete o código a uma avaliação do <a href="https://eslint.org/">ESLint</a>;</li>
 					<li><strong>lint-fix</strong>: Submete o código a uma avaliação do <a href="https://eslint.org/">ESLint</a> e aplica correções automaticamente ao código;</li>
-					<li><strong>compile</strong>: Exclui os arquivos da pasta /src/js e compila o código do typescript para javascript, guardando-o na pasta src/js;</li>
-					<li><strong>auto-compile</strong>: Realiza a compilação dos arquivos typescript em tempo real, armazenando o resultado dentro da pasta src/js, sem excluir o conteúdo anterior;</li>
+					<li><strong>compile</strong>: Compila o código do typescript para javascript, guardando-o na pasta dist/;</li>
+					<li><strong>auto-compile</strong>: Realiza a compilação dos arquivos typescript em tempo real, armazenando o resultado dentro da pasta dist/, sem excluir o conteúdo anterior;</li>
 					<li><strong>prettier</strong>: Formata todo o código das pastas src/ e test/, utilizando o <a href="https://prettier.io/">Prettier</a>, de acordo com a configuração descrita no arquivo .prettierrc;</li>
-					<li><strong>coverage</strong>: Análise da cobertura dos testes.</li>
+					<li><strong>coverage</strong>: Análise da cobertura dos testes;</li>
 					<li><strong>build</strong>: Executa o compile do código typescript para javascript.</li>
 				</ul>
 				<a href="#requisitos-para-utilização" id="requisitos-para-utilização" style="color: inherit; text-decoration: none;">
@@ -114,8 +120,36 @@
 				<p>Clone o projeto do github para sua máquina local ou Cloud Shell</p>
 				<pre><code class="language-console">git clone https://github.com/DP6/penguin-adinfo.git
 </code></pre>
-				<a href="#instalação-gcp-sugerida" id="instalação-gcp-sugerida" style="color: inherit; text-decoration: none;">
-					<h3>Instalação GCP (sugerida)</h3>
+				<a href="#instalação-gcp-via-terraform" id="instalação-gcp-via-terraform" style="color: inherit; text-decoration: none;">
+					<h3>Instalação GCP via Terraform</h3>
+				</a>
+				<a href="#pré-requisitos" id="pré-requisitos" style="color: inherit; text-decoration: none;">
+					<h4>Pré-requisitos</h4>
+				</a>
+				<ol>
+					<li><a href="https://cloud.google.com/sdk/docs/install?hl=pt-br">Google Cloud SDK</a>;</li>
+					<li>Pacote zip;</li>
+					<li><a href="https://www.terraform.io/">Terraform</a>;</li>
+					<li>Habilitar o App Engine em ambiente de execução Node.js, Firestore e Cloud Storage (necessário ter um billing ativo), no GCP.</li>
+				</ol>
+				<a href="#passos" id="passos" style="color: inherit; text-decoration: none;">
+					<h4>Passos</h4>
+				</a>
+				<ol>
+					<li><p>Execute o script <strong>terraform_deploy.sh</strong>;</p>
+					</li>
+					<li><p>Informe o nome da empresa, ferramenta analítica utilizada para a criação de um exemplo de configuração (Adobe Analytics ou Google Analytics) e o id do projeto. Também é possível informar o número da porta onde o adinfo irá rodar, entretanto esse último valor é opcional, caso nenhuma porta seja específica, por padrão ele executará na porta 443;</p>
+					</li>
+					<li><p>Crie uma coleção no Firestore com o nome de <strong>tokens</strong> e insira um primeiro token com os seguintes campos (deixe o id do documento vazio para que seja gerado automaticamente):</p>
+						<pre><code><span style="color: #000000">{</span>
+<span style="color: #000000">    company: </span><span style="color: #A31515">&quot;NOME_EMPRESA&quot;</span><span style="color: #000000"> (</span><span style="color: #001080">string</span><span style="color: #000000">)</span>
+<span style="color: #000000">    permission: </span><span style="color: #A31515">&quot;owner&quot;</span><span style="color: #000000">(</span><span style="color: #001080">string</span><span style="color: #000000">)</span>
+<span style="color: #000000">}</span>
+</code></pre>
+					</li>
+				</ol>
+				<a href="#instalação-manual---gcp" id="instalação-manual---gcp" style="color: inherit; text-decoration: none;">
+					<h3>Instalação manual - GCP</h3>
 				</a>
 				<p>Durante toda a etapa de desenvolvimento do adinfo ele é hospedado no serviço de App Engine do GCP, além de armazenar informações no Firestore e Storage.</p>
 				<a href="#configuração-do-firestore-e-storage" id="configuração-do-firestore-e-storage" style="color: inherit; text-decoration: none;">
@@ -125,7 +159,7 @@
 				<a href="#configuração-inicial-do-storage" id="configuração-inicial-do-storage" style="color: inherit; text-decoration: none;">
 					<h5>Configuração inicial do Storage</h5>
 				</a>
-				<p>Crie um bucket para armazenar os arquivos do adinfo. O bucket em questão deve ser informado no atributo _bucket da classe <strong>StorageConnectionSingleton</strong>, por padrão os arquivos serão salvos dentro do bucket informado e separados dentro de pastas para cada agência.</p>
+				<p>Crie um bucket para armazenar os arquivos do adinfo, o bucket em questão deve ser informado no .env. Por padrão os arquivos serão salvos dentro do bucket informado e separados dentro de pastas para cada agência.</p>
 				<a href="#configuração-inicial-do-firestore" id="configuração-inicial-do-firestore" style="color: inherit; text-decoration: none;">
 					<h5>Configuração inicial do Firestore</h5>
 				</a>
@@ -135,13 +169,122 @@
 					</li>
 					<li><p><strong>tokens</strong>: essa coleção também deve ser criada na raiz do firestore com um documento seguindo a estrutura:</p>
 						<pre><code><span style="color: #000000">{</span>
-<span style="color: #000000">    company: </span><span style="color: #A31515">&quot;arthurltda&quot;</span><span style="color: #000000"> (</span><span style="color: #001080">string</span><span style="color: #000000">)</span>
+<span style="color: #000000">    company: </span><span style="color: #A31515">&quot;NOME_EMPRESA&quot;</span><span style="color: #000000"> (</span><span style="color: #001080">string</span><span style="color: #000000">)</span>
 <span style="color: #000000">    permission: </span><span style="color: #A31515">&quot;owner&quot;</span><span style="color: #000000">(</span><span style="color: #001080">string</span><span style="color: #000000">)</span>
 <span style="color: #000000">}</span>
 </code></pre>
 						<p>Para esse documento, é importante manter o Código do Documento gerado automaticamente pelo google. O código gerado para cada documento será o token de acesso utilizado na API.</p>
 					</li>
 				</ul>
+				<a href="#padrão-do-objeto-de-configuração" id="padrão-do-objeto-de-configuração" style="color: inherit; text-decoration: none;">
+					<h6>Padrão do Objeto de Configuração</h6>
+				</a>
+				<p>Para utilizar a API, é necessário criar um documento de configuração no Firestore dentro da coleção: companies &gt; [nome_empresa] &gt; config. O nome do documento deve ser <strong>config_1</strong> e ele deve conter os campos: <strong>csvSeparator</strong>, <strong>separator</strong>, <strong>spaceSeparator</strong>, <strong>columns</strong> e um campo para a ferramenta de analytics, sendo esse o valor de <strong>ga</strong> ou <strong>adobe</strong>.</p>
+				<p>Abaixo segue uma explicação e um exemplo de todos os campos das configurações.</p>
+				<table>
+					<thead>
+						<tr>
+							<th>Chave</th>
+							<th>Tipo</th>
+							<th>Descrição</th>
+							<th>Obrigatório</th>
+						</tr>
+					</thead>
+					<tbody><tr>
+							<td>csvSeparator</td>
+							<td>String</td>
+							<td>Separador de colunas do arquivo CSV.</td>
+							<td>Sim</td>
+						</tr>
+						<tr>
+							<td>separator</td>
+							<td>String</td>
+							<td>String que será utilizada na concatenação dos campos.</td>
+							<td>Sim</td>
+						</tr>
+						<tr>
+							<td>spaceSeparator</td>
+							<td>String</td>
+							<td>String que substituirá o espaço na URL, caso alguma campo tenha preenchido com mais de uma palavra.</td>
+							<td>Sim</td>
+						</tr>
+						<tr>
+							<td>columns</td>
+							<td>Objeto</td>
+							<td>Objeto contendo as colunas do CSV e seus valores de aceitação.</td>
+							<td>Sim</td>
+						</tr>
+						<tr>
+							<td>dependenciesConfig</td>
+							<td>Objeto</td>
+							<td>Objeto contendo as regras de dependências de validação.</td>
+							<td>Não</td>
+						</tr>
+						<tr>
+							<td>{{veículo}}</td>
+							<td>Objeto</td>
+							<td>Chave do veículo de mídia com suas configurações e quais colunas pertencem a cada configuração.</td>
+							<td>Não</td>
+						</tr>
+						<tr>
+							<td>{{ferramenta de analytics}}</td>
+							<td>Objeto</td>
+							<td>Chave da ferramenta de analytics com suas configurações e quais colunas pertencem a cada configuração. Essa chave precisa obrigatoriamente receber o valor <strong>ga</strong> ou <strong>adobe</strong>.</td>
+							<td>Sim</td>
+						</tr>
+				</tbody></table>
+				<p><strong>Exemplo de configuração</strong>:</p>
+				<pre><code class="language-javascript"><span style="color: #000000">{</span>
+<span style="color: #000000">    </span><span style="color: #A31515">&quot;separator&quot;</span><span style="color: #000000">: </span><span style="color: #A31515">&quot;:&quot;</span><span style="color: #000000">,</span>
+<span style="color: #000000">    </span><span style="color: #A31515">&quot;spaceSeparator&quot;</span><span style="color: #000000">: </span><span style="color: #A31515">&quot;_&quot;</span><span style="color: #000000">,</span>
+<span style="color: #000000">    </span><span style="color: #A31515">&quot;columns&quot;</span><span style="color: #000000">: {</span>
+<span style="color: #000000">        </span><span style="color: #008000">//Colunas que aparecerão no CSV</span>
+<span style="color: #000000">        </span><span style="color: #008000">//A chave representa a coluna do CSV e o vetor de valores</span>
+<span style="color: #000000">        </span><span style="color: #008000">//representam os possíveis valores de preenchimento dos campos.</span>
+<span style="color: #000000">        </span><span style="color: #008000">//É possível informar valores ou expressões regulares para a validação.</span>
+<span style="color: #000000">        </span><span style="color: #008000">//As expressão regulares devem estar entre /,</span>
+<span style="color: #000000">        </span><span style="color: #008000">//assim como na chave &quot;Produto&quot;</span>
+<span style="color: #000000">        </span><span style="color: #A31515">&quot;Tipo de Compra&quot;</span><span style="color: #001080">:</span><span style="color: #000000"> [</span><span style="color: #A31515">&quot;cpa&quot;</span><span style="color: #000000">, </span><span style="color: #A31515">&quot;cpc&quot;</span><span style="color: #000000">],</span>
+<span style="color: #000000">        </span><span style="color: #A31515">&quot;Dispositivo&quot;</span><span style="color: #001080">:</span><span style="color: #000000"> [</span><span style="color: #A31515">&quot;desktop e mobile&quot;</span><span style="color: #000000">],</span>
+<span style="color: #000000">        </span><span style="color: #A31515">&quot;Produto&quot;</span><span style="color: #001080">:</span><span style="color: #000000"> [</span><span style="color: #A31515">&quot;/.*/&quot;</span><span style="color: #000000">]</span>
+<span style="color: #000000">    },</span>
+<span style="color: #000000">    </span><span style="color: #A31515">&quot;ga&quot;</span><span style="color: #000000">: {</span>
+<span style="color: #000000">        </span><span style="color: #008000">//Ferramenta de analytics, um outro valor possível seria &quot;adobe&quot;</span>
+<span style="color: #000000">        </span><span style="color: #008000">//As chaves são os parâmetros que a ferramenta aceita</span>
+<span style="color: #000000">        </span><span style="color: #008000">//Os valores passados no vetor são referentes às</span>
+<span style="color: #000000">        </span><span style="color: #008000">//colunas do CSV que o formam</span>
+<span style="color: #000000">        </span><span style="color: #A31515">&quot;utm_source&quot;</span><span style="color: #001080">:</span><span style="color: #000000"> [</span><span style="color: #A31515">&quot;Tipo de Compra&quot;</span><span style="color: #000000">, </span><span style="color: #A31515">&quot;Dispositivo&quot;</span><span style="color: #000000">],</span>
+<span style="color: #000000">        </span><span style="color: #A31515">&quot;utm_campaign&quot;</span><span style="color: #001080">:</span><span style="color: #000000"> [</span><span style="color: #A31515">&quot;Produto&quot;</span><span style="color: #000000">]</span>
+<span style="color: #000000">    },</span>
+<span style="color: #000000">    </span><span style="color: #A31515">&quot;googleads&quot;</span><span style="color: #000000">: {</span>
+<span style="color: #000000">        </span><span style="color: #008000">//Configuração do veículo de mídia</span>
+<span style="color: #000000">        </span><span style="color: #008000">//As chaves são os parâmetros do veículos.</span>
+<span style="color: #000000">        </span><span style="color: #008000">//Os valores passados no vetor são referentes às</span>
+<span style="color: #000000">        </span><span style="color: #008000">//colunas do CSV que o formam,</span>
+<span style="color: #000000">        </span><span style="color: #008000">//semelhante à ferramenta de analytics.</span>
+<span style="color: #000000">        </span><span style="color: #A31515">&quot;campanha&quot;</span><span style="color: #001080">:</span><span style="color: #000000"> [</span><span style="color: #A31515">&quot;Tipo de Compra&quot;</span><span style="color: #000000">, </span><span style="color: #A31515">&quot;Dispositivo&quot;</span><span style="color: #000000">],</span>
+<span style="color: #000000">        </span><span style="color: #A31515">&quot;ad&quot;</span><span style="color: #001080">:</span><span style="color: #000000"> [</span><span style="color: #A31515">&quot;Produto&quot;</span><span style="color: #000000">]</span>
+<span style="color: #000000">    },</span>
+<span style="color: #000000">    </span><span style="color: #A31515">&quot;dependenciesConfig&quot;</span><span style="color: #000000">: [</span>
+<span style="color: #000000">        </span><span style="color: #008000">//Campo de configurações de depêndencias</span>
+<span style="color: #000000">        {</span>
+<span style="color: #000000">            </span><span style="color: #008000">//De acordo com o exemplo, se a coluna &quot;Dispositivo&quot;</span>
+<span style="color: #000000">            </span><span style="color: #008000">//for preenchida com algum valor que contenha</span>
+<span style="color: #000000">            </span><span style="color: #008000">//a palavra &quot;mobile&quot;, então a coluna &quot;Tipo de Compra&quot;</span>
+<span style="color: #000000">            </span><span style="color: #008000">//só poderá ser preenchida com os valores: cpc ou cpa.</span>
+<span style="color: #000000">            </span><span style="color: #008000">//Se a chave hasMatch estivesse com o valor &quot;false&quot;</span>
+<span style="color: #000000">            </span><span style="color: #008000">//significaria que a regra para a coluna &quot;Tipo de Compra&quot;</span>
+<span style="color: #000000">            </span><span style="color: #008000">//só seria aplicada, caso o valor preenchido na coluna &quot;Dispositivo&quot;</span>
+<span style="color: #000000">            </span><span style="color: #008000">//não contivesse a palavra &quot;mobile&quot;.</span>
+<span style="color: #000000">            </span><span style="color: #A31515">&quot;columnReference&quot;</span><span style="color: #001080">:</span><span style="color: #000000"> </span><span style="color: #A31515">&quot;Dispositivo&quot;</span><span style="color: #000000">,</span>
+<span style="color: #000000">            </span><span style="color: #A31515">&quot;valuesReference&quot;</span><span style="color: #001080">:</span><span style="color: #000000"> [</span><span style="color: #A31515">&quot;/.*mobile.*/&quot;</span><span style="color: #000000">],</span>
+<span style="color: #000000">            </span><span style="color: #A31515">&quot;hasMatch&quot;</span><span style="color: #001080">:</span><span style="color: #000000"> </span><span style="color: #0000FF">true</span><span style="color: #000000">,</span>
+<span style="color: #000000">            </span><span style="color: #A31515">&quot;columnDestiny&quot;</span><span style="color: #001080">:</span><span style="color: #000000"> </span><span style="color: #A31515">&quot;Tipo de Compra&quot;</span><span style="color: #000000">,</span>
+<span style="color: #000000">            </span><span style="color: #A31515">&quot;matches&quot;</span><span style="color: #001080">:</span><span style="color: #000000"> [</span><span style="color: #A31515">&quot;cpc&quot;</span><span style="color: #000000">, </span><span style="color: #A31515">&quot;cpa&quot;</span><span style="color: #000000">]</span>
+<span style="color: #000000">        }</span>
+<span style="color: #000000">    ]</span>
+<span style="color: #000000">}</span>
+</code></pre>
 				<a href="#banco-de-dados-alternativos" id="banco-de-dados-alternativos" style="color: inherit; text-decoration: none;">
 					<h3>Banco de dados alternativos</h3>
 				</a>
@@ -158,16 +301,14 @@
 					<li><strong>Arquivo .env</strong>: O arquivo .env deve estar localizado na raiz do projeto. É necessário editar as seguintes variáveis</li>
 				</ol>
 				<ul>
-					<li><p>DEVELOPMENT: Deve apresentar o valor true, caso o ambiente atual seja o ambiente de desenvolvimento local. Caso nenhum valor seja informado, a API irá assumir como padrão o valor false, indicando o ambiente de produção;</p>
-					</li>
-					<li><p>PORT: Deve conter o número da porta onde a API será acessada. Em caso de omissão desse parâmetro, a porta considerada será 443.</p>
-					</li>
+					<li>ENV: Deve apresentar o valor &#39;development&#39;, caso o ambiente atual seja o ambiente de desenvolvimento local, ou &#39;prod&#39;, caso o ambiente seja de produção;</li>
+					<li>PORT: Deve conter o número da porta onde a API será acessada. Em caso de omissão desse parâmetro, a porta considerada será 443;</li>
+					<li>BUCKET: Deve conter o nome do bucket do storage onde os arquivos CSVs serão salvos;</li>
+					<li>GCP_PROJECT_ID: Deve conter o id do projeto no GCP, caso o adinfo esteja hospedado no GCP;</li>
+					<li>GCP_KEY: Deve conter o JSON da chave de acesso aos serviços do GCP;</li>
 				</ul>
 				<ol start="2">
-					<li><p><strong>Chave de acesso - GCP</strong>: A chave de acesso aos serviços do gcp também deve estar localizada na pasta raiz do projeto, assim como o .env. O arquivo json da chave de acesso deve ser nomeado como gcp_key.json.</p>
-					</li>
-					<li><p><strong>Arquivo .gitignore</strong>: Checar se o arquivo .gitignore está ignorando o versionamento da chave e do arquivo .env.</p>
-					</li>
+					<li><strong>Arquivo .gitignore</strong>: Checar se o arquivo .gitignore está ignorando do arquivo .env.</li>
 				</ol>
 				<a href="#como-contribuir" id="como-contribuir" style="color: inherit; text-decoration: none;">
 					<h2>Como contribuir</h2>
@@ -181,12 +322,11 @@
 					<li><a href="https://www.conventionalcommits.org/en/v1.0.0/">Padrão de commit</a></li>
 					<li><a href="https://www.atlassian.com/br/git/tutorials/comparing-workflows/gitflow-workflow">Padrão de criação de branches</a></li>
 				</ul>
-				<a href="#api-docs" id="api-docs" style="color: inherit; text-decoration: none;">
-					<h3>Api Docs</h3>
+				<a href="#documentação-de-desenvolvimento" id="documentação-de-desenvolvimento" style="color: inherit; text-decoration: none;">
+					<h3>Documentação de desenvolvimento</h3>
 				</a>
-				<ul>
-					<li><a href="https://github.com/dp6/template-js-cloudfunction-with-terraform/blob/master/docs/index.md">Index.js</a></li>
-				</ul>
+				<p>A <a href="./docs/index.html">documentação do código</a> pode ser encontrada em docs/index.html.</p>
+				<p>A <a href="./Routes.md">documentação de rotas da API</a> se encontra no arquivo Routes.md.</p>
 				<a href="#suporte" id="suporte" style="color: inherit; text-decoration: none;">
 					<h2>Suporte:</h2>
 				</a>
@@ -212,6 +352,9 @@
 					</li>
 					<li class=" tsd-kind-module">
 						<a href="modules/models_analyticstool.html">models/<wbr>Analytics<wbr>Tool</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/models_apiresponse.html">models/<wbr>Api<wbr>Response</a>
 					</li>
 					<li class=" tsd-kind-module">
 						<a href="modules/models_auth.html">models/<wbr>Auth</a>
