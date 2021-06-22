@@ -1,7 +1,7 @@
 {
 	"name": "penguin-adinfo",
 	"private": "false",
-	"version": "1.1.3",
+	"version": "1.1.4",
 	"description": "O Ad Info Penguin é um recurso que tem como objetivo o controle e padronização do uso de parametrização e nomenclatura de mídia digital. ",
 	"main": "index.js",
 	"scripts": {
