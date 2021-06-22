@@ -15,13 +15,13 @@ class StringUtils {
 	static replaceWhiteSpace(string, replacer) {
 		return string.replace(/ /g, replacer);
 	}
-	static _isStringForRegex(string) {
+	static isStringForRegex(string) {
 		return string[0] === '/' && string[string.length - 1] === '/';
 	}
 	static validateString(stringToValidate, rules, separator = ' ') {
 		const validate = [false];
 		rules.forEach((rule) => {
-			if (this._isStringForRegex(rule)) {
+			if (this.isStringForRegex(rule)) {
 				const regexRule = new RegExp(rule.slice(1, rule.length - 1));
 				validate.push(!!stringToValidate.match(regexRule));
 			} else {

@@ -2,6 +2,7 @@
 Object.defineProperty(exports, '__esModule', { value: true });
 const ConfigDAO_1 = require('../models/DAO/ConfigDAO');
 const ApiResponse_1 = require('../models/ApiResponse');
+const TemplateExcel_1 = require('../models/TemplateExcel');
 const template = (app) => {
 	app.get('/template', (req, res) => {
 		const company = req.company;
@@ -26,6 +27,36 @@ const template = (app) => {
 				} else {
 					res.status(apiResponse.statusCode).send(apiResponse.jsonResponse);
 				}
+			});
+	});
+	app.get('/template/excel', (req, res) => {
+		const company = req.company;
+		const configDAO = new ConfigDAO_1.ConfigDAO(company);
+		const apiResponse = new ApiResponse_1.ApiResponse();
+		configDAO
+			.getLastConfig()
+			.then((config) => {
+				const templateExcel = new TemplateExcel_1.TemplateExcel(config);
+				templateExcel
+					.getExcelBuffer()
+					.then((buffer) => {
+						apiResponse.statusCode = 200;
+						res.contentType('application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+						res.attachment('template.xlsx');
+						res.send(buffer);
+					})
+					.catch((err) => {
+						apiResponse.responseText = 'Erro ao baixar o template!';
+						apiResponse.statusCode = 500;
+						apiResponse.errorMessage = err.message;
+						res.status(apiResponse.statusCode).send(apiResponse.jsonResponse);
+					});
+			})
+			.catch((err) => {
+				apiResponse.responseText = 'Erro ao recuperar a configuração!';
+				apiResponse.statusCode = 500;
+				apiResponse.errorMessage = err.message;
+				res.status(apiResponse.statusCode).send(apiResponse.jsonResponse);
 			});
 	});
 };

@@ -31,6 +31,7 @@ class Config {
 			delete jsonConfigTemp.adobe;
 		}
 		this._validationRules = jsonConfigTemp.columns;
+		this._columnNames = Object.keys(jsonConfigTemp.columns);
 		delete jsonConfigTemp.columns;
 		this._medias = jsonConfigTemp;
 	}
@@ -129,6 +130,9 @@ class Config {
 	}
 	get validationRules() {
 		return this._validationRules;
+	}
+	get columnNames() {
+		return this._columnNames;
 	}
 	get separator() {
 		return this._separator;
