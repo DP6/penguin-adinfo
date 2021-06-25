@@ -1,7 +1,7 @@
 import { StringUtils } from '../utils/StringUtils';
 import { Config } from './Config';
 import { Vehicle } from './Vehicle';
-import { ValidateRulesForColumnHandler } from '../Handlers/validateRulesForColumnHandler';
+import { ValidateRulesForColumnHandler } from '../Handlers/ValidateRulesForColumnHandler';
 import { ValidateFieldHandler } from '../Handlers/ValidateFieldHandler';
 import { ValidateFieldDependecyHandler } from '../Handlers/ValidateFieldDependecyHandler';
 

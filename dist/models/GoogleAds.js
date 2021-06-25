@@ -3,7 +3,7 @@ Object.defineProperty(exports, '__esModule', { value: true });
 exports.GoogleAds = void 0;
 const StringUtils_1 = require('../utils/StringUtils');
 const Vehicle_1 = require('./Vehicle');
-const validateRulesForColumnHandler_1 = require('../Handlers/validateRulesForColumnHandler');
+const ValidateRulesForColumnHandler_1 = require('../Handlers/ValidateRulesForColumnHandler');
 const ValidateFieldHandler_1 = require('../Handlers/ValidateFieldHandler');
 const ValidateFieldDependecyHandler_1 = require('../Handlers/ValidateFieldDependecyHandler');
 class GoogleAds extends Vehicle_1.Vehicle {
@@ -35,7 +35,7 @@ class GoogleAds extends Vehicle_1.Vehicle {
 			const fields = this.config.medias.googleads[googleAdsParam];
 			fields.forEach((column) => {
 				const columnNormalized = StringUtils_1.StringUtils.normalize(column);
-				const validateRulesForColumnHandler = new validateRulesForColumnHandler_1.ValidateRulesForColumnHandler(
+				const validateRulesForColumnHandler = new ValidateRulesForColumnHandler_1.ValidateRulesForColumnHandler(
 					this.config,
 					column
 				);
