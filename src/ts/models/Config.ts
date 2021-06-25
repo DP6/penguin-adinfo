@@ -100,7 +100,7 @@ export class Config {
 						return dependencyConfig.toJson();
 					});
 				}
-			} else if (key !== '_analyticsToolName' && Object.values(this)[index]) {
+			} else if (key !== '_analyticsToolName' && key !== '_columnNames' && Object.values(this)[index]) {
 				jsonConfig[key.replace('_', '')] = Object.values(this)[index];
 			}
 		});
