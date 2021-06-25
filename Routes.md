@@ -27,6 +27,12 @@
 
 **Descrição**: Retorna um CSV com as colunas a serem preenchidas, baseando-se no campo **columns** (colunas) da configuração.
 
+### (GET) /template/excel
+
+**Parâmetros**: token
+
+**Descrição**: Retorna um arquivo Excel (xlsx) com as colunas a serem preenchidas, baseando-se no campo **columns** (colunas) da configuração e as regras de validação.
+
 ### (POST) /register
 
 **Parâmetros**: token, agency, permission, company, email.
