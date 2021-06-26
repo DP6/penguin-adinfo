@@ -1,9 +1,9 @@
 import { expect } from 'chai';
 import { Config } from '../../src/ts/models/Config';
-import { ValidateFieldDependecyHandler } from '../../src/ts/Handlers/ValidateFieldDependecyHandler'
+import { ValidateFieldDependencyHandler } from '../../src/ts/Handlers/ValidateFieldDependencyHandler'
 
-describe('ValidateFieldDependecyHandler', () => {
-	describe('Valida o Handler ValidateFieldDependecy', () => {
+describe('ValidateFieldDependencyHandler', () => {
+	describe('Valida o Handler ValidateFieldDependency', () => {
 		it('Validação caso o preenchimento esteja incorreto', () => {
             const csvLine = {
 				Url: 'www.teste.com.br',
@@ -32,14 +32,14 @@ describe('ValidateFieldDependecyHandler', () => {
 					},
 				],
 			});
-			const fieldDependency = new ValidateFieldDependecyHandler(config, csvLine, 'Dispositivo');
+			const fieldDependency = new ValidateFieldDependencyHandler(config, csvLine, 'Dispositivo');
             let errorName: string;
             try {
                 fieldDependency.handle(csvLine['dispositivo']);
             } catch(e) {
                 errorName = e.name;
             }
-			expect(errorName).to.equal('ValidateFieldDependecyError');
+			expect(errorName).to.equal('ValidateFieldDependencyError');
 		});
 		it('Validação caso o preenchimento esteja correto', () => {
             const csvLine = {
@@ -69,7 +69,7 @@ describe('ValidateFieldDependecyHandler', () => {
 					},
 				],
 			});
-			const fieldDependency = new ValidateFieldDependecyHandler(config, csvLine, 'Dispositivo');
+			const fieldDependency = new ValidateFieldDependencyHandler(config, csvLine, 'Dispositivo');
             let result: boolean;
             let errorName: string;
             try {

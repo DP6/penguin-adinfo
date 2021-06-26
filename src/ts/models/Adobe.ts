@@ -3,7 +3,7 @@ import { Config } from './Config';
 import { AnalyticsTool } from './AnalyticsTool';
 import { StringEmptyHandler } from '../Handlers/StringEmptyHandler';
 import { ValidateFieldHandler } from '../Handlers/ValidateFieldHandler';
-import { ValidateFieldDependecyHandler } from '../Handlers/ValidateFieldDependecyHandler';
+import { ValidateFieldDependencyHandler } from '../Handlers/ValidateFieldDependencyHandler';
 
 /*
  csvLine: {
@@ -87,9 +87,9 @@ export class Adobe extends AnalyticsTool {
 
 			const stringEmptyHandler = new StringEmptyHandler();
 			const validateFieldHandler = new ValidateFieldHandler(this.config, column);
-			const validateFieldDependecyHandler = new ValidateFieldDependecyHandler(this.config, this.csvLine, column);
+			const validateFieldDependencyHandler = new ValidateFieldDependencyHandler(this.config, this.csvLine, column);
 
-			stringEmptyHandler.setNext(validateFieldHandler).setNext(validateFieldDependecyHandler);
+			stringEmptyHandler.setNext(validateFieldHandler).setNext(validateFieldDependencyHandler);
 
 			try {
 				stringEmptyHandler.handle(this.csvLine[columnNormalized]);
@@ -97,7 +97,7 @@ export class Adobe extends AnalyticsTool {
 				if (e.name === 'StringEmptyError') {
 					this._hasUndefinedParameterError = true;
 					this._undefinedParameterErroMessage += ` ${column} -`;
-				} else if (e.name === 'ValidateFieldError' || e.name === 'ValidateFieldDependecyError') {
+				} else if (e.name === 'ValidateFieldError' || e.name === 'ValidateFieldDependencyError') {
 					this._hasValidationError = true;
 					this._validationErrorMessage += ` ${column} -`;
 				}

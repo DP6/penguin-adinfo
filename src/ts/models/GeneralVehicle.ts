@@ -3,7 +3,7 @@ import { Config } from './Config';
 import { Vehicle } from './Vehicle';
 import { ValidateColumnExistsHandler } from '../Handlers/ValidateColumnExistsHandler';
 import { ValidateFieldHandler } from '../Handlers/ValidateFieldHandler';
-import { ValidateFieldDependecyHandler } from '../Handlers/ValidateFieldDependecyHandler';
+import { ValidateFieldDependencyHandler } from '../Handlers/ValidateFieldDependencyHandler';
 
 export class GeneralVehicle extends Vehicle {
 	private _vehicleName: string;
@@ -39,16 +39,16 @@ export class GeneralVehicle extends Vehicle {
 
 				const validateColumnExistsError = new ValidateColumnExistsHandler(this.config, column);
 				const validateFieldHandler = new ValidateFieldHandler(this.config, column);
-				const validateFieldDependecyHandler = new ValidateFieldDependecyHandler(this.config, this.csvLine, column);
+				const validateFieldDependencyHandler = new ValidateFieldDependencyHandler(this.config, this.csvLine, column);
 
-				validateColumnExistsError.setNext(validateFieldHandler).setNext(validateFieldDependecyHandler);
+				validateColumnExistsError.setNext(validateFieldHandler).setNext(validateFieldDependencyHandler);
 
 				try {
 					validateColumnExistsError.handle(this.csvLine[normalizedColumn]);
 				} catch (e) {
 					if (e.name === 'ValidateColumnExistsError') {
 						this._undefinedParameterFounded(param, column);
-					} else if (e.name === 'ValidateFieldError' || e.name === 'ValidateFieldDependecyError') {
+					} else if (e.name === 'ValidateFieldError' || e.name === 'ValidateFieldDependencyError') {
 						this._validationErrorFounded(param, column);
 					}
 				}

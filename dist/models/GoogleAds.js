@@ -5,7 +5,7 @@ const StringUtils_1 = require('../utils/StringUtils');
 const Vehicle_1 = require('./Vehicle');
 const ValidateRulesForColumnHandler_1 = require('../Handlers/ValidateRulesForColumnHandler');
 const ValidateFieldHandler_1 = require('../Handlers/ValidateFieldHandler');
-const ValidateFieldDependecyHandler_1 = require('../Handlers/ValidateFieldDependecyHandler');
+const ValidateFieldDependencyHandler_1 = require('../Handlers/ValidateFieldDependencyHandler');
 class GoogleAds extends Vehicle_1.Vehicle {
 	constructor(csvLine, config) {
 		super(csvLine, config);
@@ -40,12 +40,12 @@ class GoogleAds extends Vehicle_1.Vehicle {
 					column
 				);
 				const validateFieldHandler = new ValidateFieldHandler_1.ValidateFieldHandler(this.config, column);
-				const validateFieldDependecyHandler = new ValidateFieldDependecyHandler_1.ValidateFieldDependecyHandler(
+				const validateFieldDependencyHandler = new ValidateFieldDependencyHandler_1.ValidateFieldDependencyHandler(
 					this.config,
 					this.csvLine,
 					column
 				);
-				validateRulesForColumnHandler.setNext(validateFieldHandler).setNext(validateFieldDependecyHandler);
+				validateRulesForColumnHandler.setNext(validateFieldHandler).setNext(validateFieldDependencyHandler);
 				try {
 					validateRulesForColumnHandler.handle(this.csvLine[columnNormalized]);
 					this._adsParams[googleAdsParam] += `${StringUtils_1.StringUtils.replaceWhiteSpace(
@@ -56,7 +56,7 @@ class GoogleAds extends Vehicle_1.Vehicle {
 					if (e.name === 'ValidateRulesForColumnError') {
 						this._hasUndefinedParameterError[googleAdsParam] = true;
 						this._undefinedParameterErrorFields[googleAdsParam].push(column);
-					} else if (e.name === 'ValidateFieldError' || e.name === 'ValidateFieldDependecyError') {
+					} else if (e.name === 'ValidateFieldError' || e.name === 'ValidateFieldDependencyError') {
 						this._hasValidationError[googleAdsParam] = true;
 						this._errorAdsParams[googleAdsParam].push(column);
 					}

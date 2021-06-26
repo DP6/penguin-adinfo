@@ -3,7 +3,7 @@ import { Config } from './Config';
 import { Vehicle } from './Vehicle';
 import { ValidateRulesForColumnHandler } from '../Handlers/ValidateRulesForColumnHandler';
 import { ValidateFieldHandler } from '../Handlers/ValidateFieldHandler';
-import { ValidateFieldDependecyHandler } from '../Handlers/ValidateFieldDependecyHandler';
+import { ValidateFieldDependencyHandler } from '../Handlers/ValidateFieldDependencyHandler';
 
 /*
     params: {
@@ -87,9 +87,9 @@ export class GoogleAds extends Vehicle {
 
 				const validateRulesForColumnHandler = new ValidateRulesForColumnHandler(this.config, column);
 				const validateFieldHandler = new ValidateFieldHandler(this.config, column);
-				const validateFieldDependecyHandler = new ValidateFieldDependecyHandler(this.config, this.csvLine, column);
+				const validateFieldDependencyHandler = new ValidateFieldDependencyHandler(this.config, this.csvLine, column);
 
-				validateRulesForColumnHandler.setNext(validateFieldHandler).setNext(validateFieldDependecyHandler);
+				validateRulesForColumnHandler.setNext(validateFieldHandler).setNext(validateFieldDependencyHandler);
 
 				try {
 					validateRulesForColumnHandler.handle(this.csvLine[columnNormalized]);
@@ -102,7 +102,7 @@ export class GoogleAds extends Vehicle {
 					if (e.name === 'ValidateRulesForColumnError') {
 						this._hasUndefinedParameterError[googleAdsParam] = true;
 						this._undefinedParameterErrorFields[googleAdsParam].push(column);
-					} else if (e.name === 'ValidateFieldError' || e.name === 'ValidateFieldDependecyError') {
+					} else if (e.name === 'ValidateFieldError' || e.name === 'ValidateFieldDependencyError') {
 						this._hasValidationError[googleAdsParam] = true;
 						this._errorAdsParams[googleAdsParam].push(column);
 					}

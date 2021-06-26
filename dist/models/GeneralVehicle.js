@@ -5,7 +5,7 @@ const StringUtils_1 = require('../utils/StringUtils');
 const Vehicle_1 = require('./Vehicle');
 const ValidateColumnExistsHandler_1 = require('../Handlers/ValidateColumnExistsHandler');
 const ValidateFieldHandler_1 = require('../Handlers/ValidateFieldHandler');
-const ValidateFieldDependecyHandler_1 = require('../Handlers/ValidateFieldDependecyHandler');
+const ValidateFieldDependencyHandler_1 = require('../Handlers/ValidateFieldDependencyHandler');
 class GeneralVehicle extends Vehicle_1.Vehicle {
 	constructor(csvLine, config, vehicleName) {
 		super(csvLine, config);
@@ -35,18 +35,18 @@ class GeneralVehicle extends Vehicle_1.Vehicle {
 					column
 				);
 				const validateFieldHandler = new ValidateFieldHandler_1.ValidateFieldHandler(this.config, column);
-				const validateFieldDependecyHandler = new ValidateFieldDependecyHandler_1.ValidateFieldDependecyHandler(
+				const validateFieldDependencyHandler = new ValidateFieldDependencyHandler_1.ValidateFieldDependencyHandler(
 					this.config,
 					this.csvLine,
 					column
 				);
-				validateColumnExistsError.setNext(validateFieldHandler).setNext(validateFieldDependecyHandler);
+				validateColumnExistsError.setNext(validateFieldHandler).setNext(validateFieldDependencyHandler);
 				try {
 					validateColumnExistsError.handle(this.csvLine[normalizedColumn]);
 				} catch (e) {
 					if (e.name === 'ValidateColumnExistsError') {
 						this._undefinedParameterFounded(param, column);
-					} else if (e.name === 'ValidateFieldError' || e.name === 'ValidateFieldDependecyError') {
+					} else if (e.name === 'ValidateFieldError' || e.name === 'ValidateFieldDependencyError') {
 						this._validationErrorFounded(param, column);
 					}
 				}

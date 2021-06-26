@@ -1,4 +1,4 @@
-export class ValidateFieldDependecyError {
+export class ValidateFieldDependencyError {
 	/**
 	 * Erro referente à incompatibilidade do valor preenchido no campo e as regras de dependência
 	 * @param msg Mensagem a ser informada no erro
@@ -12,10 +12,10 @@ export class ValidateFieldDependecyError {
 		});
 		Object.defineProperty(error, 'name', {
 			get() {
-				return 'ValidateFieldDependecyError';
+				return 'ValidateFieldDependencyError';
 			},
 		});
-		Error.captureStackTrace(error, ValidateFieldDependecyError);
+		Error.captureStackTrace(error, ValidateFieldDependencyError);
 		return error;
 	}
 }

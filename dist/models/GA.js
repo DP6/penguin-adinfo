@@ -5,7 +5,7 @@ const StringUtils_1 = require('../utils/StringUtils');
 const AnalyticsTool_1 = require('./AnalyticsTool');
 const StringEmptyHandler_1 = require('../Handlers/StringEmptyHandler');
 const ValidateFieldHandler_1 = require('../Handlers/ValidateFieldHandler');
-const ValidateFieldDependecyHandler_1 = require('../Handlers/ValidateFieldDependecyHandler');
+const ValidateFieldDependencyHandler_1 = require('../Handlers/ValidateFieldDependencyHandler');
 class GA extends AnalyticsTool_1.AnalyticsTool {
 	constructor(csvLine, config) {
 		super(csvLine, config);
@@ -63,19 +63,19 @@ class GA extends AnalyticsTool_1.AnalyticsTool {
 				const columnNormalized = StringUtils_1.StringUtils.normalize(column);
 				const stringEmptyHandler = new StringEmptyHandler_1.StringEmptyHandler();
 				const validateFieldHandler = new ValidateFieldHandler_1.ValidateFieldHandler(this.config, column);
-				const validateFieldDependecyHandler = new ValidateFieldDependecyHandler_1.ValidateFieldDependecyHandler(
+				const validateFieldDependencyHandler = new ValidateFieldDependencyHandler_1.ValidateFieldDependencyHandler(
 					this.config,
 					this.csvLine,
 					column
 				);
-				stringEmptyHandler.setNext(validateFieldHandler).setNext(validateFieldDependecyHandler);
+				stringEmptyHandler.setNext(validateFieldHandler).setNext(validateFieldDependencyHandler);
 				try {
 					stringEmptyHandler.handle(this.csvLine[columnNormalized]);
 				} catch (e) {
 					if (e.name === 'StringEmptyError') {
 						this._hasUndefinedParameterError[utm] = true;
 						this._undefinedParameterErroMessage[utm] += ` ${column} -`;
-					} else if (e.name === 'ValidateFieldError' || e.name === 'ValidateFieldDependecyError') {
+					} else if (e.name === 'ValidateFieldError' || e.name === 'ValidateFieldDependencyError') {
 						this._hasValidationError[utm] = true;
 						this._validationErrorMessage[utm] += ` ${column} -`;
 					}

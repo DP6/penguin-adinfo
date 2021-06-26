@@ -1,8 +1,8 @@
 import { Config } from '../models/Config';
 import { AbstractHandler } from './AbstractHandler';
-import { ValidateFieldDependecyError } from '../Errors/ValidateFieldDependecyError';
+import { ValidateFieldDependencyError } from '../Errors/ValidateFieldDependencyError';
 
-export class ValidateFieldDependecyHandler extends AbstractHandler {
+export class ValidateFieldDependencyHandler extends AbstractHandler {
 	private _config: Config;
 	private _csvLine: { [key: string]: string };
 	private _column: string;
@@ -21,7 +21,7 @@ export class ValidateFieldDependecyHandler extends AbstractHandler {
 	 */
 	public handle(request: string): boolean {
 		if (!this._config.validateDependencyRulesFor(this._csvLine, this._column, request)) {
-			throw new ValidateFieldDependecyError(`Coluna ${this._column} não permite o valor ${request}!`);
+			throw new ValidateFieldDependencyError(`Coluna ${this._column} não permite o valor ${request}!`);
 		}
 		return super.handle(request);
 	}

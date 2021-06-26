@@ -5,7 +5,7 @@ const StringUtils_1 = require('../utils/StringUtils');
 const Vehicle_1 = require('./Vehicle');
 const ValidateRulesForColumnHandler_1 = require('../Handlers/ValidateRulesForColumnHandler');
 const ValidateFieldHandler_1 = require('../Handlers/ValidateFieldHandler');
-const ValidateFieldDependecyHandler_1 = require('../Handlers/ValidateFieldDependecyHandler');
+const ValidateFieldDependencyHandler_1 = require('../Handlers/ValidateFieldDependencyHandler');
 class FacebookAds extends Vehicle_1.Vehicle {
 	constructor(csvLine, config) {
 		super(csvLine, config);
@@ -37,12 +37,12 @@ class FacebookAds extends Vehicle_1.Vehicle {
 							column
 						);
 						const validateFieldHandler = new ValidateFieldHandler_1.ValidateFieldHandler(this.config, column);
-						const validateFieldDependecyHandler = new ValidateFieldDependecyHandler_1.ValidateFieldDependecyHandler(
+						const validateFieldDependencyHandler = new ValidateFieldDependencyHandler_1.ValidateFieldDependencyHandler(
 							this.config,
 							this.csvLine,
 							column
 						);
-						validateRulesForColumnHandler.setNext(validateFieldHandler).setNext(validateFieldDependecyHandler);
+						validateRulesForColumnHandler.setNext(validateFieldHandler).setNext(validateFieldDependencyHandler);
 						try {
 							validateRulesForColumnHandler.handle(this.csvLine[columnNormalized]);
 							columnFields.push(
@@ -56,7 +56,7 @@ class FacebookAds extends Vehicle_1.Vehicle {
 								this._hasUndefinedParameterError = true;
 								this._undefinedParameterErrorFields[facebookParam].push(column);
 								this._facebookParams[facebookParam] = '';
-							} else if (e.name === 'ValidateFieldError' || e.name === 'ValidateFieldDependecyError') {
+							} else if (e.name === 'ValidateFieldError' || e.name === 'ValidateFieldDependencyError') {
 								this._hasValidationError = true;
 								this._errorFacebookParams[facebookParam].push(column);
 							}
