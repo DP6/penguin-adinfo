@@ -9,7 +9,7 @@ class ValidateColumnExistsHandler extends AbstractHandler_1.AbstractHandler {
 		this._config = config;
 		this._column = column;
 	}
-	handle(request) {
+	handle(request = '') {
 		if (!this._config.existsColumn(this._column)) {
 			throw new ValidateColumnExistsError_1.ValidateColumnExistsError(`A coluna ${this._column} não existe!`);
 		}

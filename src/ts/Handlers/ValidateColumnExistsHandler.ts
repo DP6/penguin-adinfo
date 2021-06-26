@@ -17,7 +17,7 @@ export class ValidateColumnExistsHandler extends AbstractHandler {
 	 * @param request String a ser validada
 	 * @returns Em caso de falha, aciona um erro, em caso de acerto, passa para o proximo handler
 	 */
-	public handle(request: string): boolean {
+	public handle(request = ''): boolean {
 		if (!this._config.existsColumn(this._column)) {
 			throw new ValidateColumnExistsError(`A coluna ${this._column} não existe!`);
 		}

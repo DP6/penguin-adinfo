@@ -20,7 +20,8 @@
 	},
 	"nyc": {
 		"exclude": [
-			"src/ts/models/cloud/*"
+			"src/ts/models/cloud/*",
+			"src/ts/Errors/*"
 		]
 	},
 	"repository": {
