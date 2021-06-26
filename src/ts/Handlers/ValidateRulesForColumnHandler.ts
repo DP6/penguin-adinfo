@@ -12,6 +12,11 @@ export class ValidateRulesForColumnHandler extends AbstractHandler {
 		this._column = column;
 	}
 
+	/**
+	 * Verifica se o campo possui regras de validação
+	 * @param request String a ser validada
+	 * @returns Em caso de falha, aciona um erro, em caso de acerto, passa para o proximo handler
+	 */
 	public handle(request: string): boolean {
 		if (!this._config.validationRules[this._column]) {
 			throw new ValidateRulesForColumnError(`Coluna ${this._column} não possui regras de validação!`);

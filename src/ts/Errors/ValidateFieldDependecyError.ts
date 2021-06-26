@@ -1,4 +1,8 @@
 export class ValidateFieldDependecyError {
+	/**
+	 * Erro referente à incompatibilidade do valor preenchido no campo e as regras de dependência
+	 * @param msg Mensagem a ser informada no erro
+	 */
 	constructor(msg: string) {
 		const error = new Error(msg);
 		Object.defineProperty(error, 'message', {
@@ -11,7 +15,6 @@ export class ValidateFieldDependecyError {
 				return 'ValidateFieldDependecyError';
 			},
 		});
-		// capture where error occured
 		Error.captureStackTrace(error, ValidateFieldDependecyError);
 		return error;
 	}

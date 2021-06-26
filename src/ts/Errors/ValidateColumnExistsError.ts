@@ -1,4 +1,8 @@
 export class ValidateColumnExistsError {
+	/**
+	 * Erro referente à não existência da coluna no config
+	 * @param msg Mensagem a ser informada no erro
+	 */
 	constructor(msg: string) {
 		const error = new Error(msg);
 		Object.defineProperty(error, 'message', {
@@ -11,7 +15,6 @@ export class ValidateColumnExistsError {
 				return 'ValidateColumnExistsError';
 			},
 		});
-		// capture where error occured
 		Error.captureStackTrace(error, ValidateColumnExistsError);
 		return error;
 	}

@@ -14,6 +14,11 @@ export class ValidateFieldDependecyHandler extends AbstractHandler {
 		this._column = column;
 	}
 
+	/**
+	 * Valida se o campo está correto em relação à configuração de dependências
+	 * @param request String a ser validada
+	 * @returns Em caso de falha, aciona um erro, em caso de acerto, passa para o proximo handler
+	 */
 	public handle(request: string): boolean {
 		if (!this._config.validateDependencyRulesFor(this._csvLine, this._column, request)) {
 			throw new ValidateFieldDependecyError(`Coluna ${this._column} não permite o valor ${request}!`);

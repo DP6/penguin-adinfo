@@ -10,7 +10,7 @@ class AbstractHandler {
 		if (this.nextHandler) {
 			return this.nextHandler.handle(request);
 		}
-		return null;
+		return true;
 	}
 }
 exports.AbstractHandler = AbstractHandler;
