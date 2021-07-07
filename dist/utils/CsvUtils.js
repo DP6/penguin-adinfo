@@ -28,13 +28,13 @@ class CsvUtils {
 	}
 	static identifyCsvSepartor(csvHeader, csvSeparatorDefault) {
 		if (csvSeparatorDefault) {
-			const separadores = [',', ';', '|', '_', ':', '\\', '/', '-'];
-			separadores.forEach((separador) => {
+			let separadorFinal = ',';
+			csvSeparatorDefault.forEach((separador) => {
 				if (csvHeader.includes(separador)) {
-					return separador;
+					separadorFinal = separador;
 				}
 			});
-			return ',';
+			return separadorFinal;
 		} else {
 			return csvHeader.includes(',') ? ',' : ';';
 		}

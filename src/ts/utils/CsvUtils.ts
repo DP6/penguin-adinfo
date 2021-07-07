@@ -56,13 +56,13 @@ export class CsvUtils {
 
 	static identifyCsvSepartor(csvHeader: string, csvSeparatorDefault: string[]): string {
 		if (csvSeparatorDefault) {
-			const separadores = [',', ';', '|', '_', ':', '\\', '/', '-']; // acho que o - eh perigoso colocar
-			separadores.forEach((separador) => {
+			let separadorFinal = ',';
+			csvSeparatorDefault.forEach((separador) => {
 				if (csvHeader.includes(separador)) {
-					return separador;
+					separadorFinal = separador;
 				}
 			});
-			return ',';
+			return separadorFinal;
 		} else {
 			return csvHeader.includes(',') ? ',' : ';';
 		}
