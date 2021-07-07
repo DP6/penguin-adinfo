@@ -54,9 +54,15 @@ export class CsvUtils {
 	 * @returns Separador a ser utilizado
 	 */
 
-	static identifyCsvSepartor(csvHeader: string, csvSeparatorDefault: string): string {
+	static identifyCsvSepartor(csvHeader: string, csvSeparatorDefault: string[]): string {
 		if (csvSeparatorDefault) {
-			return csvSeparatorDefault;
+			const separadores = [',', ';', '|', '_', ':', '\\', '/', '-']; // acho que o - eh perigoso colocar
+			separadores.forEach((separador) => {
+				if (csvHeader.includes(separador)) {
+					return separador;
+				}
+			});
+			return ',';
 		} else {
 			return csvHeader.includes(',') ? ',' : ';';
 		}

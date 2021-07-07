@@ -1,11 +1,12 @@
 import { JsonUtils } from '../utils/JsonUtils';
 import { DependencyConfig } from './DependencyConfig';
 import { StringUtils } from '../utils/StringUtils';
+import { config } from 'dotenv';
 
 export class Config {
 	private _separator: string;
 	private _spaceSeparator: string;
-	private _csvSeparator: string;
+	private _csvSeparator: string[];
 	private _insertTime: string;
 	private _version: number;
 	private _analyticsTool: { [key: string]: { [key: string]: string[] } };
@@ -118,7 +119,7 @@ export class Config {
 		Object.keys(this._validationRules).forEach((column) => {
 			configValues.push(column);
 		});
-		return configValues.join(this._csvSeparator);
+		return configValues.join(this._csvSeparator ? this._csvSeparator[0] : ',');
 	}
 
 	/**
@@ -238,7 +239,7 @@ export class Config {
 		return this._analyticsToolName;
 	}
 
-	get csvSeparator(): string {
+	get csvSeparator(): string[] {
 		return this._csvSeparator;
 	}
 }
