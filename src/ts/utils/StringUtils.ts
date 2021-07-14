@@ -42,6 +42,15 @@ export class StringUtils {
 	}
 
 	/**
+	 *
+	 * @param string Verifica se a string corresponde exatamente à expressão regular /.*\/
+	 * @returns TRUE: String é a expressão regular /.*\/, FALSE: String não é a expressão regular /.*\/
+	 */
+	static isStringForRegexAll(string: string): boolean {
+		return string === '/.*/';
+	}
+
+	/**
 	 * Valida se a String está dentro de um padrão
 	 * @param stringToValidate String a ser validada
 	 * @param rules Array contendo as string que de comparação ou as regex

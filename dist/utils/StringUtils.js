@@ -18,6 +18,9 @@ class StringUtils {
 	static isStringForRegex(string) {
 		return string[0] === '/' && string[string.length - 1] === '/';
 	}
+	static isStringForRegexAll(string) {
+		return string === '/.*/';
+	}
 	static validateString(stringToValidate, rules, separator = ' ') {
 		const validate = [false];
 		rules.forEach((rule) => {
