@@ -67,11 +67,13 @@ const build = (app) => {
 					(err, csv) => {
 						csv += '\n\nConfiguracao versao' + separator + configVersion;
 						csv += '\nConfiguracao inserida em' + separator + configTimestamp;
-						res.setHeader('Content-disposition', 'attachment; filename=data.csv');
-						res.set('Content-Type', 'text/csv; charset=utf-8');
-						apiResponse.responseText = csv;
-						apiResponse.statusCode = 200;
-						res.status(apiResponse.statusCode).send(apiResponse.responseText);
+						saveParameterizedFile(csv, filePath).then(() => {
+							res.setHeader('Content-disposition', 'attachment; filename=data.csv');
+							res.set('Content-Type', 'text/csv; charset=utf-8');
+							apiResponse.responseText = csv;
+							apiResponse.statusCode = 200;
+							res.status(apiResponse.statusCode).send(apiResponse.responseText);
+						});
 					},
 					{
 						delimiter: {
@@ -93,5 +95,10 @@ const build = (app) => {
 				}
 			});
 	});
+};
+const saveParameterizedFile = (csv, inputFilePath) => {
+	const fileDao = new FileDAO_1.FileDAO();
+	fileDao.file = Buffer.from(csv, 'utf8');
+	return fileDao.save(inputFilePath.replace('.csv', '_parametrizado.csv'));
 };
 exports.default = build;

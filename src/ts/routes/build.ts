@@ -69,11 +69,13 @@ const build = (app: { [key: string]: any }): void => {
 					(err, csv) => {
 						csv += '\n\nConfiguracao versao' + separator + configVersion;
 						csv += '\nConfiguracao inserida em' + separator + configTimestamp;
-						res.setHeader('Content-disposition', 'attachment; filename=data.csv');
-						res.set('Content-Type', 'text/csv; charset=utf-8');
-						apiResponse.responseText = csv;
-						apiResponse.statusCode = 200;
-						res.status(apiResponse.statusCode).send(apiResponse.responseText);
+						saveParameterizedFile(csv, filePath).then(() => {
+							res.setHeader('Content-disposition', 'attachment; filename=data.csv');
+							res.set('Content-Type', 'text/csv; charset=utf-8');
+							apiResponse.responseText = csv;
+							apiResponse.statusCode = 200;
+							res.status(apiResponse.statusCode).send(apiResponse.responseText);
+						});
 					},
 					{
 						delimiter: {
@@ -95,6 +97,17 @@ const build = (app: { [key: string]: any }): void => {
 				}
 			});
 	});
+};
+
+/**
+ * Salva o output da parametrização no Storage. O caminho da pasta é a mesma onde é salvo o input, porém apenas com o sufixo "_parametrizado"
+ * @param csv Conteudo do csv
+ * @param inputFilePath Caminho do arquivo csv de input
+ */
+const saveParameterizedFile = (csv: string, inputFilePath: string): Promise<void> => {
+	const fileDao = new FileDAO();
+	fileDao.file = Buffer.from(csv, 'utf8');
+	return fileDao.save(inputFilePath.replace('.csv', '_parametrizado.csv'));
 };
 
 export default build;
