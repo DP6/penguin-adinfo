@@ -62,25 +62,36 @@ const build = (app) => {
 					'yyyymmddhhMMss',
 					'hh:MM:ss dd/mm/yyyy'
 				);
-				converter.json2csv(
-					jsonParameterized,
-					(err, csv) => {
-						csv += '\n\nConfiguracao versao' + separator + configVersion;
-						csv += '\nConfiguracao inserida em' + separator + configTimestamp;
-						saveParameterizedFile(csv, filePath).then(() => {
-							res.setHeader('Content-disposition', 'attachment; filename=data.csv');
-							res.set('Content-Type', 'text/csv; charset=utf-8');
-							apiResponse.responseText = csv;
-							apiResponse.statusCode = 200;
-							res.status(apiResponse.statusCode).send(apiResponse.responseText);
-						});
-					},
-					{
-						delimiter: {
-							field: separator,
+				return new Promise((resolve, reject) => {
+					converter.json2csv(
+						jsonParameterized,
+						(err, csv) => {
+							csv += '\n\nConfiguracao versao' + separator + configVersion;
+							csv += '\nConfiguracao inserida em' + separator + configTimestamp;
+							if (err) reject(err);
+							resolve(csv);
 						},
-					}
-				);
+						{
+							delimiter: {
+								field: separator,
+							},
+						}
+					);
+				});
+			})
+			.then((csv) => {
+				const fileDao = new FileDAO_1.FileDAO();
+				fileDao.file = Buffer.from(csv, 'utf8');
+				return fileDao.save(filePath.replace('.csv', '_parametrizado.csv')).then(() => {
+					return csv;
+				});
+			})
+			.then((csv) => {
+				res.setHeader('Content-disposition', 'attachment; filename=data.csv');
+				res.set('Content-Type', 'text/csv; charset=utf-8');
+				apiResponse.responseText = csv;
+				apiResponse.statusCode = 200;
+				res.status(apiResponse.statusCode).send(apiResponse.responseText);
 			})
 			.catch((err) => {
 				if (apiResponse.statusCode === 200) {
@@ -95,10 +106,5 @@ const build = (app) => {
 				}
 			});
 	});
-};
-const saveParameterizedFile = (csv, inputFilePath) => {
-	const fileDao = new FileDAO_1.FileDAO();
-	fileDao.file = Buffer.from(csv, 'utf8');
-	return fileDao.save(inputFilePath.replace('.csv', '_parametrizado.csv'));
 };
 exports.default = build;
