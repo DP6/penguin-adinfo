@@ -56,4 +56,23 @@ describe('String Utils', () => {
 			expect(StringUtils.isEmpty('teste')).to.equal(false);
 		});
 	});
+	describe('Regex', () => {
+		it('Valida se a função verifica se a string corresponde à uma expressão regular', () => {
+			expect(
+				StringUtils.isStringForRegex('/cp./')
+			).to.equal(true);
+			expect(
+				StringUtils.isStringForRegex('/cp.')
+			).to.equal(false);
+		});
+		it('Valida se a função verifica se a string correponde exatamente à expressão regular /.*/', () => {
+			expect(
+				StringUtils.isStringForRegexAll('/.*/')
+			).to.equal(true);
+			expect(
+				StringUtils.isStringForRegexAll('/cp.')
+			).to.equal(false);
+		})
+	})
+
 });
