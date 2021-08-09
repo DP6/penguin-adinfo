@@ -119,7 +119,7 @@ Abaixo segue uma explicação e um exemplo de todos os campos das configuraçõe
 
 | Chave                       | Tipo   | Descrição                                                                                                                                                                       | Obrigatório |
 | --------------------------- | ------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------- |
-| csvSeparator                | String | Separador de colunas do arquivo CSV.                                                                                                                                            | Sim         |
+| csvSeparator                | Array | Array que irá conter todos os separadores de colunas que os arquivos CSV poderão conter.                                                                                                                                            | Não         |
 | separator                   | String | String que será utilizada na concatenação dos campos.                                                                                                                           | Sim         |
 | spaceSeparator              | String | String que substituirá o espaço na URL, caso alguma campo tenha preenchido com mais de uma palavra.                                                                             | Sim         |
 | columns                     | Objeto | Objeto contendo as colunas do CSV e seus valores de aceitação.                                                                                                                  | Sim         |
@@ -133,6 +133,7 @@ Abaixo segue uma explicação e um exemplo de todos os campos das configuraçõe
 {
 	"separator": ":",
 	"spaceSeparator": "_",
+	"csvSeparator": [",", ";", "|"],
 	"columns": {
 		//Colunas que aparecerão no CSV
 		//A chave representa a coluna do CSV e o vetor de valores
