@@ -52,7 +52,7 @@ export class CsvUtils {
 	 * @param csvHeader Conteúdo do header do CSV
 	 * @param csvSeparatorDefault Lista de separadores configurados para validarmos a prioridade
 	 * @returns Separador a ser utilizado
-	 * 
+	 *
 	 * Função que identifica o separador utilizado no CSV, de acordo com os separadores já configurados no Config, para utilizarmos na parametrização
 	 */
 
