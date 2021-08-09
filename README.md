@@ -119,7 +119,7 @@ Abaixo segue uma explicação e um exemplo de todos os campos das configuraçõe
 
 | Chave                       | Tipo   | Descrição                                                                                                                                                                       | Obrigatório |
 | --------------------------- | ------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------- |
-| csvSeparator                | Array | Array que irá conter todos os separadores de colunas que os arquivos CSV poderão conter.                                                                                                                                            | Não         |
+| csvSeparator                | Array  | Array que irá conter todos os separadores de colunas que os arquivos CSV poderão conter.                                                                                        | Não         |
 | separator                   | String | String que será utilizada na concatenação dos campos.                                                                                                                           | Sim         |
 | spaceSeparator              | String | String que substituirá o espaço na URL, caso alguma campo tenha preenchido com mais de uma palavra.                                                                             | Sim         |
 | columns                     | Objeto | Objeto contendo as colunas do CSV e seus valores de aceitação.                                                                                                                  | Sim         |
