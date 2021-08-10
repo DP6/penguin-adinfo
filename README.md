@@ -115,6 +115,12 @@ Para a configuração inicial do Firestore, são necessárias duas coleções.
 
 Para utilizar a API, é necessário criar um documento de configuração no Firestore dentro da coleção: companies > [nome_empresa] > config. O nome do documento deve ser **config_1** e ele deve conter os campos: **csvSeparator**, **separator**, **spaceSeparator**, **columns** e um campo para a ferramenta de analytics, sendo esse o valor de **ga** ou **adobe**.
 
+Todos estes campos serão utilizados para realizar a parametrização do arquivo CSV que a API irá receber.
+
+Aqui a API disponibiliza a funcionalidade de definirmos no campo **csvSeparator** uma lista contendo a prioridade de todos os possíveis caracteres que poderão ser utilizados como separadores no arquivo CSV pelos usuários. Com isso, a aplicação irá consultar essa fonte e utilizar o devido separador para parametrizar o arquivo submetido.
+
+Entretanto, este campo no arquivo de configuração não é obrigatório. Caso o campo não seja preenchido, a aplicação irá tentar verificar se o arquivo submetido está utilizando *vírgula* ou *ponto e vírgula* como separador e utilizar o separador identificado para a parametrização. Caso não encontre nenhum dos dois caracteres, a API irá utilizar a vírgula como separador.
+
 Abaixo segue uma explicação e um exemplo de todos os campos das configurações.
 
 | Chave                       | Tipo   | Descrição                                                                                                                                                                       | Obrigatório |
