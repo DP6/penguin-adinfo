@@ -119,7 +119,7 @@ Todos estes campos serão utilizados para realizar a parametrização do arquivo
 
 Aqui a API disponibiliza a funcionalidade de definirmos no campo **csvSeparator** uma lista contendo a prioridade de todos os possíveis caracteres que poderão ser utilizados como separadores no arquivo CSV pelos usuários. Com isso, a aplicação irá consultar essa fonte e utilizar o devido separador para parametrizar o arquivo submetido.
 
-Entretanto, este campo no arquivo de configuração não é obrigatório. Caso o campo não seja preenchido, a aplicação irá tentar verificar se o arquivo submetido está utilizando *vírgula* ou *ponto e vírgula* como separador e utilizar o separador identificado para a parametrização. Caso não encontre nenhum dos dois caracteres, a API irá utilizar a vírgula como separador.
+Entretanto, este campo no arquivo de configuração não é obrigatório. Caso o campo não seja preenchido, a aplicação irá tentar verificar se o arquivo submetido está utilizando _vírgula_ ou _ponto e vírgula_ como separador e utilizar o separador identificado para a parametrização. Caso não encontre nenhum dos dois caracteres, a API irá utilizar a vírgula como separador.
 
 Abaixo segue uma explicação e um exemplo de todos os campos das configurações.
 
