@@ -1,4 +1,4 @@
-import { Border, Buffer, Fill, Workbook, Worksheet } from 'exceljs';
+import { Buffer, Fill, Workbook, Worksheet } from 'exceljs';
 import { StringUtils } from '../utils/StringUtils';
 import { Config } from './Config';
 

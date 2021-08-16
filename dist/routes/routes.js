@@ -6,6 +6,7 @@ const template_1 = require('./template');
 const build_1 = require('./build');
 const register_1 = require('./register');
 const user_1 = require('./user');
+const login_1 = require('./login');
 const routes = (app) => {
 	config_1.default(app);
 	csv_1.default(app);
@@ -13,5 +14,6 @@ const routes = (app) => {
 	build_1.default(app);
 	register_1.default(app);
 	user_1.default(app);
+	login_1.default(app);
 };
 exports.default = routes;

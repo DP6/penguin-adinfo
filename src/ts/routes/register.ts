@@ -1,23 +1,24 @@
-import { header, validationResult } from 'express-validator';
-import { Auth } from '../models/Auth';
-import { AuthDAO } from '../models/DAO/AuthDAO';
+import { body, validationResult } from 'express-validator';
+import { User } from '../models/User';
+import { UserDAO } from '../models/DAO/UserDAO';
 import { ApiResponse } from '../models/ApiResponse';
 
 const register = (app: { [key: string]: any }): void => {
 	app.post(
 		'/register',
-		header('permission').exists().withMessage('Parâmetro permission é obrigatório.'),
-		header('email').exists().withMessage('Parâmetro email é obrigatório.').isEmail().withMessage('Email inválido.'),
+		body('permission').exists().withMessage('Parâmetro permission é obrigatório.'),
+		body('email').exists().withMessage('Parâmetro email é obrigatório.').isEmail().withMessage('Email inválido.'),
+		body('password').exists().withMessage('Parâmetro password é obrigatório.'),
 		(req: { [key: string]: any }, res: { [key: string]: any }) => {
 			const validationErrors = validationResult(req).array();
 
 			const apiResponse = new ApiResponse();
 
-			if (!req.headers.agency) {
+			if (!req.body.agency && req.body.permission === 'user') {
 				validationErrors.push({
 					param: 'email',
-					value: req.header.agency,
-					location: 'headers',
+					value: req.body.agency,
+					location: 'body',
 					msg: 'Parâmetro agency é obrigatório.',
 				});
 			}
@@ -29,19 +30,20 @@ const register = (app: { [key: string]: any }): void => {
 				return;
 			}
 
-			const newUserAuth = new Auth(
-				req.headers.permission,
+			const newUser = new User(
+				'',
+				req.body.permission,
 				req.company,
-				req.headers.permission === 'user' ? req.headers.agency : '',
-				req.headers.email
+				req.body.email,
+				req.body.permission === 'user' ? req.body.agency : '',
+				req.body.password
 			);
 
-			const token = req.headers.token;
-			const authDAO = new AuthDAO(token);
-			authDAO
-				.addAuth(newUserAuth)
-				.then((token) => {
-					const message = `Permissão adicionada para o email ${newUserAuth.email}, senha: ${token}`;
+			const userDAO = new UserDAO();
+			userDAO
+				.addUser(newUser)
+				.then(() => {
+					const message = `Usuário criado para o email ${newUser.email}`;
 					apiResponse.responseText = message;
 					apiResponse.statusCode = 200;
 				})
