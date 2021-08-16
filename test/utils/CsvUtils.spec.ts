@@ -112,15 +112,25 @@ describe('CSV Utils', () => {
 		});
 	});
 	describe('CSV Separator Identify', () => {
-		it('Verifica se há um valor predefinido de separador e o retorna (Separador = ,)', ()=>{
-			const separadorDefault = ',';
+		it('Verifica se há um valor predefinido de separador contido na ordem de prioridade e o retorna (Separador = ,)', ()=>{
+			const separadorDefault = [',', ';', '|'];
 			const arquivo = 'Url,Responsavel,Dispositivo,Formato ou Canal,Nome da Campanha,Bandeira,Tipo de Compra,Periodo,Campo Livre,Veiculo'
-			expect(CsvUtils.identifyCsvSepartor(arquivo, separadorDefault)).to.equal(separadorDefault);
+			expect(CsvUtils.identifyCsvSepartor(arquivo, separadorDefault)).to.equal(',');
 		});
 		it('Verifica se há um valor predefinido de separador e o retorna (Separador = ;)', ()=>{
-			const separadorDefault = ';';
+			const separadorDefault = [',', ';', '|'];
 			const arquivo = 'Url;Responsavel;Dispositivo;Formato ou Canal;Nome da Campanha;Bandeira;Tipo de Compra;Periodo;Campo Livre;Veiculo'
-			expect(CsvUtils.identifyCsvSepartor(arquivo, separadorDefault)).to.equal(separadorDefault);
+			expect(CsvUtils.identifyCsvSepartor(arquivo, separadorDefault)).to.equal(';');
+		});
+		it('Verifica se há um valor predefinido de separador e o retorna (Separador = |)', ()=>{
+			const separadorDefault = [',', ';', '|'];
+			const arquivo = 'Url;Responsavel|Dispositivo|Formato ou Canal|Nome da Campanha|Bandeira|Tipo de Compra|Periodo|Campo Livre|Veiculo'
+			expect(CsvUtils.identifyCsvSepartor(arquivo, separadorDefault)).to.equal('|');
+		});
+		it('Caso nao haja um conjunto de separadores pré-definidos, retorna ,', ()=>{
+			const separadorDefault = [',', ';', '|'];
+			const arquivo = 'Url_Responsavel_Dispositivo_Formato ou Canal_Nome da Campanha_Bandeira_Tipo de Compra_Periodo_Campo Livre_Veiculo'
+			expect(CsvUtils.identifyCsvSepartor(arquivo, separadorDefault)).to.equal(',');
 		});
 		it('Identifica automaticamente o separador utilizado no arquivo, caso não haja um separador predefinido (Separador = ,)', ()=>{
 			const separadorDefault:undefined = undefined;

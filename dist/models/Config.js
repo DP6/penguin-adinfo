@@ -81,7 +81,7 @@ class Config {
 		Object.keys(this._validationRules).forEach((column) => {
 			configValues.push(column);
 		});
-		return configValues.join(this._csvSeparator);
+		return configValues.join(this._csvSeparator ? this._csvSeparator[0] : ',');
 	}
 	_existsValidationRuleFor(csvColumn) {
 		return this.validationRules[csvColumn].length > 0;
