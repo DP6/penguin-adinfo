@@ -40,5 +40,49 @@ const user = (app) => {
 				res.status(apiResponse.statusCode).send(apiResponse.jsonResponse);
 			});
 	});
+	app.post('/user/:id/deactivate', (req, res) => {
+		const apiResponse = new ApiResponse_1.ApiResponse();
+		const targetUserId = req.params.id;
+		new UserDAO_1.UserDAO()
+			.deactivateUser(targetUserId)
+			.then((result) => {
+				if (result) {
+					apiResponse.statusCode = 200;
+					apiResponse.responseText = 'Usuário desativado com sucesso!';
+				} else {
+					throw new Error('Erro ao desativar usuário!');
+				}
+			})
+			.catch((err) => {
+				apiResponse.statusCode = 500;
+				apiResponse.responseText = 'Email e/ou senha incorreto(s)!';
+				apiResponse.errorMessage = err.message;
+			})
+			.finally(() => {
+				res.status(apiResponse.statusCode).send(apiResponse.jsonResponse);
+			});
+	});
+	app.post('/user/:id/reactivate', (req, res) => {
+		const apiResponse = new ApiResponse_1.ApiResponse();
+		const targetUserId = req.params.id;
+		new UserDAO_1.UserDAO()
+			.reactivateUser(targetUserId)
+			.then((result) => {
+				if (result) {
+					apiResponse.statusCode = 200;
+					apiResponse.responseText = 'Usuário re-ativado com sucesso!';
+				} else {
+					throw new Error('Erro ao re-ativar usuário!');
+				}
+			})
+			.catch((err) => {
+				apiResponse.statusCode = 500;
+				apiResponse.responseText = 'Email e/ou senha incorreto(s)!';
+				apiResponse.errorMessage = err.message;
+			})
+			.finally(() => {
+				res.status(apiResponse.statusCode).send(apiResponse.jsonResponse);
+			});
+	});
 };
 exports.default = user;

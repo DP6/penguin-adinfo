@@ -66,6 +66,7 @@ app.all('*', async (req: { [key: string]: any }, res: { [key: string]: any }, ne
 				user: user.id,
 				route: req.originalUrl,
 				email: user.email,
+				activate: user.activate,
 				headers: req.headers,
 				body: req.body,
 			};

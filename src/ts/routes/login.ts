@@ -9,9 +9,15 @@ const login = (app: { [key: string]: any }): void => {
 		new UserDAO(req.body.email, req.body.password)
 			.getUser()
 			.then((user: User) => {
-				const token = new JWT(user).createToken();
-				res.set('Authorization', token);
-				apiResponse.statusCode = 204;
+				if (user.activate) {
+					const token = new JWT(user).createToken();
+					res.set('Authorization', token);
+					apiResponse.statusCode = 204;
+				} else {
+					apiResponse.statusCode = 403;
+					apiResponse.responseText = 'Usuário desativado!';
+					apiResponse.errorMessage = 'Usuário desativado!';
+				}
 			})
 			.catch((err) => {
 				apiResponse.statusCode = 500;

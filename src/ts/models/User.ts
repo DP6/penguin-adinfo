@@ -8,15 +8,25 @@ export class User {
 	private _email: string;
 	private _id: string;
 	private _password: string;
+	private _activate: boolean;
 	private _salt = parseInt(process.env.SALT);
 
-	constructor(id: string, permission: string, company: string, email: string, agency = '', password?: string) {
+	constructor(
+		id: string,
+		permission: string,
+		company: string,
+		email: string,
+		activate = true,
+		agency = '',
+		password?: string
+	) {
 		this._permission = permission;
 		this._agency = agency;
 		this._company = company;
 		this._email = email;
 		this._id = id;
 		this._password = password;
+		this._activate = activate;
 	}
 
 	/**
@@ -32,13 +42,14 @@ export class User {
 	 * Gera um JSON correspondente ao objeto User sem o atributo password
 	 * @returns JSON correspondente ao objeto User
 	 */
-	public toJson(): { [key: string]: string } {
+	public toJson(): { [key: string]: string | boolean } {
 		return {
 			agency: this._agency,
 			company: this._company,
 			permission: this._permission,
 			email: this._email,
 			id: this._id,
+			activate: this._activate,
 		};
 	}
 
@@ -46,12 +57,13 @@ export class User {
 	 * Gera um JSON com todos os atributos do objeto
 	 * @returns JSON correspondente ao objeto User com todos os atributos
 	 */
-	public toJsonSave(): { [key: string]: string } {
+	public toJsonSave(): { [key: string]: string | boolean } {
 		return {
 			agency: this._agency,
 			company: this._company,
 			permission: this._permission,
 			email: this._email,
+			activate: this._activate,
 			password: bcrypt.hashSync(this._password, this._salt),
 		};
 	}
@@ -74,6 +86,10 @@ export class User {
 
 	get email(): string {
 		return this._email;
+	}
+
+	get activate(): boolean {
+		return this._activate;
 	}
 
 	get id(): string {

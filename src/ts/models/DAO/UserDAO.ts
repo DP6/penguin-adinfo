@@ -71,6 +71,7 @@ export class UserDAO {
 								documentSnapshot.get('permission'),
 								documentSnapshot.get('company'),
 								documentSnapshot.get('email'),
+								documentSnapshot.get('activate'),
 								documentSnapshot.get('agency')
 							);
 						} else {
@@ -114,6 +115,52 @@ export class UserDAO {
 			.get()
 			.then((doc: QueryDocumentSnapshot) => {
 				return doc.ref.set(user.toJsonSave());
+			})
+			.then(() => {
+				return true;
+			})
+			.catch((err) => {
+				throw err;
+			});
+	}
+
+	/**
+	 * Desativa um usuário
+	 * @param userId ID do usuário a ser desativado
+	 * @returns retorna True em caso de sucesso
+	 */
+	public deactivateUser(userId: string): Promise<boolean | void> {
+		return this._objectStore
+			.getCollection(this._pathToCollection)
+			.doc(userId)
+			.get()
+			.then((doc: QueryDocumentSnapshot) => {
+				const user = doc.data();
+				user.activate = false;
+				return doc.ref.set(user);
+			})
+			.then(() => {
+				return true;
+			})
+			.catch((err) => {
+				throw err;
+			});
+	}
+
+	/**
+	 * Resativa um usuário
+	 * @param userId ID do usuário a ser resativado
+	 * @returns retorna True em caso de sucesso
+	 */
+	public reactivateUser(userId: string): Promise<boolean | void> {
+		return this._objectStore
+			.getCollection(this._pathToCollection)
+			.doc(userId)
+			.get()
+			.then((doc: QueryDocumentSnapshot) => {
+				const user = doc.data();
+				user.activate = true;
+				return doc.ref.set(user);
 			})
 			.then(() => {
 				return true;

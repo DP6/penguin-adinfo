@@ -92,6 +92,7 @@ app.all('*', (req, res, next) =>
 					user: user.id,
 					route: req.originalUrl,
 					email: user.email,
+					activate: user.activate,
 					headers: req.headers,
 					body: req.body,
 				};

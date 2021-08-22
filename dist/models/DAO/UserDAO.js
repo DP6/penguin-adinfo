@@ -55,6 +55,7 @@ class UserDAO {
 								documentSnapshot.get('permission'),
 								documentSnapshot.get('company'),
 								documentSnapshot.get('email'),
+								documentSnapshot.get('activate'),
 								documentSnapshot.get('agency')
 							);
 						} else {
@@ -86,6 +87,40 @@ class UserDAO {
 			.get()
 			.then((doc) => {
 				return doc.ref.set(user.toJsonSave());
+			})
+			.then(() => {
+				return true;
+			})
+			.catch((err) => {
+				throw err;
+			});
+	}
+	deactivateUser(userId) {
+		return this._objectStore
+			.getCollection(this._pathToCollection)
+			.doc(userId)
+			.get()
+			.then((doc) => {
+				const user = doc.data();
+				user.activate = false;
+				return doc.ref.set(user);
+			})
+			.then(() => {
+				return true;
+			})
+			.catch((err) => {
+				throw err;
+			});
+	}
+	reactivateUser(userId) {
+		return this._objectStore
+			.getCollection(this._pathToCollection)
+			.doc(userId)
+			.get()
+			.then((doc) => {
+				const user = doc.data();
+				user.activate = true;
+				return doc.ref.set(user);
 			})
 			.then(() => {
 				return true;
