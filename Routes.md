@@ -36,13 +36,13 @@
 
 **Descrição**: Altera a senha do usuário que está realizando a requisição.
 
-### (POST) /user/id/deactivate
+### (POST) /user/:id/deactivate
 
 **Parâmetros**: token
 
 **Descrição**: Desativa o usuário com o ID enviado.
 
-### (POST) /user/id/reactivate
+### (POST) /user/:id/reactivate
 
 **Parâmetros**: token
 
