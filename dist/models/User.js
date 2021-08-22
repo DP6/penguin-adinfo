@@ -34,6 +34,9 @@ class User {
 			password: bcrypt.hashSync(this._password, this._salt),
 		};
 	}
+	set password(newPassword) {
+		this._password = newPassword;
+	}
 	get permission() {
 		return this._permission;
 	}

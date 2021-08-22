@@ -79,5 +79,20 @@ class UserDAO {
 			})
 			.catch((err) => console.log(err));
 	}
+	changePassword(user) {
+		return this._objectStore
+			.getCollection(this._pathToCollection)
+			.doc(user.id)
+			.get()
+			.then((doc) => {
+				return doc.ref.set(user.toJsonSave());
+			})
+			.then(() => {
+				return true;
+			})
+			.catch((err) => {
+				throw err;
+			});
+	}
 }
 exports.UserDAO = UserDAO;

@@ -1,7 +1,7 @@
 import { ObjectStore } from './ObjectStore';
 import { FirestoreConnectionSingleton } from '../cloud/FirestoreConnectionSingleton';
 import { User } from '../User';
-import { CollectionReference, QuerySnapshot } from '@google-cloud/firestore';
+import { CollectionReference, QuerySnapshot, QueryDocumentSnapshot } from '@google-cloud/firestore';
 import * as bcrypt from 'bcrypt';
 
 export class UserDAO {
@@ -100,5 +100,26 @@ export class UserDAO {
 				return data.id;
 			})
 			.catch((err) => console.log(err));
+	}
+
+	/**
+	 * Altera a senha do usuario
+	 * @param user Usuario que terá a senha alterada
+	 * @returns Retorna True caso a senha tenha sido alterada com sucesso
+	 */
+	public changePassword(user: User): Promise<boolean | void> {
+		return this._objectStore
+			.getCollection(this._pathToCollection)
+			.doc(user.id)
+			.get()
+			.then((doc: QueryDocumentSnapshot) => {
+				return doc.ref.set(user.toJsonSave());
+			})
+			.then(() => {
+				return true;
+			})
+			.catch((err) => {
+				throw err;
+			});
 	}
 }

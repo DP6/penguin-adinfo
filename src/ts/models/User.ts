@@ -56,6 +56,10 @@ export class User {
 		};
 	}
 
+	set password(newPassword: string) {
+		this._password = newPassword;
+	}
+
 	get permission(): string {
 		return this._permission;
 	}
