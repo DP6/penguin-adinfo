@@ -30,6 +30,12 @@
 
 **Descrição**: Recupera os dados do usuários(agência, nível de permissão e empresa) por meio do token informado.
 
+### (GET) /users
+
+**Parâmetros**: token
+
+**Descrição**: Recupera todos os dados do usuários(agência, nível de permissão, empresa e status).
+
 ### (POST) /user/changepass
 
 **Parâmetros**: token, password, newpassword

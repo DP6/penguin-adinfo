@@ -50,6 +50,45 @@ export class UserDAO {
 	}
 
 	/**
+	 * Retorna todos os usuários não owners da empresa
+	 * @param company Empresa(company) dos usuários a serem buscados
+	 * @returns Lista de usuários
+	 */
+	public getAllUsersFrom(company: string): Promise<User[] | void> {
+		return this._objectStore
+			.getCollection(this._pathToCollection)
+			.where('company', '==', company)
+			.get()
+			.then((querySnapshot: QuerySnapshot) => {
+				if (querySnapshot.size > 0) {
+					const users: User[] = [];
+					querySnapshot.forEach((documentSnapshot) => {
+						const searchId = documentSnapshot.ref.path.match(new RegExp('[^/]+$'));
+						if (searchId) {
+							if (documentSnapshot.get('permission') !== 'owner') {
+								const user = new User(
+									searchId[0],
+									documentSnapshot.get('permission'),
+									documentSnapshot.get('company'),
+									documentSnapshot.get('email'),
+									documentSnapshot.get('activate'),
+									documentSnapshot.get('agency')
+								);
+								users.push(user);
+							}
+						} else {
+							throw new Error('Nenhum usuário encontrado!');
+						}
+					});
+					return users;
+				}
+			})
+			.catch((err) => {
+				throw err;
+			});
+	}
+
+	/**
 	 * Consulta o usuario na base de dados
 	 * @returns Retorna o usuario procurado
 	 */
@@ -75,7 +114,7 @@ export class UserDAO {
 								documentSnapshot.get('agency')
 							);
 						} else {
-							throw new Error();
+							throw new Error('Nenhum usuário encontrado!');
 						}
 					});
 					return user;

@@ -14,7 +14,7 @@
 		"compile": "tsc",
 		"auto-compile": "tsc -w",
 		"format": "npx prettier --write .",
-		"build": "npm run compile && npm run lint && npm run format",
+		"build": "npm run compile && npm run test && npm run lint && npm run format",
 		"coverage": "nyc --reporter=lcov --reporter=cobertura npm run unit-test",
 		"docs": "npx typedoc --out docs",
 		"build-quickly": "npm run compile && npm start"

@@ -3,6 +3,22 @@ Object.defineProperty(exports, '__esModule', { value: true });
 const ApiResponse_1 = require('../models/ApiResponse');
 const UserDAO_1 = require('../models/DAO/UserDAO');
 const user = (app) => {
+	app.get('/users', (req, res) => {
+		const apiResponse = new ApiResponse_1.ApiResponse();
+		new UserDAO_1.UserDAO()
+			.getAllUsersFrom(req.company)
+			.then((users) => {
+				apiResponse.responseText = JSON.stringify(users.map((user) => user.toJson()));
+			})
+			.catch((err) => {
+				apiResponse.statusCode = 500;
+				apiResponse.responseText = err.message;
+				apiResponse.errorMessage = err.message;
+			})
+			.finally(() => {
+				res.status(apiResponse.statusCode).send(apiResponse.jsonResponse);
+			});
+	});
 	app.get('/user', (req, res) => {
 		const apiResponse = new ApiResponse_1.ApiResponse();
 		const user = {

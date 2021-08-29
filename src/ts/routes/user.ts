@@ -3,6 +3,23 @@ import { UserDAO } from '../models/DAO/UserDAO';
 import { User } from '../models/User';
 
 const user = (app: { [key: string]: any }): void => {
+	app.get('/users', (req: { [key: string]: any }, res: { [key: string]: any }) => {
+		const apiResponse = new ApiResponse();
+		new UserDAO()
+			.getAllUsersFrom(req.company)
+			.then((users: User[]) => {
+				apiResponse.responseText = JSON.stringify(users.map((user: User) => user.toJson()));
+			})
+			.catch((err) => {
+				apiResponse.statusCode = 500;
+				apiResponse.responseText = err.message;
+				apiResponse.errorMessage = err.message;
+			})
+			.finally(() => {
+				res.status(apiResponse.statusCode).send(apiResponse.jsonResponse);
+			});
+	});
+
 	app.get('/user', (req: { [key: string]: any }, res: { [key: string]: any }) => {
 		const apiResponse = new ApiResponse();
 		const user = {

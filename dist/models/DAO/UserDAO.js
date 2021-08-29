@@ -37,6 +37,39 @@ class UserDAO {
 				throw err;
 			});
 	}
+	getAllUsersFrom(company) {
+		return this._objectStore
+			.getCollection(this._pathToCollection)
+			.where('company', '==', company)
+			.get()
+			.then((querySnapshot) => {
+				if (querySnapshot.size > 0) {
+					const users = [];
+					querySnapshot.forEach((documentSnapshot) => {
+						const searchId = documentSnapshot.ref.path.match(new RegExp('[^/]+$'));
+						if (searchId) {
+							if (documentSnapshot.get('permission') !== 'owner') {
+								const user = new User_1.User(
+									searchId[0],
+									documentSnapshot.get('permission'),
+									documentSnapshot.get('company'),
+									documentSnapshot.get('email'),
+									documentSnapshot.get('activate'),
+									documentSnapshot.get('agency')
+								);
+								users.push(user);
+							}
+						} else {
+							throw new Error('Nenhum usuário encontrado!');
+						}
+					});
+					return users;
+				}
+			})
+			.catch((err) => {
+				throw err;
+			});
+	}
 	getUser() {
 		return this._objectStore
 			.getCollection(this._pathToCollection)
@@ -59,7 +92,7 @@ class UserDAO {
 								documentSnapshot.get('agency')
 							);
 						} else {
-							throw new Error();
+							throw new Error('Nenhum usuário encontrado!');
 						}
 					});
 					return user;
