@@ -52,9 +52,10 @@ export class UserDAO {
 	/**
 	 * Retorna todos os usuários não owners da empresa
 	 * @param company Empresa(company) dos usuários a serem buscados
+	 * @param userRequestPermission permissão do usuario que solicitou a alteração
 	 * @returns Lista de usuários
 	 */
-	public getAllUsersFrom(company: string): Promise<User[] | void> {
+	public getAllUsersFrom(company: string, userRequestPermission: string): Promise<User[] | void> {
 		return this._objectStore
 			.getCollection(this._pathToCollection)
 			.where('company', '==', company)
@@ -65,10 +66,11 @@ export class UserDAO {
 					querySnapshot.forEach((documentSnapshot) => {
 						const searchId = documentSnapshot.ref.path.match(new RegExp('[^/]+$'));
 						if (searchId) {
-							if (documentSnapshot.get('permission') !== 'owner') {
+							const userPermission = documentSnapshot.get('permission');
+							if (userPermission !== 'owner' || (userRequestPermission === 'admin' && userPermission === 'user')) {
 								const user = new User(
 									searchId[0],
-									documentSnapshot.get('permission'),
+									userPermission,
 									documentSnapshot.get('company'),
 									documentSnapshot.get('email'),
 									documentSnapshot.get('activate'),
@@ -166,16 +168,21 @@ export class UserDAO {
 	/**
 	 * Desativa um usuário
 	 * @param userId ID do usuário a ser desativado
+	 * @param userRequestPermission permissão do usuario que solicitou a alteração
 	 * @returns retorna True em caso de sucesso
 	 */
-	public deactivateUser(userId: string): Promise<boolean | void> {
+	public deactivateUser(userId: string, userRequestPermission: string): Promise<boolean | void> {
 		return this._objectStore
 			.getCollection(this._pathToCollection)
 			.doc(userId)
 			.get()
 			.then((doc: QueryDocumentSnapshot) => {
 				const user = doc.data();
-				user.activate = false;
+				if (user.permission === 'user' || (user.permission === 'admin' && userRequestPermission === 'owner')) {
+					user.activate = false;
+				} else {
+					throw new Error('Permissões insuficientes para inavitar o usuário!');
+				}
 				return doc.ref.set(user);
 			})
 			.then(() => {
@@ -189,16 +196,21 @@ export class UserDAO {
 	/**
 	 * Resativa um usuário
 	 * @param userId ID do usuário a ser resativado
+	 * @param userRequestPermission permissão do usuario que solicitou a alteração
 	 * @returns retorna True em caso de sucesso
 	 */
-	public reactivateUser(userId: string): Promise<boolean | void> {
+	public reactivateUser(userId: string, userRequestPermission: string): Promise<boolean | void> {
 		return this._objectStore
 			.getCollection(this._pathToCollection)
 			.doc(userId)
 			.get()
 			.then((doc: QueryDocumentSnapshot) => {
 				const user = doc.data();
-				user.activate = true;
+				if (user.permission === 'user' || (user.permission === 'admin' && userRequestPermission === 'owner')) {
+					user.activate = true;
+				} else {
+					throw new Error('Permissões insuficientes para inavitar o usuário!');
+				}
 				return doc.ref.set(user);
 			})
 			.then(() => {

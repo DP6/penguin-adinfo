@@ -10,7 +10,7 @@ export class RoutesPermission {
 	}
 
 	public validatePermission(user: User): boolean {
-		const agencyPostRoutes = ['/build/.*', '/csv', '/user/.+/deactivate'];
+		const agencyPostRoutes = ['/build/.*', '/csv'];
 		const agencyGetRoutes = ['/config', '/template', '/csv/list', '/csv', '/user', '/user/changepass'];
 		if (user.permission === 'user') {
 			if (this._method === 'POST') {

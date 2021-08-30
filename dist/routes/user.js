@@ -6,7 +6,7 @@ const user = (app) => {
 	app.get('/users', (req, res) => {
 		const apiResponse = new ApiResponse_1.ApiResponse();
 		new UserDAO_1.UserDAO()
-			.getAllUsersFrom(req.company)
+			.getAllUsersFrom(req.company, req.permission)
 			.then((users) => {
 				apiResponse.responseText = JSON.stringify(users.map((user) => user.toJson()));
 			})
@@ -60,7 +60,7 @@ const user = (app) => {
 		const apiResponse = new ApiResponse_1.ApiResponse();
 		const targetUserId = req.params.id;
 		new UserDAO_1.UserDAO()
-			.deactivateUser(targetUserId)
+			.deactivateUser(targetUserId, req.permission)
 			.then((result) => {
 				if (result) {
 					apiResponse.statusCode = 200;
@@ -82,7 +82,7 @@ const user = (app) => {
 		const apiResponse = new ApiResponse_1.ApiResponse();
 		const targetUserId = req.params.id;
 		new UserDAO_1.UserDAO()
-			.reactivateUser(targetUserId)
+			.reactivateUser(targetUserId, req.permission)
 			.then((result) => {
 				if (result) {
 					apiResponse.statusCode = 200;

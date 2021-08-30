@@ -37,7 +37,7 @@ class UserDAO {
 				throw err;
 			});
 	}
-	getAllUsersFrom(company) {
+	getAllUsersFrom(company, userRequestPermission) {
 		return this._objectStore
 			.getCollection(this._pathToCollection)
 			.where('company', '==', company)
@@ -48,10 +48,11 @@ class UserDAO {
 					querySnapshot.forEach((documentSnapshot) => {
 						const searchId = documentSnapshot.ref.path.match(new RegExp('[^/]+$'));
 						if (searchId) {
-							if (documentSnapshot.get('permission') !== 'owner') {
+							const userPermission = documentSnapshot.get('permission');
+							if (userPermission !== 'owner' || (userRequestPermission === 'admin' && userPermission === 'user')) {
 								const user = new User_1.User(
 									searchId[0],
-									documentSnapshot.get('permission'),
+									userPermission,
 									documentSnapshot.get('company'),
 									documentSnapshot.get('email'),
 									documentSnapshot.get('activate'),
@@ -128,14 +129,18 @@ class UserDAO {
 				throw err;
 			});
 	}
-	deactivateUser(userId) {
+	deactivateUser(userId, userRequestPermission) {
 		return this._objectStore
 			.getCollection(this._pathToCollection)
 			.doc(userId)
 			.get()
 			.then((doc) => {
 				const user = doc.data();
-				user.activate = false;
+				if (user.permission === 'user' || (user.permission === 'admin' && userRequestPermission === 'owner')) {
+					user.activate = false;
+				} else {
+					throw new Error('Permissões insuficientes para inavitar o usuário!');
+				}
 				return doc.ref.set(user);
 			})
 			.then(() => {
@@ -145,14 +150,18 @@ class UserDAO {
 				throw err;
 			});
 	}
-	reactivateUser(userId) {
+	reactivateUser(userId, userRequestPermission) {
 		return this._objectStore
 			.getCollection(this._pathToCollection)
 			.doc(userId)
 			.get()
 			.then((doc) => {
 				const user = doc.data();
-				user.activate = true;
+				if (user.permission === 'user' || (user.permission === 'admin' && userRequestPermission === 'owner')) {
+					user.activate = true;
+				} else {
+					throw new Error('Permissões insuficientes para inavitar o usuário!');
+				}
 				return doc.ref.set(user);
 			})
 			.then(() => {

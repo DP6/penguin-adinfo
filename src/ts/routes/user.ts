@@ -6,7 +6,7 @@ const user = (app: { [key: string]: any }): void => {
 	app.get('/users', (req: { [key: string]: any }, res: { [key: string]: any }) => {
 		const apiResponse = new ApiResponse();
 		new UserDAO()
-			.getAllUsersFrom(req.company)
+			.getAllUsersFrom(req.company, req.permission)
 			.then((users: User[]) => {
 				apiResponse.responseText = JSON.stringify(users.map((user: User) => user.toJson()));
 			})
@@ -67,7 +67,7 @@ const user = (app: { [key: string]: any }): void => {
 		const targetUserId = req.params.id;
 
 		new UserDAO()
-			.deactivateUser(targetUserId)
+			.deactivateUser(targetUserId, req.permission)
 			.then((result: boolean) => {
 				if (result) {
 					apiResponse.statusCode = 200;
@@ -92,7 +92,7 @@ const user = (app: { [key: string]: any }): void => {
 		const targetUserId = req.params.id;
 
 		new UserDAO()
-			.reactivateUser(targetUserId)
+			.reactivateUser(targetUserId, req.permission)
 			.then((result: boolean) => {
 				if (result) {
 					apiResponse.statusCode = 200;
