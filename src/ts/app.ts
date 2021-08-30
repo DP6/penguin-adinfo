@@ -8,6 +8,8 @@ import { ApiResponse } from './models/ApiResponse';
 import { LoggingSingleton } from './models/cloud/LoggingSingleton';
 import { JWT } from './models/JWT';
 import { User } from './models/User';
+import { FirestoreConnectionSingleton } from './models/cloud/FirestoreConnectionSingleton';
+import { QuerySnapshot } from '@google-cloud/firestore';
 
 config({ path: __dirname + '/../.env' });
 
@@ -64,6 +66,25 @@ app.all('*', async (req: { [key: string]: any }, res: { [key: string]: any }, ne
 			const payload = await new JWT().validateToken(token);
 
 			const user = new User(payload.id, payload.permission, payload.company, payload.email, payload.agency);
+
+			await FirestoreConnectionSingleton.getInstance()
+				.getCollection(['tokens'])
+				.where('__name__', '==', user.id)
+				.get()
+				.then((querySnapshot: QuerySnapshot) => {
+					if (querySnapshot.size > 0) {
+						querySnapshot.forEach((documentSnapshot) => {
+							if (!documentSnapshot.get('activate')) {
+								throw new Error('Usuário sem permissão para realizar esta ação!');
+							}
+						});
+					} else {
+						throw new Error('Usuário inválido!');
+					}
+				})
+				.catch((err) => {
+					throw err;
+				});
 
 			const log = {
 				user: user.id,

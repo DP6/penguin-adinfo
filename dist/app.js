@@ -41,6 +41,7 @@ const ApiResponse_1 = require('./models/ApiResponse');
 const LoggingSingleton_1 = require('./models/cloud/LoggingSingleton');
 const JWT_1 = require('./models/JWT');
 const User_1 = require('./models/User');
+const FirestoreConnectionSingleton_1 = require('./models/cloud/FirestoreConnectionSingleton');
 dotenv_1.config({ path: __dirname + '/../.env' });
 const app = express();
 LoggingSingleton_1.LoggingSingleton.getInstance().logInfo('Iniciando Adinfo!');
@@ -90,6 +91,24 @@ app.all('*', (req, res, next) =>
 			try {
 				const payload = yield new JWT_1.JWT().validateToken(token);
 				const user = new User_1.User(payload.id, payload.permission, payload.company, payload.email, payload.agency);
+				yield FirestoreConnectionSingleton_1.FirestoreConnectionSingleton.getInstance()
+					.getCollection(['tokens'])
+					.where('__name__', '==', user.id)
+					.get()
+					.then((querySnapshot) => {
+						if (querySnapshot.size > 0) {
+							querySnapshot.forEach((documentSnapshot) => {
+								if (!documentSnapshot.get('activate')) {
+									throw new Error('Usuário sem permissão para realizar esta ação!');
+								}
+							});
+						} else {
+							throw new Error('Usuário inválido!');
+						}
+					})
+					.catch((err) => {
+						throw err;
+					});
 				const log = {
 					user: user.id,
 					route: req.originalUrl,
