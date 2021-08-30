@@ -40,6 +40,7 @@ const dotenv_1 = require('dotenv');
 const ApiResponse_1 = require('./models/ApiResponse');
 const LoggingSingleton_1 = require('./models/cloud/LoggingSingleton');
 const JWT_1 = require('./models/JWT');
+const User_1 = require('./models/User');
 dotenv_1.config({ path: __dirname + '/../.env' });
 const app = express();
 LoggingSingleton_1.LoggingSingleton.getInstance().logInfo('Iniciando Adinfo!');
@@ -87,7 +88,8 @@ app.all('*', (req, res, next) =>
 		} else {
 			const token = req.headers.token;
 			try {
-				const user = new JWT_1.JWT().validateToken(token);
+				const payload = yield new JWT_1.JWT().validateToken(token);
+				const user = new User_1.User(payload.id, payload.permission, payload.company, payload.email, payload.agency);
 				const log = {
 					user: user.id,
 					route: req.originalUrl,
@@ -106,6 +108,7 @@ app.all('*', (req, res, next) =>
 				req.agency = user.agency;
 				req.email = user.email;
 				req.permission = user.permission;
+				req.token = req.headers.token;
 				next();
 			} catch (e) {
 				apiResponse.statusCode = 401;

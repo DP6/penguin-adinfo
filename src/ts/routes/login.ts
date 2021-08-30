@@ -1,4 +1,5 @@
 import { ApiResponse } from '../models/ApiResponse';
+import { BlackList } from '../models/BlackList';
 import { UserDAO } from '../models/DAO/UserDAO';
 import { JWT } from '../models/JWT';
 import { User } from '../models/User';
@@ -27,6 +28,22 @@ const login = (app: { [key: string]: any }): void => {
 			.finally(() => {
 				res.status(apiResponse.statusCode).send(apiResponse.jsonResponse);
 			});
+	});
+
+	app.post('/logout', async (req: { [key: string]: any }, res: { [key: string]: any }) => {
+		const apiResponse = new ApiResponse();
+
+		try {
+			await new BlackList().addToken(req.token);
+			apiResponse.statusCode = 200;
+			apiResponse.responseText = 'Logout efetuado com sucesso!';
+		} catch (err) {
+			apiResponse.statusCode = 500;
+			apiResponse.responseText = 'Falha ao efetuar o logout!';
+			apiResponse.errorMessage = err.message;
+		}
+
+		res.status(apiResponse.statusCode).send(apiResponse.jsonResponse);
 	});
 };
 

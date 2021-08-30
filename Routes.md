@@ -24,6 +24,12 @@
 
 **Descrição**: Realiza o login na aplicação e retorna um token de autenticação.
 
+### (POST) /logout
+
+**Parâmetros**: token
+
+**Descrição**: Realiza o logout da aplicação.
+
 ### (GET) /user
 
 **Parâmetros**: token

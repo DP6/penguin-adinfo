@@ -7,6 +7,7 @@ import { config } from 'dotenv';
 import { ApiResponse } from './models/ApiResponse';
 import { LoggingSingleton } from './models/cloud/LoggingSingleton';
 import { JWT } from './models/JWT';
+import { User } from './models/User';
 
 config({ path: __dirname + '/../.env' });
 
@@ -60,7 +61,9 @@ app.all('*', async (req: { [key: string]: any }, res: { [key: string]: any }, ne
 	} else {
 		const token = req.headers.token;
 		try {
-			const user = new JWT().validateToken(token);
+			const payload = await new JWT().validateToken(token);
+
+			const user = new User(payload.id, payload.permission, payload.company, payload.email, payload.agency);
 
 			const log = {
 				user: user.id,
@@ -83,6 +86,7 @@ app.all('*', async (req: { [key: string]: any }, res: { [key: string]: any }, ne
 			req.agency = user.agency;
 			req.email = user.email;
 			req.permission = user.permission;
+			req.token = req.headers.token;
 
 			next();
 		} catch (e) {
