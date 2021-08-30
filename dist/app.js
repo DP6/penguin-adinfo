@@ -90,7 +90,14 @@ app.all('*', (req, res, next) =>
 			const token = req.headers.token;
 			try {
 				const payload = yield new JWT_1.JWT().validateToken(token);
-				const user = new User_1.User(payload.id, payload.permission, payload.company, payload.email, payload.agency);
+				const user = new User_1.User(
+					payload.id,
+					payload.permission,
+					payload.company,
+					payload.email,
+					payload.activate,
+					payload.agency
+				);
 				yield FirestoreConnectionSingleton_1.FirestoreConnectionSingleton.getInstance()
 					.getCollection(['tokens'])
 					.where('__name__', '==', user.id)

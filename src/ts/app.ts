@@ -65,7 +65,14 @@ app.all('*', async (req: { [key: string]: any }, res: { [key: string]: any }, ne
 		try {
 			const payload = await new JWT().validateToken(token);
 
-			const user = new User(payload.id, payload.permission, payload.company, payload.email, payload.agency);
+			const user = new User(
+				payload.id,
+				payload.permission,
+				payload.company,
+				payload.email,
+				payload.activate,
+				payload.agency
+			);
 
 			await FirestoreConnectionSingleton.getInstance()
 				.getCollection(['tokens'])
