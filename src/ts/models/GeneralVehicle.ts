@@ -1,14 +1,9 @@
 import { StringUtils } from '../utils/StringUtils';
 import { Config } from './Config';
 import { Vehicle } from './Vehicle';
-
-/*
-
-{
-    parametro1: 
-}
-
-*/
+import { ValidateColumnExistsHandler } from '../Handlers/ValidateColumnExistsHandler';
+import { ValidateFieldHandler } from '../Handlers/ValidateFieldHandler';
+import { ValidateFieldDependencyHandler } from '../Handlers/ValidateFieldDependencyHandler';
 
 export class GeneralVehicle extends Vehicle {
 	private _vehicleName: string;
@@ -39,20 +34,29 @@ export class GeneralVehicle extends Vehicle {
 			this._errorParams[param] = [];
 			this._undefinedParameterErrorFields[param] = [];
 			const csvColumns: string[] = this.config.medias[this._vehicleName][param];
-			csvColumns.forEach((csvColumn) => {
-				if (!this.config.existsColumn(csvColumn)) {
-					this._undefinedParameterFounded(param, csvColumn);
-				} else {
-					const normalizedColumn = StringUtils.normalize(csvColumn);
-					if (!this.config.validateField(this.csvLine, csvColumn, this.csvLine[normalizedColumn])) {
-						this._validationErrorFounded(param, csvColumn);
-					} else {
-						this._params[param] += `${StringUtils.replaceWhiteSpace(
-							this.csvLine[normalizedColumn],
-							this.config.spaceSeparator
-						).toLowerCase()}${this.config.separator}`;
+			csvColumns.forEach((column) => {
+				const normalizedColumn = StringUtils.normalize(column);
+
+				const validateColumnExistsError = new ValidateColumnExistsHandler(this.config, column);
+				const validateFieldHandler = new ValidateFieldHandler(this.config, column);
+				const validateFieldDependencyHandler = new ValidateFieldDependencyHandler(this.config, this.csvLine, column);
+
+				validateColumnExistsError.setNext(validateFieldHandler).setNext(validateFieldDependencyHandler);
+
+				try {
+					validateColumnExistsError.handle(this.csvLine[normalizedColumn]);
+				} catch (e) {
+					if (e.name === 'ValidateColumnExistsError') {
+						this._undefinedParameterFounded(param, column);
+					} else if (e.name === 'ValidateFieldError' || e.name === 'ValidateFieldDependencyError') {
+						this._validationErrorFounded(param, column);
 					}
 				}
+
+				this._params[param] += `${StringUtils.replaceWhiteSpace(
+					this.csvLine[normalizedColumn],
+					this.config.spaceSeparator
+				).toLowerCase()}${this.config.separator}`;
 			});
 			if (this._hasValidationError) {
 				this._params[param] = this._validationErrorMessage + this._errorParams[param].join(' - ');

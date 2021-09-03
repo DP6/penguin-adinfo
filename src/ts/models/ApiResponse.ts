@@ -31,6 +31,9 @@ export class ApiResponse {
 		this._responseText = responseText;
 	}
 
+	/**
+	 * Retorna um JSON corresponde à resposta padrão da API
+	 */
 	get jsonResponse(): { [key: string]: string } {
 		const response = {
 			responseText: this._responseText,

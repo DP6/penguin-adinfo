@@ -3,6 +3,9 @@ Object.defineProperty(exports, '__esModule', { value: true });
 exports.GA = void 0;
 const StringUtils_1 = require('../utils/StringUtils');
 const AnalyticsTool_1 = require('./AnalyticsTool');
+const StringEmptyHandler_1 = require('../Handlers/StringEmptyHandler');
+const ValidateFieldHandler_1 = require('../Handlers/ValidateFieldHandler');
+const ValidateFieldDependencyHandler_1 = require('../Handlers/ValidateFieldDependencyHandler');
 class GA extends AnalyticsTool_1.AnalyticsTool {
 	constructor(csvLine, config) {
 		super(csvLine, config);
@@ -58,14 +61,24 @@ class GA extends AnalyticsTool_1.AnalyticsTool {
 			let utmString = '';
 			this.config.analyticsTool.ga[utm].forEach((column) => {
 				const columnNormalized = StringUtils_1.StringUtils.normalize(column);
-				if (StringUtils_1.StringUtils.isEmpty(this.csvLine[columnNormalized])) {
-					this._hasUndefinedParameterError[utm] = true;
-					this._undefinedParameterErroMessage[utm] += ` ${column} -`;
-					return;
-				}
-				if (!this.config.validateField(this.csvLine, column, this.csvLine[columnNormalized])) {
-					this._hasValidationError[utm] = true;
-					this._validationErrorMessage[utm] += ` ${column} -`;
+				const stringEmptyHandler = new StringEmptyHandler_1.StringEmptyHandler();
+				const validateFieldHandler = new ValidateFieldHandler_1.ValidateFieldHandler(this.config, column);
+				const validateFieldDependencyHandler = new ValidateFieldDependencyHandler_1.ValidateFieldDependencyHandler(
+					this.config,
+					this.csvLine,
+					column
+				);
+				stringEmptyHandler.setNext(validateFieldHandler).setNext(validateFieldDependencyHandler);
+				try {
+					stringEmptyHandler.handle(this.csvLine[columnNormalized]);
+				} catch (e) {
+					if (e.name === 'StringEmptyError') {
+						this._hasUndefinedParameterError[utm] = true;
+						this._undefinedParameterErroMessage[utm] += ` ${column} -`;
+					} else if (e.name === 'ValidateFieldError' || e.name === 'ValidateFieldDependencyError') {
+						this._hasValidationError[utm] = true;
+						this._validationErrorMessage[utm] += ` ${column} -`;
+					}
 				}
 				utmString += `${this.csvLine[columnNormalized]}${this.config.separator}`;
 			});

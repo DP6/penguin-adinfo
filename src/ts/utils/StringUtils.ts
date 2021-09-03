@@ -37,8 +37,17 @@ export class StringUtils {
 	 * Verifica o começo e o final da string, se começar e terminar com barra,
 	 * significa que a string refere-se a um padrão de regex
 	 */
-	private static _isStringForRegex(string: string): boolean {
+	static isStringForRegex(string: string): boolean {
 		return string[0] === '/' && string[string.length - 1] === '/';
+	}
+
+	/**
+	 *
+	 * @param string Verifica se a string corresponde exatamente à expressão regular /.*\/
+	 * @returns TRUE: String é a expressão regular /.*\/, FALSE: String não é a expressão regular /.*\/
+	 */
+	static isStringForRegexAll(string: string): boolean {
+		return string === '/.*/';
 	}
 
 	/**
@@ -55,7 +64,7 @@ export class StringUtils {
 	static validateString(stringToValidate: string, rules: string[], separator = ' '): boolean {
 		const validate: [boolean] = [false];
 		rules.forEach((rule) => {
-			if (this._isStringForRegex(rule)) {
+			if (this.isStringForRegex(rule)) {
 				//Regex
 				const regexRule = new RegExp(rule.slice(1, rule.length - 1));
 				validate.push(!!stringToValidate.match(regexRule));

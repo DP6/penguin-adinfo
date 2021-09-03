@@ -1,4 +1,4 @@
-import { Auth } from './Auth';
+import { User } from './User';
 
 export class RoutesPermission {
 	private _method: string;
@@ -9,10 +9,10 @@ export class RoutesPermission {
 		this._route = route;
 	}
 
-	public validatePermission(auth: Auth): boolean {
-		const agencyPostRoutes = ['/build/.*', '/csv'];
+	public validatePermission(user: User): boolean {
+		const agencyPostRoutes = ['/build/.*', '/csv', '/user/changepass', '/logout', '/login'];
 		const agencyGetRoutes = ['/config', '/template', '/csv/list', '/csv', '/user'];
-		if (auth.permission === 'user') {
+		if (user.permission === 'user') {
 			if (this._method === 'POST') {
 				return agencyPostRoutes.filter((route) => new RegExp(route).test(this._route)).length > 0;
 			} else if (this._method === 'GET') {
@@ -20,7 +20,7 @@ export class RoutesPermission {
 			} else {
 				return false;
 			}
-		} else if (auth.permission === 'admin' || auth.permission === 'owner') {
+		} else if (user.permission === 'admin' || user.permission === 'owner') {
 			return true;
 		} else {
 			return false;

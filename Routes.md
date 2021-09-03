@@ -2,18 +2,33 @@
 
 ## Dicionário de Parâmetros
 
-| Parâmetro  | Header/Body | Tipo   | Descrição                                                                    |
-| ---------- | ----------- | ------ | ---------------------------------------------------------------------------- |
-| token      | Header      | String | Token de permissão do usuário                                                |
-| agency     | Header      | String | Agência do usuário                                                           |
-| company    | Header      | String | Empresa proprietária do adinfo                                               |
-| permission | Header      | String | Nível de permissão do usuário, podendo ser: **user**, **admin** ou **owner** |
-| data       | Body        | File   | Arquivo CSV                                                                  |
-| file       | Header      | String | Nome do arquivo salvo no banco de arquivos (não informar a extensão)         |
-| config     | Body        | String | String correspondente ao JSON de configuração                                |
-| campaign   | Header      | String | Nome da campanha                                                             |
+| Parâmetro   | Header/Body | Tipo   | Descrição                                                                    |
+| ----------- | ----------- | ------ | ---------------------------------------------------------------------------- |
+| token       | Header      | String | Token de permissão do usuário                                                |
+| agency      | Header      | String | Agência do usuário                                                           |
+| company     | Header      | String | Empresa proprietária do adinfo                                               |
+| permission  | Header      | String | Nível de permissão do usuário, podendo ser: **user**, **admin** ou **owner** |
+| data        | Body        | File   | Arquivo CSV                                                                  |
+| file        | Header      | String | Nome do arquivo salvo no banco de arquivos (não informar a extensão)         |
+| config      | Body        | String | String correspondente ao JSON de configuração                                |
+| campaign    | Header      | String | Nome da campanha                                                             |
+| email       | Body        | String | Email do usuário                                                             |
+| password    | Body        | String | Senha do usuário                                                             |
+| newPassword | Body        | String | Nova senha do usuário                                                        |
 
 ## Rotas
+
+### (POST) /login
+
+**Parâmetros**: email, password
+
+**Descrição**: Realiza o login na aplicação e retorna um token de autenticação.
+
+### (POST) /logout
+
+**Parâmetros**: token
+
+**Descrição**: Realiza o logout da aplicação.
 
 ### (GET) /user
 
@@ -21,11 +36,41 @@
 
 **Descrição**: Recupera os dados do usuários(agência, nível de permissão e empresa) por meio do token informado.
 
+### (GET) /users
+
+**Parâmetros**: token
+
+**Descrição**: Recupera todos os dados do usuários(agência, nível de permissão, empresa e status).
+
+### (POST) /user/changepass
+
+**Parâmetros**: token, password, newpassword
+
+**Descrição**: Altera a senha do usuário que está realizando a requisição.
+
+### (POST) /user/:id/deactivate
+
+**Parâmetros**: token
+
+**Descrição**: Desativa o usuário com o ID enviado.
+
+### (POST) /user/:id/reactivate
+
+**Parâmetros**: token
+
+**Descrição**: Re-ativa o usuário com o ID enviado.
+
 ### (GET) /template
 
 **Parâmetros**: token
 
 **Descrição**: Retorna um CSV com as colunas a serem preenchidas, baseando-se no campo **columns** (colunas) da configuração.
+
+### (GET) /template/excel
+
+**Parâmetros**: token
+
+**Descrição**: Retorna um arquivo Excel (xlsx) com as colunas a serem preenchidas, baseando-se no campo **columns** (colunas) da configuração e as regras de validação.
 
 ### (POST) /register
 

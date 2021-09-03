@@ -5,13 +5,14 @@ import { StringUtils } from '../utils/StringUtils';
 export class Config {
 	private _separator: string;
 	private _spaceSeparator: string;
-	private _csvSeparator: string;
+	private _csvSeparator: string[];
 	private _insertTime: string;
 	private _version: number;
 	private _analyticsTool: { [key: string]: { [key: string]: string[] } };
 	private _analyticsToolName: string;
 	private _medias: { [key: string]: any };
 	private _validationRules: { [key: string]: string[] };
+	private _columnNames: string[];
 	private _dependenciesConfig: DependencyConfig[];
 
 	constructor(jsonConfig: { [key: string]: any }) {
@@ -40,6 +41,7 @@ export class Config {
 			delete jsonConfigTemp.adobe;
 		}
 		this._validationRules = jsonConfigTemp.columns;
+		this._columnNames = Object.keys(jsonConfigTemp.columns);
 		delete jsonConfigTemp.columns;
 		this._medias = jsonConfigTemp;
 	}
@@ -98,7 +100,7 @@ export class Config {
 						return dependencyConfig.toJson();
 					});
 				}
-			} else if (key !== '_analyticsToolName' && Object.values(this)[index]) {
+			} else if (key !== '_analyticsToolName' && key !== '_columnNames' && Object.values(this)[index]) {
 				jsonConfig[key.replace('_', '')] = Object.values(this)[index];
 			}
 		});
@@ -116,7 +118,7 @@ export class Config {
 		Object.keys(this._validationRules).forEach((column) => {
 			configValues.push(column);
 		});
-		return configValues.join(this._csvSeparator);
+		return configValues.join(this._csvSeparator ? this._csvSeparator[0] : ',');
 	}
 
 	/**
@@ -132,7 +134,7 @@ export class Config {
 	 * @param csvColumn Coluna do CSV a ser validada
 	 * @param value Valor da coluna
 	 */
-	private _validateRulesFor(csvColumn: string, value: string): boolean {
+	public validateRulesFor(csvColumn: string, value: string): boolean {
 		if (!this._existsValidationRuleFor(csvColumn)) {
 			return true;
 		}
@@ -159,7 +161,7 @@ export class Config {
 	 * @param csvColumn Coluna do CSV a ser validada
 	 * @param value Valor da coluna
 	 */
-	private _validateDependencyRulesFor(csvLine: { [key: string]: string }, csvColumn: string, value: string): boolean {
+	public validateDependencyRulesFor(csvLine: { [key: string]: string }, csvColumn: string, value: string): boolean {
 		const dependenciesConfigForCsvColumn = this._getAllDependencyConfigFor(csvColumn);
 
 		if (dependenciesConfigForCsvColumn.length === 0) {
@@ -185,16 +187,6 @@ export class Config {
 	}
 
 	/**
-	 * Valida se o campo está de acordo com as regras de validação e de dependência
-	 * @param csvLine Linha do CSV
-	 * @param csvColumn Coluna do CSV de referência
-	 * @param value Valor da coluna
-	 */
-	public validateField(csvLine: { [key: string]: string }, csvColumn: string, value: string): boolean {
-		return this._validateRulesFor(csvColumn, value) && this._validateDependencyRulesFor(csvLine, csvColumn, value);
-	}
-
-	/**
 	 * Verifica se a coluna informada existe no atributo columns da configuração
 	 * @param csvColumn
 	 */
@@ -204,6 +196,10 @@ export class Config {
 
 	get validationRules(): { [key: string]: string[] } {
 		return this._validationRules;
+	}
+
+	get columnNames(): string[] {
+		return this._columnNames;
 	}
 
 	get separator(): string {
@@ -242,7 +238,7 @@ export class Config {
 		return this._analyticsToolName;
 	}
 
-	get csvSeparator(): string {
+	get csvSeparator(): string[] {
 		return this._csvSeparator;
 	}
 }

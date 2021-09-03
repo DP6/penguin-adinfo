@@ -50,11 +50,11 @@ const build = (app) => {
 			})
 			.then(() => {
 				const csvContent = fileContent.toString();
-				const separador = CsvUtils_1.CsvUtils.identifyCsvSepartor(
+				const separator = CsvUtils_1.CsvUtils.identifyCsvSepartor(
 					csvContent.split('\n')[0],
 					companyConfig.csvSeparator
 				);
-				const jsonFromFile = CsvUtils_1.CsvUtils.csv2json(csvContent, separador);
+				const jsonFromFile = CsvUtils_1.CsvUtils.csv2json(csvContent, separator);
 				const jsonParameterized = new Builder_1.Builder(jsonFromFile, companyConfig, media).build();
 				const configVersion = companyConfig.version;
 				const configTimestamp = DateUtils_1.DateUtils.newDateStringFormat(
@@ -62,23 +62,36 @@ const build = (app) => {
 					'yyyymmddhhMMss',
 					'hh:MM:ss dd/mm/yyyy'
 				);
-				converter.json2csv(
-					jsonParameterized,
-					(err, csv) => {
-						csv += '\n\nConfiguracao versao' + separador + configVersion;
-						csv += '\nConfiguracao inserida em' + separador + configTimestamp;
-						res.setHeader('Content-disposition', 'attachment; filename=data.csv');
-						res.set('Content-Type', 'text/csv; charset=utf-8');
-						apiResponse.responseText = csv;
-						apiResponse.statusCode = 200;
-						res.status(apiResponse.statusCode).send(apiResponse.responseText);
-					},
-					{
-						delimiter: {
-							field: separador,
+				return new Promise((resolve, reject) => {
+					converter.json2csv(
+						jsonParameterized,
+						(err, csv) => {
+							csv += '\n\nConfiguracao versao' + separator + configVersion;
+							csv += '\nConfiguracao inserida em' + separator + configTimestamp;
+							if (err) reject(err);
+							resolve(csv);
 						},
-					}
-				);
+						{
+							delimiter: {
+								field: separator,
+							},
+						}
+					);
+				});
+			})
+			.then((csv) => {
+				const fileDao = new FileDAO_1.FileDAO();
+				fileDao.file = Buffer.from(csv, 'utf8');
+				return fileDao.save(filePath.replace('.csv', '_parametrizado.csv')).then(() => {
+					return csv;
+				});
+			})
+			.then((csv) => {
+				res.setHeader('Content-disposition', 'attachment; filename=data.csv');
+				res.set('Content-Type', 'text/csv; charset=utf-8');
+				apiResponse.responseText = csv;
+				apiResponse.statusCode = 200;
+				res.status(apiResponse.statusCode).send(apiResponse.responseText);
 			})
 			.catch((err) => {
 				if (apiResponse.statusCode === 200) {

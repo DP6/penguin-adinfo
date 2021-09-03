@@ -132,7 +132,7 @@ describe('FacebookAds', () => {
 						columnReference: 'Tipo de Compra',
 						valuesReference: ['cpc'],
 						hasMatch: false,
-						columnDestiny: 'Dipositivo',
+						columnDestiny: 'Dispositivo',
 						matches: ['/.*fifa.*/'],
 					},
 					{

@@ -18,7 +18,7 @@ const config = (app) => {
 		const configDAO = new ConfigDAO_1.ConfigDAO(company);
 		configDAO
 			.addConfig(config)
-			.then((data) => {
+			.then(() => {
 				apiResponse.responseText = 'Configuração criada com sucesso!';
 				apiResponse.statusCode = 200;
 			})

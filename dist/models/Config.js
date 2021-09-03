@@ -31,6 +31,7 @@ class Config {
 			delete jsonConfigTemp.adobe;
 		}
 		this._validationRules = jsonConfigTemp.columns;
+		this._columnNames = Object.keys(jsonConfigTemp.columns);
 		delete jsonConfigTemp.columns;
 		this._medias = jsonConfigTemp;
 	}
@@ -68,7 +69,7 @@ class Config {
 						return dependencyConfig.toJson();
 					});
 				}
-			} else if (key !== '_analyticsToolName' && Object.values(this)[index]) {
+			} else if (key !== '_analyticsToolName' && key !== '_columnNames' && Object.values(this)[index]) {
 				jsonConfig[key.replace('_', '')] = Object.values(this)[index];
 			}
 		});
@@ -80,12 +81,12 @@ class Config {
 		Object.keys(this._validationRules).forEach((column) => {
 			configValues.push(column);
 		});
-		return configValues.join(this._csvSeparator);
+		return configValues.join(this._csvSeparator ? this._csvSeparator[0] : ',');
 	}
 	_existsValidationRuleFor(csvColumn) {
 		return this.validationRules[csvColumn].length > 0;
 	}
-	_validateRulesFor(csvColumn, value) {
+	validateRulesFor(csvColumn, value) {
 		if (!this._existsValidationRuleFor(csvColumn)) {
 			return true;
 		}
@@ -100,7 +101,7 @@ class Config {
 		});
 		return dependenciesColumnConfig;
 	}
-	_validateDependencyRulesFor(csvLine, csvColumn, value) {
+	validateDependencyRulesFor(csvLine, csvColumn, value) {
 		const dependenciesConfigForCsvColumn = this._getAllDependencyConfigFor(csvColumn);
 		if (dependenciesConfigForCsvColumn.length === 0) {
 			return true;
@@ -121,14 +122,14 @@ class Config {
 			}).length === dependenciesToValidate.length
 		);
 	}
-	validateField(csvLine, csvColumn, value) {
-		return this._validateRulesFor(csvColumn, value) && this._validateDependencyRulesFor(csvLine, csvColumn, value);
-	}
 	existsColumn(csvColumn) {
 		return !!this.validationRules[csvColumn];
 	}
 	get validationRules() {
 		return this._validationRules;
+	}
+	get columnNames() {
+		return this._columnNames;
 	}
 	get separator() {
 		return this._separator;

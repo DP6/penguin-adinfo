@@ -79,6 +79,8 @@ git clone https://github.com/DP6/penguin-adinfo.git
    {
    	company: "NOME_EMPRESA" (string)
    	permission: "owner"(string)
+	email: "email_do_usuario" (string)
+	password: "senha_criptografada" (string)
    }
    ```
 
@@ -106,6 +108,8 @@ Para a configuração inicial do Firestore, são necessárias duas coleções.
   {
   	company: "NOME_EMPRESA" (string)
   	permission: "owner"(string)
+	email: "email_do_usuario" (string)
+	password: "senha_criptografada" (string)
   }
   ```
 
@@ -115,11 +119,17 @@ Para a configuração inicial do Firestore, são necessárias duas coleções.
 
 Para utilizar a API, é necessário criar um documento de configuração no Firestore dentro da coleção: companies > [nome_empresa] > config. O nome do documento deve ser **config_1** e ele deve conter os campos: **csvSeparator**, **separator**, **spaceSeparator**, **columns** e um campo para a ferramenta de analytics, sendo esse o valor de **ga** ou **adobe**.
 
+Todos estes campos serão utilizados para realizar a parametrização do arquivo CSV que a API irá receber.
+
+Aqui a API disponibiliza a funcionalidade de definirmos no campo **csvSeparator** uma lista contendo a prioridade de todos os possíveis caracteres que poderão ser utilizados como separadores no arquivo CSV pelos usuários. Com isso, a aplicação irá consultar essa fonte e utilizar o devido separador para parametrizar o arquivo submetido.
+
+Entretanto, este campo no arquivo de configuração não é obrigatório. Caso o campo não seja preenchido, a aplicação irá tentar verificar se o arquivo submetido está utilizando _vírgula_ ou _ponto e vírgula_ como separador e utilizar o separador identificado para a parametrização. Caso não encontre nenhum dos dois caracteres, a API irá utilizar a vírgula como separador.
+
 Abaixo segue uma explicação e um exemplo de todos os campos das configurações.
 
 | Chave                       | Tipo   | Descrição                                                                                                                                                                       | Obrigatório |
 | --------------------------- | ------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------- |
-| csvSeparator                | String | Separador de colunas do arquivo CSV.                                                                                                                                            | Sim         |
+| csvSeparator                | Array  | Array que irá conter todos os separadores de colunas que os arquivos CSV poderão conter.                                                                                        | Não         |
 | separator                   | String | String que será utilizada na concatenação dos campos.                                                                                                                           | Sim         |
 | spaceSeparator              | String | String que substituirá o espaço na URL, caso alguma campo tenha preenchido com mais de uma palavra.                                                                             | Sim         |
 | columns                     | Objeto | Objeto contendo as colunas do CSV e seus valores de aceitação.                                                                                                                  | Sim         |
@@ -133,6 +143,7 @@ Abaixo segue uma explicação e um exemplo de todos os campos das configuraçõe
 {
 	"separator": ":",
 	"spaceSeparator": "_",
+	"csvSeparator": [",", ";", "|"],
 	"columns": {
 		//Colunas que aparecerão no CSV
 		//A chave representa a coluna do CSV e o vetor de valores

@@ -136,6 +136,21 @@ paths:
             type: string
         500:
           description: 'Internal server error'
+  '/template/excel':
+    get:
+      description: Creates the input excel file template
+      operationId: template
+      parameters:
+        - name: token
+          in: headers
+          description: API token
+      responses:
+        200:
+          description: 'Success'
+          schema:
+            type: string
+        500:
+          description: 'Internal server error'
   '/register':
     get:
       description: Creates new API Token

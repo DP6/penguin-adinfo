@@ -100,7 +100,7 @@ describe('GoogleAds', () => {
 						columnReference: 'Tipo de Compra',
 						valuesReference: ['cpc'],
 						hasMatch: true,
-						columnDestiny: 'Dipositivo',
+						columnDestiny: 'Dispositivo',
 						matches: ['/.*desktop.*/'],
 					},
 					{
@@ -247,7 +247,7 @@ describe('GoogleAds', () => {
 						columnReference: 'Tipo de Compra',
 						valuesReference: ['cpc'],
 						hasMatch: true,
-						columnDestiny: 'Dipositivo',
+						columnDestiny: 'Dispositivo',
 						matches: ['/.*desktop.*/'],
 					},
 					{

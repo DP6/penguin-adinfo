@@ -25,10 +25,6 @@ export class ParametrizerFactory {
 				return new GA(this._csvLines, this._config);
 			case 'adobe':
 				return new Adobe(this._csvLines, this._config);
-			case 'googleads':
-				return new GoogleAds(this._csvLines, this._config);
-			case 'facebookads':
-				return new FacebookAds(this._csvLines, this._config);
 			default:
 				return new GeneralVehicle(this._csvLines, this._config, type);
 		}

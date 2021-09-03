@@ -21,7 +21,7 @@ const config = (app: { [key: string]: any }): void => {
 
 		configDAO
 			.addConfig(config)
-			.then((data) => {
+			.then(() => {
 				apiResponse.responseText = 'Configuração criada com sucesso!';
 				apiResponse.statusCode = 200;
 			})

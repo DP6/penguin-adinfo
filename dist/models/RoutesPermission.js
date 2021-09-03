@@ -6,10 +6,10 @@ class RoutesPermission {
 		this._method = method;
 		this._route = route;
 	}
-	validatePermission(auth) {
-		const agencyPostRoutes = ['/build/.*', '/csv'];
+	validatePermission(user) {
+		const agencyPostRoutes = ['/build/.*', '/csv', '/user/changepass', '/logout', '/login'];
 		const agencyGetRoutes = ['/config', '/template', '/csv/list', '/csv', '/user'];
-		if (auth.permission === 'user') {
+		if (user.permission === 'user') {
 			if (this._method === 'POST') {
 				return agencyPostRoutes.filter((route) => new RegExp(route).test(this._route)).length > 0;
 			} else if (this._method === 'GET') {
@@ -17,7 +17,7 @@ class RoutesPermission {
 			} else {
 				return false;
 			}
-		} else if (auth.permission === 'admin' || auth.permission === 'owner') {
+		} else if (user.permission === 'admin' || user.permission === 'owner') {
 			return true;
 		} else {
 			return false;

@@ -50,13 +50,21 @@ export class CsvUtils {
 	/**
 	 * Identificador do separador a ser usado no CSV
 	 * @param csvHeader Conteúdo do header do CSV
-	 * @param csvSeparatorDefault Separador configurado para ser o padrão
+	 * @param csvSeparatorDefault Lista de separadores configurados para validarmos a prioridade
 	 * @returns Separador a ser utilizado
+	 *
+	 * Função que identifica o separador utilizado no CSV, de acordo com os separadores já configurados no Config, para utilizarmos na parametrização
 	 */
 
-	static identifyCsvSepartor(csvHeader: string, csvSeparatorDefault: string): string {
+	static identifyCsvSepartor(csvHeader: string, csvSeparatorDefault: string[]): string {
 		if (csvSeparatorDefault) {
-			return csvSeparatorDefault;
+			let separadorFinal = ',';
+			csvSeparatorDefault.forEach((separador) => {
+				if (csvHeader.includes(separador)) {
+					separadorFinal = separador;
+				}
+			});
+			return separadorFinal;
 		} else {
 			return csvHeader.includes(',') ? ',' : ';';
 		}
