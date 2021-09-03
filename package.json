@@ -70,7 +70,7 @@
 		"express-fileupload": "^1.2.0",
 		"express-validator": "^6.11.1",
 		"json-2-csv": "^3.14.4",
-		"multer": "^1.4.2",
+		"multer": "^1.4.3",
 		"remark": "^14.0.1"
 	},
 	"devDependencies": {
