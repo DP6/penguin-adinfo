@@ -212,6 +212,9 @@ No caso de substituir o uso do Firestore para armazenamento de chaves. A nova cl
 - BUCKET: Deve conter o nome do bucket do storage onde os arquivos CSVs serão salvos;
 - GCP_PROJECT_ID: Deve conter o id do projeto no GCP, caso o adinfo esteja hospedado no GCP;
 - GCP_KEY: Deve conter o JSON da chave de acesso aos serviços do GCP;
+- JWT_KEY: Chave para geração de assinaturas do JWT;
+- SALT: Configuração de salt do JWT;
+- EXPIRES_TOKEN: Duração do token JWT.
 
 2. **Arquivo .gitignore**: Checar se o arquivo .gitignore está ignorando do arquivo .env.
 
