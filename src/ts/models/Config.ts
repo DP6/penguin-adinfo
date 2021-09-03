@@ -1,7 +1,6 @@
 import { JsonUtils } from '../utils/JsonUtils';
 import { DependencyConfig } from './DependencyConfig';
 import { StringUtils } from '../utils/StringUtils';
-import { config } from 'dotenv';
 
 export class Config {
 	private _separator: string;
