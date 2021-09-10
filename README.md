@@ -80,7 +80,8 @@ git clone https://github.com/DP6/penguin-adinfo.git
    	company: "NOME_EMPRESA" (string)
    	permission: "owner"(string)
    email: "email_do_usuario" (string)
-   password: "senha_criptografada" (string)
+   password: "senha_criptografada" (string),
+   activate: true (boolean)
    }
    ```
 
@@ -108,8 +109,9 @@ Para a configuração inicial do Firestore, são necessárias duas coleções.
   {
   	company: "NOME_EMPRESA" (string)
   	permission: "owner"(string)
-  email: "email_do_usuario" (string)
-  password: "senha_criptografada" (string)
+  	email: "email_do_usuario" (string)
+  	password: "senha_criptografada" (string),
+  activate: true (boolean)
   }
   ```
 

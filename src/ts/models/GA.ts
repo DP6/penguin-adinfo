@@ -123,7 +123,7 @@ export class GA extends AnalyticsTool {
 					if (e.name === 'StringEmptyError') {
 						this._hasUndefinedParameterError[utm] = true;
 						this._undefinedParameterErroMessage[utm] += ` ${column} -`;
-					} else if (e.name === 'ValidateFieldError' || e.name === 'ValidateFieldDependencyError') {
+					} else {
 						this._hasValidationError[utm] = true;
 						this._validationErrorMessage[utm] += ` ${column} -`;
 					}

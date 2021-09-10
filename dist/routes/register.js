@@ -38,6 +38,7 @@ const register = (app) => {
 				req.body.permission,
 				req.company,
 				req.body.email,
+				true,
 				req.body.permission === 'user' ? req.body.agency : '',
 				req.body.password
 			);
