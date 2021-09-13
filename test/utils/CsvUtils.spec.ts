@@ -124,7 +124,7 @@ describe('CSV Utils', () => {
 		});
 		it('Verifica se há um valor predefinido de separador e o retorna (Separador = |)', ()=>{
 			const separadorDefault = [',', ';', '|'];
-			const arquivo = 'Url;Responsavel|Dispositivo|Formato ou Canal|Nome da Campanha|Bandeira|Tipo de Compra|Periodo|Campo Livre|Veiculo'
+			const arquivo = 'Url|Responsavel|Dispositivo|Formato ou Canal|Nome da Campanha|Bandeira|Tipo de Compra|Periodo|Campo Livre|Veiculo'
 			expect(CsvUtils.identifyCsvSepartor(arquivo, separadorDefault)).to.equal('|');
 		});
 		it('Caso nao haja um conjunto de separadores pré-definidos, retorna ,', ()=>{
