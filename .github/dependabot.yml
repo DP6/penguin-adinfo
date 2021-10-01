@@ -5,6 +5,7 @@ updates:
     directory: '/'
     schedule:
       interval: 'weekly'
+    target-branch: 'develop'
 
   # Maintain dependencies for npm
   - package-ecosystem: 'npm'
