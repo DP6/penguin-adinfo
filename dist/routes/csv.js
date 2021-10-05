@@ -46,6 +46,7 @@ const csv = (app) => {
 		const agency = req.agency;
 		const campaign = req.headers.campaign;
 		const company = req.company;
+		console.log('agencia: ' + agency);
 		const apiResponse = new ApiResponse_1.ApiResponse();
 		if (!fileName) {
 			apiResponse.responseText = 'Nenhum arquivo foi informado!';

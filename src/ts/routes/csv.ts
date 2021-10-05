@@ -52,6 +52,8 @@ const csv = (app: { [key: string]: any }): void => {
 		const campaign = req.headers.campaign;
 		const company = req.company;
 
+		console.log('agencia: ' + agency);
+
 		const apiResponse = new ApiResponse();
 
 		if (!fileName) {

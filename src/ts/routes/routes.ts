@@ -5,6 +5,7 @@ import build from './build';
 import register from './register';
 import user from './user';
 import login from './login';
+import campaign from './campaign';
 
 const routes = (app: { [key: string]: any }): void => {
 	config(app);
@@ -14,6 +15,7 @@ const routes = (app: { [key: string]: any }): void => {
 	register(app);
 	user(app);
 	login(app);
+	campaign(app);
 };
 
 export default routes;
