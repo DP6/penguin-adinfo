@@ -14,17 +14,50 @@ const FirestoreConnectionSingleton_1 = require("../models/cloud/FirestoreConnect
 const FileDAO_1 = require("../models/DAO/FileDAO");
 const firestore_1 = require("@google-cloud/firestore");
 const campaign = (app) => {
-    app.get('/campaign/list', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-        console.log('#################################################### to vivo ####################################################');
+    app.get('/campaign', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         const apiResponse = new ApiResponse_1.ApiResponse();
         console.log(req.headers);
-        const agency = req.agency ? req.agency : 'CompanyCampaigns';
+        console.log(req.permission);
+        const agency = req.agency;
+        const companyCampaignsFolder = 'CompanyCampaigns';
         const company = req.company;
         const campaign = req.headers.campaign;
+        const permission = req.permission;
         const fileDAO = new FileDAO_1.FileDAO();
-        let filePath = `${company}/${agency}/`;
-        if (campaign)
-            filePath += `${campaign}/`;
+        const filePath = agency ? `${company}/${agency}/` : `${company}/${companyCampaignsFolder}/`;
+        fileDAO
+            .getAllFilesFromStore(filePath)
+            .then((data) => {
+            const files = data[0].filter((file) => /\.csv$/.test(file.name)).map((file) => file.name);
+            apiResponse.responseText = files.join(',');
+            apiResponse.statusCode = 200;
+        })
+            .catch((err) => {
+            apiResponse.errorMessage = err.message;
+            apiResponse.responseText = `Falha ao restaurar os arquivos!`;
+            apiResponse.statusCode = 500;
+        })
+            .finally(() => {
+            res.status(apiResponse.statusCode).send(apiResponse.jsonResponse);
+        });
+    }));
+    app.get('/campaign/list', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+        const apiResponse = new ApiResponse_1.ApiResponse();
+        console.log(req.headers);
+        console.log(req.permission);
+        const agency = req.agency;
+        const companyCampaignsFolder = 'CompanyCampaigns';
+        const company = req.company;
+        const campaign = req.headers.campaign;
+        const permission = req.permission;
+        const fileDAO = new FileDAO_1.FileDAO();
+        if (!campaign) {
+            apiResponse.responseText = 'Nenhuma campanha foi informada!';
+            apiResponse.statusCode = 400;
+            res.status(apiResponse.statusCode).send(apiResponse.jsonResponse);
+            return;
+        }
+        const filePath = agency ? `${company}/${agency}/${campaign}/` : `${company}/${companyCampaignsFolder}/${campaign}/`;
         fileDAO
             .getAllFilesFromStore(filePath)
             .then((data) => {
@@ -44,7 +77,7 @@ const campaign = (app) => {
     app.post('/campaign/add', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         const apiResponse = new ApiResponse_1.ApiResponse();
         const firestore = new firestore_1.Firestore();
-        const collection = firestore.collection('campaigns');
+        const firestoreCollection = firestore.collection('campaigns');
         const firestoreConnectionInstance = FirestoreConnectionSingleton_1.FirestoreConnectionSingleton.getInstance();
         const today = new Date();
         const day = String(today.getDate()).padStart(2, '0');
@@ -70,7 +103,7 @@ const campaign = (app) => {
             }
         })
             .then(() => {
-            firestoreConnectionInstance.addDocumentIn(collection, values, campaign);
+            firestoreConnectionInstance.addDocumentIn(firestoreCollection, values, campaign);
         })
             .catch((message) => {
             throw message;
