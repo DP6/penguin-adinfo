@@ -32,7 +32,7 @@ var __awaiter =
 	};
 Object.defineProperty(exports, '__esModule', { value: true });
 const ApiResponse_1 = require('../models/ApiResponse');
-const BlackList_1 = require('../models/BlackList');
+const BlockList_1 = require('../models/BlockList');
 const UserDAO_1 = require('../models/DAO/UserDAO');
 const JWT_1 = require('../models/JWT');
 const login = (app) => {
@@ -64,7 +64,7 @@ const login = (app) => {
 		__awaiter(void 0, void 0, void 0, function* () {
 			const apiResponse = new ApiResponse_1.ApiResponse();
 			try {
-				yield new BlackList_1.BlackList().addToken(req.token);
+				yield new BlockList_1.BlockList().addToken(req.token);
 				apiResponse.statusCode = 200;
 				apiResponse.responseText = 'Logout efetuado com sucesso!';
 			} catch (err) {

@@ -3,28 +3,28 @@ import { FirestoreConnectionSingleton } from './cloud/FirestoreConnectionSinglet
 import { ObjectStore } from './DAO/ObjectStore';
 import { JWT } from './JWT';
 
-export class BlackList {
+export class BlockList {
 	private _objectStore: ObjectStore;
 	private _collection: CollectionReference;
 
 	constructor() {
 		this._objectStore = FirestoreConnectionSingleton.getInstance();
-		this._collection = this._objectStore.getCollection(['blacklist']);
+		this._collection = this._objectStore.getCollection(['blocklist']);
 	}
 
 	/**
-	 * Adiciona um usuario na blacklist para logout
+	 * Adiciona um usuario na blocklist para logout
 	 * @param token Token do usuario para logout
 	 */
 	public async addToken(token: string): Promise<void> {
-		await this.clearBlacklist();
+		await this.clearBlocklist();
 		this._objectStore.addDocumentIn(this._collection, {}, token);
 	}
 
 	/**
-	 * Limpa a blacklist eliminando tokens expirados
+	 * Limpa a blocklist eliminando tokens expirados
 	 */
-	private clearBlacklist(): Promise<WriteResult[]> {
+	private clearBlocklist(): Promise<WriteResult[]> {
 		const jwt = new JWT();
 		return this._collection
 			.get()
@@ -33,7 +33,7 @@ export class BlackList {
 				if (querySnapshot.size > 0) {
 					querySnapshot.forEach((documentSnapshot) => {
 						const token = documentSnapshot.ref.path.match(new RegExp('[^/]+$'))[0];
-						const validateToken = jwt.verifyWithoutBlacklist(token);
+						const validateToken = jwt.verifyWithoutBlocklist(token);
 						if (!validateToken) {
 							tokensToDelete.push(token);
 						}
@@ -47,7 +47,7 @@ export class BlackList {
 	}
 
 	/**
-	 * Busca um token dentro da blacklist
+	 * Busca um token dentro da blocklist
 	 * @param token token a ser buscado
 	 * @returns retorna um boolean informando se o token foi encontrado
 	 */
