@@ -7,8 +7,8 @@ class RoutesPermission {
 		this._route = route;
 	}
 	validatePermission(user) {
-		const agencyPostRoutes = ['/build/.*', '/csv', '/user/changepass', '/logout', '/login'];
-		const agencyGetRoutes = ['/config', '/template', '/csv/list', '/csv', '/user'];
+		const agencyPostRoutes = ['/build/.*', '/csv', '/user/changepass', '/logout', '/login', '/campaign/add'];
+		const agencyGetRoutes = ['/config', '/template', '/csv/list', '/csv', '/user', '/campaign/list', '/campaign/teste'];
 		if (user.permission === 'user') {
 			if (this._method === 'POST') {
 				return agencyPostRoutes.filter((route) => new RegExp(route).test(this._route)).length > 0;

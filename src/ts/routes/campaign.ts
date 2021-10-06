@@ -1,61 +1,41 @@
 // import { CampaignDAO } from '../models/DAO/CampaignDAO';
 import { ApiResponse } from '../models/ApiResponse';
-// imports para testes
 import { FirestoreConnectionSingleton } from '../models/cloud/FirestoreConnectionSingleton';
 import { FileDAO } from '../models/DAO/FileDAO';
-import { StorageConnectionSingleton } from '../models/cloud/StorageConnectionSingleton';
-import { CollectionReference, DocumentReference, Firestore, DocumentData } from '@google-cloud/firestore';
+import { Firestore } from '@google-cloud/firestore';
 
 const campaign = (app: { [key: string]: any }): void => {
 	app.get('/campaign/list', async (req: { [key: string]: any }, res: { [key: string]: any }) => {
 		console.log(
 			'#################################################### to vivo ####################################################'
 		);
+		const apiResponse = new ApiResponse();
+		console.log(req.headers);
 
-		// testes
-
-		const firestore = new Firestore();
-		const collection = firestore.collection('campaigns');
-
-		console.log(collection.doc());
-
-		// let firestoreConnection = new FirestoreConnectionSingleton()
-		// console.log(req)
-
+		const agency = req.agency ? req.agency : 'CompanyCampaigns';
+		const company = req.company;
+		const campaign = req.headers.campaign;
 		const fileDAO = new FileDAO();
 
-		// let [files] = await fileDAO.getAllFilesFromStore('empresa1/topster/toper') // companhia / agencia / campanha
+		let filePath = `${company}/${agency}/`;
 
-		// console.log(files)
+		if (campaign) filePath += `${campaign}/`;
 
-		// let arquivos = Object.values(files)
-
-		// console.log(Object.values(arquivos[0])[3].selfLink)
-
-		// console.log(typeof(files))
-
-		// let [campaigns] = await fileDAO.getAllFilesFromStore('empresa1/topster')
-
-		// console.log(campaigns)
-
-		// quando for para prod
-
-		// const apiResponse = new ApiResponse();
-		// const user = {
-		// 	permission: req.permission,
-		// 	agency: req.agency,
-		// 	company: req.company,
-		// 	email: req.email,
-		// }
-
-		// if(user.agency){
-		//     let [campaignsFinal] = await fileDAO.getAllFilesFromStore(`${user.company}/${user.agency}`)
-		// } else {
-		//     let [campaignsFinal] = await fileDAO.getAllFilesFromStore(`${user.company}/CompayCampaigns`)
-		// }
-
-		// apiResponse.statusCode = 200;
-		// apiResponse.responseText = JSON.stringify(user);
+		fileDAO
+			.getAllFilesFromStore(filePath)
+			.then((data) => {
+				const files = data[0].filter((file) => /\.csv$/.test(file.name)).map((file) => file.name);
+				apiResponse.responseText = files.join(',');
+				apiResponse.statusCode = 200;
+			})
+			.catch((err) => {
+				apiResponse.errorMessage = err.message;
+				apiResponse.responseText = `Falha ao restaurar os arquivos!`;
+				apiResponse.statusCode = 500;
+			})
+			.finally(() => {
+				res.status(apiResponse.statusCode).send(apiResponse.jsonResponse);
+			});
 	});
 
 	app.post('/campaign/add', async (req: { [key: string]: any }, res: { [key: string]: any }) => {
@@ -71,10 +51,12 @@ const campaign = (app: { [key: string]: any }): void => {
 		const month = String(today.getMonth() + 1).padStart(2, '0');
 		const year = today.getFullYear();
 
+		const campaign = req.headers.campaign; //confirmar
+
 		const values = {
 			created: `${year}-${month}-${day}`,
 			company: req.company,
-			agency: req.agency,
+			agency: req.agency ? req.agency : 'CompanyCampaigns',
 			activated: true,
 		};
 
@@ -90,7 +72,7 @@ const campaign = (app: { [key: string]: any }): void => {
 			}
 		})
 			.then(() => {
-				firestoreConnectionInstance.addDocumentIn(collection, values, 'Campanha Teste'); // onde eu pego o nome da campanha que a pessoa inserir? talvez seja algum parametro do body?
+				firestoreConnectionInstance.addDocumentIn(collection, values, campaign); // onde eu pego o nome da campanha que a pessoa inserir? talvez seja algum parametro do body? eh o headers.campaign mesmo?
 			})
 			.catch((message) => {
 				throw message;
@@ -98,6 +80,62 @@ const campaign = (app: { [key: string]: any }): void => {
 			.finally(() => {
 				res.status(apiResponse.statusCode).send(apiResponse.jsonResponse);
 			});
+	});
+
+	app.get('/campaign/teste', async (req: { [key: string]: any }, res: { [key: string]: any }) => {
+		const apiResponse = new ApiResponse();
+
+		res.status(apiResponse.statusCode).send(req);
+	});
+
+	app.post('/user/:id/deactivate', (req: { [key: string]: any }, res: { [key: string]: any }) => {
+		const apiResponse = new ApiResponse();
+
+		const targetUserId = req.params.id;
+
+		// new UserDAO()
+		// 	.deactivateUser(targetUserId, req.permission)
+		// 	.then((result: boolean) => {
+		// 		if (result) {
+		// 			apiResponse.statusCode = 200;
+		// 			apiResponse.responseText = 'Usuário desativado com sucesso!';
+		// 		} else {
+		// 			throw new Error('Erro ao desativar usuário!');
+		// 		}
+		// 	})
+		// 	.catch((err) => {
+		// 		apiResponse.statusCode = 500;
+		// 		apiResponse.responseText = 'Email e/ou senha incorreto(s)!';
+		// 		apiResponse.errorMessage = err.message;
+		// 	})
+		// 	.finally(() => {
+		// 		res.status(apiResponse.statusCode).send(apiResponse.jsonResponse);
+		// 	});
+	});
+
+	app.post('/user/:id/reactivate', (req: { [key: string]: any }, res: { [key: string]: any }) => {
+		const apiResponse = new ApiResponse();
+
+		const targetUserId = req.params.id;
+
+		// new UserDAO()
+		// 	.reactivateUser(targetUserId, req.permission)
+		// 	.then((result: boolean) => {
+		// 		if (result) {
+		// 			apiResponse.statusCode = 200;
+		// 			apiResponse.responseText = 'Usuário re-ativado com sucesso!';
+		// 		} else {
+		// 			throw new Error('Erro ao re-ativar usuário!');
+		// 		}
+		// 	})
+		// 	.catch((err) => {
+		// 		apiResponse.statusCode = 500;
+		// 		apiResponse.responseText = 'Email e/ou senha incorreto(s)!';
+		// 		apiResponse.errorMessage = err.message;
+		// 	})
+		// 	.finally(() => {
+		// 		res.status(apiResponse.statusCode).send(apiResponse.jsonResponse);
+		// 	});
 	});
 };
 
