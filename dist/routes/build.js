@@ -12,7 +12,7 @@ const build = (app) => {
 		const media = req.params.media;
 		const company = req.company;
 		const agency = req.agency;
-		const ownerAgency = 'CompanyCampaigns';
+		const companyCampaignsFolder = 'CompanyCampaigns';
 		const campaign = req.headers.campaign;
 		const apiResponse = new ApiResponse_1.ApiResponse();
 		if (!req.files || !req.files.data) {
@@ -29,7 +29,7 @@ const build = (app) => {
 		const fileContent = req.files.data.data;
 		const filePath = agency
 			? `${company}/${agency}/${campaign}/${DateUtils_1.DateUtils.generateDateString()}.csv`
-			: `${company}/${ownerAgency}/${campaign}/${DateUtils_1.DateUtils.generateDateString()}.csv`;
+			: `${company}/${companyCampaignsFolder}/${campaign}/${DateUtils_1.DateUtils.generateDateString()}.csv`;
 		let companyConfig;
 		const configDAO = new ConfigDAO_1.ConfigDAO(company);
 		configDAO
