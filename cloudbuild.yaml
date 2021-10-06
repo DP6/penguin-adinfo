@@ -12,7 +12,7 @@ steps:
     args: ['run', 'test']
   - name: node
     entrypoint: npm
-    args: ["run", "create-env"]
+    args: ['run', 'create-env']
     env:
       - 'BUCKET=${_BUCKET}'
       - 'EXPIRES_TOKEN=${_EXPIRES_TOKEN}'
