@@ -36,7 +36,7 @@ const register = (app: { [key: string]: any }): void => {
 				req.company,
 				req.body.email,
 				true,
-				req.body.permission === 'user' ? req.body.agency : '',
+				req.body.permission === 'user' || req.body.permission === 'agencyOwner' ? req.body.agency : '',
 				req.body.password
 			);
 

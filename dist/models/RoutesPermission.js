@@ -17,7 +17,7 @@ class RoutesPermission {
 			} else {
 				return false;
 			}
-		} else if (user.permission === 'admin' || user.permission === 'owner') {
+		} else if (user.permission === 'admin' || user.permission === 'owner' || user.permission === 'agencyOwner') {
 			return true;
 		} else {
 			return false;
