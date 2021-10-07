@@ -12,6 +12,7 @@ const build = (app: { [key: string]: any }): void => {
 		const media = req.params.media;
 		const company = req.company;
 		const agency = req.agency;
+		const companyCampaignsFolder = 'CompanyCampaigns';
 		const campaign = req.headers.campaign;
 
 		const apiResponse = new ApiResponse();
@@ -31,7 +32,7 @@ const build = (app: { [key: string]: any }): void => {
 		const fileContent = req.files.data.data;
 		const filePath = agency
 			? `${company}/${agency}/${campaign}/${DateUtils.generateDateString()}.csv`
-			: `${company}/${campaign}/${DateUtils.generateDateString()}.csv`;
+			: `${company}/${companyCampaignsFolder}/${campaign}/${DateUtils.generateDateString()}.csv`;
 
 		let companyConfig: Config;
 

@@ -1,5 +1,5 @@
 import { ApiResponse } from '../models/ApiResponse';
-import { BlackList } from '../models/BlackList';
+import { BlockList } from '../models/BlockList';
 import { UserDAO } from '../models/DAO/UserDAO';
 import { JWT } from '../models/JWT';
 import { User } from '../models/User';
@@ -34,7 +34,7 @@ const login = (app: { [key: string]: any }): void => {
 		const apiResponse = new ApiResponse();
 
 		try {
-			await new BlackList().addToken(req.token);
+			await new BlockList().addToken(req.token);
 			apiResponse.statusCode = 200;
 			apiResponse.responseText = 'Logout efetuado com sucesso!';
 		} catch (err) {

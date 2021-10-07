@@ -10,6 +10,15 @@ steps:
   - name: node
     entrypoint: npm
     args: ['run', 'test']
+  - name: node
+    entrypoint: npm
+    args: ['run', 'create-env']
+    env:
+      - 'BUCKET=${_BUCKET}'
+      - 'EXPIRES_TOKEN=${_EXPIRES_TOKEN}'
+      - 'GCP_PROJECT_ID=${_GCP_PROJECT_ID}'
+      - 'JWT_KEY=${_JWT_KEY}'
+      - 'SALT=${_SALT}'
   - name: 'gcr.io/cloud-builders/gcloud'
     args: ['app', 'deploy']
     timeout: '1600s'

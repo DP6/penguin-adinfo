@@ -1,6 +1,6 @@
 import * as jwt from 'jsonwebtoken';
 import { JwtPayload } from 'jsonwebtoken';
-import { BlackList } from './BlackList';
+import { BlockList } from './BlockList';
 import { User } from './User';
 
 export class JWT {
@@ -23,11 +23,11 @@ export class JWT {
 	}
 
 	/**
-	 * Valida se o token é válido sem olhar a blacklist
+	 * Valida se o token é válido sem olhar a blocklist
 	 * @param token token a ser verificado
 	 * @returns boolean informando se o token é válido
 	 */
-	public verifyWithoutBlacklist(token: string): boolean {
+	public verifyWithoutBlocklist(token: string): boolean {
 		try {
 			jwt.verify(token, this._pass);
 			return true;
@@ -42,8 +42,8 @@ export class JWT {
 	 * @returns payload do usuário
 	 */
 	public async validateToken(token: string): Promise<JwtPayload> {
-		const userInBlacklist = await new BlackList().findToken(token);
-		if (userInBlacklist) {
+		const userInBlocklist = await new BlockList().findToken(token);
+		if (userInBlocklist) {
 			throw new Error('Token inválido!');
 		}
 		const payload = jwt.verify(token, this._pass);

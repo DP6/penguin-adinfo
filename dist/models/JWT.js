@@ -33,7 +33,7 @@ var __awaiter =
 Object.defineProperty(exports, '__esModule', { value: true });
 exports.JWT = void 0;
 const jwt = require('jsonwebtoken');
-const BlackList_1 = require('./BlackList');
+const BlockList_1 = require('./BlockList');
 class JWT {
 	constructor(user) {
 		this._pass = process.env.JWT_KEY;
@@ -45,7 +45,7 @@ class JWT {
 		const token = jwt.sign(payload, this._pass, { expiresIn: this._expiresToken });
 		return token;
 	}
-	verifyWithoutBlacklist(token) {
+	verifyWithoutBlocklist(token) {
 		try {
 			jwt.verify(token, this._pass);
 			return true;
@@ -55,8 +55,8 @@ class JWT {
 	}
 	validateToken(token) {
 		return __awaiter(this, void 0, void 0, function* () {
-			const userInBlacklist = yield new BlackList_1.BlackList().findToken(token);
-			if (userInBlacklist) {
+			const userInBlocklist = yield new BlockList_1.BlockList().findToken(token);
+			if (userInBlocklist) {
 				throw new Error('Token inválido!');
 			}
 			const payload = jwt.verify(token, this._pass);
