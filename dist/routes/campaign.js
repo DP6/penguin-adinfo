@@ -10,9 +10,9 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const ApiResponse_1 = require("../models/ApiResponse");
-const FirestoreConnectionSingleton_1 = require("../models/cloud/FirestoreConnectionSingleton");
 const FileDAO_1 = require("../models/DAO/FileDAO");
-const firestore_1 = require("@google-cloud/firestore");
+const CampaignDAO_1 = require("../models/DAO/CampaignDAO");
+const Campaign_1 = require("../models/Campaign");
 const campaign = (app) => {
     app.get('/campaign', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         const apiResponse = new ApiResponse_1.ApiResponse();
@@ -51,7 +51,13 @@ const campaign = (app) => {
         const campaign = req.headers.campaign;
         const permission = req.permission;
         const fileDAO = new FileDAO_1.FileDAO();
-        if (!campaign) {
+        if ((permission !== 'admin' || permission !== 'owner') && !agency) {
+            apiResponse.responseText = 'Nenhuma agência foi informada!';
+            apiResponse.statusCode = 400;
+            res.status(apiResponse.statusCode).send(apiResponse.jsonResponse);
+            return;
+        }
+        else if (!campaign) {
             apiResponse.responseText = 'Nenhuma campanha foi informada!';
             apiResponse.statusCode = 400;
             res.status(apiResponse.statusCode).send(apiResponse.jsonResponse);
@@ -76,53 +82,85 @@ const campaign = (app) => {
     }));
     app.post('/campaign/add', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         const apiResponse = new ApiResponse_1.ApiResponse();
-        const firestore = new firestore_1.Firestore();
-        const firestoreCollection = firestore.collection('campaigns');
-        const firestoreConnectionInstance = FirestoreConnectionSingleton_1.FirestoreConnectionSingleton.getInstance();
         const today = new Date();
         const day = String(today.getDate()).padStart(2, '0');
         const month = String(today.getMonth() + 1).padStart(2, '0');
         const year = today.getFullYear();
-        const campaign = req.headers.campaign;
-        const values = {
-            created: `${year}-${month}-${day}`,
-            company: req.company,
-            agency: req.agency ? req.agency : 'CompanyCampaigns',
-            activated: true,
-        };
-        new Promise((resolve, reject) => {
-            if (values) {
-                apiResponse.responseText = JSON.stringify(values);
+        const created = `${year}-${month}-${day}`;
+        const campaignName = req.headers.campaign;
+        const company = req.company;
+        const agency = req.agency ? req.agency : 'CompanyCampaigns';
+        const campaignId = Date.now().toString(16);
+        const campaignObject = new Campaign_1.Campaign(campaignName, company, agency, campaignId, true, created);
+        new CampaignDAO_1.CampaignDAO()
+            .addCampaign(campaignObject)
+            .then((result) => {
+            if (result) {
                 apiResponse.statusCode = 200;
-                resolve('Campanha criada');
+                apiResponse.responseText = 'Campanha criada com sucesso!';
             }
             else {
-                apiResponse.statusCode = 400;
-                apiResponse.responseText = JSON.stringify(values);
-                reject('Criação da campanha falhou!');
+                throw new Error('Erro ao criar campanha!');
             }
         })
-            .then(() => {
-            firestoreConnectionInstance.addDocumentIn(firestoreCollection, values, campaign);
-        })
-            .catch((message) => {
-            throw message;
+            .catch((err) => {
+            apiResponse.statusCode = 500;
+            apiResponse.responseText = 'Email e/ou senha incorreto(s)!';
+            apiResponse.errorMessage = err.message;
         })
             .finally(() => {
             res.status(apiResponse.statusCode).send(apiResponse.jsonResponse);
         });
     }));
-    app.get('/campaign/teste', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    app.post('/campaign/deactivate', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         const apiResponse = new ApiResponse_1.ApiResponse();
-        res.status(apiResponse.statusCode).send(req);
+        const campaign = req.headers.campaign;
+        const agency = req.agency ? req.agency : 'CompanyCampaigns';
+        const permission = 'agencyOwner';
+        new CampaignDAO_1.CampaignDAO()
+            .deactivateCampaign(campaign, agency, permission)
+            .then((result) => {
+            if (result) {
+                apiResponse.statusCode = 200;
+                apiResponse.responseText = 'Campanha desativada com sucesso!';
+            }
+            else {
+                throw new Error('Erro ao desativar campanha!');
+            }
+        })
+            .catch((err) => {
+            apiResponse.statusCode = 500;
+            apiResponse.responseText = 'Email e/ou senha incorreto(s)!';
+            apiResponse.errorMessage = err.message;
+        })
+            .finally(() => {
+            res.status(apiResponse.statusCode).send(apiResponse.jsonResponse);
+        });
     }));
-    app.post('/user/:id/deactivate', (req, res) => {
+    app.post('/campaign/reactivate', (req, res) => {
         const apiResponse = new ApiResponse_1.ApiResponse();
-        const targetUserId = req.params.id;
-    });
-    app.post('/user/:id/reactivate', (req, res) => {
-        const apiResponse = new ApiResponse_1.ApiResponse();
-        const targetUserId = req.params.id;
+        const campaign = req.headers.campaign;
+        const agency = req.agency ? req.agency : 'CompanyCampaigns';
+        const permission = 'agencyOwner';
+        new CampaignDAO_1.CampaignDAO()
+            .reactivateCampaign(campaign, agency, permission)
+            .then((result) => {
+            if (result) {
+                apiResponse.statusCode = 200;
+                apiResponse.responseText = 'Campanha reativada com sucesso!';
+            }
+            else {
+                throw new Error('Erro ao reativar campanha!');
+            }
+        })
+            .catch((err) => {
+            apiResponse.statusCode = 500;
+            apiResponse.responseText = 'Email e/ou senha incorreto(s)!';
+            apiResponse.errorMessage = err.message;
+        })
+            .finally(() => {
+            res.status(apiResponse.statusCode).send(apiResponse.jsonResponse);
+        });
     });
 };
 exports.default = campaign;
