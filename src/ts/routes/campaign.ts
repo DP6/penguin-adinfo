@@ -8,7 +8,7 @@ import { CampaignDAO } from '../models/DAO/CampaignDAO';
 import { Campaign } from '../models/Campaign';
 
 const campaign = (app: { [key: string]: any }): void => {
-	app.get('/campaign', async (req: { [key: string]: any }, res: { [key: string]: any }) => {
+	app.get('/agency/list', async (req: { [key: string]: any }, res: { [key: string]: any }) => {
 		const apiResponse = new ApiResponse();
 		console.log(req.headers);
 		console.log(req.permission);
@@ -18,31 +18,22 @@ const campaign = (app: { [key: string]: any }): void => {
 		const company = req.company;
 		const campaign = req.headers.campaign;
 		const permission = req.permission;
-		const fileDAO = new FileDAO();
-
-		const filePath = agency ? `${company}/${agency}/` : `${company}/${companyCampaignsFolder}/`;
-
-		//se o user for adm ou owner, devemos retonarnar todas as agencias tbm
-
-		fileDAO
-			.getAllFilesFromStore(filePath)
-			.then((data) => {
-				const files = data[0].filter((file) => /\.csv$/.test(file.name)).map((file) => file.name);
-				apiResponse.responseText = files.join(',');
-				apiResponse.statusCode = 200;
-			})
-			.catch((err) => {
-				apiResponse.errorMessage = err.message;
-				apiResponse.responseText = `Falha ao restaurar os arquivos!`;
-				apiResponse.statusCode = 500;
-			})
-			.finally(() => {
-				res.status(apiResponse.statusCode).send(apiResponse.jsonResponse);
-			});
 	});
 
-	//revisar list
 	app.get('/campaign/list', async (req: { [key: string]: any }, res: { [key: string]: any }) => {
+		const apiResponse = new ApiResponse();
+		console.log(req.headers);
+		console.log(req.permission);
+
+		const agency = req.agency;
+		const companyCampaignsFolder = 'CompanyCampaigns';
+		const company = req.company;
+		const campaign = req.headers.campaign;
+		const permission = req.permission;
+	});
+
+	// adicionar a variavel com o req.params.id
+	app.get('/campaign/:id/csv/list', async (req: { [key: string]: any }, res: { [key: string]: any }) => {
 		const apiResponse = new ApiResponse();
 		console.log(req.headers);
 		console.log(req.permission);
@@ -121,9 +112,11 @@ const campaign = (app: { [key: string]: any }): void => {
 			});
 	});
 
-	app.post('/campaign/deactivate', async (req: { [key: string]: any }, res: { [key: string]: any }) => {
+	app.post('/campaign/:id/deactivate', async (req: { [key: string]: any }, res: { [key: string]: any }) => {
 		const apiResponse = new ApiResponse();
-
+		// /campaign/123hu3/deactivate
+		// /campaign/23uo4h/deactivate
+		const campaignId = req.params.id;
 		const campaign = req.headers.campaign;
 		const agency = req.agency ? req.agency : 'CompanyCampaigns';
 		const permission = 'agencyOwner'; // mudar para -> req.permission
@@ -148,7 +141,7 @@ const campaign = (app: { [key: string]: any }): void => {
 			});
 	});
 
-	app.post('/campaign/reactivate', (req: { [key: string]: any }, res: { [key: string]: any }) => {
+	app.post('/campaign/:id/reactivate', (req: { [key: string]: any }, res: { [key: string]: any }) => {
 		const apiResponse = new ApiResponse();
 		const campaign = req.headers.campaign;
 		const agency = req.agency ? req.agency : 'CompanyCampaigns';

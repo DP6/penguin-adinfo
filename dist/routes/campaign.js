@@ -36,7 +36,7 @@ const FileDAO_1 = require('../models/DAO/FileDAO');
 const CampaignDAO_1 = require('../models/DAO/CampaignDAO');
 const Campaign_1 = require('../models/Campaign');
 const campaign = (app) => {
-	app.get('/campaign', (req, res) =>
+	app.get('/agency/list', (req, res) =>
 		__awaiter(void 0, void 0, void 0, function* () {
 			const apiResponse = new ApiResponse_1.ApiResponse();
 			console.log(req.headers);
@@ -46,26 +46,21 @@ const campaign = (app) => {
 			const company = req.company;
 			const campaign = req.headers.campaign;
 			const permission = req.permission;
-			const fileDAO = new FileDAO_1.FileDAO();
-			const filePath = agency ? `${company}/${agency}/` : `${company}/${companyCampaignsFolder}/`;
-			fileDAO
-				.getAllFilesFromStore(filePath)
-				.then((data) => {
-					const files = data[0].filter((file) => /\.csv$/.test(file.name)).map((file) => file.name);
-					apiResponse.responseText = files.join(',');
-					apiResponse.statusCode = 200;
-				})
-				.catch((err) => {
-					apiResponse.errorMessage = err.message;
-					apiResponse.responseText = `Falha ao restaurar os arquivos!`;
-					apiResponse.statusCode = 500;
-				})
-				.finally(() => {
-					res.status(apiResponse.statusCode).send(apiResponse.jsonResponse);
-				});
 		})
 	);
 	app.get('/campaign/list', (req, res) =>
+		__awaiter(void 0, void 0, void 0, function* () {
+			const apiResponse = new ApiResponse_1.ApiResponse();
+			console.log(req.headers);
+			console.log(req.permission);
+			const agency = req.agency;
+			const companyCampaignsFolder = 'CompanyCampaigns';
+			const company = req.company;
+			const campaign = req.headers.campaign;
+			const permission = req.permission;
+		})
+	);
+	app.get('/campaign/:id/csv/list', (req, res) =>
 		__awaiter(void 0, void 0, void 0, function* () {
 			const apiResponse = new ApiResponse_1.ApiResponse();
 			console.log(req.headers);
@@ -140,9 +135,10 @@ const campaign = (app) => {
 				});
 		})
 	);
-	app.post('/campaign/deactivate', (req, res) =>
+	app.post('/campaign/:id/deactivate', (req, res) =>
 		__awaiter(void 0, void 0, void 0, function* () {
 			const apiResponse = new ApiResponse_1.ApiResponse();
+			const campaignId = req.params.id;
 			const campaign = req.headers.campaign;
 			const agency = req.agency ? req.agency : 'CompanyCampaigns';
 			const permission = 'agencyOwner';
@@ -166,7 +162,7 @@ const campaign = (app) => {
 				});
 		})
 	);
-	app.post('/campaign/reactivate', (req, res) => {
+	app.post('/campaign/:id/reactivate', (req, res) => {
 		const apiResponse = new ApiResponse_1.ApiResponse();
 		const campaign = req.headers.campaign;
 		const agency = req.agency ? req.agency : 'CompanyCampaigns';
