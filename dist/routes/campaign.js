@@ -36,7 +36,11 @@ const FileDAO_1 = require('../models/DAO/FileDAO');
 const CampaignDAO_1 = require('../models/DAO/CampaignDAO');
 const Campaign_1 = require('../models/Campaign');
 const campaign = (app) => {
+<<<<<<< HEAD
 	app.get('/agency/list', (req, res) =>
+=======
+	app.get('/campaign', (req, res) =>
+>>>>>>> fd7c45fe05f7d0b5445dabc3f5a69954d7b0fc02
 		__awaiter(void 0, void 0, void 0, function* () {
 			const apiResponse = new ApiResponse_1.ApiResponse();
 			console.log(req.headers);
@@ -46,6 +50,26 @@ const campaign = (app) => {
 			const company = req.company;
 			const campaign = req.headers.campaign;
 			const permission = req.permission;
+<<<<<<< HEAD
+=======
+			const fileDAO = new FileDAO_1.FileDAO();
+			const filePath = agency ? `${company}/${agency}/` : `${company}/${companyCampaignsFolder}/`;
+			fileDAO
+				.getAllFilesFromStore(filePath)
+				.then((data) => {
+					const files = data[0].filter((file) => /\.csv$/.test(file.name)).map((file) => file.name);
+					apiResponse.responseText = files.join(',');
+					apiResponse.statusCode = 200;
+				})
+				.catch((err) => {
+					apiResponse.errorMessage = err.message;
+					apiResponse.responseText = `Falha ao restaurar os arquivos!`;
+					apiResponse.statusCode = 500;
+				})
+				.finally(() => {
+					res.status(apiResponse.statusCode).send(apiResponse.jsonResponse);
+				});
+>>>>>>> fd7c45fe05f7d0b5445dabc3f5a69954d7b0fc02
 		})
 	);
 	app.get('/campaign/list', (req, res) =>
@@ -58,6 +82,7 @@ const campaign = (app) => {
 			const company = req.company;
 			const campaign = req.headers.campaign;
 			const permission = req.permission;
+<<<<<<< HEAD
 		})
 	);
 	app.get('/campaign/:id/csv/list', (req, res) =>
@@ -70,6 +95,8 @@ const campaign = (app) => {
 			const company = req.company;
 			const campaign = req.headers.campaign;
 			const permission = req.permission;
+=======
+>>>>>>> fd7c45fe05f7d0b5445dabc3f5a69954d7b0fc02
 			const fileDAO = new FileDAO_1.FileDAO();
 			if ((permission !== 'admin' || permission !== 'owner') && !agency) {
 				apiResponse.responseText = 'Nenhuma agência foi informada!';
@@ -135,10 +162,16 @@ const campaign = (app) => {
 				});
 		})
 	);
+<<<<<<< HEAD
 	app.post('/campaign/:id/deactivate', (req, res) =>
 		__awaiter(void 0, void 0, void 0, function* () {
 			const apiResponse = new ApiResponse_1.ApiResponse();
 			const campaignId = req.params.id;
+=======
+	app.post('/campaign/deactivate', (req, res) =>
+		__awaiter(void 0, void 0, void 0, function* () {
+			const apiResponse = new ApiResponse_1.ApiResponse();
+>>>>>>> fd7c45fe05f7d0b5445dabc3f5a69954d7b0fc02
 			const campaign = req.headers.campaign;
 			const agency = req.agency ? req.agency : 'CompanyCampaigns';
 			const permission = 'agencyOwner';
@@ -162,7 +195,11 @@ const campaign = (app) => {
 				});
 		})
 	);
+<<<<<<< HEAD
 	app.post('/campaign/:id/reactivate', (req, res) => {
+=======
+	app.post('/campaign/reactivate', (req, res) => {
+>>>>>>> fd7c45fe05f7d0b5445dabc3f5a69954d7b0fc02
 		const apiResponse = new ApiResponse_1.ApiResponse();
 		const campaign = req.headers.campaign;
 		const agency = req.agency ? req.agency : 'CompanyCampaigns';
