@@ -14,14 +14,25 @@ const register = (app: { [key: string]: any }): void => {
 
 			const apiResponse = new ApiResponse();
 
-			if (!req.body.agency && req.body.permission === 'user') {
+			let agency = '';
+
+			if (req.agency && req.body.permission === 'user') {
+				agency = req.agency;
+			} else if (req.body.agency && req.body.permission === 'agencyOwner') {
+				agency = req.body.agency;
+			} else if (
+				!req.agency &&
+				!req.body.agency &&
+				(req.body.permission === 'user' || req.body.permission === 'agencyOwner')
+			) {
 				validationErrors.push({
 					param: 'email',
 					value: req.body.agency,
 					location: 'body',
-					msg: 'Parâmetro agency é obrigatório.',
+					msg: 'Não foi possível encontrar a agência.',
 				});
 			}
+
 			if (validationErrors.length > 0) {
 				const message = validationErrors.map((err) => err.msg).join(' ');
 				apiResponse.responseText = message;
@@ -30,15 +41,7 @@ const register = (app: { [key: string]: any }): void => {
 				return;
 			}
 
-			const newUser = new User(
-				'',
-				req.body.permission,
-				req.company,
-				req.body.email,
-				true,
-				req.body.permission === 'user' ? req.body.agency : '',
-				req.body.password
-			);
+			const newUser = new User('', req.body.permission, req.company, req.body.email, true, agency, req.body.password);
 
 			const userDAO = new UserDAO();
 			userDAO

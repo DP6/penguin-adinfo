@@ -18,12 +18,21 @@ const register = (app) => {
 		(req, res) => {
 			const validationErrors = express_validator_1.validationResult(req).array();
 			const apiResponse = new ApiResponse_1.ApiResponse();
-			if (!req.body.agency && req.body.permission === 'user') {
+			let agency = '';
+			if (req.agency && req.body.permission === 'user') {
+				agency = req.agency;
+			} else if (req.body.agency && req.body.permission === 'agencyOwner') {
+				agency = req.body.agency;
+			} else if (
+				!req.agency &&
+				!req.body.agency &&
+				(req.body.permission === 'user' || req.body.permission === 'agencyOwner')
+			) {
 				validationErrors.push({
 					param: 'email',
 					value: req.body.agency,
 					location: 'body',
-					msg: 'Parâmetro agency é obrigatório.',
+					msg: 'Não foi possível encontrar a agência.',
 				});
 			}
 			if (validationErrors.length > 0) {
@@ -39,7 +48,7 @@ const register = (app) => {
 				req.company,
 				req.body.email,
 				true,
-				req.body.permission === 'user' ? req.body.agency : '',
+				agency,
 				req.body.password
 			);
 			const userDAO = new UserDAO_1.UserDAO();
