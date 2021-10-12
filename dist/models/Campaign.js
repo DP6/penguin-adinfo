@@ -12,6 +12,7 @@ class Campaign {
 	}
 	toJson() {
 		return {
+			name: this._name,
 			company: this._company,
 			agency: this._agency,
 			campaignId: this._campaignId,

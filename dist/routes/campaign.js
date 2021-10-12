@@ -39,39 +39,57 @@ const campaign = (app) => {
 	app.get('/agency/list', (req, res) =>
 		__awaiter(void 0, void 0, void 0, function* () {
 			const apiResponse = new ApiResponse_1.ApiResponse();
-			console.log(req.headers);
-			console.log(req.permission);
-			const agency = req.agency;
-			const companyCampaignsFolder = 'CompanyCampaigns';
 			const company = req.company;
-			const campaign = req.headers.campaign;
+			const agency = req.agency;
 			const permission = req.permission;
+			new CampaignDAO_1.CampaignDAO()
+				.getAllAgenciesFrom(company, agency, permission)
+				.then((agencies) => {
+					console.log(agencies);
+					apiResponse.responseText = JSON.stringify(agencies);
+				})
+				.catch((err) => {
+					apiResponse.statusCode = 500;
+					apiResponse.responseText = err.message;
+					apiResponse.errorMessage = err.message;
+				})
+				.finally(() => {
+					res.status(apiResponse.statusCode).send(apiResponse.jsonResponse);
+				});
 		})
 	);
 	app.get('/campaign/list', (req, res) =>
 		__awaiter(void 0, void 0, void 0, function* () {
 			const apiResponse = new ApiResponse_1.ApiResponse();
-			console.log(req.headers);
-			console.log(req.permission);
-			const agency = req.agency;
-			const companyCampaignsFolder = 'CompanyCampaigns';
-			const company = req.company;
-			const campaign = req.headers.campaign;
+			const agency = req.headers.agency ? req.headers.agency : 'CompanyCampaigns';
 			const permission = req.permission;
+			new CampaignDAO_1.CampaignDAO()
+				.getAllCampaignsFrom(agency, permission)
+				.then((agencies) => {
+					apiResponse.responseText = JSON.stringify(agencies);
+				})
+				.catch((err) => {
+					apiResponse.statusCode = 500;
+					apiResponse.responseText = err.message;
+					apiResponse.errorMessage = err.message;
+				})
+				.finally(() => {
+					res.status(apiResponse.statusCode).send(apiResponse.jsonResponse);
+				});
 		})
 	);
 	app.get('/campaign/:id/csv/list', (req, res) =>
 		__awaiter(void 0, void 0, void 0, function* () {
 			const apiResponse = new ApiResponse_1.ApiResponse();
-			console.log(req.headers);
-			console.log(req.permission);
+			const targetId = req.params.id;
 			const agency = req.agency;
 			const companyCampaignsFolder = 'CompanyCampaigns';
 			const company = req.company;
-			const campaign = req.headers.campaign;
 			const permission = req.permission;
+			const campaignObject = new CampaignDAO_1.CampaignDAO();
+			const campaign = yield campaignObject.getCampaign(targetId);
 			const fileDAO = new FileDAO_1.FileDAO();
-			if ((permission !== 'admin' || permission !== 'owner') && !agency) {
+			if ((permission === 'agencyOwner' || permission === 'user') && !agency) {
 				apiResponse.responseText = 'Nenhuma agência foi informada!';
 				apiResponse.statusCode = 400;
 				res.status(apiResponse.statusCode).send(apiResponse.jsonResponse);
@@ -139,11 +157,9 @@ const campaign = (app) => {
 		__awaiter(void 0, void 0, void 0, function* () {
 			const apiResponse = new ApiResponse_1.ApiResponse();
 			const campaignId = req.params.id;
-			const campaign = req.headers.campaign;
-			const agency = req.agency ? req.agency : 'CompanyCampaigns';
-			const permission = 'agencyOwner';
+			const permission = req.permission;
 			new CampaignDAO_1.CampaignDAO()
-				.deactivateCampaign(campaign, agency, permission)
+				.deactivateCampaign(campaignId, permission)
 				.then((result) => {
 					if (result) {
 						apiResponse.statusCode = 200;
@@ -164,11 +180,10 @@ const campaign = (app) => {
 	);
 	app.post('/campaign/:id/reactivate', (req, res) => {
 		const apiResponse = new ApiResponse_1.ApiResponse();
-		const campaign = req.headers.campaign;
-		const agency = req.agency ? req.agency : 'CompanyCampaigns';
-		const permission = 'agencyOwner';
+		const campaignId = req.params.id;
+		const permission = req.permission;
 		new CampaignDAO_1.CampaignDAO()
-			.reactivateCampaign(campaign, agency, permission)
+			.reactivateCampaign(campaignId, permission)
 			.then((result) => {
 				if (result) {
 					apiResponse.statusCode = 200;

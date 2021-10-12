@@ -1,6 +1,6 @@
 import { ObjectStore } from './ObjectStore';
 import { FirestoreConnectionSingleton } from '../cloud/FirestoreConnectionSingleton';
-import { CollectionReference, QuerySnapshot, QueryDocumentSnapshot } from '@google-cloud/firestore';
+import { CollectionReference, QuerySnapshot } from '@google-cloud/firestore';
 import { Campaign } from '../Campaign';
 
 export class CampaignDAO {
@@ -19,84 +19,109 @@ export class CampaignDAO {
 	}
 
 	/**
-	 * Retorna todos os usuários não owners da empresa
-	 * @param company Empresa(company) dos usuários a serem buscados
-	 * @param userRequestPermission permissão do usuario que solicitou a alteração
-	 * @returns Lista de usuários
+	 * Consulta a campanha na base de dados
+	 * @returns Retorna campanha procurada
 	 */
-	// public getAllUsersFrom(company: string, userRequestPermission: string): Promise<User[] | void> {
-	// 	return this._objectStore
-	// 		.getCollection(this._pathToCollection)
-	// 		.where('company', '==', company)
-	// 		.get()
-	// 		.then((querySnapshot: QuerySnapshot) => {
-	// 			if (querySnapshot.size > 0) {
-	// 				const users: User[] = [];
-	// 				querySnapshot.forEach((documentSnapshot) => {
-	// 					const searchId = documentSnapshot.ref.path.match(new RegExp('[^/]+$'));
-	// 					if (searchId) {
-	// 						const userPermission = documentSnapshot.get('permission');
-	// 						if (userPermission !== 'owner' || (userRequestPermission === 'admin' && userPermission === 'user')) {
-	// 							const user = new User(
-	// 								searchId[0],
-	// 								userPermission,
-	// 								documentSnapshot.get('company'),
-	// 								documentSnapshot.get('email'),
-	// 								documentSnapshot.get('activate'),
-	// 								documentSnapshot.get('agency')
-	// 							);
-	// 							users.push(user);
-	// 						}
-	// 					} else {
-	// 						throw new Error('Nenhum usuário encontrado!');
-	// 					}
-	// 				});
-	// 				return users;
-	// 			}
-	// 		})
-	// 		.catch((err) => {
-	// 			throw err;
-	// 		});
-	// }
+	public getCampaign(campaignId: string): Promise<string | void> {
+		return this._objectStore
+			.getCollection(this._pathToCollection)
+			.where('campaignId', '==', campaignId)
+			.get()
+			.then((querySnapshot: QuerySnapshot) => {
+				if (querySnapshot.size > 0) {
+					let campaign: string;
+					querySnapshot.forEach((documentSnapshot) => {
+						if (documentSnapshot.get('name')) {
+							campaign = documentSnapshot.get('name');
+						} else {
+							throw new Error('Nenhuma campanha encontrada!');
+						}
+					});
+					return campaign;
+				} else {
+					throw new Error('Email ou senha incorreto(s)!');
+				}
+			})
+			.catch((err) => {
+				throw err;
+			});
+	}
 
 	/**
-	 * Consulta o usuario na base de dados
-	 * @returns Retorna o usuario procurado
+	 * Retorna todas as agências de uma companhia
+	 * @param company Empresa(company) das agências a serem buscados
+	 * @param userRequestPermission permissão do usuario que solicitou a alteração
+	 * @returns Lista de agências
 	 */
-	// public getUser(): Promise<User | void> {
-	// 	return this._objectStore
-	// 		.getCollection(this._pathToCollection)
-	// 		.where('email', '==', this._email)
-	// 		.get()
-	// 		.then((querySnapshot: QuerySnapshot) => {
-	// 			if (querySnapshot.size > 0) {
-	// 				let user: User;
-	// 				querySnapshot.forEach((documentSnapshot) => {
-	// 					const searchId = documentSnapshot.ref.path.match(new RegExp('[^/]+$'));
-	// 					if (searchId) {
-	// 						const validatePassword = bcrypt.compareSync(this._password, documentSnapshot.get('password'));
-	// 						if (!validatePassword) throw new Error('Email ou senha incorreto(s)!');
-	// 						user = new User(
-	// 							searchId[0],
-	// 							documentSnapshot.get('permission'),
-	// 							documentSnapshot.get('company'),
-	// 							documentSnapshot.get('email'),
-	// 							documentSnapshot.get('activate'),
-	// 							documentSnapshot.get('agency')
-	// 						);
-	// 					} else {
-	// 						throw new Error('Nenhum usuário encontrado!');
-	// 					}
-	// 				});
-	// 				return user;
-	// 			} else {
-	// 				throw new Error('Email ou senha incorreto(s)!');
-	// 			}
-	// 		})
-	// 		.catch((err) => {
-	// 			throw err;
-	// 		});
-	// }
+	public getAllAgenciesFrom(company: string, agency: string, userRequestPermission: string): Promise<string[] | void> {
+		return this._objectStore
+			.getCollection(['tokens'])
+			.where('company', '==', company)
+			.get()
+			.then((querySnapshot: QuerySnapshot) => {
+				if (querySnapshot.size > 0) {
+					if (userRequestPermission === 'agencyOwner' || userRequestPermission === 'user') {
+						return [agency];
+					}
+					const agencies: string[] = [];
+					querySnapshot.forEach((documentSnapshot) => {
+						const searchId = documentSnapshot.ref.path.match(new RegExp('[^/]+$'));
+						if (searchId) {
+							const userAgency = documentSnapshot.get('agency');
+							if (userAgency && agencies.includes(userAgency)) {
+								agencies.push(userAgency);
+							}
+						} else {
+							throw new Error('Nenhuma agência encontrada!');
+						}
+					});
+					return agencies;
+				}
+			})
+			.catch((err) => {
+				throw err;
+			});
+	}
+
+	/**
+	 * Retorna todas as agências de uma companhia
+	 * @param company Empresa das agências a serem buscados
+	 * @param agency Agência das campanhas a serem buscados
+	 * @param userRequestPermission permissão do usuario que solicitou a alteração
+	 * @returns Lista de agências
+	 */
+	public getAllCampaignsFrom(agency: string, permission: string): Promise<Record<any, any> | void> {
+		return this._objectStore
+			.getCollection(this._pathToCollection)
+			.where('agency', '==', agency)
+			.get()
+			.then((querySnapshot: QuerySnapshot) => {
+				if (agency === 'CompanyCampaigns' && (permission === 'user' || permission === 'agencyOwner')) {
+					throw new Error('Nenhuma campanha foi selecionada!');
+				}
+				if (querySnapshot.size > 0) {
+					const campaigns: Record<any, any> = [];
+					querySnapshot.forEach((documentSnapshot) => {
+						const documentAgency = documentSnapshot.get('agency');
+						if (agency === documentAgency) {
+							const campaignInfos = {
+								campaignName: documentSnapshot.get('name'),
+								campaignId: documentSnapshot.get('campaignId'),
+							};
+							if (campaignInfos.campaignName && campaignInfos.campaignId && !campaigns.includes(campaignInfos)) {
+								campaigns.push(campaignInfos);
+							}
+						} else {
+							throw new Error('Nenhuma campanha encontrada!');
+						}
+					});
+					return campaigns;
+				}
+			})
+			.catch((err) => {
+				throw err;
+			});
+	}
 
 	/**
 	 * Adiciona uam nova campanha na base de dados
@@ -105,7 +130,7 @@ export class CampaignDAO {
 	 */
 	public addCampaign(campaign: Campaign): Promise<boolean> {
 		return this._objectStore
-			.addDocumentIn(this._authCollection, campaign.toJson(), campaign.name)
+			.addDocumentIn(this._authCollection, campaign.toJson(), campaign.name + ' - ' + campaign.agency)
 			.get()
 			.then(() => {
 				return true;
@@ -117,63 +142,58 @@ export class CampaignDAO {
 	}
 
 	/**
-	 * Busca o ID do usuario na base de dados
-	 * @returns ID do usuario
+	 * Busca o ID do campanha na base de dados
+	 * @returns ID do campanha
 	 */
-	// public getCampaignId(): Promise<string | void> {
-	// 	return this._objectStore
-	// 		.getCollection(this._pathToCollection)
-	// 		.where('name', '==', this._email)
-	// 		.get()
-	// 		.then((querySnapshot: QuerySnapshot) => {
-	// 			if (querySnapshot.size > 0) {
-	// 				querySnapshot.forEach((documentSnapshot) => {
-	// 					const searchId = documentSnapshot.ref.path.match(new RegExp('[^/]+$'));
-	// 					const validatePassword = bcrypt.compareSync(this._password, documentSnapshot.get('password'));
-	// 					if (!validatePassword) throw new Error('Email ou senha incorreto(s)!');
-	// 					if (searchId) {
-	// 						return searchId[0];
-	// 					} else {
-	// 						throw new Error('Falha ao recuperar o ID do usuário');
-	// 					}
-	// 				});
-	// 			} else {
-	// 				throw new Error('ID não encontrado!');
-	// 			}
-	// 		})
-	// 		.catch((err) => {
-	// 			throw err;
-	// 		});
-	// }
+	public getCampaignId(): Promise<string | void> {
+		return this._objectStore
+			.getCollection(this._pathToCollection)
+			.where('name', '==', this._campaignName)
+			.get()
+			.then((querySnapshot: QuerySnapshot) => {
+				if (querySnapshot.size > 0) {
+					querySnapshot.forEach((documentSnapshot) => {
+						const id = documentSnapshot.get('campaignId');
+						if (this._agency === documentSnapshot.get('agency')) {
+							return id;
+						} else {
+							throw new Error('Falha ao recuperar o ID da campanha!');
+						}
+					});
+				} else {
+					throw new Error('ID não encontrado!');
+				}
+			})
+			.catch((err) => {
+				throw err;
+			});
+	}
 
 	/**
 	 * Desativa uma campanha
-	 * @param campaignName ID da campanha a ser desativada
+	 * @param campaignId ID da campanha a ser desativada
 	 * @param userRequestPermission permissão do usuario que solicitou a alteração
 	 * @returns retorna True em caso de sucesso
 	 */
-	public deactivateCampaign(
-		campaignName: string,
-		agency: string,
-		userRequestPermission: string
-	): Promise<boolean | void> {
+	public deactivateCampaign(campaignId: string, userRequestPermission: string): Promise<boolean | void> {
 		return this._objectStore
 			.getCollection(this._pathToCollection)
-			.doc(campaignName)
+			.where('campaignId', '==', campaignId)
 			.get()
-			.then((doc: QueryDocumentSnapshot) => {
-				const campaign = doc.data();
-				if (
-					campaign.agency === agency &&
-					(userRequestPermission === 'admin' ||
-						userRequestPermission === 'owner' ||
-						userRequestPermission === 'agencyOwner')
-				) {
-					campaign.activate = false;
+			.then((querySnapshot: QuerySnapshot) => {
+				if (querySnapshot) {
+					querySnapshot.forEach((doc) => {
+						const campaign = doc.data();
+						if (userRequestPermission !== 'user') {
+							campaign.activate = false;
+						} else {
+							throw new Error('Permissões insuficientes para inavitar a campanha!');
+						}
+						return doc.ref.set(campaign);
+					});
 				} else {
-					throw new Error('Permissões insuficientes para inavitar a campanha!');
+					throw new Error('ID não encontrado!');
 				}
-				return doc.ref.set(campaign);
 			})
 			.then(() => {
 				return true;
@@ -189,28 +209,25 @@ export class CampaignDAO {
 	 * @param userRequestPermission permissão do usuario que solicitou a alteração
 	 * @returns retorna True em caso de sucesso
 	 */
-	public reactivateCampaign(
-		campaignName: string,
-		agency: string,
-		userRequestPermission: string
-	): Promise<boolean | void> {
+	public reactivateCampaign(campaignId: string, userRequestPermission: string): Promise<boolean | void> {
 		return this._objectStore
 			.getCollection(this._pathToCollection)
-			.doc(campaignName)
+			.where('campaignId', '==', campaignId)
 			.get()
-			.then((doc: QueryDocumentSnapshot) => {
-				const campaign = doc.data();
-				if (
-					campaign.agency === agency &&
-					(userRequestPermission === 'admin' ||
-						userRequestPermission === 'owner' ||
-						userRequestPermission === 'agencyOwner')
-				) {
-					campaign.activate = true;
+			.then((querySnapshot: QuerySnapshot) => {
+				if (querySnapshot) {
+					querySnapshot.forEach((doc) => {
+						const campaign = doc.data();
+						if (userRequestPermission !== 'user') {
+							campaign.activate = true;
+						} else {
+							throw new Error('Permissões insuficientes para reativar a campanha!');
+						}
+						return doc.ref.set(campaign);
+					});
 				} else {
-					throw new Error('Permissões insuficientes para reativar a campanha!');
+					throw new Error('ID não encontrado!');
 				}
-				return doc.ref.set(campaign);
 			})
 			.then(() => {
 				return true;

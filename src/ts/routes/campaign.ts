@@ -1,52 +1,67 @@
-// import { CampaignDAO } from '../models/DAO/CampaignDAO';
 import { ApiResponse } from '../models/ApiResponse';
-import { FirestoreConnectionSingleton } from '../models/cloud/FirestoreConnectionSingleton';
 import { FileDAO } from '../models/DAO/FileDAO';
-import { Firestore } from '@google-cloud/firestore';
-import { UserDAO } from '../models/DAO/UserDAO';
 import { CampaignDAO } from '../models/DAO/CampaignDAO';
 import { Campaign } from '../models/Campaign';
 
 const campaign = (app: { [key: string]: any }): void => {
 	app.get('/agency/list', async (req: { [key: string]: any }, res: { [key: string]: any }) => {
 		const apiResponse = new ApiResponse();
-		console.log(req.headers);
-		console.log(req.permission);
 
-		const agency = req.agency;
-		const companyCampaignsFolder = 'CompanyCampaigns';
 		const company = req.company;
-		const campaign = req.headers.campaign;
+		const agency = req.agency;
 		const permission = req.permission;
+
+		new CampaignDAO()
+			.getAllAgenciesFrom(company, agency, permission)
+			.then((agencies: string[]) => {
+				console.log(agencies);
+				apiResponse.responseText = JSON.stringify(agencies);
+			})
+			.catch((err) => {
+				apiResponse.statusCode = 500;
+				apiResponse.responseText = err.message;
+				apiResponse.errorMessage = err.message;
+			})
+			.finally(() => {
+				res.status(apiResponse.statusCode).send(apiResponse.jsonResponse);
+			});
 	});
 
 	app.get('/campaign/list', async (req: { [key: string]: any }, res: { [key: string]: any }) => {
 		const apiResponse = new ApiResponse();
-		console.log(req.headers);
-		console.log(req.permission);
 
-		const agency = req.agency;
-		const companyCampaignsFolder = 'CompanyCampaigns';
-		const company = req.company;
-		const campaign = req.headers.campaign;
+		const agency = req.headers.agency ? req.headers.agency : 'CompanyCampaigns';
 		const permission = req.permission;
+
+		new CampaignDAO()
+			.getAllCampaignsFrom(agency, permission)
+			.then((agencies: string[]) => {
+				apiResponse.responseText = JSON.stringify(agencies);
+			})
+			.catch((err) => {
+				apiResponse.statusCode = 500;
+				apiResponse.responseText = err.message;
+				apiResponse.errorMessage = err.message;
+			})
+			.finally(() => {
+				res.status(apiResponse.statusCode).send(apiResponse.jsonResponse);
+			});
 	});
 
-	// adicionar a variavel com o req.params.id
 	app.get('/campaign/:id/csv/list', async (req: { [key: string]: any }, res: { [key: string]: any }) => {
 		const apiResponse = new ApiResponse();
-		console.log(req.headers);
-		console.log(req.permission);
+		const targetId = req.params.id;
 
 		const agency = req.agency;
 		const companyCampaignsFolder = 'CompanyCampaigns';
 		const company = req.company;
-		const campaign = req.headers.campaign;
 		const permission = req.permission;
+		const campaignObject = new CampaignDAO();
+		const campaign = await campaignObject.getCampaign(targetId);
 		const fileDAO = new FileDAO();
 
 		// uma evolucao aqui eh o owner/admin conseguir ver (e selecionar) as campanhas de todas as agencias
-		if ((permission !== 'admin' || permission !== 'owner') && !agency) {
+		if ((permission === 'agencyOwner' || permission === 'user') && !agency) {
 			apiResponse.responseText = 'Nenhuma agência foi informada!';
 			apiResponse.statusCode = 400;
 			res.status(apiResponse.statusCode).send(apiResponse.jsonResponse);
@@ -84,6 +99,7 @@ const campaign = (app: { [key: string]: any }): void => {
 		const day = String(today.getDate()).padStart(2, '0');
 		const month = String(today.getMonth() + 1).padStart(2, '0');
 		const year = today.getFullYear();
+
 		const created = `${year}-${month}-${day}`;
 		const campaignName = req.headers.campaign;
 		const company = req.company;
@@ -114,15 +130,11 @@ const campaign = (app: { [key: string]: any }): void => {
 
 	app.post('/campaign/:id/deactivate', async (req: { [key: string]: any }, res: { [key: string]: any }) => {
 		const apiResponse = new ApiResponse();
-		// /campaign/123hu3/deactivate
-		// /campaign/23uo4h/deactivate
 		const campaignId = req.params.id;
-		const campaign = req.headers.campaign;
-		const agency = req.agency ? req.agency : 'CompanyCampaigns';
-		const permission = 'agencyOwner'; // mudar para -> req.permission
+		const permission = req.permission;
 
 		new CampaignDAO()
-			.deactivateCampaign(campaign, agency, permission)
+			.deactivateCampaign(campaignId, permission)
 			.then((result: boolean) => {
 				if (result) {
 					apiResponse.statusCode = 200;
@@ -143,12 +155,11 @@ const campaign = (app: { [key: string]: any }): void => {
 
 	app.post('/campaign/:id/reactivate', (req: { [key: string]: any }, res: { [key: string]: any }) => {
 		const apiResponse = new ApiResponse();
-		const campaign = req.headers.campaign;
-		const agency = req.agency ? req.agency : 'CompanyCampaigns';
-		const permission = 'agencyOwner'; // mudar para -> req.permission
+		const campaignId = req.params.id;
+		const permission = req.permission;
 
 		new CampaignDAO()
-			.reactivateCampaign(campaign, agency, permission)
+			.reactivateCampaign(campaignId, permission)
 			.then((result: boolean) => {
 				if (result) {
 					apiResponse.statusCode = 200;

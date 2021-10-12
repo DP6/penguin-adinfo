@@ -10,9 +10,94 @@ class CampaignDAO {
 		this._pathToCollection = ['campaigns'];
 		this._authCollection = this._objectStore.getCollection(this._pathToCollection);
 	}
+	getCampaign(campaignId) {
+		return this._objectStore
+			.getCollection(this._pathToCollection)
+			.where('campaignId', '==', campaignId)
+			.get()
+			.then((querySnapshot) => {
+				if (querySnapshot.size > 0) {
+					let campaign;
+					querySnapshot.forEach((documentSnapshot) => {
+						if (documentSnapshot.get('name')) {
+							campaign = documentSnapshot.get('name');
+						} else {
+							throw new Error('Nenhuma campanha encontrada!');
+						}
+					});
+					return campaign;
+				} else {
+					throw new Error('Email ou senha incorreto(s)!');
+				}
+			})
+			.catch((err) => {
+				throw err;
+			});
+	}
+	getAllAgenciesFrom(company, agency, userRequestPermission) {
+		return this._objectStore
+			.getCollection(['tokens'])
+			.where('company', '==', company)
+			.get()
+			.then((querySnapshot) => {
+				if (querySnapshot.size > 0) {
+					if (userRequestPermission === 'agencyOwner' || userRequestPermission === 'user') {
+						return [agency];
+					}
+					const agencies = [];
+					querySnapshot.forEach((documentSnapshot) => {
+						const searchId = documentSnapshot.ref.path.match(new RegExp('[^/]+$'));
+						if (searchId) {
+							const userAgency = documentSnapshot.get('agency');
+							if (userAgency && agencies.includes(userAgency)) {
+								agencies.push(userAgency);
+							}
+						} else {
+							throw new Error('Nenhuma agência encontrada!');
+						}
+					});
+					return agencies;
+				}
+			})
+			.catch((err) => {
+				throw err;
+			});
+	}
+	getAllCampaignsFrom(agency, permission) {
+		return this._objectStore
+			.getCollection(this._pathToCollection)
+			.where('agency', '==', agency)
+			.get()
+			.then((querySnapshot) => {
+				if (agency === 'CompanyCampaigns' && (permission === 'user' || permission === 'agencyOwner')) {
+					throw new Error('Nenhuma campanha foi selecionada!');
+				}
+				if (querySnapshot.size > 0) {
+					const campaigns = [];
+					querySnapshot.forEach((documentSnapshot) => {
+						const documentAgency = documentSnapshot.get('agency');
+						if (agency === documentAgency) {
+							const campaignInfos = {
+								campaignName: documentSnapshot.get('name'),
+								campaignId: documentSnapshot.get('campaignId'),
+							};
+							if (campaignInfos.campaignName && campaignInfos.campaignId && !campaigns.includes(campaignInfos)) {
+								campaigns.push(campaignInfos);
+							}
+						} else {
+							throw new Error('Nenhuma campanha encontrada!');
+						}
+					});
+					return campaigns;
+				}
+			})
+			.catch((err) => {
+				throw err;
+			});
+	}
 	addCampaign(campaign) {
 		return this._objectStore
-			.addDocumentIn(this._authCollection, campaign.toJson(), campaign.name)
+			.addDocumentIn(this._authCollection, campaign.toJson(), campaign.name + ' - ' + campaign.agency)
 			.get()
 			.then(() => {
 				return true;
@@ -22,24 +107,48 @@ class CampaignDAO {
 				return false;
 			});
 	}
-	deactivateCampaign(campaignName, agency, userRequestPermission) {
+	getCampaignId() {
 		return this._objectStore
 			.getCollection(this._pathToCollection)
-			.doc(campaignName)
+			.where('name', '==', this._campaignName)
 			.get()
-			.then((doc) => {
-				const campaign = doc.data();
-				if (
-					campaign.agency === agency &&
-					(userRequestPermission === 'admin' ||
-						userRequestPermission === 'owner' ||
-						userRequestPermission === 'agencyOwner')
-				) {
-					campaign.activate = false;
+			.then((querySnapshot) => {
+				if (querySnapshot.size > 0) {
+					querySnapshot.forEach((documentSnapshot) => {
+						const id = documentSnapshot.get('campaignId');
+						if (this._agency === documentSnapshot.get('agency')) {
+							return id;
+						} else {
+							throw new Error('Falha ao recuperar o ID da campanha!');
+						}
+					});
 				} else {
-					throw new Error('Permissões insuficientes para inavitar a campanha!');
+					throw new Error('ID não encontrado!');
 				}
-				return doc.ref.set(campaign);
+			})
+			.catch((err) => {
+				throw err;
+			});
+	}
+	deactivateCampaign(campaignId, userRequestPermission) {
+		return this._objectStore
+			.getCollection(this._pathToCollection)
+			.where('campaignId', '==', campaignId)
+			.get()
+			.then((querySnapshot) => {
+				if (querySnapshot) {
+					querySnapshot.forEach((doc) => {
+						const campaign = doc.data();
+						if (userRequestPermission !== 'user') {
+							campaign.activate = false;
+						} else {
+							throw new Error('Permissões insuficientes para inavitar a campanha!');
+						}
+						return doc.ref.set(campaign);
+					});
+				} else {
+					throw new Error('ID não encontrado!');
+				}
 			})
 			.then(() => {
 				return true;
@@ -48,24 +157,25 @@ class CampaignDAO {
 				throw err;
 			});
 	}
-	reactivateCampaign(campaignName, agency, userRequestPermission) {
+	reactivateCampaign(campaignId, userRequestPermission) {
 		return this._objectStore
 			.getCollection(this._pathToCollection)
-			.doc(campaignName)
+			.where('campaignId', '==', campaignId)
 			.get()
-			.then((doc) => {
-				const campaign = doc.data();
-				if (
-					campaign.agency === agency &&
-					(userRequestPermission === 'admin' ||
-						userRequestPermission === 'owner' ||
-						userRequestPermission === 'agencyOwner')
-				) {
-					campaign.activate = true;
+			.then((querySnapshot) => {
+				if (querySnapshot) {
+					querySnapshot.forEach((doc) => {
+						const campaign = doc.data();
+						if (userRequestPermission !== 'user') {
+							campaign.activate = true;
+						} else {
+							throw new Error('Permissões insuficientes para reativar a campanha!');
+						}
+						return doc.ref.set(campaign);
+					});
 				} else {
-					throw new Error('Permissões insuficientes para reativar a campanha!');
+					throw new Error('ID não encontrado!');
 				}
-				return doc.ref.set(campaign);
 			})
 			.then(() => {
 				return true;

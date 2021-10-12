@@ -23,6 +23,7 @@ export class Campaign {
 	 */
 	public toJson(): { [key: string]: string | boolean } {
 		return {
+			name: this._name,
 			company: this._company,
 			agency: this._agency,
 			campaignId: this._campaignId,
