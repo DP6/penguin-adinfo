@@ -14,7 +14,6 @@ const campaign = (app: { [key: string]: any }): void => {
 		new CampaignDAO()
 			.getAllAgenciesFrom(company, agency, permission)
 			.then((agencies: string[]) => {
-				console.log(agencies);
 				apiResponse.responseText = JSON.stringify(agencies);
 			})
 			.catch((err) => {
@@ -27,10 +26,10 @@ const campaign = (app: { [key: string]: any }): void => {
 			});
 	});
 
-	app.get('/campaign/list', async (req: { [key: string]: any }, res: { [key: string]: any }) => {
+	app.get('/campaign/:agency/list', async (req: { [key: string]: any }, res: { [key: string]: any }) => {
 		const apiResponse = new ApiResponse();
 
-		const agency = req.headers.agency ? req.headers.agency : 'CompanyCampaigns';
+		const agency = req.params.agency;
 		const permission = req.permission;
 
 		new CampaignDAO()
@@ -105,6 +104,10 @@ const campaign = (app: { [key: string]: any }): void => {
 		const company = req.company;
 		const agency = req.agency ? req.agency : 'CompanyCampaigns';
 		const campaignId = Date.now().toString(16);
+
+		if (req.permission === 'user') {
+			throw new Error('Usuário sem permissão para realizar esta ação!');
+		}
 
 		const campaignObject = new Campaign(campaignName, company, agency, campaignId, true, created);
 

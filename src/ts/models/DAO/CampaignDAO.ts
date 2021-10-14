@@ -68,7 +68,7 @@ export class CampaignDAO {
 						const searchId = documentSnapshot.ref.path.match(new RegExp('[^/]+$'));
 						if (searchId) {
 							const userAgency = documentSnapshot.get('agency');
-							if (userAgency && agencies.includes(userAgency)) {
+							if (userAgency && !agencies.includes(userAgency)) {
 								agencies.push(userAgency);
 							}
 						} else {

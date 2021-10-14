@@ -45,7 +45,6 @@ const campaign = (app) => {
 			new CampaignDAO_1.CampaignDAO()
 				.getAllAgenciesFrom(company, agency, permission)
 				.then((agencies) => {
-					console.log(agencies);
 					apiResponse.responseText = JSON.stringify(agencies);
 				})
 				.catch((err) => {
@@ -58,10 +57,10 @@ const campaign = (app) => {
 				});
 		})
 	);
-	app.get('/campaign/list', (req, res) =>
+	app.get('/campaign/:agency/list', (req, res) =>
 		__awaiter(void 0, void 0, void 0, function* () {
 			const apiResponse = new ApiResponse_1.ApiResponse();
-			const agency = req.headers.agency ? req.headers.agency : 'CompanyCampaigns';
+			const agency = req.params.agency;
 			const permission = req.permission;
 			new CampaignDAO_1.CampaignDAO()
 				.getAllCampaignsFrom(agency, permission)
@@ -132,6 +131,9 @@ const campaign = (app) => {
 			const company = req.company;
 			const agency = req.agency ? req.agency : 'CompanyCampaigns';
 			const campaignId = Date.now().toString(16);
+			if (req.permission === 'user') {
+				throw new Error('Usuário sem permissão para realizar esta ação!');
+			}
 			const campaignObject = new Campaign_1.Campaign(campaignName, company, agency, campaignId, true, created);
 			new CampaignDAO_1.CampaignDAO()
 				.addCampaign(campaignObject)

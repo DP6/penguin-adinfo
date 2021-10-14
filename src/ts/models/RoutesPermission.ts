@@ -11,7 +11,16 @@ export class RoutesPermission {
 
 	public validatePermission(user: User): boolean {
 		const agencyUserPostRoutes = ['/build/.*', '/csv', '/user/changepass', '/logout', '/login'];
-		const agencyUserGetRoutes = ['/config', '/template', '/csv/list', '/csv', '/user', '/campaign/list'];
+		const agencyUserGetRoutes = [
+			'/config',
+			'/template',
+			'/csv/list',
+			'/csv',
+			'/user',
+			'/campaign/.*/list',
+			'/agency/list',
+			'/campaign/.*/csv/list',
+		];
 		const agencyOwnerGetRoutes = agencyUserGetRoutes.slice();
 		const agencyOwnerPostRoutes = agencyUserPostRoutes.slice();
 
@@ -20,8 +29,8 @@ export class RoutesPermission {
 			'/register',
 			'/user/.*/deactivate',
 			'/user/.*/reactivate',
-			'/campaign/deactivate',
-			'/campaign/reactivate',
+			'/campaign/.*/deactivate',
+			'/campaign/.*/reactivate',
 			'/campaign/add'
 		);
 
