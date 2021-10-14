@@ -35,6 +35,7 @@ const ApiResponse_1 = require('../models/ApiResponse');
 const FileDAO_1 = require('../models/DAO/FileDAO');
 const CampaignDAO_1 = require('../models/DAO/CampaignDAO');
 const Campaign_1 = require('../models/Campaign');
+const DateUtils_1 = require('../utils/DateUtils');
 const campaign = (app) => {
 	app.get('/agency/list', (req, res) =>
 		__awaiter(void 0, void 0, void 0, function* () {
@@ -122,11 +123,7 @@ const campaign = (app) => {
 	app.post('/campaign/add', (req, res) =>
 		__awaiter(void 0, void 0, void 0, function* () {
 			const apiResponse = new ApiResponse_1.ApiResponse();
-			const today = new Date();
-			const day = String(today.getDate()).padStart(2, '0');
-			const month = String(today.getMonth() + 1).padStart(2, '0');
-			const year = today.getFullYear();
-			const created = `${year}-${month}-${day}`;
+			const created = DateUtils_1.DateUtils.today();
 			const campaignName = req.headers.campaign;
 			const company = req.company;
 			const agency = req.agency ? req.agency : 'CompanyCampaigns';

@@ -5,15 +5,29 @@ import { DateUtils } from '../utils/DateUtils';
 import { CsvUtils } from '../utils/CsvUtils';
 import { Builder } from '../controllers/Builder';
 import { ApiResponse } from '../models/ApiResponse';
+import { CampaignDAO } from '../models/DAO/CampaignDAO';
 import * as converter from 'json-2-csv';
 
 const build = (app: { [key: string]: any }): void => {
-	app.post('/build/:media', (req: { [key: string]: any }, res: { [key: string]: any }) => {
+	app.post('/build/:media', async (req: { [key: string]: any }, res: { [key: string]: any }) => {
 		const media = req.params.media;
 		const company = req.company;
 		const agency = req.agency;
 		const companyCampaignsFolder = 'CompanyCampaigns';
 		const campaign = req.headers.campaign;
+		const permission = req.permission;
+
+		const agencyCampaigns = await new CampaignDAO().getAllCampaignsFrom(
+			agency ? agency : companyCampaignsFolder,
+			permission
+		);
+		const agencyCampaignsNames = agencyCampaigns.map((campaign: any) => {
+			return campaign.campaignName;
+		});
+
+		if (!agencyCampaignsNames.includes(agency)) {
+			throw new Error('Campanha não cadastrada na agência!');
+		}
 
 		const apiResponse = new ApiResponse();
 

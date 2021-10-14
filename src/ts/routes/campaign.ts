@@ -2,6 +2,7 @@ import { ApiResponse } from '../models/ApiResponse';
 import { FileDAO } from '../models/DAO/FileDAO';
 import { CampaignDAO } from '../models/DAO/CampaignDAO';
 import { Campaign } from '../models/Campaign';
+import { DateUtils } from '../utils/DateUtils';
 
 const campaign = (app: { [key: string]: any }): void => {
 	app.get('/agency/list', async (req: { [key: string]: any }, res: { [key: string]: any }) => {
@@ -34,7 +35,7 @@ const campaign = (app: { [key: string]: any }): void => {
 
 		new CampaignDAO()
 			.getAllCampaignsFrom(agency, permission)
-			.then((agencies: string[]) => {
+			.then((agencies: { campaignName: string; campaignId: string }[]) => {
 				apiResponse.responseText = JSON.stringify(agencies);
 			})
 			.catch((err) => {
@@ -94,12 +95,7 @@ const campaign = (app: { [key: string]: any }): void => {
 	app.post('/campaign/add', async (req: { [key: string]: any }, res: { [key: string]: any }) => {
 		const apiResponse = new ApiResponse();
 
-		const today = new Date();
-		const day = String(today.getDate()).padStart(2, '0');
-		const month = String(today.getMonth() + 1).padStart(2, '0');
-		const year = today.getFullYear();
-
-		const created = `${year}-${month}-${day}`;
+		const created = DateUtils.today();
 		const campaignName = req.headers.campaign;
 		const company = req.company;
 		const agency = req.agency ? req.agency : 'CompanyCampaigns';

@@ -90,7 +90,10 @@ export class CampaignDAO {
 	 * @param userRequestPermission permissão do usuario que solicitou a alteração
 	 * @returns Lista de agências
 	 */
-	public getAllCampaignsFrom(agency: string, permission: string): Promise<Record<any, any> | void> {
+	public getAllCampaignsFrom(
+		agency: string,
+		permission: string
+	): Promise<{ campaignName: string; campaignId: string }[]> {
 		return this._objectStore
 			.getCollection(this._pathToCollection)
 			.where('agency', '==', agency)
@@ -100,7 +103,7 @@ export class CampaignDAO {
 					throw new Error('Nenhuma campanha foi selecionada!');
 				}
 				if (querySnapshot.size > 0) {
-					const campaigns: Record<any, any> = [];
+					const campaigns: { campaignName: string; campaignId: string }[] = [];
 					querySnapshot.forEach((documentSnapshot) => {
 						const documentAgency = documentSnapshot.get('agency');
 						if (agency === documentAgency) {
