@@ -80,6 +80,8 @@ class CampaignDAO {
 							const campaignInfos = {
 								campaignName: documentSnapshot.get('name'),
 								campaignId: documentSnapshot.get('campaignId'),
+								agency: documentSnapshot.get('agency'),
+								activate: documentSnapshot.get('activate'),
 							};
 							if (campaignInfos.campaignName && campaignInfos.campaignId && !campaigns.includes(campaignInfos)) {
 								campaigns.push(campaignInfos);
