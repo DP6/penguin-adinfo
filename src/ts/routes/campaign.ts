@@ -48,16 +48,16 @@ const campaign = (app: { [key: string]: any }): void => {
 			});
 	});
 
-	app.get('/campaign/:id/csv/list', async (req: { [key: string]: any }, res: { [key: string]: any }) => {
+	app.get('/:agency/:campaignId/csv/list', async (req: { [key: string]: any }, res: { [key: string]: any }) => {
 		const apiResponse = new ApiResponse();
-		const targetId = req.params.id;
+		const campaignId = req.params.campaignId;
 
-		const agency = req.agency;
+		const agency = req.params.agency;
 		const companyCampaignsFolder = 'CompanyCampaigns';
 		const company = req.company;
 		const permission = req.permission;
 		const campaignObject = new CampaignDAO();
-		const campaign = await campaignObject.getCampaign(targetId);
+		const campaign = await campaignObject.getCampaign(campaignId);
 		const fileDAO = new FileDAO();
 
 		// uma evolucao aqui eh o owner/admin conseguir ver (e selecionar) as campanhas de todas as agencias
@@ -96,13 +96,16 @@ const campaign = (app: { [key: string]: any }): void => {
 		const apiResponse = new ApiResponse();
 
 		const created = DateUtils.today();
-		const campaignName = req.headers.campaign;
+		const campaignName = req.body.campaign;
 		const company = req.company;
-		const agency = req.agency ? req.agency : 'CompanyCampaigns';
+		const agency = req.body.agency ? req.body.agency : 'CompanyCampaigns';
 		const campaignId = Date.now().toString(16);
 
 		if (req.permission === 'user') {
 			throw new Error('Usuário sem permissão para realizar esta ação!');
+		}
+		if (!campaignName) {
+			throw new Error('Necessário nome da Campanha!');
 		}
 
 		const campaignObject = new Campaign(campaignName, company, agency, campaignId, true, created);

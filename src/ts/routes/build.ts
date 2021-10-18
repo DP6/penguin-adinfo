@@ -12,7 +12,7 @@ const build = (app: { [key: string]: any }): void => {
 	app.post('/build/:media', async (req: { [key: string]: any }, res: { [key: string]: any }) => {
 		const media = req.params.media;
 		const company = req.company;
-		const agency = req.agency;
+		const agency = req.headers.agency;
 		const companyCampaignsFolder = 'CompanyCampaigns';
 		const campaign = req.headers.campaign;
 		const permission = req.permission;
@@ -25,7 +25,7 @@ const build = (app: { [key: string]: any }): void => {
 			return campaign.campaignName;
 		});
 
-		if (!agencyCampaignsNames.includes(agency)) {
+		if (!agencyCampaignsNames.includes(campaign)) {
 			throw new Error('Campanha não cadastrada na agência!');
 		}
 

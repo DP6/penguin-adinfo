@@ -44,7 +44,7 @@ const build = (app) => {
 		__awaiter(void 0, void 0, void 0, function* () {
 			const media = req.params.media;
 			const company = req.company;
-			const agency = req.agency;
+			const agency = req.headers.agency;
 			const companyCampaignsFolder = 'CompanyCampaigns';
 			const campaign = req.headers.campaign;
 			const permission = req.permission;
@@ -55,7 +55,7 @@ const build = (app) => {
 			const agencyCampaignsNames = agencyCampaigns.map((campaign) => {
 				return campaign.campaignName;
 			});
-			if (!agencyCampaignsNames.includes(agency)) {
+			if (!agencyCampaignsNames.includes(campaign)) {
 				throw new Error('Campanha não cadastrada na agência!');
 			}
 			const apiResponse = new ApiResponse_1.ApiResponse();

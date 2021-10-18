@@ -48,11 +48,15 @@ const csv = (app: { [key: string]: any }): void => {
 
 	app.get('/csv', (req: { [key: string]: any }, res: { [key: string]: any }) => {
 		const fileName = req.headers.file;
-		const agency = req.agency;
 		const campaign = req.headers.campaign;
 		const company = req.company;
-
-		console.log('agencia: ' + agency);
+		const companyCampaignsFolder = 'CompanyCampaigns';
+		let agency = '';
+		if (req.headers.agency) {
+			agency = req.headers.agency;
+		} else if (req.agency && !req.headers.agency) {
+			agency = req.agency;
+		}
 
 		const apiResponse = new ApiResponse();
 
@@ -67,10 +71,9 @@ const csv = (app: { [key: string]: any }): void => {
 			res.status(apiResponse.statusCode).send(apiResponse.jsonResponse);
 			return;
 		}
-
 		const filePath = agency
 			? `${company}/${agency}/${campaign}/${fileName}.csv`
-			: `${company}/${campaign}/${fileName}.csv`;
+			: `${company}/${companyCampaignsFolder}/${campaign}/${fileName}.csv`;
 
 		const fileDAO = new FileDAO();
 		fileDAO
