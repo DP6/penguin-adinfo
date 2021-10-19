@@ -1,6 +1,7 @@
 import { ApiResponse } from '../models/ApiResponse';
 import { FileDAO } from '../models/DAO/FileDAO';
 import { CampaignDAO } from '../models/DAO/CampaignDAO';
+import { AgencyDAO } from '../models/DAO/AgencyDAO';
 import { Campaign } from '../models/Campaign';
 import { DateUtils } from '../utils/DateUtils';
 
@@ -12,7 +13,7 @@ const campaign = (app: { [key: string]: any }): void => {
 		const agency = req.agency;
 		const permission = req.permission;
 
-		new CampaignDAO()
+		new AgencyDAO()
 			.getAllAgenciesFrom(company, agency, permission)
 			.then((agencies: string[]) => {
 				apiResponse.responseText = JSON.stringify(agencies);

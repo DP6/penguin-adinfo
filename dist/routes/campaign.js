@@ -12,6 +12,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const ApiResponse_1 = require("../models/ApiResponse");
 const FileDAO_1 = require("../models/DAO/FileDAO");
 const CampaignDAO_1 = require("../models/DAO/CampaignDAO");
+const AgencyDAO_1 = require("../models/DAO/AgencyDAO");
 const Campaign_1 = require("../models/Campaign");
 const DateUtils_1 = require("../utils/DateUtils");
 const campaign = (app) => {
@@ -20,7 +21,7 @@ const campaign = (app) => {
         const company = req.company;
         const agency = req.agency;
         const permission = req.permission;
-        new CampaignDAO_1.CampaignDAO()
+        new AgencyDAO_1.AgencyDAO()
             .getAllAgenciesFrom(company, agency, permission)
             .then((agencies) => {
             apiResponse.responseText = JSON.stringify(agencies);

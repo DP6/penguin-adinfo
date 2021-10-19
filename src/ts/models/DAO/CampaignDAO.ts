@@ -49,57 +49,23 @@ export class CampaignDAO {
 
 	/**
 	 * Retorna todas as agências de uma companhia
-	 * @param company Empresa(company) das agências a serem buscados
-	 * @param userRequestPermission permissão do usuario que solicitou a alteração
-	 * @returns Lista de agências
-	 */
-	public getAllAgenciesFrom(company: string, agency: string, userRequestPermission: string): Promise<string[] | void> {
-		return this._objectStore
-			.getCollection(['tokens'])
-			.where('company', '==', company)
-			.get()
-			.then((querySnapshot: QuerySnapshot) => {
-				if (querySnapshot.size > 0) {
-					if (userRequestPermission === 'agencyOwner' || userRequestPermission === 'user') {
-						return [agency];
-					}
-					const agencies: string[] = [];
-					querySnapshot.forEach((documentSnapshot) => {
-						const searchId = documentSnapshot.ref.path.match(new RegExp('[^/]+$'));
-						if (searchId) {
-							const userAgency = documentSnapshot.get('agency');
-							if (userAgency && !agencies.includes(userAgency)) {
-								agencies.push(userAgency);
-							}
-						} else {
-							throw new Error('Nenhuma agência encontrada!');
-						}
-					});
-					return agencies;
-				}
-			})
-			.catch((err) => {
-				throw err;
-			});
-	}
-
-	/**
-	 * Retorna todas as agências de uma companhia
-	 * @param company Empresa das agências a serem buscados
 	 * @param agency Agência das campanhas a serem buscados
 	 * @param userRequestPermission permissão do usuario que solicitou a alteração
-	 * @returns Lista de agências
+	 * @returns Lista Objetos contendo atributos de cada campanha
 	 */
 	public getAllCampaignsFrom(
 		agency: string,
-		permission: string
+		userRequestPermission: string
 	): Promise<{ campaignName: string; campaignId: string }[]> {
 		return this._objectStore
 			.getCollection(this._pathToCollection)
 			.where('agency', '==', agency)
 			.get()
 			.then((querySnapshot: QuerySnapshot) => {
-				if (agency === 'CompanyCampaigns' && (permission === 'user' || permission === 'agencyOwner')) {
+				if (
+					agency === 'CompanyCampaigns' &&
+					(userRequestPermission === 'user' || userRequestPermission === 'agencyOwner')
+				) {
 					throw new Error('Nenhuma campanha foi selecionada!');
 				}
 				if (querySnapshot.size > 0) {
@@ -107,14 +73,22 @@ export class CampaignDAO {
 					querySnapshot.forEach((documentSnapshot) => {
 						const documentAgency = documentSnapshot.get('agency');
 						if (agency === documentAgency) {
-							const campaignInfos = {
+							const campaignInfos: { campaignName: string; campaignId: string; agency: string; activate: boolean } = {
 								campaignName: documentSnapshot.get('name'),
 								campaignId: documentSnapshot.get('campaignId'),
 								agency: documentSnapshot.get('agency'),
 								activate: documentSnapshot.get('activate'),
 							};
-							if (campaignInfos.campaignName && campaignInfos.campaignId && !campaigns.includes(campaignInfos)) {
+							if (
+								campaignInfos.campaignName &&
+								campaignInfos.campaignId &&
+								campaignInfos.campaignId &&
+								campaignInfos.campaignId &&
+								!campaigns.includes(campaignInfos)
+							) {
 								campaigns.push(campaignInfos);
+							} else {
+								throw new Error('Erro na recuperação dos atributos da campanha ' + documentSnapshot.get('name') + '!');
 							}
 						} else {
 							throw new Error('Nenhuma campanha encontrada!');
