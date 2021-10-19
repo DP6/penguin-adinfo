@@ -31,7 +31,7 @@ export class RoutesPermission {
 			'/user/.*/reactivate',
 			'/campaign/.*/deactivate',
 			'/campaign/.*/reactivate',
-			'/campaign/add'
+			'/campaign'
 		);
 
 		if (user.permission === 'user') {

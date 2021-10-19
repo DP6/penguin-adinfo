@@ -6,6 +6,44 @@ import { Campaign } from '../models/Campaign';
 import { DateUtils } from '../utils/DateUtils';
 
 const campaign = (app: { [key: string]: any }): void => {
+	app.post('/campaign', async (req: { [key: string]: any }, res: { [key: string]: any }) => {
+		const apiResponse = new ApiResponse();
+
+		const created = DateUtils.today();
+		const campaignName = req.body.campaign;
+		const company = req.company;
+		const agency = req.body.agency ? req.body.agency : 'CompanyCampaigns';
+		const campaignId = Date.now().toString(16);
+
+		if (req.permission === 'user') {
+			throw new Error('Usuário sem permissão para realizar esta ação!');
+		}
+		if (!campaignName) {
+			throw new Error('Necessário nome da Campanha!');
+		}
+
+		const campaignObject = new Campaign(campaignName, company, agency, campaignId, true, created);
+
+		new CampaignDAO()
+			.addCampaign(campaignObject)
+			.then((result: boolean) => {
+				if (result) {
+					apiResponse.statusCode = 200;
+					apiResponse.responseText = 'Campanha criada com sucesso!';
+				} else {
+					throw new Error('Erro ao criar campanha!');
+				}
+			})
+			.catch((err) => {
+				apiResponse.statusCode = 500;
+				apiResponse.responseText = 'Email e/ou senha incorreto(s)!';
+				apiResponse.errorMessage = err.message;
+			})
+			.finally(() => {
+				res.status(apiResponse.statusCode).send(apiResponse.jsonResponse);
+			});
+	});
+
 	app.get('/agency/list', async (req: { [key: string]: any }, res: { [key: string]: any }) => {
 		const apiResponse = new ApiResponse();
 
@@ -87,44 +125,6 @@ const campaign = (app: { [key: string]: any }): void => {
 				apiResponse.errorMessage = err.message;
 				apiResponse.responseText = `Falha ao restaurar os arquivos!`;
 				apiResponse.statusCode = 500;
-			})
-			.finally(() => {
-				res.status(apiResponse.statusCode).send(apiResponse.jsonResponse);
-			});
-	});
-
-	app.post('/campaign/add', async (req: { [key: string]: any }, res: { [key: string]: any }) => {
-		const apiResponse = new ApiResponse();
-
-		const created = DateUtils.today();
-		const campaignName = req.body.campaign;
-		const company = req.company;
-		const agency = req.body.agency ? req.body.agency : 'CompanyCampaigns';
-		const campaignId = Date.now().toString(16);
-
-		if (req.permission === 'user') {
-			throw new Error('Usuário sem permissão para realizar esta ação!');
-		}
-		if (!campaignName) {
-			throw new Error('Necessário nome da Campanha!');
-		}
-
-		const campaignObject = new Campaign(campaignName, company, agency, campaignId, true, created);
-
-		new CampaignDAO()
-			.addCampaign(campaignObject)
-			.then((result: boolean) => {
-				if (result) {
-					apiResponse.statusCode = 200;
-					apiResponse.responseText = 'Campanha criada com sucesso!';
-				} else {
-					throw new Error('Erro ao criar campanha!');
-				}
-			})
-			.catch((err) => {
-				apiResponse.statusCode = 500;
-				apiResponse.responseText = 'Email e/ou senha incorreto(s)!';
-				apiResponse.errorMessage = err.message;
 			})
 			.finally(() => {
 				res.status(apiResponse.statusCode).send(apiResponse.jsonResponse);
