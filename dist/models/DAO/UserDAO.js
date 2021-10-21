@@ -37,7 +37,7 @@ class UserDAO {
 				throw err;
 			});
 	}
-	getAllUsersFrom(company, agency, userRequestPermission) {
+	getAllUsersFrom(company, userRequestPermission) {
 		return this._objectStore
 			.getCollection(this._pathToCollection)
 			.where('company', '==', company)
@@ -49,31 +49,16 @@ class UserDAO {
 						const searchId = documentSnapshot.ref.path.match(new RegExp('[^/]+$'));
 						if (searchId) {
 							const userPermission = documentSnapshot.get('permission');
-							const userAgency = documentSnapshot.get('agency');
-							if (userRequestPermission === 'agencyOwner') {
-								if ((userPermission === 'agencyOwner' || userPermission === 'user') && userAgency === agency) {
-									const user = new User_1.User(
-										searchId[0],
-										userPermission,
-										documentSnapshot.get('company'),
-										documentSnapshot.get('email'),
-										documentSnapshot.get('activate'),
-										documentSnapshot.get('agency')
-									);
-									users.push(user);
-								}
-							} else {
-								if (userPermission !== 'owner' || (userRequestPermission === 'admin' && userPermission === 'user')) {
-									const user = new User_1.User(
-										searchId[0],
-										userPermission,
-										documentSnapshot.get('company'),
-										documentSnapshot.get('email'),
-										documentSnapshot.get('activate'),
-										documentSnapshot.get('agency')
-									);
-									users.push(user);
-								}
+							if (userPermission !== 'owner' || (userRequestPermission === 'admin' && userPermission === 'user')) {
+								const user = new User_1.User(
+									searchId[0],
+									userPermission,
+									documentSnapshot.get('company'),
+									documentSnapshot.get('email'),
+									documentSnapshot.get('activate'),
+									documentSnapshot.get('agency')
+								);
+								users.push(user);
 							}
 						} else {
 							throw new Error('Nenhum usuário encontrado!');

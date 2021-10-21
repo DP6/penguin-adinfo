@@ -20,7 +20,7 @@ class RoutesPermission {
 		];
 		const agencyOwnerGetRoutes = agencyUserGetRoutes.slice();
 		const agencyOwnerPostRoutes = agencyUserPostRoutes.slice();
-		agencyOwnerGetRoutes.push('/template/excel', '/users');
+		agencyOwnerGetRoutes.push('/template/excel', '/users', '/agency/users');
 		agencyOwnerPostRoutes.push(
 			'/register',
 			'/user/.*/deactivate',

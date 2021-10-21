@@ -8,6 +8,7 @@ const register_1 = require('./register');
 const user_1 = require('./user');
 const login_1 = require('./login');
 const campaign_1 = require('./campaign');
+const agency_1 = require('./agency');
 const routes = (app) => {
 	config_1.default(app);
 	csv_1.default(app);
@@ -17,5 +18,6 @@ const routes = (app) => {
 	user_1.default(app);
 	login_1.default(app);
 	campaign_1.default(app);
+	agency_1.default(app);
 };
 exports.default = routes;

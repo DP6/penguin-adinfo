@@ -55,5 +55,23 @@ const agency = (app) => {
 				});
 		})
 	);
+	app.get('/agency/users', (req, res) =>
+		__awaiter(void 0, void 0, void 0, function* () {
+			const apiResponse = new ApiResponse_1.ApiResponse();
+			new AgencyDAO_1.AgencyDAO()
+				.getAllUsersFromAgency(req.company, req.agency, req.permission)
+				.then((users) => {
+					apiResponse.responseText = JSON.stringify(users.map((user) => user.toJson()));
+				})
+				.catch((err) => {
+					apiResponse.statusCode = 500;
+					apiResponse.responseText = err.message;
+					apiResponse.errorMessage = err.message;
+				})
+				.finally(() => {
+					res.status(apiResponse.statusCode).send(apiResponse.jsonResponse);
+				});
+		})
+	);
 };
 exports.default = agency;
