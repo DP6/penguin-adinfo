@@ -1,5 +1,3 @@
-import { RoutesPermission } from './RoutesPermission';
-
 export class Campaign {
 	private _name: string;
 	private _company: string;
@@ -8,7 +6,7 @@ export class Campaign {
 	private _activate: boolean;
 	private _created: string;
 
-	constructor(name: string, company: string, agency: string, campaignId: string, activate = true, created: string) {
+	constructor(name: string, company: string, agency: string, campaignId: string, activate: boolean, created: string) {
 		this._name = name;
 		this._company = company;
 		this._agency = agency;
@@ -30,6 +28,13 @@ export class Campaign {
 			created: this._created,
 			activate: this._activate,
 		};
+	}
+
+	/**
+	 * Checa se há todas as informações de campanha vindas do Firestore
+	 */
+	public validateCampaignInfos(): boolean {
+		return !(!this._name || !this._company || !this._agency || !this._campaignId || !this._activate || !this._created);
 	}
 
 	get name(): string {

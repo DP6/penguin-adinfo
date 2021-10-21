@@ -13,14 +13,11 @@ const build = (app: { [key: string]: any }): void => {
 		const media = req.params.media;
 		const company = req.company;
 		const agency = req.headers.agency;
-		const companyCampaignsFolder = 'CompanyCampaigns';
+		const agencyPath = agency ? agency : 'CompanyCampaigns';
 		const campaign = req.headers.campaign;
 		const permission = req.permission;
 
-		const agencyCampaigns = await new CampaignDAO().getAllCampaignsFrom(
-			agency ? agency : companyCampaignsFolder,
-			permission
-		);
+		const agencyCampaigns = await new CampaignDAO().getAllCampaignsFrom(agencyPath, permission);
 		const agencyCampaignsNames = agencyCampaigns.map((campaign: any) => {
 			return campaign.campaignName;
 		});
@@ -44,9 +41,8 @@ const build = (app: { [key: string]: any }): void => {
 		}
 
 		const fileContent = req.files.data.data;
-		const filePath = agency
-			? `${company}/${agency}/${campaign}/${DateUtils.generateDateString()}.csv`
-			: `${company}/${companyCampaignsFolder}/${campaign}/${DateUtils.generateDateString()}.csv`;
+
+		const filePath = `${company}/${agencyPath}/${campaign}/${DateUtils.generateDateString()}.csv`;
 
 		let companyConfig: Config;
 

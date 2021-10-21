@@ -39,18 +39,18 @@ class CampaignDAO {
     getAllCampaignsFrom(agency, userRequestPermission) {
         return this._objectStore
             .getCollection(this._pathToCollection)
-            .where('agency', '==', agency)
+            .where('agency', '==', agency !== 'Campanhas Internas' ? agency : 'CompanyCampaigns')
             .get()
             .then((querySnapshot) => {
-            if (agency === 'CompanyCampaigns' &&
-                (userRequestPermission === 'user' || userRequestPermission === 'agencyOwner')) {
+            if (!agency && (userRequestPermission === 'user' || userRequestPermission === 'agencyOwner')) {
                 throw new Error('Nenhuma campanha foi selecionada!');
             }
             if (querySnapshot.size > 0) {
+                const agencia = agency !== 'Campanhas Internas' ? agency : 'CompanyCampaigns';
                 const campaigns = [];
                 querySnapshot.forEach((documentSnapshot) => {
                     const documentAgency = documentSnapshot.get('agency');
-                    if (agency === documentAgency) {
+                    if (agencia === documentAgency) {
                         const campaignInfos = {
                             campaignName: documentSnapshot.get('name'),
                             campaignId: documentSnapshot.get('campaignId'),

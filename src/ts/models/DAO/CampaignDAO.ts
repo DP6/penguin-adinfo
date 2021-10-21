@@ -59,20 +59,18 @@ export class CampaignDAO {
 	): Promise<{ campaignName: string; campaignId: string }[]> {
 		return this._objectStore
 			.getCollection(this._pathToCollection)
-			.where('agency', '==', agency)
+			.where('agency', '==', agency !== 'Campanhas Internas' ? agency : 'CompanyCampaigns')
 			.get()
 			.then((querySnapshot: QuerySnapshot) => {
-				if (
-					agency === 'CompanyCampaigns' &&
-					(userRequestPermission === 'user' || userRequestPermission === 'agencyOwner')
-				) {
+				if (!agency && (userRequestPermission === 'user' || userRequestPermission === 'agencyOwner')) {
 					throw new Error('Nenhuma campanha foi selecionada!');
 				}
 				if (querySnapshot.size > 0) {
-					const campaigns: { campaignName: string; campaignId: string }[] = [];
+					const agencia = agency !== 'Campanhas Internas' ? agency : 'CompanyCampaigns';
+					const campaigns: { campaignName: string; campaignId: string; agency: string; activate: boolean }[] = [];
 					querySnapshot.forEach((documentSnapshot) => {
 						const documentAgency = documentSnapshot.get('agency');
-						if (agency === documentAgency) {
+						if (agencia === documentAgency) {
 							const campaignInfos: { campaignName: string; campaignId: string; agency: string; activate: boolean } = {
 								campaignName: documentSnapshot.get('name'),
 								campaignId: documentSnapshot.get('campaignId'),

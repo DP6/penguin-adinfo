@@ -92,7 +92,7 @@ const campaign = (app: { [key: string]: any }): void => {
 		const campaignId = req.params.campaignId;
 
 		const agency = req.params.agency;
-		const companyCampaignsFolder = 'CompanyCampaigns';
+		const agencyPath = agency === 'Campanhas Internas' ? 'CompanyCampaigns' : agency;
 		const company = req.company;
 		const permission = req.permission;
 		const campaignObject = new CampaignDAO();
@@ -100,7 +100,7 @@ const campaign = (app: { [key: string]: any }): void => {
 		const fileDAO = new FileDAO();
 
 		// uma evolucao aqui eh o owner/admin conseguir ver (e selecionar) as campanhas de todas as agencias
-		if ((permission === 'agencyOwner' || permission === 'user') && !agency) {
+		if ((permission === 'agencyOwner' || permission === 'user') && (!agency || agency === 'Campanhas Internas')) {
 			apiResponse.responseText = 'Nenhuma agência foi informada!';
 			apiResponse.statusCode = 400;
 			res.status(apiResponse.statusCode).send(apiResponse.jsonResponse);
@@ -112,7 +112,7 @@ const campaign = (app: { [key: string]: any }): void => {
 			return;
 		}
 
-		const filePath = agency ? `${company}/${agency}/${campaign}/` : `${company}/${companyCampaignsFolder}/${campaign}/`;
+		const filePath = `${company}/${agencyPath}/${campaign}/`;
 
 		fileDAO
 			.getAllFilesFromStore(filePath)

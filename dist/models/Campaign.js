@@ -2,7 +2,7 @@
 Object.defineProperty(exports, '__esModule', { value: true });
 exports.Campaign = void 0;
 class Campaign {
-	constructor(name, company, agency, campaignId, activate = true, created) {
+	constructor(name, company, agency, campaignId, activate, created) {
 		this._name = name;
 		this._company = company;
 		this._agency = agency;
@@ -19,6 +19,9 @@ class Campaign {
 			created: this._created,
 			activate: this._activate,
 		};
+	}
+	validateCampaignInfos() {
+		return !(!this._name || !this._company || !this._agency || !this._campaignId || !this._activate || !this._created);
 	}
 	get name() {
 		return this._name;
