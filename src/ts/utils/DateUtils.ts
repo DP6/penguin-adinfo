@@ -70,4 +70,17 @@ export class DateUtils {
 			ss = date.getSeconds().toString().padStart(2, '0');
 		return seconds ? `${date.getFullYear()}${mm}${dd}${hh}${min}${ss}` : `${date.getFullYear()}${mm}${dd}${hh}${min}`;
 	}
+
+	/**
+	 * Gera uma string correspondente ao dia atual, no formato YYYY-MM-DD
+	 * @returns String correspondente ao dia atual
+	 */
+	static today(): string {
+		const today = new Date();
+		const day = String(today.getDate()).padStart(2, '0');
+		const month = String(today.getMonth() + 1).padStart(2, '0');
+		const year = today.getFullYear();
+
+		return `${year}-${month}-${day}`;
+	}
 }

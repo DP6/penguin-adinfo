@@ -48,9 +48,9 @@ const csv = (app: { [key: string]: any }): void => {
 
 	app.get('/csv', (req: { [key: string]: any }, res: { [key: string]: any }) => {
 		const fileName = req.headers.file;
-		const agency = req.agency;
 		const campaign = req.headers.campaign;
 		const company = req.company;
+		const agencyPath = req.body.agency ? req.body.agency : 'CompanyCampaigns';
 
 		const apiResponse = new ApiResponse();
 
@@ -65,10 +65,7 @@ const csv = (app: { [key: string]: any }): void => {
 			res.status(apiResponse.statusCode).send(apiResponse.jsonResponse);
 			return;
 		}
-
-		const filePath = agency
-			? `${company}/${agency}/${campaign}/${fileName}.csv`
-			: `${company}/${campaign}/${fileName}.csv`;
+		const filePath = `${company}/${agencyPath}/${campaign}/${fileName}.csv`;
 
 		const fileDAO = new FileDAO();
 		fileDAO

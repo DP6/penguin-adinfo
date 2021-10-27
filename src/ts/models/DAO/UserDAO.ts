@@ -178,7 +178,12 @@ export class UserDAO {
 			.get()
 			.then((doc: QueryDocumentSnapshot) => {
 				const user = doc.data();
-				if (user.permission === 'user' || (user.permission === 'admin' && userRequestPermission === 'owner')) {
+				if (
+					user.permission === 'user' ||
+					((user.permission === 'admin' || user.permission === 'agencyOwner') && userRequestPermission === 'owner')
+				) {
+					user.activate = false;
+				} else if (user.permission === 'agencyOwner' && userRequestPermission === 'admin') {
 					user.activate = false;
 				} else {
 					throw new Error('Permissões insuficientes para inavitar o usuário!');
@@ -206,7 +211,12 @@ export class UserDAO {
 			.get()
 			.then((doc: QueryDocumentSnapshot) => {
 				const user = doc.data();
-				if (user.permission === 'user' || (user.permission === 'admin' && userRequestPermission === 'owner')) {
+				if (
+					user.permission === 'user' ||
+					((user.permission === 'admin' || user.permission === 'agencyOwner') && userRequestPermission === 'owner')
+				) {
+					user.activate = true;
+				} else if (user.permission === 'agencyOwner' && userRequestPermission === 'admin') {
 					user.activate = true;
 				} else {
 					throw new Error('Permissões insuficientes para inavitar o usuário!');

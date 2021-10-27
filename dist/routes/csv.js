@@ -43,9 +43,9 @@ const csv = (app) => {
 	});
 	app.get('/csv', (req, res) => {
 		const fileName = req.headers.file;
-		const agency = req.agency;
 		const campaign = req.headers.campaign;
 		const company = req.company;
+		const agencyPath = req.body.agency ? req.body.agency : 'CompanyCampaigns';
 		const apiResponse = new ApiResponse_1.ApiResponse();
 		if (!fileName) {
 			apiResponse.responseText = 'Nenhum arquivo foi informado!';
@@ -58,9 +58,7 @@ const csv = (app) => {
 			res.status(apiResponse.statusCode).send(apiResponse.jsonResponse);
 			return;
 		}
-		const filePath = agency
-			? `${company}/${agency}/${campaign}/${fileName}.csv`
-			: `${company}/${campaign}/${fileName}.csv`;
+		const filePath = `${company}/${agencyPath}/${campaign}/${fileName}.csv`;
 		const fileDAO = new FileDAO_1.FileDAO();
 		fileDAO
 			.getFromStore(filePath)

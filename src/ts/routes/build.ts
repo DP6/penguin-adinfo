@@ -5,15 +5,26 @@ import { DateUtils } from '../utils/DateUtils';
 import { CsvUtils } from '../utils/CsvUtils';
 import { Builder } from '../controllers/Builder';
 import { ApiResponse } from '../models/ApiResponse';
+import { CampaignDAO } from '../models/DAO/CampaignDAO';
 import * as converter from 'json-2-csv';
 
 const build = (app: { [key: string]: any }): void => {
-	app.post('/build/:media', (req: { [key: string]: any }, res: { [key: string]: any }) => {
+	app.post('/build/:media', async (req: { [key: string]: any }, res: { [key: string]: any }) => {
 		const media = req.params.media;
 		const company = req.company;
-		const agency = req.agency;
-		const companyCampaignsFolder = 'CompanyCampaigns';
+		const agency = req.headers.agency;
+		const agencyPath = agency ? agency : 'CompanyCampaigns';
 		const campaign = req.headers.campaign;
+		const permission = req.permission;
+
+		const agencyCampaigns = await new CampaignDAO().getAllCampaignsFrom(agencyPath, permission);
+		const agencyCampaignsNames = agencyCampaigns.map((campaign: any) => {
+			return campaign.campaignName;
+		});
+
+		if (!agencyCampaignsNames.includes(campaign)) {
+			throw new Error('Campanha não cadastrada na agência!');
+		}
 
 		const apiResponse = new ApiResponse();
 
@@ -30,9 +41,8 @@ const build = (app: { [key: string]: any }): void => {
 		}
 
 		const fileContent = req.files.data.data;
-		const filePath = agency
-			? `${company}/${agency}/${campaign}/${DateUtils.generateDateString()}.csv`
-			: `${company}/${companyCampaignsFolder}/${campaign}/${DateUtils.generateDateString()}.csv`;
+
+		const filePath = `${company}/${agencyPath}/${campaign}/${DateUtils.generateDateString()}.csv`;
 
 		let companyConfig: Config;
 

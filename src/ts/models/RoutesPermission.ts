@@ -10,13 +10,44 @@ export class RoutesPermission {
 	}
 
 	public validatePermission(user: User): boolean {
-		const agencyPostRoutes = ['/build/.*', '/csv', '/user/changepass', '/logout', '/login'];
-		const agencyGetRoutes = ['/config', '/template', '/csv/list', '/csv', '/user'];
+		const agencyUserPostRoutes = ['/build/.*', '/csv', '/user/changepass', '/logout', '/login'];
+		const agencyUserGetRoutes = [
+			'/config',
+			'/template',
+			'/csv/list',
+			'/csv',
+			'/user',
+			'/campaign/.*/list',
+			'/agency/list',
+			'/campaign/.*/csv/list',
+			'/agencies/campaigns',
+		];
+		const agencyOwnerGetRoutes = agencyUserGetRoutes.slice();
+		const agencyOwnerPostRoutes = agencyUserPostRoutes.slice();
+
+		agencyOwnerGetRoutes.push('/template/excel', '/users', '/agency/users');
+		agencyOwnerPostRoutes.push(
+			'/register',
+			'/user/.*/deactivate',
+			'/user/.*/reactivate',
+			'/campaign/.*/deactivate',
+			'/campaign/.*/reactivate',
+			'/campaign'
+		);
+
 		if (user.permission === 'user') {
 			if (this._method === 'POST') {
-				return agencyPostRoutes.filter((route) => new RegExp(route).test(this._route)).length > 0;
+				return agencyUserPostRoutes.filter((route) => new RegExp(route).test(this._route)).length > 0;
 			} else if (this._method === 'GET') {
-				return agencyGetRoutes.filter((route) => new RegExp(route).test(this._route)).length > 0;
+				return agencyUserGetRoutes.filter((route) => new RegExp(route).test(this._route)).length > 0;
+			} else {
+				return false;
+			}
+		} else if (user.permission === 'agencyOwner') {
+			if (this._method === 'POST') {
+				return agencyOwnerPostRoutes.filter((route) => new RegExp(route).test(this._route)).length > 0;
+			} else if (this._method === 'GET') {
+				return agencyOwnerGetRoutes.filter((route) => new RegExp(route).test(this._route)).length > 0;
 			} else {
 				return false;
 			}
