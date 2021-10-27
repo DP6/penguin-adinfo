@@ -44,26 +44,40 @@ const campaign = (app: { [key: string]: any }): void => {
 			});
 	});
 
-	app.get('/agency/list', async (req: { [key: string]: any }, res: { [key: string]: any }) => {
+	app.get('/agencies/campaigns', async (req: { [key: string]: any }, res: { [key: string]: any }) => {
 		const apiResponse = new ApiResponse();
 
 		const company = req.company;
 		const agency = req.agency;
 		const permission = req.permission;
 
-		new AgencyDAO()
-			.getAllAgenciesFrom(company, agency, permission)
-			.then((agencies: string[]) => {
-				apiResponse.responseText = JSON.stringify(agencies);
-			})
-			.catch((err) => {
+		const gettingAgencies = async () => {
+			return await new AgencyDAO().getAllAgenciesFrom(company, agency, permission);
+		};
+
+		const agencies: any = await gettingAgencies();
+		if (permission === 'admin' || permission === ' owner') agencies.push('Campanhas Internas');
+		console.log(agencies);
+		const agenciasFinal: any = [];
+		for await (const agencia of agencies) {
+			try {
+				const campanhas = await new CampaignDAO().getAllCampaignsFrom(agencia, permission);
+				if (campanhas) {
+					agenciasFinal.push({ [agencia]: campanhas });
+				}
+			} catch (err) {
 				apiResponse.statusCode = 500;
-				apiResponse.responseText = err.message;
+				apiResponse.responseText = 'Erro ao resgatar a campanha!';
 				apiResponse.errorMessage = err.message;
-			})
-			.finally(() => {
 				res.status(apiResponse.statusCode).send(apiResponse.jsonResponse);
-			});
+				return;
+			}
+		}
+
+		apiResponse.statusCode = 200;
+		apiResponse.responseText = JSON.stringify(agenciasFinal);
+		console.log(apiResponse.responseText);
+		res.status(apiResponse.statusCode).send(apiResponse.responseText);
 	});
 
 	app.get('/campaign/:agency/list', async (req: { [key: string]: any }, res: { [key: string]: any }) => {

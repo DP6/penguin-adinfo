@@ -17,6 +17,7 @@ class RoutesPermission {
 			'/campaign/.*/list',
 			'/agency/list',
 			'/campaign/.*/csv/list',
+			'/agencies/campaigns',
 		];
 		const agencyOwnerGetRoutes = agencyUserGetRoutes.slice();
 		const agencyOwnerPostRoutes = agencyUserPostRoutes.slice();
