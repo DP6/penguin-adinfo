@@ -118,6 +118,10 @@ const campaign = (app) => {
 				});
 			const agencies = yield gettingAgencies();
 			if (permission === 'admin' || permission === ' owner') agencies.push('Campanhas Internas');
+<<<<<<< HEAD
+=======
+			console.log(agencies);
+>>>>>>> 39b715d018748d0e9a368f89117ced520b89e2b6
 			const agenciasFinal = [];
 			try {
 				for (
@@ -150,6 +154,10 @@ const campaign = (app) => {
 			}
 			apiResponse.statusCode = 200;
 			apiResponse.responseText = JSON.stringify(agenciasFinal);
+<<<<<<< HEAD
+=======
+			console.log(apiResponse.responseText);
+>>>>>>> 39b715d018748d0e9a368f89117ced520b89e2b6
 			res.status(apiResponse.statusCode).send(apiResponse.responseText);
 		})
 	);
