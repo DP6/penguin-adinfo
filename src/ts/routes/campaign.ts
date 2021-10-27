@@ -57,7 +57,6 @@ const campaign = (app: { [key: string]: any }): void => {
 
 		const agencies: any = await gettingAgencies();
 		if (permission === 'admin' || permission === ' owner') agencies.push('Campanhas Internas');
-		console.log(agencies);
 		const agenciasFinal: any = [];
 		for await (const agencia of agencies) {
 			try {
@@ -76,7 +75,6 @@ const campaign = (app: { [key: string]: any }): void => {
 
 		apiResponse.statusCode = 200;
 		apiResponse.responseText = JSON.stringify(agenciasFinal);
-		console.log(apiResponse.responseText);
 		res.status(apiResponse.statusCode).send(apiResponse.responseText);
 	});
 
