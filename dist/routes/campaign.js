@@ -97,7 +97,7 @@ const campaign = (app) => {
 				})
 				.catch((err) => {
 					apiResponse.statusCode = 500;
-					apiResponse.responseText = 'Email e/ou senha incorreto(s)!';
+					apiResponse.responseText = 'Erro ao criar campanha!';
 					apiResponse.errorMessage = err.message;
 				})
 				.finally(() => {
@@ -116,20 +116,20 @@ const campaign = (app) => {
 				__awaiter(void 0, void 0, void 0, function* () {
 					return yield new AgencyDAO_1.AgencyDAO().getAllAgenciesFrom(company, agency, permission);
 				});
-			const agencies = yield gettingAgencies();
-			if (permission === 'admin' || permission === ' owner') agencies.push('Campanhas Internas');
-			const agenciasFinal = [];
+			const allAgencies = yield gettingAgencies();
+			if (permission === 'admin' || permission === ' owner') allAgencies.push('Campanhas Internas');
+			const agenciesToReturn = [];
 			try {
 				for (
-					var agencies_1 = __asyncValues(agencies), agencies_1_1;
-					(agencies_1_1 = yield agencies_1.next()), !agencies_1_1.done;
+					var allAgencies_1 = __asyncValues(allAgencies), allAgencies_1_1;
+					(allAgencies_1_1 = yield allAgencies_1.next()), !allAgencies_1_1.done;
 
 				) {
-					const agencia = agencies_1_1.value;
+					const agencyInfos = allAgencies_1_1.value;
 					try {
-						const campanhas = yield new CampaignDAO_1.CampaignDAO().getAllCampaignsFrom(agencia, permission);
-						if (campanhas) {
-							agenciasFinal.push({ [agencia]: campanhas });
+						const campaignsObject = yield new CampaignDAO_1.CampaignDAO().getAllCampaignsFrom(agencyInfos, permission);
+						if (campaignsObject) {
+							agenciesToReturn.push({ [agencyInfos]: campaignsObject });
 						}
 					} catch (err) {
 						apiResponse.statusCode = 500;
@@ -143,13 +143,13 @@ const campaign = (app) => {
 				e_1 = { error: e_1_1 };
 			} finally {
 				try {
-					if (agencies_1_1 && !agencies_1_1.done && (_a = agencies_1.return)) yield _a.call(agencies_1);
+					if (allAgencies_1_1 && !allAgencies_1_1.done && (_a = allAgencies_1.return)) yield _a.call(allAgencies_1);
 				} finally {
 					if (e_1) throw e_1.error;
 				}
 			}
 			apiResponse.statusCode = 200;
-			apiResponse.responseText = JSON.stringify(agenciasFinal);
+			apiResponse.responseText = JSON.stringify(agenciesToReturn);
 			res.status(apiResponse.statusCode).send(apiResponse.responseText);
 		})
 	);
@@ -230,7 +230,7 @@ const campaign = (app) => {
 				})
 				.catch((err) => {
 					apiResponse.statusCode = 500;
-					apiResponse.responseText = 'Email e/ou senha incorreto(s)!';
+					apiResponse.responseText = 'Erro ao desativar campanha!';
 					apiResponse.errorMessage = err.message;
 				})
 				.finally(() => {
@@ -254,7 +254,7 @@ const campaign = (app) => {
 			})
 			.catch((err) => {
 				apiResponse.statusCode = 500;
-				apiResponse.responseText = 'Email e/ou senha incorreto(s)!';
+				apiResponse.responseText = 'Erro ao reativar campanha!';
 				apiResponse.errorMessage = err.message;
 			})
 			.finally(() => {

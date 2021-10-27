@@ -1,5 +1,5 @@
 import { FirestoreConnectionSingleton } from '../cloud/FirestoreConnectionSingleton';
-import { CollectionReference, QuerySnapshot, QueryDocumentSnapshot } from '@google-cloud/firestore';
+import { CollectionReference, QuerySnapshot } from '@google-cloud/firestore';
 import { ObjectStore } from './ObjectStore';
 import { User } from '../User';
 

@@ -36,7 +36,7 @@ const campaign = (app: { [key: string]: any }): void => {
 			})
 			.catch((err) => {
 				apiResponse.statusCode = 500;
-				apiResponse.responseText = 'Email e/ou senha incorreto(s)!';
+				apiResponse.responseText = 'Erro ao criar campanha!';
 				apiResponse.errorMessage = err.message;
 			})
 			.finally(() => {
@@ -55,14 +55,14 @@ const campaign = (app: { [key: string]: any }): void => {
 			return await new AgencyDAO().getAllAgenciesFrom(company, agency, permission);
 		};
 
-		const agencies: any = await gettingAgencies();
-		if (permission === 'admin' || permission === ' owner') agencies.push('Campanhas Internas');
-		const agenciasFinal: any = [];
-		for await (const agencia of agencies) {
+		const allAgencies: any = await gettingAgencies();
+		if (permission === 'admin' || permission === ' owner') allAgencies.push('Campanhas Internas');
+		const agenciesToReturn: any = [];
+		for await (const agencyInfos of allAgencies) {
 			try {
-				const campanhas = await new CampaignDAO().getAllCampaignsFrom(agencia, permission);
-				if (campanhas) {
-					agenciasFinal.push({ [agencia]: campanhas });
+				const campaignsObject = await new CampaignDAO().getAllCampaignsFrom(agencyInfos, permission);
+				if (campaignsObject) {
+					agenciesToReturn.push({ [agencyInfos]: campaignsObject });
 				}
 			} catch (err) {
 				apiResponse.statusCode = 500;
@@ -74,7 +74,7 @@ const campaign = (app: { [key: string]: any }): void => {
 		}
 
 		apiResponse.statusCode = 200;
-		apiResponse.responseText = JSON.stringify(agenciasFinal);
+		apiResponse.responseText = JSON.stringify(agenciesToReturn);
 		res.status(apiResponse.statusCode).send(apiResponse.responseText);
 	});
 
@@ -160,7 +160,7 @@ const campaign = (app: { [key: string]: any }): void => {
 			})
 			.catch((err) => {
 				apiResponse.statusCode = 500;
-				apiResponse.responseText = 'Email e/ou senha incorreto(s)!';
+				apiResponse.responseText = 'Erro ao desativar campanha!';
 				apiResponse.errorMessage = err.message;
 			})
 			.finally(() => {
@@ -185,7 +185,7 @@ const campaign = (app: { [key: string]: any }): void => {
 			})
 			.catch((err) => {
 				apiResponse.statusCode = 500;
-				apiResponse.responseText = 'Email e/ou senha incorreto(s)!';
+				apiResponse.responseText = 'Erro ao reativar campanha!';
 				apiResponse.errorMessage = err.message;
 			})
 			.finally(() => {

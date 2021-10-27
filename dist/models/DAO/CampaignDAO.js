@@ -27,7 +27,7 @@ class CampaignDAO {
 					});
 					return campaign;
 				} else {
-					throw new Error('Email ou senha incorreto(s)!');
+					throw new Error('Nenhuma campanha encontrada!');
 				}
 			})
 			.catch((err) => {
