@@ -70,10 +70,13 @@ export class Adobe extends AnalyticsTool {
 	/**
 	 * @returns Json parametrizado com o cid e a url do adobe
 	 */
-	public buildedLine(): { [key: string]: string } {
+	public buildedLine(): { values: { [key: string]: string }; hasError: boolean } {
 		return {
-			cid: this._hasErrorAtCid() ? this._errorMessage() : this._cid,
-			'url adobe': this._hasErrorAtCid() ? 'Corrija os parâmetros para gerar a URL' : this.url,
+			values: {
+				cid: this._hasErrorAtCid() ? this._errorMessage() : this._cid,
+				'url adobe': this._hasErrorAtCid() ? 'Corrija os parâmetros para gerar a URL' : this.url,
+			},
+			hasError: this._hasErrorAtCid(),
 		};
 	}
 

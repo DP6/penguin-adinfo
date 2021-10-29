@@ -26,5 +26,5 @@ export abstract class Parametrizer {
 	/**
 	 * Método que constrói e retorna os parametros de parametrização
 	 */
-	abstract buildedLine(): { [key: string]: string };
+	abstract buildedLine(): { values: { [key: string]: string }; hasError: boolean };
 }

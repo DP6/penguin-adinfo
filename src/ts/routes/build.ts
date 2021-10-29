@@ -15,6 +15,13 @@ const build = (app: { [key: string]: any }): void => {
 		const companyCampaignsFolder = 'CompanyCampaigns';
 		const campaign = req.headers.campaign;
 
+		const pathDefault = agency
+			? `${company}/${agency}/${campaign}`
+			: `${company}/${companyCampaignsFolder}/${campaign}`;
+
+		const fullHistoricalFilePath = `${pathDefault}/historical.csv`;
+		const correctHistoricalFilePath = `${pathDefault}/correctHistorical.csv`;
+
 		const apiResponse = new ApiResponse();
 
 		if (!req.files || !req.files.data) {
@@ -29,10 +36,10 @@ const build = (app: { [key: string]: any }): void => {
 			return;
 		}
 
+		const fileName = DateUtils.generateDateString();
+
 		const fileContent = req.files.data.data;
-		const filePath = agency
-			? `${company}/${agency}/${campaign}/${DateUtils.generateDateString()}.csv`
-			: `${company}/${companyCampaignsFolder}/${campaign}/${DateUtils.generateDateString()}.csv`;
+		const filePath = `${pathDefault}/${fileName}.csv`;
 
 		let companyConfig: Config;
 
@@ -54,7 +61,7 @@ const build = (app: { [key: string]: any }): void => {
 					throw new Error('Nenhuma configuração encontrada!');
 				}
 			})
-			.then(() => {
+			.then(async () => {
 				const csvContent = fileContent.toString();
 				const separator = CsvUtils.identifyCsvSepartor(csvContent.split('\n')[0], companyConfig.csvSeparator);
 				const jsonFromFile = CsvUtils.csv2json(csvContent, separator);
@@ -65,14 +72,86 @@ const build = (app: { [key: string]: any }): void => {
 					'yyyymmddhhMMss',
 					'hh:MM:ss dd/mm/yyyy'
 				);
+
+				let [fullHistoricalContent, correctHistoricalContent] = await Promise.all([
+					(await new FileDAO().getContentFrom(fullHistoricalFilePath)).toString(),
+					(await new FileDAO().getContentFrom(correctHistoricalFilePath)).toString(),
+				]);
+
 				return new Promise((resolve, reject) => {
 					converter.json2csv(
 						jsonParameterized,
-						(err, csv) => {
-							csv += '\n\nConfiguracao versao' + separator + configVersion;
-							csv += '\nConfiguracao inserida em' + separator + configTimestamp;
+						async (err, csv) => {
+							const csvHeader = csv.split('\n')[0].split(separator).slice(0, -1).join(separator);
+							const csvArrayContent = csv.split('\n').slice(1);
+
+							const linesCorrectToSaveIntoCsv = csvArrayContent
+								.filter((csvLine) => {
+									const csvLineArray = csvLine.split(separator);
+									return csvLineArray[csvLineArray.length - 1] === 'false';
+								})
+								.map((csvLine) => csvLine.split(separator).slice(0, -1).join(separator));
+
+							const linesToSaveIntoCsv = csvArrayContent.map((csvLine) =>
+								csvLine.split(separator).slice(0, -1).join(separator)
+							);
+
+							if (fullHistoricalContent) {
+								fullHistoricalContent +=
+									'\n' +
+									linesToSaveIntoCsv.map((csvLine: string) => `${fileName}.csv${separator}${csvLine}`).join('\n');
+							} else {
+								const csvArrayHeaderNewField = 'Arquivo' + separator + csvHeader;
+								const csvContentNewField = linesToSaveIntoCsv.map(
+									(csvLine: string) => `${fileName}.csv${separator}${csvLine}`
+								);
+								fullHistoricalContent = csvArrayHeaderNewField;
+								if (csvContentNewField.length > 0) {
+									fullHistoricalContent += '\n' + csvContentNewField.join('\n');
+								}
+							}
+
+							const fullHistoricalFileDao = new FileDAO();
+							fullHistoricalFileDao.file = Buffer.from(fullHistoricalContent, 'utf8');
+
+							if (correctHistoricalContent) {
+								correctHistoricalContent +=
+									'\n' +
+									linesCorrectToSaveIntoCsv
+										.map((csvLine: string) => `${fileName}.csv${separator}${csvLine}`)
+										.join('\n');
+							} else {
+								const csvArrayHeaderNewField = 'Arquivo' + separator + csvHeader;
+								const csvContentNewField = linesCorrectToSaveIntoCsv.map(
+									(csvLine: string) => `${fileName}.csv${separator}${csvLine}`
+								);
+								correctHistoricalContent = csvArrayHeaderNewField;
+								if (csvContentNewField.length > 0) {
+									correctHistoricalContent += '\n' + csvContentNewField.join('\n');
+								}
+							}
+
+							const correctHistoricalFileDao = new FileDAO();
+							correctHistoricalFileDao.file = Buffer.from(correctHistoricalContent, 'utf8');
+
+							let parametrizedCsv = csv
+								.split('\n')
+								.map((csvLine) => csvLine.split(separator).slice(0, -1).join(separator))
+								.join('\n');
+
+							const fileDao = new FileDAO();
+							fileDao.file = Buffer.from(parametrizedCsv, 'utf8');
+
+							parametrizedCsv += '\n\nConfiguracao versao' + separator + configVersion;
+							parametrizedCsv += '\nConfiguracao inserida em' + separator + configTimestamp;
+
 							if (err) reject(err);
-							resolve(csv);
+							await Promise.all([
+								fullHistoricalFileDao.save(fullHistoricalFilePath),
+								correctHistoricalFileDao.save(correctHistoricalFilePath),
+								fileDao.save(filePath.replace('.csv', '_parametrizado.csv')),
+							]);
+							resolve(parametrizedCsv);
 						},
 						{
 							delimiter: {
@@ -80,13 +159,6 @@ const build = (app: { [key: string]: any }): void => {
 							},
 						}
 					);
-				});
-			})
-			.then((csv: string) => {
-				const fileDao = new FileDAO();
-				fileDao.file = Buffer.from(csv, 'utf8');
-				return fileDao.save(filePath.replace('.csv', '_parametrizado.csv')).then(() => {
-					return csv;
 				});
 			})
 			.then((csv: string) => {

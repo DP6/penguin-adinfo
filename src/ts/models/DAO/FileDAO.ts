@@ -33,6 +33,16 @@ export class FileDAO {
 		return this._fileStore.getFile(filePath);
 	}
 
+	public async getContentFrom(filePath: string, contentDefault = ''): Promise<Buffer> {
+		let fileBuffer: Buffer;
+		try {
+			fileBuffer = await this._fileStore.getFile(filePath);
+		} catch (e) {
+			fileBuffer = Buffer.from(contentDefault);
+		}
+		return fileBuffer;
+	}
+
 	/**
 	 * Pegar todos os arquivos de uma agencia
 	 * @param agency nome da agencia

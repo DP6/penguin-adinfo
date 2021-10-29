@@ -90,14 +90,19 @@ export class GA extends AnalyticsTool {
 	/**
 	 * Json parametrizado com os utms e a url do ga
 	 */
-	public buildedLine(): { [key: string]: any } {
-		const utms: { [key: string]: string } = {};
-		Object.keys(this._utms).map((utm) => {
-			utms[utm] = this._hasErrorAtUtm(utm) ? this._errorMessageAtUtm(utm) : this._utms[utm];
+	public buildedLine(): { values: { [key: string]: string }; hasError: boolean } {
+		const utmReturn: { [key: string]: string } = {};
+		let hasError = false;
+		Object.keys(this._utms).forEach((utm) => {
+			utmReturn[utm] = this._hasErrorAtUtm(utm) ? this._errorMessageAtUtm(utm) : this._utms[utm];
+			hasError = !hasError && this._hasErrorAtUtm(utm) ? true : hasError;
 		});
 		return {
-			utms: utms,
-			'url ga': this._hasAnyErrorAtUtms() ? 'Corrija os parâmetros para gerar a URL' : this.url,
+			values: {
+				...utmReturn,
+				'url ga': this._hasAnyErrorAtUtms() ? 'Corrija os parâmetros para gerar a URL' : this.url,
+			},
+			hasError: hasError,
 		};
 	}
 

@@ -25,7 +25,13 @@ class GoogleAds extends Vehicle_1.Vehicle {
 		this._buildAdsParams();
 	}
 	buildedLine() {
-		return this._adsParams;
+		const hasError = Object.keys(this._adsParams).filter(
+			(adsParam) => this._hasValidationError[adsParam] || this._hasUndefinedParameterError[adsParam]
+		);
+		return {
+			values: Object.assign({}, this._adsParams),
+			hasError: hasError.length > 0,
+		};
 	}
 	_buildAdsParams() {
 		Object.keys(this.config.medias.googleads).forEach((googleAdsParam) => {

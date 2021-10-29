@@ -18,7 +18,7 @@ export class Builder {
 	/**
 	 * Parametriza o csv de acordo com a midia
 	 */
-	public build(): { [key: string]: string }[] {
+	public build(): { [key: string]: any }[] {
 		const linesWithContent = this._jsonFromFile.filter((line) => !CsvUtils.isLineEmpty(line));
 		const linesBuilded: { [key: string]: string }[] = linesWithContent.map((lineFromFile) => {
 			const parametrizerObject = new ParametrizerFactory(lineFromFile, this._companyConfig).build(this._media);
@@ -27,9 +27,14 @@ export class Builder {
 				const analyticsToolParameters = new ParametrizerFactory(lineFromFile, this._companyConfig)
 					.build(StringUtils.normalize(this._companyConfig.analyticsToolName))
 					.buildedLine();
-				return JsonUtils.addParametersAt(lineFromFile, parameters, analyticsToolParameters);
+				const allParameters = {
+					...parameters.values,
+					...analyticsToolParameters.values,
+					hasError: parameters.hasError || analyticsToolParameters.hasError,
+				};
+				return JsonUtils.addParametersAt(lineFromFile, allParameters);
 			} else {
-				return JsonUtils.addParametersAt(lineFromFile, parameters);
+				return JsonUtils.addParametersAt(lineFromFile, { ...parameters.values, hasError: parameters.hasError });
 			}
 		});
 		return linesBuilded;

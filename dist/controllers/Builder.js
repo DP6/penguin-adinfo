@@ -22,9 +22,16 @@ class Builder {
 				const analyticsToolParameters = new ParametrizerFactory_1.ParametrizerFactory(lineFromFile, this._companyConfig)
 					.build(StringUtils_1.StringUtils.normalize(this._companyConfig.analyticsToolName))
 					.buildedLine();
-				return JsonUtils_1.JsonUtils.addParametersAt(lineFromFile, parameters, analyticsToolParameters);
+				const allParameters = Object.assign(
+					Object.assign(Object.assign({}, parameters.values), analyticsToolParameters.values),
+					{ hasError: parameters.hasError || analyticsToolParameters.hasError }
+				);
+				return JsonUtils_1.JsonUtils.addParametersAt(lineFromFile, allParameters);
 			} else {
-				return JsonUtils_1.JsonUtils.addParametersAt(lineFromFile, parameters);
+				return JsonUtils_1.JsonUtils.addParametersAt(
+					lineFromFile,
+					Object.assign(Object.assign({}, parameters.values), { hasError: parameters.hasError })
+				);
 			}
 		});
 		return linesBuilded;

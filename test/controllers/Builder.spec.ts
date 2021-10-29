@@ -37,6 +37,7 @@ describe('Builder', () => {
 					cid: 'cpc:meu_produto:meuveiculo',
 					'url adobe':
 						'www.teste.com.br?cid=cpc:meu_produto:meuveiculo',
+					hasError: false
 				},
 			];
 			expect(JSON.stringify(builder.build())).to.equal(
@@ -76,12 +77,11 @@ describe('Builder', () => {
 					Dispositivo: 'desktop e mobile',
 					Período: 'Maio 2020',
 					Bandeira: 'Minha Bandeira',
-					utms: {
-						utm_medium: 'cpc',
-						utm_campaign: 'maio_2020:minha_bandeira',
-					},
+					utm_medium: 'cpc',
+					utm_campaign: 'maio_2020:minha_bandeira',
 					'url ga':
 						'www.teste.com.br?utm_medium=cpc&utm_campaign=maio_2020:minha_bandeira',
+					hasError: false
 				},
 			];
 			expect(JSON.stringify(builder.build())).to.equal(

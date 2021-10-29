@@ -25,14 +25,12 @@ describe('GA', () => {
 			});
 			const ga = new GA(csvLine, config);
 			const gaFields = {
-				utms: {
-					utm_medium: 'cpc',
-					utm_campaign:
-						'Parâmetros não encontrados: Período - Bandeira',
-				},
+				utm_medium: 'cpc',
+				utm_campaign:
+					'Parâmetros não encontrados: Período - Bandeira',
 				'url ga': 'Corrija os parâmetros para gerar a URL',
 			};
-			expect(JSON.stringify(ga.buildedLine())).to.equal(
+			expect(JSON.stringify(ga.buildedLine().values)).to.equal(
 				JSON.stringify(gaFields)
 			);
 		});
@@ -59,13 +57,11 @@ describe('GA', () => {
 			});
 			const ga = new GA(csvLine, config);
 			const gaFields = {
-				utms: {
-					utm_medium: 'cpc',
-					utm_campaign: 'Parâmetros incorretos: Bandeira',
-				},
+				utm_medium: 'cpc',
+				utm_campaign: 'Parâmetros incorretos: Bandeira',
 				'url ga': 'Corrija os parâmetros para gerar a URL',
 			};
-			expect(JSON.stringify(ga.buildedLine())).to.equal(
+			expect(JSON.stringify(ga.buildedLine().values)).to.equal(
 				JSON.stringify(gaFields)
 			);
 		});
@@ -92,14 +88,12 @@ describe('GA', () => {
 			});
 			const ga = new GA(csvLine, config);
 			const gaFields = {
-				utms: {
-					utm_medium: 'cpc',
-					utm_campaign: 'maio_2020:minha_bandeira',
-				},
+				utm_medium: 'cpc',
+				utm_campaign: 'maio_2020:minha_bandeira',
 				'url ga':
 					'www.teste.com.br?utm_medium=cpc&utm_campaign=maio_2020:minha_bandeira',
 			};
-			expect(JSON.stringify(ga.buildedLine())).to.equal(
+			expect(JSON.stringify(ga.buildedLine().values)).to.equal(
 				JSON.stringify(gaFields)
 			);
 		});
@@ -137,14 +131,12 @@ describe('GA', () => {
 			});
 			const ga = new GA(csvLine, config);
 			const gaFields = {
-				utms: {
-					utm_medium: 'cpc',
-					utm_campaign: 'maio_2020:minha_bandeira',
-				},
+				utm_medium: 'cpc',
+				utm_campaign: 'maio_2020:minha_bandeira',
 				'url ga':
 					'www.teste.com.br?utm_medium=cpc&utm_campaign=maio_2020:minha_bandeira',
 			};
-			expect(JSON.stringify(ga.buildedLine())).to.equal(
+			expect(JSON.stringify(ga.buildedLine().values)).to.equal(
 				JSON.stringify(gaFields)
 			);
 		});
@@ -187,14 +179,12 @@ describe('GA', () => {
 			});
 			const ga = new GA(csvLine, config);
 			const gaFields = {
-				utms: {
-					utm_medium: 'cpa',
-					utm_campaign: 'maio_2020:minha_bandeira',
-				},
+				utm_medium: 'cpa',
+				utm_campaign: 'maio_2020:minha_bandeira',
 				'url ga':
 					'www.teste.com.br?utm_medium=cpa&utm_campaign=maio_2020:minha_bandeira',
 			};
-			expect(JSON.stringify(ga.buildedLine())).to.equal(
+			expect(JSON.stringify(ga.buildedLine().values)).to.equal(
 				JSON.stringify(gaFields)
 			);
 		});
@@ -237,13 +227,11 @@ describe('GA', () => {
 			});
 			const ga = new GA(csvLine, config);
 			const gaFields = {
-				utms: {
-					utm_medium: 'cpa',
-					utm_campaign: 'Parâmetros incorretos: Bandeira',
-				},
+				utm_medium: 'cpa',
+				utm_campaign: 'Parâmetros incorretos: Bandeira',
 				'url ga': 'Corrija os parâmetros para gerar a URL',
 			};
-			expect(JSON.stringify(ga.buildedLine())).to.equal(
+			expect(JSON.stringify(ga.buildedLine().values)).to.equal(
 				JSON.stringify(gaFields)
 			);
 		});
@@ -279,13 +267,11 @@ describe('GA', () => {
 			});
 			const ga = new GA(csvLine, config);
 			const gaFields = {
-				utms: {
-					utm_medium: 'cpc',
-					utm_campaign: 'Parâmetros incorretos: Bandeira',
-				},
+				utm_medium: 'cpc',
+				utm_campaign: 'Parâmetros incorretos: Bandeira',
 				'url ga': 'Corrija os parâmetros para gerar a URL',
 			};
-			expect(JSON.stringify(ga.buildedLine())).to.equal(
+			expect(JSON.stringify(ga.buildedLine().values)).to.equal(
 				JSON.stringify(gaFields)
 			);
 		});
