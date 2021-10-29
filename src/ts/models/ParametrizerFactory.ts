@@ -1,7 +1,5 @@
 import { Adobe } from './Adobe';
-import { FacebookAds } from './FacebookAds';
 import { GA } from './GA';
-import { GoogleAds } from './GoogleAds';
 import { Parametrizer } from './Parametrizer';
 import { Config } from './Config';
 import { GeneralVehicle } from './GeneralVehicle';

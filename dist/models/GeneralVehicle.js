@@ -20,7 +20,10 @@ class GeneralVehicle extends Vehicle_1.Vehicle {
 		this._buildGeneralParams();
 	}
 	buildedLine() {
-		return this._params;
+		return {
+			values: Object.assign({}, this._params),
+			hasError: this._hasUndefinedParameterError || this._hasValidationError,
+		};
 	}
 	_buildGeneralParams() {
 		Object.keys(this.config.medias[this._vehicleName]).forEach((param) => {

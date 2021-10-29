@@ -69,8 +69,16 @@ export class GoogleAds extends Vehicle {
 	/**
 	 * Gera os campos do GoogleAds
 	 */
-	public buildedLine(): { [key: string]: string } {
-		return this._adsParams;
+	public buildedLine(): { values: { [key: string]: string }; hasError: boolean } {
+		const hasError = Object.keys(this._adsParams).filter(
+			(adsParam) => this._hasValidationError[adsParam] || this._hasUndefinedParameterError[adsParam]
+		);
+		return {
+			values: {
+				...this._adsParams,
+			},
+			hasError: hasError.length > 0,
+		};
 	}
 
 	/**

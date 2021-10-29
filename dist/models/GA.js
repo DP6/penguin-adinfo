@@ -46,13 +46,17 @@ class GA extends AnalyticsTool_1.AnalyticsTool {
 		return hasError;
 	}
 	buildedLine() {
-		const utms = {};
-		Object.keys(this._utms).map((utm) => {
-			utms[utm] = this._hasErrorAtUtm(utm) ? this._errorMessageAtUtm(utm) : this._utms[utm];
+		const utmReturn = {};
+		let hasError = false;
+		Object.keys(this._utms).forEach((utm) => {
+			utmReturn[utm] = this._hasErrorAtUtm(utm) ? this._errorMessageAtUtm(utm) : this._utms[utm];
+			hasError = !hasError && this._hasErrorAtUtm(utm) ? true : hasError;
 		});
 		return {
-			utms: utms,
-			'url ga': this._hasAnyErrorAtUtms() ? 'Corrija os parâmetros para gerar a URL' : this.url,
+			values: Object.assign(Object.assign({}, utmReturn), {
+				'url ga': this._hasAnyErrorAtUtms() ? 'Corrija os parâmetros para gerar a URL' : this.url,
+			}),
+			hasError: hasError,
 		};
 	}
 	_buildUtms() {

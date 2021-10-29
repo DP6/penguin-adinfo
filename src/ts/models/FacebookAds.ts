@@ -70,8 +70,13 @@ export class FacebookAds extends Vehicle {
 	/**
 	 * Gera os campos referentes ao FacebookAds
 	 */
-	public buildedLine(): { [key: string]: string } {
-		return this._facebookParams;
+	public buildedLine(): { values: { [key: string]: string }; hasError: boolean } {
+		return {
+			values: {
+				...this._facebookParams,
+			},
+			hasError: this._hasUndefinedParameterError || this._hasValidationError,
+		};
 	}
 
 	//TODO retornar valores

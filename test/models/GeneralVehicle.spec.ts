@@ -33,7 +33,7 @@ describe('Veículo Genérico', () => {
 				campanha: 'cpc:desktop_e_mobile',
 				ad: 'fifinha',
 			};
-			expect(JSON.stringify(criteo.buildedLine())).to.equal(
+			expect(JSON.stringify(criteo.buildedLine().values)).to.equal(
 				JSON.stringify(criteoFields)
 			);
 		});
@@ -66,7 +66,7 @@ describe('Veículo Genérico', () => {
 				campanha: 'cpc:desktop_e_mobile',
 				ad: 'Parâmetro(s) incorreto(s): Produto',
 			};
-			expect(JSON.stringify(criteo.buildedLine())).to.equal(
+			expect(JSON.stringify(criteo.buildedLine().values)).to.equal(
 				JSON.stringify(criteoFields)
 			);
 		});
@@ -97,7 +97,7 @@ describe('Veículo Genérico', () => {
 				campanha: 'cpc:desktop_e_mobile',
 				ad: 'Parâmetro(s) não encontrado(s) na configuração: Produto',
 			};
-			expect(JSON.stringify(criteo.buildedLine())).to.equal(
+			expect(JSON.stringify(criteo.buildedLine().values)).to.equal(
 				JSON.stringify(criteoFields)
 			);
 		});
@@ -141,7 +141,7 @@ describe('Veículo Genérico', () => {
 				campanha: 'cpc:desktop_e_mobile',
 				ad: 'fifinha',
 			};
-			expect(JSON.stringify(criteo.buildedLine())).to.equal(
+			expect(JSON.stringify(criteo.buildedLine().values)).to.equal(
 				JSON.stringify(criteoFields)
 			);
 		});
@@ -190,7 +190,7 @@ describe('Veículo Genérico', () => {
 				campanha: 'cpc:desktop_e_mobile',
 				ad: 'Parâmetro(s) incorreto(s): Produto',
 			};
-			expect(JSON.stringify(criteo.buildedLine())).to.equal(
+			expect(JSON.stringify(criteo.buildedLine().values)).to.equal(
 				JSON.stringify(criteoFields)
 			);
 		});

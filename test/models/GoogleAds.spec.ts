@@ -33,7 +33,7 @@ describe('GoogleAds', () => {
 				campanha: 'cpc:desktop_e_mobile',
 				ad: 'fifinha',
 			};
-			expect(JSON.stringify(googleAds.buildedLine())).to.equal(
+			expect(JSON.stringify(googleAds.buildedLine().values)).to.equal(
 				JSON.stringify(googleAdsFields)
 			);
 		});
@@ -66,7 +66,7 @@ describe('GoogleAds', () => {
 				campanha: 'cpc:desktop_e_mobile',
 				ad: 'Parâmetro(s) incorreto(s): Produto',
 			};
-			expect(JSON.stringify(googleAds.buildedLine())).to.equal(
+			expect(JSON.stringify(googleAds.buildedLine().values)).to.equal(
 				JSON.stringify(googleAdsFields)
 			);
 		});
@@ -117,7 +117,7 @@ describe('GoogleAds', () => {
 				campanha: 'cpc:desktop_e_mobile',
 				ad: 'fifinha',
 			};
-			expect(JSON.stringify(googleAds.buildedLine())).to.equal(
+			expect(JSON.stringify(googleAds.buildedLine().values)).to.equal(
 				JSON.stringify(googleAdsFields)
 			);
 		});
@@ -166,7 +166,7 @@ describe('GoogleAds', () => {
 				campanha: 'cpc:desktop',
 				ad: 'fifinha',
 			};
-			expect(JSON.stringify(googleAds.buildedLine())).to.equal(
+			expect(JSON.stringify(googleAds.buildedLine().values)).to.equal(
 				JSON.stringify(googleAdsFields)
 			);
 		});
@@ -215,7 +215,7 @@ describe('GoogleAds', () => {
 				campanha: 'Parâmetro(s) incorreto(s): Dispositivo',
 				ad: 'fifinha',
 			};
-			expect(JSON.stringify(googleAds.buildedLine())).to.equal(
+			expect(JSON.stringify(googleAds.buildedLine().values)).to.equal(
 				JSON.stringify(googleAdsFields)
 			);
 		});
@@ -264,7 +264,7 @@ describe('GoogleAds', () => {
 				campanha: 'cpc:desktop_e_mobile',
 				ad: 'Parâmetro(s) incorreto(s): Produto',
 			};
-			expect(JSON.stringify(googleAds.buildedLine())).to.equal(
+			expect(JSON.stringify(googleAds.buildedLine().values)).to.equal(
 				JSON.stringify(googleAdsFields)
 			);
 		});

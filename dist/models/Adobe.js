@@ -32,8 +32,11 @@ class Adobe extends AnalyticsTool_1.AnalyticsTool {
 	}
 	buildedLine() {
 		return {
-			cid: this._hasErrorAtCid() ? this._errorMessage() : this._cid,
-			'url adobe': this._hasErrorAtCid() ? 'Corrija os parâmetros para gerar a URL' : this.url,
+			values: {
+				cid: this._hasErrorAtCid() ? this._errorMessage() : this._cid,
+				'url adobe': this._hasErrorAtCid() ? 'Corrija os parâmetros para gerar a URL' : this.url,
+			},
+			hasError: this._hasErrorAtCid(),
 		};
 	}
 	_buildCid() {

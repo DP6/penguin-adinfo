@@ -33,7 +33,7 @@ describe('FacebookAds', () => {
 				'ad name': 'cpc:desktop_e_mobile',
 				'campaign name': 'fifinha',
 			};
-			expect(JSON.stringify(facebookAds.buildedLine())).to.equal(
+			expect(JSON.stringify(facebookAds.buildedLine().values)).to.equal(
 				JSON.stringify(facebookAdsFields)
 			);
 		});
@@ -66,7 +66,7 @@ describe('FacebookAds', () => {
 				'ad name': 'cpc:desktop_e_mobile',
 				'campaign name': 'Parâmetros incorretos: Produto',
 			};
-			expect(JSON.stringify(facebookAds.buildedLine())).to.equal(
+			expect(JSON.stringify(facebookAds.buildedLine().values)).to.equal(
 				JSON.stringify(facebookAdsFields)
 			);
 		});
@@ -98,7 +98,7 @@ describe('FacebookAds', () => {
 				'campaign name':
 					'Parâmetro(s) não encontrado(s) na configuração: Produto',
 			};
-			expect(JSON.stringify(facebookAds.buildedLine())).to.equal(
+			expect(JSON.stringify(facebookAds.buildedLine().values)).to.equal(
 				JSON.stringify(facebookAdsFields)
 			);
 		});
@@ -149,7 +149,7 @@ describe('FacebookAds', () => {
 				'ad name': 'cpc:desktop_e_mobile',
 				'campaign name': 'fifinha',
 			};
-			expect(JSON.stringify(facebookAds.buildedLine())).to.equal(
+			expect(JSON.stringify(facebookAds.buildedLine().values)).to.equal(
 				JSON.stringify(facebookAdsFields)
 			);
 		});
@@ -198,7 +198,7 @@ describe('FacebookAds', () => {
 				'ad name': 'cpc:desktop_e_mobile',
 				'campaign name': 'Parâmetros incorretos: Produto',
 			};
-			expect(JSON.stringify(facebookAds.buildedLine())).to.equal(
+			expect(JSON.stringify(facebookAds.buildedLine().values)).to.equal(
 				JSON.stringify(facebookAdsFields)
 			);
 		});
@@ -247,7 +247,7 @@ describe('FacebookAds', () => {
 				'ad name': 'cpc:desktop_e_mobile',
 				'campaign name': 'fif',
 			};
-			expect(JSON.stringify(facebookAds.buildedLine())).to.equal(
+			expect(JSON.stringify(facebookAds.buildedLine().values)).to.equal(
 				JSON.stringify(facebookAdsFields)
 			);
 		});
@@ -296,7 +296,7 @@ describe('FacebookAds', () => {
 				'ad name': 'cpc:desktop_e_mobile',
 				'campaign name': 'Parâmetros incorretos: Produto',
 			};
-			expect(JSON.stringify(facebookAds.buildedLine())).to.equal(
+			expect(JSON.stringify(facebookAds.buildedLine().values)).to.equal(
 				JSON.stringify(facebookAdsFields)
 			);
 		});

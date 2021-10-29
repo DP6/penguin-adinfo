@@ -24,8 +24,13 @@ export class GeneralVehicle extends Vehicle {
 	/**
 	 * Gera os campos do GoogleAds
 	 */
-	public buildedLine(): { [key: string]: string } {
-		return this._params;
+	public buildedLine(): { values: { [key: string]: string }; hasError: boolean } {
+		return {
+			values: {
+				...this._params,
+			},
+			hasError: this._hasUndefinedParameterError || this._hasValidationError,
+		};
 	}
 
 	private _buildGeneralParams(): void {

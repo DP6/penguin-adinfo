@@ -20,7 +20,10 @@ class FacebookAds extends Vehicle_1.Vehicle {
 		this._clearFacebookParamsNames();
 	}
 	buildedLine() {
-		return this._facebookParams;
+		return {
+			values: Object.assign({}, this._facebookParams),
+			hasError: this._hasUndefinedParameterError || this._hasValidationError,
+		};
 	}
 	_buildUrlParams() {
 		if (!this.config.medias.facebookads.dynamicValues) {
