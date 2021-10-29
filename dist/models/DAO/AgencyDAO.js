@@ -7,7 +7,6 @@ class AgencyDAO {
 	constructor() {
 		this._objectStore = FirestoreConnectionSingleton_1.FirestoreConnectionSingleton.getInstance();
 		this._pathToCollection = ['tokens'];
-		this._authCollection = this._objectStore.getCollection(this._pathToCollection);
 	}
 	getAllAgenciesFrom(company, agency, userRequestPermission) {
 		return this._objectStore
@@ -38,7 +37,7 @@ class AgencyDAO {
 				throw err;
 			});
 	}
-	getAllUsersFromAgency(company, agency, userRequestPermission) {
+	getAllUsersFromAgency(company, agency) {
 		return this._objectStore
 			.getCollection(this._pathToCollection)
 			.where('company', '==', company)

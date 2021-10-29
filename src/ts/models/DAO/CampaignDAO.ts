@@ -56,7 +56,7 @@ export class CampaignDAO {
 	public getAllCampaignsFrom(
 		agency: string,
 		userRequestPermission: string
-	): Promise<{ campaignName: string; campaignId: string }[]> {
+	): Promise<{ campaignName: string; campaignId: string; agency: string; activate: boolean }[]> {
 		return this._objectStore
 			.getCollection(this._pathToCollection)
 			.where('agency', '==', agency !== 'Campanhas Internas' ? agency : 'CompanyCampaigns')
@@ -80,8 +80,9 @@ export class CampaignDAO {
 							if (
 								campaignInfos.campaignName &&
 								campaignInfos.campaignId &&
-								campaignInfos.campaignId &&
-								campaignInfos.campaignId &&
+								campaignInfos.agency &&
+								campaignInfos.activate !== null &&
+								campaignInfos.activate !== undefined &&
 								!campaigns.includes(campaignInfos)
 							) {
 								campaigns.push(campaignInfos);

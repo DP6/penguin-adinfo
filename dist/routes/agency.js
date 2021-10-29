@@ -58,8 +58,10 @@ const agency = (app) => {
 	app.get('/agency/users', (req, res) =>
 		__awaiter(void 0, void 0, void 0, function* () {
 			const apiResponse = new ApiResponse_1.ApiResponse();
+			const company = req.company;
+			const agency = req.agency;
 			new AgencyDAO_1.AgencyDAO()
-				.getAllUsersFromAgency(req.company, req.agency, req.permission)
+				.getAllUsersFromAgency(company, agency)
 				.then((users) => {
 					apiResponse.responseText = JSON.stringify(users.map((user) => user.toJson()));
 				})
