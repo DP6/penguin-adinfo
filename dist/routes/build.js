@@ -40,8 +40,9 @@ const ApiResponse_1 = require('../models/ApiResponse');
 const CampaignDAO_1 = require('../models/DAO/CampaignDAO');
 const converter = require('json-2-csv');
 const build = (app) => {
-	app.post('/build/:media', (req, res) =>
+	app.post('/build/:analyticsTool/:media?', (req, res) =>
 		__awaiter(void 0, void 0, void 0, function* () {
+			const analyticsTool = req.params.analyticsTool;
 			const media = req.params.media;
 			const company = req.company;
 			const agency = req.headers.agency;
@@ -52,14 +53,16 @@ const build = (app) => {
 			const agencyCampaignsNames = agencyCampaigns.map((campaign) => {
 				return campaign.campaignName;
 			});
-			if (!agencyCampaignsNames.includes(campaign)) {
-				throw new Error('Campanha não cadastrada na agência!');
-			}
 			const pathDefault = `${company}/${agencyPath}/${campaign}`;
 			const fullHistoricalFilePath = `${pathDefault}/historical`;
 			const correctHistoricalFilePath = `${pathDefault}/correctHistorical`;
 			const apiResponse = new ApiResponse_1.ApiResponse();
-			if (!req.files || !req.files.data) {
+			if (!agencyCampaignsNames.includes(campaign)) {
+				apiResponse.responseText = 'Campanha não cadastrada na agência!';
+				apiResponse.statusCode = 400;
+				res.status(apiResponse.statusCode).send(apiResponse.jsonResponse);
+				return;
+			} else if (!req.files || !req.files.data) {
 				apiResponse.responseText = 'Nenhum arquivo foi enviado!';
 				apiResponse.statusCode = 400;
 				res.status(apiResponse.statusCode).send(apiResponse.jsonResponse);
@@ -80,7 +83,11 @@ const build = (app) => {
 				.then((config) => {
 					companyConfig = config;
 					if (companyConfig) {
-						if (!companyConfig.toJson()[media]) {
+						const companyConfigJson = companyConfig.toJson();
+						if (!companyConfigJson[analyticsTool]) {
+							apiResponse.statusCode = 400;
+							throw new Error(`Ferramenta de Analytics ${media} não foi configurada!`);
+						} else if (media && !companyConfigJson[media]) {
 							apiResponse.statusCode = 400;
 							throw new Error(`Mídia ${media} não foi configurada!`);
 						}
@@ -100,7 +107,7 @@ const build = (app) => {
 							companyConfig.csvSeparator
 						);
 						const jsonFromFile = CsvUtils_1.CsvUtils.csv2json(csvContent, separator);
-						const jsonParameterized = new Builder_1.Builder(jsonFromFile, companyConfig, media).build();
+						const jsonParameterized = new Builder_1.Builder(jsonFromFile, companyConfig, analyticsTool, media).build();
 						const configVersion = companyConfig.version;
 						const configTimestamp = DateUtils_1.DateUtils.newDateStringFormat(
 							companyConfig.insertTime,

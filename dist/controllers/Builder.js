@@ -6,25 +6,26 @@ const JsonUtils_1 = require('../utils/JsonUtils');
 const StringUtils_1 = require('../utils/StringUtils');
 const ParametrizerFactory_1 = require('../models/ParametrizerFactory');
 class Builder {
-	constructor(jsonFromFile, companyConfig, media) {
+	constructor(jsonFromFile, companyConfig, analyticsTool, media) {
 		this._jsonFromFile = jsonFromFile;
 		this._companyConfig = companyConfig;
 		this._media = media;
+		this._analyticsTool = analyticsTool;
 	}
 	build() {
 		const linesWithContent = this._jsonFromFile.filter((line) => !CsvUtils_1.CsvUtils.isLineEmpty(line));
 		const linesBuilded = linesWithContent.map((lineFromFile) => {
 			const parametrizerObject = new ParametrizerFactory_1.ParametrizerFactory(lineFromFile, this._companyConfig).build(
-				this._media
+				this._analyticsTool
 			);
 			const parameters = parametrizerObject.buildedLine();
-			if (Object.getPrototypeOf(parametrizerObject.constructor).name === 'Vehicle') {
-				const analyticsToolParameters = new ParametrizerFactory_1.ParametrizerFactory(lineFromFile, this._companyConfig)
-					.build(StringUtils_1.StringUtils.normalize(this._companyConfig.analyticsToolName))
+			if (this._media) {
+				const mediaParameters = new ParametrizerFactory_1.ParametrizerFactory(lineFromFile, this._companyConfig)
+					.build(StringUtils_1.StringUtils.normalize(this._media))
 					.buildedLine();
 				const allParameters = Object.assign(
-					Object.assign(Object.assign({}, parameters.values), analyticsToolParameters.values),
-					{ hasError: parameters.hasError || analyticsToolParameters.hasError }
+					Object.assign(Object.assign({}, mediaParameters.values), parameters.values),
+					{ hasError: parameters.hasError || mediaParameters.hasError }
 				);
 				return JsonUtils_1.JsonUtils.addParametersAt(lineFromFile, allParameters);
 			} else {

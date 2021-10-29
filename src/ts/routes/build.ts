@@ -7,10 +7,10 @@ import { Builder } from '../controllers/Builder';
 import { ApiResponse } from '../models/ApiResponse';
 import { CampaignDAO } from '../models/DAO/CampaignDAO';
 import * as converter from 'json-2-csv';
-import config from './config';
 
 const build = (app: { [key: string]: any }): void => {
-	app.post('/build/:media', async (req: { [key: string]: any }, res: { [key: string]: any }) => {
+	app.post('/build/:analyticsTool/:media?', async (req: { [key: string]: any }, res: { [key: string]: any }) => {
+		const analyticsTool = req.params.analyticsTool;
 		const media = req.params.media;
 		const company = req.company;
 		const agency = req.headers.agency;
@@ -19,13 +19,9 @@ const build = (app: { [key: string]: any }): void => {
 		const permission = req.permission;
 
 		const agencyCampaigns = await new CampaignDAO().getAllCampaignsFrom(agencyPath, permission);
-		const agencyCampaignsNames = agencyCampaigns.map((campaign: any) => {
+		const agencyCampaignsNames = agencyCampaigns.map((campaign: { campaignName: string; campaignId: string }) => {
 			return campaign.campaignName;
 		});
-
-		if (!agencyCampaignsNames.includes(campaign)) {
-			throw new Error('Campanha não cadastrada na agência!');
-		}
 
 		const pathDefault = `${company}/${agencyPath}/${campaign}`;
 
@@ -34,7 +30,12 @@ const build = (app: { [key: string]: any }): void => {
 
 		const apiResponse = new ApiResponse();
 
-		if (!req.files || !req.files.data) {
+		if (!agencyCampaignsNames.includes(campaign)) {
+			apiResponse.responseText = 'Campanha não cadastrada na agência!';
+			apiResponse.statusCode = 400;
+			res.status(apiResponse.statusCode).send(apiResponse.jsonResponse);
+			return;
+		} else if (!req.files || !req.files.data) {
 			apiResponse.responseText = 'Nenhum arquivo foi enviado!';
 			apiResponse.statusCode = 400;
 			res.status(apiResponse.statusCode).send(apiResponse.jsonResponse);
@@ -60,7 +61,11 @@ const build = (app: { [key: string]: any }): void => {
 			.then((config: Config) => {
 				companyConfig = config;
 				if (companyConfig) {
-					if (!companyConfig.toJson()[media]) {
+					const companyConfigJson = companyConfig.toJson();
+					if (!companyConfigJson[analyticsTool]) {
+						apiResponse.statusCode = 400;
+						throw new Error(`Ferramenta de Analytics ${media} não foi configurada!`);
+					} else if (media && !companyConfigJson[media]) {
 						apiResponse.statusCode = 400;
 						throw new Error(`Mídia ${media} não foi configurada!`);
 					}
@@ -76,7 +81,7 @@ const build = (app: { [key: string]: any }): void => {
 				const csvContent = fileContent.toString();
 				const separator = CsvUtils.identifyCsvSepartor(csvContent.split('\n')[0], companyConfig.csvSeparator);
 				const jsonFromFile = CsvUtils.csv2json(csvContent, separator);
-				const jsonParameterized = new Builder(jsonFromFile, companyConfig, media).build();
+				const jsonParameterized = new Builder(jsonFromFile, companyConfig, analyticsTool, media).build();
 				const configVersion = companyConfig.version;
 				const configTimestamp = DateUtils.newDateStringFormat(
 					companyConfig.insertTime,
