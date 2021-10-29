@@ -48,8 +48,8 @@ const build = (app) => {
 		const pathDefault = agency
 			? `${company}/${agency}/${campaign}`
 			: `${company}/${companyCampaignsFolder}/${campaign}`;
-		const fullHistoricalFilePath = `${pathDefault}/historical.csv`;
-		const correctHistoricalFilePath = `${pathDefault}/correctHistorical.csv`;
+		const fullHistoricalFilePath = `${pathDefault}/historical`;
+		const correctHistoricalFilePath = `${pathDefault}/correctHistorical`;
 		const apiResponse = new ApiResponse_1.ApiResponse();
 		if (!req.files || !req.files.data) {
 			apiResponse.responseText = 'Nenhum arquivo foi enviado!';
@@ -100,8 +100,12 @@ const build = (app) => {
 						'hh:MM:ss dd/mm/yyyy'
 					);
 					let [fullHistoricalContent, correctHistoricalContent] = yield Promise.all([
-						(yield new FileDAO_1.FileDAO().getContentFrom(fullHistoricalFilePath)).toString(),
-						(yield new FileDAO_1.FileDAO().getContentFrom(correctHistoricalFilePath)).toString(),
+						(yield new FileDAO_1.FileDAO().getContentFrom(
+							`${fullHistoricalFilePath}_${companyConfig.version}.csv`
+						)).toString(),
+						(yield new FileDAO_1.FileDAO().getContentFrom(
+							`${correctHistoricalFilePath}_${companyConfig.version}.csv`
+						)).toString(),
 					]);
 					return new Promise((resolve, reject) => {
 						converter.json2csv(
@@ -160,8 +164,8 @@ const build = (app) => {
 									parametrizedCsv += '\nConfiguracao inserida em' + separator + configTimestamp;
 									if (err) reject(err);
 									yield Promise.all([
-										fullHistoricalFileDao.save(fullHistoricalFilePath),
-										correctHistoricalFileDao.save(correctHistoricalFilePath),
+										fullHistoricalFileDao.save(`${fullHistoricalFilePath}_${companyConfig.version}.csv`),
+										correctHistoricalFileDao.save(`${correctHistoricalFilePath}_${companyConfig.version}.csv`),
 										fileDao.save(filePath.replace('.csv', '_parametrizado.csv')),
 									]);
 									resolve(parametrizedCsv);

@@ -6,6 +6,7 @@ import { CsvUtils } from '../utils/CsvUtils';
 import { Builder } from '../controllers/Builder';
 import { ApiResponse } from '../models/ApiResponse';
 import * as converter from 'json-2-csv';
+import config from './config';
 
 const build = (app: { [key: string]: any }): void => {
 	app.post('/build/:media', (req: { [key: string]: any }, res: { [key: string]: any }) => {
@@ -19,8 +20,8 @@ const build = (app: { [key: string]: any }): void => {
 			? `${company}/${agency}/${campaign}`
 			: `${company}/${companyCampaignsFolder}/${campaign}`;
 
-		const fullHistoricalFilePath = `${pathDefault}/historical.csv`;
-		const correctHistoricalFilePath = `${pathDefault}/correctHistorical.csv`;
+		const fullHistoricalFilePath = `${pathDefault}/historical`;
+		const correctHistoricalFilePath = `${pathDefault}/correctHistorical`;
 
 		const apiResponse = new ApiResponse();
 
@@ -74,8 +75,8 @@ const build = (app: { [key: string]: any }): void => {
 				);
 
 				let [fullHistoricalContent, correctHistoricalContent] = await Promise.all([
-					(await new FileDAO().getContentFrom(fullHistoricalFilePath)).toString(),
-					(await new FileDAO().getContentFrom(correctHistoricalFilePath)).toString(),
+					(await new FileDAO().getContentFrom(`${fullHistoricalFilePath}_${companyConfig.version}.csv`)).toString(),
+					(await new FileDAO().getContentFrom(`${correctHistoricalFilePath}_${companyConfig.version}.csv`)).toString(),
 				]);
 
 				return new Promise((resolve, reject) => {
@@ -147,8 +148,8 @@ const build = (app: { [key: string]: any }): void => {
 
 							if (err) reject(err);
 							await Promise.all([
-								fullHistoricalFileDao.save(fullHistoricalFilePath),
-								correctHistoricalFileDao.save(correctHistoricalFilePath),
+								fullHistoricalFileDao.save(`${fullHistoricalFilePath}_${companyConfig.version}.csv`),
+								correctHistoricalFileDao.save(`${correctHistoricalFilePath}_${companyConfig.version}.csv`),
 								fileDao.save(filePath.replace('.csv', '_parametrizado.csv')),
 							]);
 							resolve(parametrizedCsv);
