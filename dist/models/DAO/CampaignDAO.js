@@ -37,7 +37,7 @@ class CampaignDAO {
 	getAllCampaignsFrom(agency, userRequestPermission) {
 		return this._objectStore
 			.getCollection(this._pathToCollection)
-			.where('agency', '==', agency !== 'Campanhas Internas' ? agency : 'CompanyCampaigns')
+			.where('agency', '==', agency)
 			.get()
 			.then((querySnapshot) => {
 				if (!agency && (userRequestPermission === 'user' || userRequestPermission === 'agencyOwner')) {
