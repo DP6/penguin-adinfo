@@ -117,6 +117,9 @@ const campaign = (app) => {
 					return yield new AgencyDAO_1.AgencyDAO().getAllAgenciesFrom(company, agency, permission);
 				});
 			const allAgencies = yield gettingAgencies();
+			if (permission === 'owner' || permission === 'admin') {
+				allAgencies.push('CompanyCampaigns');
+			}
 			if (permission === 'admin' || permission === ' owner') allAgencies.push('Campanhas Internas');
 			const agenciesToReturn = [];
 			try {
@@ -156,7 +159,7 @@ const campaign = (app) => {
 	app.get('/campaign/:agency/list', (req, res) =>
 		__awaiter(void 0, void 0, void 0, function* () {
 			const apiResponse = new ApiResponse_1.ApiResponse();
-			const agency = req.params.agency;
+			const agency = req.params.agency !== 'Campanhas Internas' ? req.params.agency : 'CompanyCampaigns';
 			const permission = req.permission;
 			new CampaignDAO_1.CampaignDAO()
 				.getAllCampaignsFrom(agency, permission)

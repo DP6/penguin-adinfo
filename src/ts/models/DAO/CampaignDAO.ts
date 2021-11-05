@@ -59,7 +59,7 @@ export class CampaignDAO {
 	): Promise<{ campaignName: string; campaignId: string }[]> {
 		return this._objectStore
 			.getCollection(this._pathToCollection)
-			.where('agency', '==', agency !== 'Campanhas Internas' ? agency : 'CompanyCampaigns')
+			.where('agency', '==', agency)
 			.get()
 			.then((querySnapshot: QuerySnapshot) => {
 				if (!agency && (userRequestPermission === 'user' || userRequestPermission === 'agencyOwner')) {

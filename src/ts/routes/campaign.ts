@@ -56,6 +56,9 @@ const campaign = (app: { [key: string]: any }): void => {
 		};
 
 		const allAgencies: any = await gettingAgencies();
+		if (permission === 'owner' || permission === 'admin') {
+			allAgencies.push('CompanyCampaigns');
+		}
 		if (permission === 'admin' || permission === ' owner') allAgencies.push('Campanhas Internas');
 		const agenciesToReturn: any = [];
 		for await (const agencyInfos of allAgencies) {
@@ -72,7 +75,6 @@ const campaign = (app: { [key: string]: any }): void => {
 				return;
 			}
 		}
-
 		apiResponse.statusCode = 200;
 		apiResponse.responseText = JSON.stringify(agenciesToReturn);
 		res.status(apiResponse.statusCode).send(apiResponse.responseText);
@@ -81,7 +83,7 @@ const campaign = (app: { [key: string]: any }): void => {
 	app.get('/campaign/:agency/list', async (req: { [key: string]: any }, res: { [key: string]: any }) => {
 		const apiResponse = new ApiResponse();
 
-		const agency = req.params.agency;
+		const agency = req.params.agency !== 'Campanhas Internas' ? req.params.agency : 'CompanyCampaigns';
 		const permission = req.permission;
 
 		new CampaignDAO()
