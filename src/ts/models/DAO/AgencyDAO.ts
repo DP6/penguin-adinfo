@@ -1,17 +1,15 @@
 import { FirestoreConnectionSingleton } from '../cloud/FirestoreConnectionSingleton';
-import { CollectionReference, QuerySnapshot } from '@google-cloud/firestore';
+import { QuerySnapshot } from '@google-cloud/firestore';
 import { ObjectStore } from './ObjectStore';
 import { User } from '../User';
 
 export class AgencyDAO {
 	private _objectStore: ObjectStore;
 	private _pathToCollection: string[];
-	private _authCollection: CollectionReference;
 
 	constructor() {
 		this._objectStore = FirestoreConnectionSingleton.getInstance();
 		this._pathToCollection = ['tokens'];
-		this._authCollection = this._objectStore.getCollection(this._pathToCollection);
 	}
 
 	/**
@@ -21,7 +19,7 @@ export class AgencyDAO {
 	 * @param userRequestPermission permissão do usuario que solicitou a alteração
 	 * @returns Lista de agências
 	 */
-	public getAllAgenciesFrom(company: string, agency: string, userRequestPermission: string): Promise<string[] | void> {
+	public getAllAgenciesFrom(company: string, agency: string, userRequestPermission: string): Promise<string[]> {
 		return this._objectStore
 			.getCollection(['tokens'])
 			.where('company', '==', company)
@@ -55,10 +53,9 @@ export class AgencyDAO {
 	 * Retorna todos os usuários de uma determinada agência
 	 * @param company Empresa(company) dos usuários a serem buscados
 	 * @param agency Agência da qual usuários serão buscados
-	 * @param userRequestPermission permissão do usuario que solicitou a alteração
 	 * @returns Lista de usuários
 	 */
-	public getAllUsersFromAgency(company: string, agency: string, userRequestPermission: string): Promise<User[] | void> {
+	public getAllUsersFromAgency(company: string, agency: string): Promise<User[] | void> {
 		return this._objectStore
 			.getCollection(this._pathToCollection)
 			.where('company', '==', company)
