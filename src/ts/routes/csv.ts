@@ -50,8 +50,7 @@ const csv = (app: { [key: string]: any }): void => {
 		const fileName = req.headers.file;
 		const campaign = req.headers.campaign;
 		const company = req.company;
-		const agencyPath = req.body.agency ? req.body.agency : 'CompanyCampaigns';
-
+		const agencyPath = req.headers.agency ? req.headers.agency : 'CompanyCampaigns';
 		const apiResponse = new ApiResponse();
 
 		if (!fileName) {
