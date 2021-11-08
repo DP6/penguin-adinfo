@@ -57,11 +57,12 @@ export class GeneralVehicle extends Vehicle {
 						this._validationErrorFounded(param, column);
 					}
 				}
-
-				this._params[param] += `${StringUtils.replaceWhiteSpace(
-					this.csvLine[normalizedColumn],
-					this.config.spaceSeparator
-				).toLowerCase()}${this.config.separator}`;
+				if (this.csvLine[normalizedColumn]) {
+					this._params[param] += `${StringUtils.replaceWhiteSpace(
+						this.csvLine[normalizedColumn],
+						this.config.spaceSeparator
+					).toLowerCase()}${this.config.separator}`;
+				}
 			});
 			if (this._hasValidationError) {
 				this._params[param] = this._validationErrorMessage + this._errorParams[param].join(' - ');
