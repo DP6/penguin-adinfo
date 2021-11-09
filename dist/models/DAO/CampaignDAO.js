@@ -58,8 +58,9 @@ class CampaignDAO {
 							if (
 								campaignInfos.campaignName &&
 								campaignInfos.campaignId &&
-								campaignInfos.campaignId &&
-								campaignInfos.campaignId &&
+								campaignInfos.agency &&
+								campaignInfos.activate !== null &&
+								campaignInfos.activate !== undefined &&
 								!campaigns.includes(campaignInfos)
 							) {
 								campaigns.push(campaignInfos);
