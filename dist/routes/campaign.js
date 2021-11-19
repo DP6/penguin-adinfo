@@ -120,7 +120,6 @@ const campaign = (app) => {
 			if (permission === 'owner' || permission === 'admin') {
 				allAgencies.push('CompanyCampaigns');
 			}
-			if (permission === 'admin' || permission === ' owner') allAgencies.push('Campanhas Internas');
 			const agenciesToReturn = [];
 			try {
 				for (

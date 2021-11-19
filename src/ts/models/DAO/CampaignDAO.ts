@@ -68,7 +68,7 @@ export class CampaignDAO {
 					throw new Error('Nenhuma campanha foi selecionada!');
 				}
 				if (querySnapshot.size > 0) {
-					const agencia = agency !== 'Campanhas Internas' ? agency : 'CompanyCampaigns';
+					const agencia = agency;
 					const campaigns: { campaignName: string; campaignId: string; agency: string; activate: boolean }[] = [];
 					querySnapshot.forEach((documentSnapshot) => {
 						const documentAgency = documentSnapshot.get('agency');
