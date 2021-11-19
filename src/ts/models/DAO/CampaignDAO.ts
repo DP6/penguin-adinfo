@@ -54,11 +54,13 @@ export class CampaignDAO {
 	 * @returns Lista Objetos contendo atributos de cada campanha
 	 */
 	public getAllCampaignsFrom(
+		company: string,
 		agency: string,
 		userRequestPermission: string
 	): Promise<{ campaignName: string; campaignId: string; agency: string; activate: boolean }[]> {
 		return this._objectStore
 			.getCollection(this._pathToCollection)
+			.where('company', '==', company)
 			.where('agency', '==', agency)
 			.get()
 			.then((querySnapshot: QuerySnapshot) => {
@@ -123,6 +125,7 @@ export class CampaignDAO {
 	 * Busca o ID do campanha na base de dados
 	 * @returns ID do campanha
 	 */
+	// Funcao ainda nao sendo utilizada, ao pensar em utilizar, revalidar logica dela (principalemnte o where)
 	public getCampaignId(): Promise<string | void> {
 		return this._objectStore
 			.getCollection(this._pathToCollection)

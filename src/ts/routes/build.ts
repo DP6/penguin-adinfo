@@ -18,7 +18,7 @@ const build = (app: { [key: string]: any }): void => {
 		const campaign = req.headers.campaign;
 		const permission = req.permission;
 
-		const agencyCampaigns = await new CampaignDAO().getAllCampaignsFrom(agencyPath, permission);
+		const agencyCampaigns = await new CampaignDAO().getAllCampaignsFrom(company, agencyPath, permission);
 		const agencyCampaignsNames = agencyCampaigns.map((campaign: { campaignName: string; campaignId: string }) => {
 			return campaign.campaignName;
 		});

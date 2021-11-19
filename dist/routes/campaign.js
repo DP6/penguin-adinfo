@@ -130,7 +130,11 @@ const campaign = (app) => {
 				) {
 					const agencyInfos = allAgencies_1_1.value;
 					try {
-						const campaignsObject = yield new CampaignDAO_1.CampaignDAO().getAllCampaignsFrom(agencyInfos, permission);
+						const campaignsObject = yield new CampaignDAO_1.CampaignDAO().getAllCampaignsFrom(
+							company,
+							agencyInfos,
+							permission
+						);
 						if (campaignsObject) {
 							agenciesToReturn.push({ [agencyInfos]: campaignsObject });
 						}
@@ -159,10 +163,11 @@ const campaign = (app) => {
 	app.get('/campaign/:agency/list', (req, res) =>
 		__awaiter(void 0, void 0, void 0, function* () {
 			const apiResponse = new ApiResponse_1.ApiResponse();
+			const company = req.company;
 			const agency = req.params.agency !== 'Campanhas Internas' ? req.params.agency : 'CompanyCampaigns';
 			const permission = req.permission;
 			new CampaignDAO_1.CampaignDAO()
-				.getAllCampaignsFrom(agency, permission)
+				.getAllCampaignsFrom(company, agency, permission)
 				.then((agencies) => {
 					apiResponse.responseText = JSON.stringify(agencies);
 				})

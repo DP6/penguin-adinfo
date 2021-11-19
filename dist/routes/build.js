@@ -49,7 +49,11 @@ const build = (app) => {
 			const agencyPath = agency ? agency : 'CompanyCampaigns';
 			const campaign = req.headers.campaign;
 			const permission = req.permission;
-			const agencyCampaigns = yield new CampaignDAO_1.CampaignDAO().getAllCampaignsFrom(agencyPath, permission);
+			const agencyCampaigns = yield new CampaignDAO_1.CampaignDAO().getAllCampaignsFrom(
+				company,
+				agencyPath,
+				permission
+			);
 			const agencyCampaignsNames = agencyCampaigns.map((campaign) => {
 				return campaign.campaignName;
 			});

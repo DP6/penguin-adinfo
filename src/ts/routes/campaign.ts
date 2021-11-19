@@ -65,7 +65,7 @@ const campaign = (app: { [key: string]: any }): void => {
 		}[] = [];
 		for await (const agencyInfos of allAgencies) {
 			try {
-				const campaignsObject = await new CampaignDAO().getAllCampaignsFrom(agencyInfos, permission);
+				const campaignsObject = await new CampaignDAO().getAllCampaignsFrom(company, agencyInfos, permission);
 				if (campaignsObject) {
 					agenciesToReturn.push({ [agencyInfos]: campaignsObject });
 				}
@@ -85,11 +85,12 @@ const campaign = (app: { [key: string]: any }): void => {
 	app.get('/campaign/:agency/list', async (req: { [key: string]: any }, res: { [key: string]: any }) => {
 		const apiResponse = new ApiResponse();
 
+		const company = req.company;
 		const agency = req.params.agency !== 'Campanhas Internas' ? req.params.agency : 'CompanyCampaigns';
 		const permission = req.permission;
 
 		new CampaignDAO()
-			.getAllCampaignsFrom(agency, permission)
+			.getAllCampaignsFrom(company, agency, permission)
 			.then((agencies: { campaignName: string; campaignId: string }[]) => {
 				apiResponse.responseText = JSON.stringify(agencies);
 			})
