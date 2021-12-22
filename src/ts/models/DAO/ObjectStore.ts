@@ -1,4 +1,11 @@
-import { CollectionReference, DocumentReference, DocumentData } from '@google-cloud/firestore';
+import {
+	CollectionReference,
+	DocumentReference,
+	DocumentData,
+	QuerySnapshot,
+	QueryDocumentSnapshot,
+} from '@google-cloud/firestore';
+import { User } from '../User';
 
 export abstract class ObjectStore {
 	abstract getCollection(path: string[]): CollectionReference;
@@ -9,4 +16,24 @@ export abstract class ObjectStore {
 		document: { [key: string]: any },
 		documentName: string
 	): DocumentReference;
+	abstract getCampaignsFromFirestore(
+		querySnapshot: QuerySnapshot,
+		agency: string
+	): { campaignName: string; campaignId: string; agency: string; activate: boolean }[];
+	abstract getUsersFromFirestore(
+		querySnapshot: QuerySnapshot,
+		userRequestPermission: string,
+		agency: string,
+		isFromCompany: boolean
+	): User[];
+	abstract toggleCampaignsFromFirestore(
+		querySnapshot: QuerySnapshot,
+		userRequestPermission: string,
+		activateStatus: boolean
+	): { agency: string; name: string; campaignId: string; created: string; company: string; activate: boolean };
+	abstract toggleUsersFromFirestore(
+		doc: QueryDocumentSnapshot,
+		userRequestPermission: string,
+		activateStatus: boolean
+	): boolean;
 }
