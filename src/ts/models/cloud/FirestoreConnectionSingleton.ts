@@ -115,11 +115,9 @@ export class FirestoreConnectionSingleton extends ObjectStore {
 
 	/**
 	 * Busca todas as campanhas da agencia dada
-	 * @param querySnapshot
-	 * @param agency
-	 * @returns Lista de objetos com informacoes de cada campanha
-	 *
-	 * Gera uma stirng correspondente ao timestamp atual no padrão: yyyymmddhhMMss (segundos estão por padrão desabilitados)
+	 * @param querySnapshot São os documentos que iremos acessar
+	 * @param agency Agência referente as campanhas que serão buscadas
+	 * @returns Lista de objetos com campanhas e seus atributos
 	 */
 	public getCampaignsFromFirestore(
 		querySnapshot: QuerySnapshot,
@@ -158,11 +156,11 @@ export class FirestoreConnectionSingleton extends ObjectStore {
 	}
 
 	/**
-	 * Busca todas as campanhas da agencia dada
-	 * @param seconds Boolean informando se o retorno contará com a informação de segundos. Esse parametro é false por padrão
-	 * @returns String correspondente ao timestamp atual
-	 *
-	 * Gera uma stirng correspondente ao timestamp atual no padrão: yyyymmddhhMMss (segundos estão por padrão desabilitados)
+	 * Ativa ou desativa uma campanha no Firestore
+	 * @param querySnapshot São os documentos que iremos acessar
+	 * @param userRequestPermission A permissão de usuário de quem está invocando a função
+	 * @param activateStatus Marcação referente a reativação ou desativação da campanha
+	 * @returns Retorna objeto com os atributos da campanha com seu novo status de ativado ou desativado
 	 */
 	public toggleCampaignsFromFirestore(
 		querySnapshot: QuerySnapshot,
@@ -187,11 +185,11 @@ export class FirestoreConnectionSingleton extends ObjectStore {
 	}
 
 	/**
-	 * Busca todas as campanhas da agencia dada
-	 * @param seconds Boolean informando se o retorno contará com a informação de segundos. Esse parametro é false por padrão
-	 * @returns String correspondente ao timestamp atual
-	 *
-	 * Gera uma stirng correspondente ao timestamp atual no padrão: yyyymmddhhMMss (segundos estão por padrão desabilitados)
+	 * Ativa ou desativa um usuário no Firestore
+	 * @param querySnapshot São os documentos que iremos acessar
+	 * @param userRequestPermission A permissão de usuário de quem está invocando a função
+	 * @param activateStatus Marcação referente a reativação ou desativação do usuário
+	 * @returns Booleano referente ao sucesso ou fracasso da operação
 	 */
 	public toggleUsersFromFirestore(
 		doc: QueryDocumentSnapshot,
@@ -222,9 +220,10 @@ export class FirestoreConnectionSingleton extends ObjectStore {
 	}
 
 	/**
-	 * Busca todas as campanhas da agencia dada
+	 * Busca todas os usuários da companhia ou de uma agência
 	 * @param querySnapshot São os documentos que iremos acessar
 	 * @param userRequestPermission A permissão de usuário de quem está invocando a função
+	 * @param agency Agência dos usuários buscados
 	 * @param isFromCompany Marcação para sabermos se a função será invocada para trazer usuários de toda a compania, ou apenas de uma agência
 	 * @returns Array contendo todos os usuários encontrados e seus atributos
 	 */
