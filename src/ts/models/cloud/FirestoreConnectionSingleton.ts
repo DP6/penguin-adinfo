@@ -192,11 +192,11 @@ export class FirestoreConnectionSingleton extends ObjectStore {
 	 * @param activateStatus Marcação referente a reativação ou desativação do usuário
 	 * @returns Booleano referente ao sucesso ou fracasso da operação
 	 */
-	public toggleUsersFromFirestore(
+	public async toggleUsersFromFirestore(
 		doc: QueryDocumentSnapshot,
 		userRequestPermission: string,
 		activateStatus: boolean
-	): boolean {
+	): Promise<boolean> {
 		const user = doc.data();
 		let operationSucceeeded;
 		if (
@@ -209,10 +209,9 @@ export class FirestoreConnectionSingleton extends ObjectStore {
 		} else {
 			throw new Error('Permissões insuficientes para inativar o usuário!');
 		}
-		console.log('tipo do doc.ref.set(user):\n', typeof doc.ref.set(user));
-		console.log('\n oq tem nesse return:\n', doc.ref.set(user));
+
 		try {
-			doc.ref.set(user);
+			await doc.ref.set(user);
 			operationSucceeeded = true;
 		} catch (e) {
 			operationSucceeeded = false;
