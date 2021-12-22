@@ -8,6 +8,7 @@ import {
 } from '@google-cloud/firestore';
 import { ObjectStore } from '../DAO/ObjectStore';
 import { User } from '../User';
+import * as bcrypt from 'bcrypt';
 
 export class FirestoreConnectionSingleton extends ObjectStore {
 	private _db: Firestore;
@@ -261,6 +262,71 @@ export class FirestoreConnectionSingleton extends ObjectStore {
 				}
 			});
 			return users;
+		}
+	}
+
+	/**
+	 * Busca todas os usuários da companhia ou de uma agência
+	 * @param querySnapshot São os documentos que iremos acessar
+	 * @param password Senha do usuário a ser buscado
+	 * @returns Usuário do tipo User com seus atributos
+	 */
+	public getSingleUserFromFirestore(querySnapshot: QuerySnapshot, password: string): User {
+		if (querySnapshot.size > 0) {
+			let user: User;
+			querySnapshot.forEach((documentSnapshot) => {
+				const searchId = documentSnapshot.ref.path.match(new RegExp('[^/]+$'));
+				if (searchId) {
+					const validatePassword = bcrypt.compareSync(password, documentSnapshot.get('password'));
+					if (!validatePassword) throw new Error('Email ou senha incorreto(s)!');
+					user = new User(
+						searchId[0],
+						documentSnapshot.get('permission'),
+						documentSnapshot.get('company'),
+						documentSnapshot.get('email'),
+						documentSnapshot.get('activate'),
+						documentSnapshot.get('agency')
+					);
+				} else {
+					throw new Error('Nenhum usuário encontrado!');
+				}
+			});
+			return user;
+		} else {
+			throw new Error('Email ou senha incorreto(s)!');
+		}
+	}
+
+	/**
+	 * Busca todas os usuários da companhia ou de uma agência
+	 * @param querySnapshot São os documentos que iremos acessar
+	 * @param agency Agência dos usuários buscados
+	 * @param userRequestPermission A permissão de usuário de quem está invocando a função
+	 * @param isFromCompany Marcação para sabermos se a função será invocada para trazer usuários de toda a compania, ou apenas de uma agência
+	 * @returns Array contendo todos os usuários encontrados e seus atributos
+	 */
+	public getAllAgenciesFromFirestore(
+		querySnapshot: QuerySnapshot,
+		agency: string,
+		userRequestPermission: string
+	): string[] {
+		if (querySnapshot.size > 0) {
+			if (userRequestPermission === 'agencyOwner' || userRequestPermission === 'user') {
+				return [agency];
+			}
+			const agencies: string[] = [];
+			querySnapshot.forEach((documentSnapshot) => {
+				const searchId = documentSnapshot.ref.path.match(new RegExp('[^/]+$'));
+				if (searchId) {
+					const userAgency = documentSnapshot.get('agency');
+					if (userAgency && !agencies.includes(userAgency)) {
+						agencies.push(userAgency);
+					}
+				} else {
+					throw new Error('Nenhuma agência encontrada!');
+				}
+			});
+			return agencies;
 		}
 	}
 }

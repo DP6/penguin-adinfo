@@ -36,4 +36,10 @@ export abstract class ObjectStore {
 		userRequestPermission: string,
 		activateStatus: boolean
 	): boolean;
+	abstract getSingleUserFromFirestore(querySnapshot: QuerySnapshot, password: string): User;
+	abstract getAllAgenciesFromFirestore(
+		querySnapshot: QuerySnapshot,
+		agency: string,
+		userRequestPermission: string
+	): string[];
 }

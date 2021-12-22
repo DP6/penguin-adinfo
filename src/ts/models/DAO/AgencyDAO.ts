@@ -25,24 +25,7 @@ export class AgencyDAO {
 			.where('company', '==', company)
 			.get()
 			.then((querySnapshot: QuerySnapshot) => {
-				if (querySnapshot.size > 0) {
-					if (userRequestPermission === 'agencyOwner' || userRequestPermission === 'user') {
-						return [agency];
-					}
-					const agencies: string[] = [];
-					querySnapshot.forEach((documentSnapshot) => {
-						const searchId = documentSnapshot.ref.path.match(new RegExp('[^/]+$'));
-						if (searchId) {
-							const userAgency = documentSnapshot.get('agency');
-							if (userAgency && !agencies.includes(userAgency)) {
-								agencies.push(userAgency);
-							}
-						} else {
-							throw new Error('Nenhuma agência encontrada!');
-						}
-					});
-					return agencies;
-				}
+				return this._objectStore.getAllAgenciesFromFirestore(querySnapshot, agency, userRequestPermission);
 			})
 			.catch((err) => {
 				throw err;
