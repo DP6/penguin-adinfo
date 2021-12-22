@@ -20,36 +20,6 @@ export class UserDAO {
 	}
 
 	/**
-	 * Busca o ID do usuario na base de dados
-	 * @returns ID do usuario
-	 */
-	public getUserId(): Promise<string | void> {
-		return this._objectStore
-			.getCollection(this._pathToCollection)
-			.where('email', '==', this._email)
-			.get()
-			.then((querySnapshot: QuerySnapshot) => {
-				if (querySnapshot.size > 0) {
-					querySnapshot.forEach((documentSnapshot) => {
-						const searchId = documentSnapshot.ref.path.match(new RegExp('[^/]+$'));
-						const validatePassword = bcrypt.compareSync(this._password, documentSnapshot.get('password'));
-						if (!validatePassword) throw new Error('Email ou senha incorreto(s)!');
-						if (searchId) {
-							return searchId[0];
-						} else {
-							throw new Error('Falha ao recuperar o ID do usuário');
-						}
-					});
-				} else {
-					throw new Error('ID não encontrado!');
-				}
-			})
-			.catch((err) => {
-				throw err;
-			});
-	}
-
-	/**
 	 * Retorna todos os usuários não owners da empresa
 	 * @param company Empresa(company) dos usuários a serem buscados
 	 * @param agency Agência da qual usuários serão buscados
@@ -79,29 +49,7 @@ export class UserDAO {
 			.where('email', '==', this._email)
 			.get()
 			.then((querySnapshot: QuerySnapshot) => {
-				if (querySnapshot.size > 0) {
-					let user: User;
-					querySnapshot.forEach((documentSnapshot) => {
-						const searchId = documentSnapshot.ref.path.match(new RegExp('[^/]+$'));
-						if (searchId) {
-							const validatePassword = bcrypt.compareSync(this._password, documentSnapshot.get('password'));
-							if (!validatePassword) throw new Error('Email ou senha incorreto(s)!');
-							user = new User(
-								searchId[0],
-								documentSnapshot.get('permission'),
-								documentSnapshot.get('company'),
-								documentSnapshot.get('email'),
-								documentSnapshot.get('activate'),
-								documentSnapshot.get('agency')
-							);
-						} else {
-							throw new Error('Nenhum usuário encontrado!');
-						}
-					});
-					return user;
-				} else {
-					throw new Error('Email ou senha incorreto(s)!');
-				}
+				return this._objectStore.getSingleUserFromFirestore(querySnapshot, this._password);
 			})
 			.catch((err) => {
 				throw err;
