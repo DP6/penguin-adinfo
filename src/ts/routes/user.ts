@@ -5,8 +5,11 @@ import { User } from '../models/User';
 const user = (app: { [key: string]: any }): void => {
 	app.get('/users', (req: { [key: string]: any }, res: { [key: string]: any }) => {
 		const apiResponse = new ApiResponse();
+		const company = req.company;
+		const agency = req.agency;
+		const permission = req.permission;
 		new UserDAO()
-			.getAllUsersFrom(req.company, req.permission)
+			.getAllUsersFrom(company, agency, permission)
 			.then((users: User[]) => {
 				apiResponse.responseText = JSON.stringify(users.map((user: User) => user.toJson()));
 			})

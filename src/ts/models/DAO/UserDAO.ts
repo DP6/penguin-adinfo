@@ -52,38 +52,17 @@ export class UserDAO {
 	/**
 	 * Retorna todos os usuários não owners da empresa
 	 * @param company Empresa(company) dos usuários a serem buscados
+	 * @param agency Agência da qual usuários serão buscados
 	 * @param userRequestPermission permissão do usuario que solicitou a alteração
 	 * @returns Lista de usuários
 	 */
-	public getAllUsersFrom(company: string, userRequestPermission: string): Promise<User[] | void> {
+	public getAllUsersFrom(company: string, agency: string, userRequestPermission: string): Promise<User[] | void> {
 		return this._objectStore
 			.getCollection(this._pathToCollection)
 			.where('company', '==', company)
 			.get()
 			.then((querySnapshot: QuerySnapshot) => {
-				if (querySnapshot.size > 0) {
-					const users: User[] = [];
-					querySnapshot.forEach((documentSnapshot) => {
-						const searchId = documentSnapshot.ref.path.match(new RegExp('[^/]+$'));
-						if (searchId) {
-							const userPermission = documentSnapshot.get('permission');
-							if (userPermission !== 'owner' || (userRequestPermission === 'admin' && userPermission === 'user')) {
-								const user = new User(
-									searchId[0],
-									userPermission,
-									documentSnapshot.get('company'),
-									documentSnapshot.get('email'),
-									documentSnapshot.get('activate'),
-									documentSnapshot.get('agency')
-								);
-								users.push(user);
-							}
-						} else {
-							throw new Error('Nenhum usuário encontrado!');
-						}
-					});
-					return users;
-				}
+				return this._objectStore.getUsersFromFirestore(querySnapshot, userRequestPermission, agency, true);
 			})
 			.catch((err) => {
 				throw err;
@@ -177,18 +156,7 @@ export class UserDAO {
 			.doc(userId)
 			.get()
 			.then((doc: QueryDocumentSnapshot) => {
-				const user = doc.data();
-				if (
-					user.permission === 'user' ||
-					((user.permission === 'admin' || user.permission === 'agencyOwner') && userRequestPermission === 'owner')
-				) {
-					user.activate = false;
-				} else if (user.permission === 'agencyOwner' && userRequestPermission === 'admin') {
-					user.activate = false;
-				} else {
-					throw new Error('Permissões insuficientes para inavitar o usuário!');
-				}
-				return doc.ref.set(user);
+				return this._objectStore.toggleUsersFromFirestore(doc, userRequestPermission, false);
 			})
 			.then(() => {
 				return true;
@@ -210,18 +178,7 @@ export class UserDAO {
 			.doc(userId)
 			.get()
 			.then((doc: QueryDocumentSnapshot) => {
-				const user = doc.data();
-				if (
-					user.permission === 'user' ||
-					((user.permission === 'admin' || user.permission === 'agencyOwner') && userRequestPermission === 'owner')
-				) {
-					user.activate = true;
-				} else if (user.permission === 'agencyOwner' && userRequestPermission === 'admin') {
-					user.activate = true;
-				} else {
-					throw new Error('Permissões insuficientes para inavitar o usuário!');
-				}
-				return doc.ref.set(user);
+				return this._objectStore.toggleUsersFromFirestore(doc, userRequestPermission, true);
 			})
 			.then(() => {
 				return true;

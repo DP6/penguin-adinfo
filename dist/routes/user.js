@@ -5,8 +5,11 @@ const UserDAO_1 = require('../models/DAO/UserDAO');
 const user = (app) => {
 	app.get('/users', (req, res) => {
 		const apiResponse = new ApiResponse_1.ApiResponse();
+		const company = req.company;
+		const agency = req.agency;
+		const permission = req.permission;
 		new UserDAO_1.UserDAO()
-			.getAllUsersFrom(req.company, req.permission)
+			.getAllUsersFrom(company, agency, permission)
 			.then((users) => {
 				apiResponse.responseText = JSON.stringify(users.map((user) => user.toJson()));
 			})

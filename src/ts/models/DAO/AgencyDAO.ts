@@ -53,38 +53,16 @@ export class AgencyDAO {
 	 * Retorna todos os usuários de uma determinada agência
 	 * @param company Empresa(company) dos usuários a serem buscados
 	 * @param agency Agência da qual usuários serão buscados
+	 * @param userRequestPermission permissão do usuario que solicitou a alteração
 	 * @returns Lista de usuários
 	 */
-	public getAllUsersFromAgency(company: string, agency: string): Promise<User[] | void> {
+	public getAllUsersFromAgency(company: string, agency: string, userRequestPermission: string): Promise<User[] | void> {
 		return this._objectStore
 			.getCollection(this._pathToCollection)
 			.where('company', '==', company)
 			.get()
 			.then((querySnapshot: QuerySnapshot) => {
-				if (querySnapshot.size > 0) {
-					const users: User[] = [];
-					querySnapshot.forEach((documentSnapshot) => {
-						const searchId = documentSnapshot.ref.path.match(new RegExp('[^/]+$'));
-						if (searchId) {
-							const userPermission = documentSnapshot.get('permission');
-							const userAgency = documentSnapshot.get('agency');
-							if ((userPermission === 'agencyOwner' || userPermission === 'user') && userAgency === agency) {
-								const user = new User(
-									searchId[0],
-									userPermission,
-									documentSnapshot.get('company'),
-									documentSnapshot.get('email'),
-									documentSnapshot.get('activate'),
-									documentSnapshot.get('agency')
-								);
-								users.push(user);
-							}
-						} else {
-							throw new Error('Nenhum usuário encontrado!');
-						}
-					});
-					return users;
-				}
+				return this._objectStore.getUsersFromFirestore(querySnapshot, userRequestPermission, agency, false);
 			})
 			.catch((err) => {
 				throw err;

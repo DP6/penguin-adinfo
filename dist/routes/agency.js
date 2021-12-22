@@ -33,6 +33,8 @@ var __awaiter =
 Object.defineProperty(exports, '__esModule', { value: true });
 const ApiResponse_1 = require('../models/ApiResponse');
 const AgencyDAO_1 = require('../models/DAO/AgencyDAO');
+const FileDAO_1 = require('../models/DAO/FileDAO');
+const CampaignDAO_1 = require('../models/DAO/CampaignDAO');
 const agency = (app) => {
 	app.get('/agency/list', (req, res) =>
 		__awaiter(void 0, void 0, void 0, function* () {
@@ -60,8 +62,9 @@ const agency = (app) => {
 			const apiResponse = new ApiResponse_1.ApiResponse();
 			const company = req.company;
 			const agency = req.agency;
+			const permission = req.permission;
 			new AgencyDAO_1.AgencyDAO()
-				.getAllUsersFromAgency(company, agency)
+				.getAllUsersFromAgency(company, agency, permission)
 				.then((users) => {
 					apiResponse.responseText = JSON.stringify(users.map((user) => user.toJson()));
 				})
@@ -69,6 +72,46 @@ const agency = (app) => {
 					apiResponse.statusCode = 500;
 					apiResponse.responseText = err.message;
 					apiResponse.errorMessage = err.message;
+				})
+				.finally(() => {
+					res.status(apiResponse.statusCode).send(apiResponse.jsonResponse);
+				});
+		})
+	);
+	app.get('/:agency/:campaignId/csv/list', (req, res) =>
+		__awaiter(void 0, void 0, void 0, function* () {
+			const apiResponse = new ApiResponse_1.ApiResponse();
+			const campaignId = req.params.campaignId;
+			const agency = req.params.agency;
+			const agencyPath = agency === 'Campanhas Internas' ? 'CompanyCampaigns' : agency;
+			const company = req.company;
+			const permission = req.permission;
+			const campaignObject = new CampaignDAO_1.CampaignDAO();
+			const campaign = yield campaignObject.getCampaign(campaignId);
+			const fileDAO = new FileDAO_1.FileDAO();
+			if ((permission === 'agencyOwner' || permission === 'user') && (!agency || agency === 'Campanhas Internas')) {
+				apiResponse.responseText = 'Nenhuma agência foi informada!';
+				apiResponse.statusCode = 400;
+				res.status(apiResponse.statusCode).send(apiResponse.jsonResponse);
+				return;
+			} else if (!campaign) {
+				apiResponse.responseText = 'Nenhuma campanha foi informada!';
+				apiResponse.statusCode = 400;
+				res.status(apiResponse.statusCode).send(apiResponse.jsonResponse);
+				return;
+			}
+			const filePath = `${company}/${agencyPath}/${campaign}/`;
+			fileDAO
+				.getAllFilesFromStore(filePath)
+				.then((data) => {
+					const files = data[0].filter((file) => /\.csv$/.test(file.name)).map((file) => file.name);
+					apiResponse.responseText = files.join(',');
+					apiResponse.statusCode = 200;
+				})
+				.catch((err) => {
+					apiResponse.errorMessage = err.message;
+					apiResponse.responseText = `Falha ao restaurar os arquivos!`;
+					apiResponse.statusCode = 500;
 				})
 				.finally(() => {
 					res.status(apiResponse.statusCode).send(apiResponse.jsonResponse);
