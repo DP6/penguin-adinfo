@@ -17,7 +17,6 @@ export class CampaignDAO {
 		this._pathToCollection = ['campaigns'];
 		this._authCollection = this._objectStore.getCollection(this._pathToCollection);
 	}
-
 	/**
 	 * Consulta a campanha na base de dados
 	 * @returns Retorna campanha procurada
@@ -65,36 +64,7 @@ export class CampaignDAO {
 				if (!agency && (userRequestPermission === 'user' || userRequestPermission === 'agencyOwner')) {
 					throw new Error('Nenhuma campanha foi selecionada!');
 				}
-				if (querySnapshot.size > 0) {
-					const agencia = agency !== 'Campanhas Internas' ? agency : 'CompanyCampaigns';
-					const campaigns: { campaignName: string; campaignId: string; agency: string; activate: boolean }[] = [];
-					querySnapshot.forEach((documentSnapshot) => {
-						const documentAgency = documentSnapshot.get('agency');
-						if (agencia === documentAgency) {
-							const campaignInfos: { campaignName: string; campaignId: string; agency: string; activate: boolean } = {
-								campaignName: documentSnapshot.get('name'),
-								campaignId: documentSnapshot.get('campaignId'),
-								agency: documentSnapshot.get('agency'),
-								activate: documentSnapshot.get('activate'),
-							};
-							if (
-								campaignInfos.campaignName &&
-								campaignInfos.campaignId &&
-								campaignInfos.agency &&
-								campaignInfos.activate !== null &&
-								campaignInfos.activate !== undefined &&
-								!campaigns.includes(campaignInfos)
-							) {
-								campaigns.push(campaignInfos);
-							} else {
-								throw new Error('Erro na recuperação dos atributos da campanha ' + documentSnapshot.get('name') + '!');
-							}
-						} else {
-							throw new Error('Nenhuma campanha encontrada!');
-						}
-					});
-					return campaigns;
-				}
+				return this._objectStore.getCampaignsFromFirestore(querySnapshot, agency);
 			})
 			.catch((err) => {
 				throw err;
@@ -120,34 +90,6 @@ export class CampaignDAO {
 	}
 
 	/**
-	 * Busca o ID do campanha na base de dados
-	 * @returns ID do campanha
-	 */
-	public getCampaignId(): Promise<string | void> {
-		return this._objectStore
-			.getCollection(this._pathToCollection)
-			.where('name', '==', this._campaignName)
-			.get()
-			.then((querySnapshot: QuerySnapshot) => {
-				if (querySnapshot.size > 0) {
-					querySnapshot.forEach((documentSnapshot) => {
-						const id = documentSnapshot.get('campaignId');
-						if (this._agency === documentSnapshot.get('agency')) {
-							return id;
-						} else {
-							throw new Error('Falha ao recuperar o ID da campanha!');
-						}
-					});
-				} else {
-					throw new Error('ID não encontrado!');
-				}
-			})
-			.catch((err) => {
-				throw err;
-			});
-	}
-
-	/**
 	 * Desativa uma campanha
 	 * @param campaignId ID da campanha a ser desativada
 	 * @param userRequestPermission permissão do usuario que solicitou a alteração
@@ -159,19 +101,7 @@ export class CampaignDAO {
 			.where('campaignId', '==', campaignId)
 			.get()
 			.then((querySnapshot: QuerySnapshot) => {
-				if (querySnapshot) {
-					querySnapshot.forEach((doc) => {
-						const campaign = doc.data();
-						if (userRequestPermission !== 'user') {
-							campaign.activate = false;
-						} else {
-							throw new Error('Permissões insuficientes para inavitar a campanha!');
-						}
-						return doc.ref.set(campaign);
-					});
-				} else {
-					throw new Error('ID não encontrado!');
-				}
+				return this._objectStore.toggleCampaignsFromFirestore(querySnapshot, userRequestPermission, false);
 			})
 			.then(() => {
 				return true;
@@ -193,19 +123,7 @@ export class CampaignDAO {
 			.where('campaignId', '==', campaignId)
 			.get()
 			.then((querySnapshot: QuerySnapshot) => {
-				if (querySnapshot) {
-					querySnapshot.forEach((doc) => {
-						const campaign = doc.data();
-						if (userRequestPermission !== 'user') {
-							campaign.activate = true;
-						} else {
-							throw new Error('Permissões insuficientes para reativar a campanha!');
-						}
-						return doc.ref.set(campaign);
-					});
-				} else {
-					throw new Error('ID não encontrado!');
-				}
+				return this._objectStore.toggleCampaignsFromFirestore(querySnapshot, userRequestPermission, true);
 			})
 			.then(() => {
 				return true;
