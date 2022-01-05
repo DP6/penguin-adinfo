@@ -1,3 +1,4 @@
+
 # Penguin Adinfo
 
 <div align="center">
@@ -127,7 +128,7 @@ Para a configuração inicial do Firestore, são necessárias quatro coleções.
 
 ###### Padrão do Objeto de Configuração
 
-Para utilizar a API, é necessário criar um documento de configuração no Firestore dentro da coleção: companies > [nome_empresa] > config. O nome do documento deve ser **config_1** e ele deve conter os campos: **csvSeparator**, **separator**, **spaceSeparator**, **columns** e um campo para a ferramenta de analytics, sendo esse o valor de **ga** ou **adobe**.
+Para utilizar a API, é necessário criar um documento de configuração no Firestore dentro da coleção: companies > [nome_empresa] > config. O nome do documento deve ser **config_1** e ele deve conter os campos: **version** inicialmente com o valor 1 (number), **insertTime** no formato *yyyyMMddHHmmss*, **csvSeparator**, **separator**, **spaceSeparator**, **columns** e um campo para a ferramenta de analytics, sendo esse o valor de **ga** ou **adobe**.
 
 Todos estes campos serão utilizados para realizar a parametrização do arquivo CSV que a API irá receber.
 
@@ -144,6 +145,8 @@ Abaixo segue uma explicação e um exemplo de todos os campos das configuraçõe
 | spaceSeparator              | String | String que substituirá o espaço na URL, caso alguma campo tenha preenchido com mais de uma palavra.                                                                             | Sim         |
 | columns                     | Objeto | Objeto contendo as colunas do CSV e seus valores de aceitação.                                                                                                                  | Sim         |
 | dependenciesConfig          | Objeto | Objeto contendo as regras de dependências de validação.                                                                                                                         | Não         |
+| insertTime          | String | Data da criação do config no formato *yyyyMMddHHmmss*.                                                                                                                         | Sim         |
+| version          | Number | Número da versão do config.                                                                                                                         | Sim         |
 | {{veículo}}                 | Objeto | Chave do veículo de mídia com suas configurações e quais colunas pertencem a cada configuração.                                                                                 | Não         |
 | {{ferramenta de analytics}} | Objeto | Chave da ferramenta de analytics com suas configurações e quais colunas pertencem a cada configuração. Essa chave precisa obrigatoriamente receber o valor **ga** ou **adobe**. | Sim         |
 
@@ -199,7 +202,9 @@ Abaixo segue uma explicação e um exemplo de todos os campos das configuraçõe
 			"columnDestiny": "Tipo de Compra",
 			"matches": ["cpc", "cpa"]
 		}
-	]
+	],
+	"insertTime": "20211201193242",
+	"version": 1,
 }
 ```
 
