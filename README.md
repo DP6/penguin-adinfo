@@ -67,7 +67,7 @@ git clone https://github.com/DP6/penguin-adinfo.git
 3. [Terraform](https://www.terraform.io/);
 4. Habilitar o App Engine em ambiente de execução Node.js, Firestore e Cloud Storage (necessário ter um billing ativo), no GCP;
 5. Gerar uma senha com o [Bcrypt Generator](https://bcrypt-generator.com/) para informar no usuário owner do adinfo;
-6. Criar o arquivo **gcp_key_terraform.json** contendo a chave json de uma conta de serviço GCP com as permissões necessárias para as subidas dos serviços via terraform. 
+6. Criar o arquivo **gcp_key_terraform.json** contendo a chave json de uma conta de serviço GCP com as permissões necessárias para as subidas dos serviços via terraform.
 
 #### Passos
 
@@ -137,17 +137,17 @@ Entretanto, este campo no arquivo de configuração não é obrigatório. Caso o
 
 Abaixo segue uma explicação e um exemplo de todos os campos das configurações.
 
-| Chave                       | Tipo    | Descrição                                                    | Obrigatório |
-| --------------------------- | ------- | ------------------------------------------------------------ | ----------- |
-| csvSeparator                | Array   | Array que irá conter todos os separadores de colunas que os arquivos CSV poderão conter. | Não         |
-| separator                   | String  | String que será utilizada na concatenação dos campos.        | Sim         |
-| spaceSeparator              | String  | String que substituirá o espaço na URL, caso alguma campo tenha preenchido com mais de uma palavra. | Sim         |
-| columns                     | Objeto  | Objeto contendo as colunas do CSV e seus valores de aceitação. | Sim         |
-| dependenciesConfig          | Objeto  | Objeto contendo as regras de dependências de validação.      | Não         |
-| {{veículo}}                 | Objeto  | Chave do veículo de mídia com suas configurações e quais colunas pertencem a cada configuração. | Não         |
+| Chave                       | Tipo    | Descrição                                                                                                                                                                       | Obrigatório |
+| --------------------------- | ------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------- |
+| csvSeparator                | Array   | Array que irá conter todos os separadores de colunas que os arquivos CSV poderão conter.                                                                                        | Não         |
+| separator                   | String  | String que será utilizada na concatenação dos campos.                                                                                                                           | Sim         |
+| spaceSeparator              | String  | String que substituirá o espaço na URL, caso alguma campo tenha preenchido com mais de uma palavra.                                                                             | Sim         |
+| columns                     | Objeto  | Objeto contendo as colunas do CSV e seus valores de aceitação.                                                                                                                  | Sim         |
+| dependenciesConfig          | Objeto  | Objeto contendo as regras de dependências de validação.                                                                                                                         | Não         |
+| {{veículo}}                 | Objeto  | Chave do veículo de mídia com suas configurações e quais colunas pertencem a cada configuração.                                                                                 | Não         |
 | {{ferramenta de analytics}} | Objeto  | Chave da ferramenta de analytics com suas configurações e quais colunas pertencem a cada configuração. Essa chave precisa obrigatoriamente receber o valor **ga** ou **adobe**. | Sim         |
-| version                     | Integer | Versão da configuração                                       | Sim         |
-| insertTime                  | String  | Timestamp de inserção da configuração no padrão YYYYMMDDHHmmSS | Sim         |
+| version                     | Integer | Versão da configuração                                                                                                                                                          | Sim         |
+| insertTime                  | String  | Timestamp de inserção da configuração no padrão YYYYMMDDHHmmSS                                                                                                                  | Sim         |
 
 **Exemplo de configuração**:
 
