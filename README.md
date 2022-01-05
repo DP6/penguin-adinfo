@@ -76,16 +76,16 @@ git clone https://github.com/DP6/penguin-adinfo.git
 
 3. Crie uma coleção no Firestore com o nome de **tokens** e insira um primeiro token com os seguintes campos (deixe o id do documento vazio para que seja gerado automaticamente):
 
-  ```
-  {
-  	company: "NOME_EMPRESA" (string),
-      agency: "agencia do usuário" (string,
-  	permission: "owner" (string)
-  	email: "email_do_usuario" (string)
-  	password: "senha_criptografada" (string),
-      activate: true (boolean)
-  }
-  ```
+```
+{
+	company: "NOME_EMPRESA" (string),
+    agency: "agencia do usuário" (string,
+	permission: "owner" (string)
+	email: "email_do_usuario" (string)
+	password: "senha_criptografada" (string),
+    activate: true (boolean)
+}
+```
 
 ### Instalação manual - GCP
 
@@ -119,10 +119,10 @@ Para a configuração inicial do Firestore, são necessárias quatro coleções.
   ```
 
   Para esse documento, é importante manter o Código do Documento gerado automaticamente pelo google, pois ele será utilizado como o ID do usuário em alguns processos.
-  Para geração da senha criptografada, basta utilizar um gerador de senhas que use o *bcrypt* como função de hash, como por exemplo, [este site](https://www.browserling.com/tools/bcrypt). Desta forma, insira o hash da senha no campo *password* do documento, e use a senha escolhida na área de login da interface.
-  O campo *agency* diz respeito a agência a qual pertence o usuário que está sendo criado. Caso o nível de permissão desse usuário seja "owner" ou "admin", deixe este campo em branco.
+  Para geração da senha criptografada, basta utilizar um gerador de senhas que use o _bcrypt_ como função de hash, como por exemplo, [este site](https://www.browserling.com/tools/bcrypt). Desta forma, insira o hash da senha no campo _password_ do documento, e use a senha escolhida na área de login da interface.
+  O campo _agency_ diz respeito a agência a qual pertence o usuário que está sendo criado. Caso o nível de permissão desse usuário seja "owner" ou "admin", deixe este campo em branco.
 
-- **campaigns**: Essa coleção deve ser criada na raiz do firestore , mas não há a necessidade de criar nenhum documento dentro dela. Os documentos serão gerados automaticamente conforme o uso do adinfo, armazenando as campanhas que serão criadas e seus atributos 
+- **campaigns**: Essa coleção deve ser criada na raiz do firestore , mas não há a necessidade de criar nenhum documento dentro dela. Os documentos serão gerados automaticamente conforme o uso do adinfo, armazenando as campanhas que serão criadas e seus atributos
 
 - **blocklist**: Essa coleção deve ser criada na raiz do firestore , mas não há a necessidade de criar nenhum documento dentro dela. Os documentos serão gerados automaticamente conforme o uso do adinfo, adicionando os tokens dos usuários que derem logout na aplicação, pois este token, mesmo que ainda válido, não deve ser usado ainda para acessar a interface.
 
