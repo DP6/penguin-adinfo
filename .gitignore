@@ -4,6 +4,7 @@ node_modules/
 .vscode/
 config/
 gcp_key.json
+gcp_key_terraform.json
 .nyc_output
 coverage
 terraform/terraform.tfstate*

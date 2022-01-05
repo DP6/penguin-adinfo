@@ -26,10 +26,15 @@ variable "pre_config" {
   description = "Digite [1] para inserir uma configuracao previa para o Google Analytics ou [2] para uma configuracao previa para o Adobe Analytics"
 }
 
-# variable "service_account" {
-#   type        = string
-#   description = "Conta de servico do App Engine"
-# }
+variable "email" {
+  type        = string
+  description = "Digite seu e-mail"
+}
+
+variable "password" {
+  type        = string
+  description = "Digite sua senha"
+}
 
 variable "port" {
   type        = number
@@ -54,8 +59,3 @@ variable "location" {
   description = "Localização do projeto GCP https://cloud.google.com/compute/docs/regions-zones?hl=pt-br default us"
   default     = "us"
 }
-
-# variable "service_account_email" {
-#   type        = string
-#   description = "Service account que será utilizadas pelo modulo project-name, as permissões necessárias são: Storage Object Admin, Cloud Functions Admin, BigQuery Admin e Service Account User"
-# }

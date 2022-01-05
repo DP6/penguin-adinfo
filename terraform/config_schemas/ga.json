@@ -1,12 +1,27 @@
 {
 	"csvSeparator": {
-		"stringValue": ","
+		"arrayValue": {
+			"values": [
+				{
+					"stringValue": ","
+				},
+				{
+					"stringValue": ";"
+				}
+			]
+		}
 	},
 	"separator": {
 		"stringValue": ":"
 	},
 	"spaceSeparator": {
 		"stringValue": "_"
+	},
+	"version": {
+		"integerValue": 1
+	},
+	"insertTime": {
+		"stringValue": "19700101000000"
 	},
 	"columns": {
 		"mapValue": {
