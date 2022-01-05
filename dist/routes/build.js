@@ -49,26 +49,33 @@ const build = (app) => {
 			const agencyPath = agency ? agency : 'CompanyCampaigns';
 			const campaign = req.headers.campaign;
 			const permission = req.permission;
-			const agencyCampaigns = yield new CampaignDAO_1.CampaignDAO().getAllCampaignsFrom(agencyPath, permission);
-			const agencyCampaignsNames = agencyCampaigns.map((campaign) => {
-				return campaign.campaignName;
-			});
 			const pathDefault = `${company}/${agencyPath}/${campaign}`;
 			const fullHistoricalFilePath = `${pathDefault}/historical`;
 			const correctHistoricalFilePath = `${pathDefault}/correctHistorical`;
 			const apiResponse = new ApiResponse_1.ApiResponse();
-			if (!agencyCampaignsNames.includes(campaign)) {
-				apiResponse.responseText = 'Campanha não cadastrada na agência!';
-				apiResponse.statusCode = 400;
-				res.status(apiResponse.statusCode).send(apiResponse.jsonResponse);
-				return;
-			} else if (!req.files || !req.files.data) {
+			if (!req.files || !req.files.data) {
 				apiResponse.responseText = 'Nenhum arquivo foi enviado!';
 				apiResponse.statusCode = 400;
 				res.status(apiResponse.statusCode).send(apiResponse.jsonResponse);
 				return;
 			} else if (!campaign) {
 				apiResponse.responseText = 'Nenhuma campanha foi informada!';
+				apiResponse.statusCode = 400;
+				res.status(apiResponse.statusCode).send(apiResponse.jsonResponse);
+				return;
+			}
+			const agencyCampaigns = yield new CampaignDAO_1.CampaignDAO().getAllCampaignsFrom(agencyPath, permission);
+			if (!agencyCampaigns) {
+				apiResponse.responseText = 'Campanha não cadastrada na agência!';
+				apiResponse.statusCode = 400;
+				res.status(apiResponse.statusCode).send(apiResponse.jsonResponse);
+				return;
+			}
+			const agencyCampaignsNames = agencyCampaigns.map((campaign) => {
+				return campaign.campaignName;
+			});
+			if (!agencyCampaignsNames.includes(campaign)) {
+				apiResponse.responseText = 'Campanha não cadastrada na agência!';
 				apiResponse.statusCode = 400;
 				res.status(apiResponse.statusCode).send(apiResponse.jsonResponse);
 				return;
