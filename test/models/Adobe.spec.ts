@@ -89,6 +89,35 @@ describe('Adobe', () => {
 				JSON.stringify(abodeFields)
 			);
 		});
+		it('Validação caso a URL possua uma ancora', () => {
+			const csvLine = {
+				Url: 'www.teste.com.br#ancora',
+				'Tipo de Compra': 'cpc',
+				Dispositivo: 'desktop e mobile',
+				Bandeira: 'meu Produto',
+				Veículo: 'meuVeículo',
+			};
+			const config = new Config({
+				separator: ':',
+				spaceSeparator: '_',
+				columns: {
+					'Tipo de Compra': ['cpa', 'cpc'],
+					Bandeira: ['/meu\\ ?Produto/'],
+					Veículo: [],
+				},
+				adobe: {
+					cid: ['Tipo de Compra', 'Bandeira', 'Veículo'],
+				},
+			});
+			const adobe = new Adobe(csvLine, config);
+			const abodeFields = {
+				cid: 'cpc:meu_produto:meuveiculo',
+				'url adobe': 'www.teste.com.br?cid=cpc:meu_produto:meuveiculo#ancora',
+			};
+			expect(JSON.stringify(adobe.buildedLine().values)).to.equal(
+				JSON.stringify(abodeFields)
+			);
+		});
 	});
 	describe('Valida a geração da linha do Adobe com configuração de dependência', () => {
 		it('Validação caso todos os parâmetros sejam informados corretamente', () => {
