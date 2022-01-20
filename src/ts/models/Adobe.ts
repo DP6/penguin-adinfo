@@ -116,6 +116,8 @@ export class Adobe extends AnalyticsTool {
 	 * Construção da url para adobe
 	 */
 	protected _buildUrl(): string {
-		return `${this.csvLine.url}?cid=${this._cid}`;
+		const ancora = this.csvLine.url.match(/#.*/);
+		const newUrl = this.csvLine.url.replace(`${ancora}`, '');
+		return `${newUrl}?cid=${this._cid}${ancora == null ? '' : ancora}`;
 	}
 }
