@@ -65,7 +65,9 @@ git clone https://github.com/DP6/penguin-adinfo.git
 1. [Google Cloud SDK](https://cloud.google.com/sdk/docs/install?hl=pt-br);
 2. Pacote zip;
 3. [Terraform](https://www.terraform.io/);
-4. Habilitar o App Engine em ambiente de execução Node.js, Firestore e Cloud Storage (necessário ter um billing ativo), no GCP.
+4. Habilitar o App Engine em ambiente de execução Node.js, Firestore e Cloud Storage (necessário ter um billing ativo), no GCP;
+5. Gerar uma senha com o [Bcrypt Generator](https://bcrypt-generator.com/) para informar no usuário owner do adinfo;
+6. Criar o arquivo **gcp_key_terraform.json** contendo a chave json de uma conta de serviço GCP com as permissões necessárias para as subidas dos serviços via terraform.
 
 #### Passos
 
@@ -102,28 +104,35 @@ Crie um bucket para armazenar os arquivos do adinfo, o bucket em questão deve s
 
 Para a configuração inicial do Firestore, são necessárias quatro coleções.
 
-- **companies**: essa coleção deve ser criada na raiz do firestore e deve conter um documento com o nome da empresa. Dentro desse documento, uma segunda coleção deve ser criada com o nome _config_. Seguindo a estrutura: companies > [nome_empresa] > config;
+- **companies**: essa coleção deve deve conter um documento com o nome da empresa. Dentro desse documento, uma segunda coleção deve ser criada com o nome _config_. Seguindo a estrutura: companies > [nome_empresa] > config;
 
-- **tokens**: essa coleção também deve ser criada na raiz do firestore com um documento seguindo a estrutura:
+- **blocklist**: coleção criada para armazenar tokens bloqueados de login;
+
+- **campaigns**: coleção criada para armazenar as campanhas de cada agência;
+
+- **agencies**: coleção criada para armazenar as agências que utilizam o adinfo;
+
+- **tokens**: essa coleção também deve ser criada com um documento seguindo a estrutura:
 
   ```
   {
-  	company: "NOME_EMPRESA" (string),
-      agency: "agencia do usuário" (string,
+    company: "NOME_EMPRESA" (string),
+    agency: "agencia do usuário" (string,
   	permission: "owner" (string),
   	email: "email_do_usuario" (string),
   	password: "senha_criptografada" (string),
-      activate: true (boolean)
+    activate: true (boolean)
   }
   ```
 
   Para esse documento, é importante manter o Código do Documento gerado automaticamente pelo google, pois ele será utilizado como o ID do usuário em alguns processos.
-  Para geração da senha criptografada, basta utilizar um gerador de senhas que use o _bcrypt_ como função de hash, como por exemplo, [este site](https://www.browserling.com/tools/bcrypt). Desta forma, insira o hash da senha no campo _password_ do documento, e use a senha escolhida na área de login da interface.
+   O campo **password** deve ser informado com a criptografia. Para preenchimento manual é possível utilizar o [Bcrypt Generator](https://bcrypt-generator.com/) para gerar a senha criptografada.
   O campo _agency_ diz respeito a agência a qual pertence o usuário que está sendo criado. Caso o nível de permissão desse usuário seja "owner" ou "admin", deixe este campo em branco.
 
 - **campaigns**: Essa coleção deve ser criada na raiz do firestore , mas não há a necessidade de criar nenhum documento dentro dela. Os documentos serão gerados automaticamente conforme o uso do adinfo, armazenando as campanhas que serão criadas e seus atributos
 
 - **blocklist**: Essa coleção deve ser criada na raiz do firestore , mas não há a necessidade de criar nenhum documento dentro dela. Os documentos serão gerados automaticamente conforme o uso do adinfo, adicionando os tokens dos usuários que derem logout na aplicação, pois este token, mesmo que ainda válido, não deve ser usado ainda para acessar a interface.
+
 
 ###### Padrão do Objeto de Configuração
 
@@ -144,7 +153,7 @@ Abaixo segue uma explicação e um exemplo de todos os campos das configuraçõe
 | spaceSeparator              | String | String que substituirá o espaço na URL, caso alguma campo tenha preenchido com mais de uma palavra.                                                                             | Sim         |
 | columns                     | Objeto | Objeto contendo as colunas do CSV e seus valores de aceitação.                                                                                                                  | Sim         |
 | dependenciesConfig          | Objeto | Objeto contendo as regras de dependências de validação.                                                                                                                         | Não         |
-| insertTime                  | String | Data da criação do config no formato _yyyyMMddHHmmss_.                                                                                                                          | Sim         |
+| insertTime                  | String | Data da criação do config no formato _YYYYMMDDHHmmSS_.                                                                                                                          | Sim         |
 | version                     | Number | Número da versão do config.                                                                                                                                                     | Sim         |
 | {{veículo}}                 | Objeto | Chave do veículo de mídia com suas configurações e quais colunas pertencem a cada configuração.                                                                                 | Não         |
 | {{ferramenta de analytics}} | Objeto | Chave da ferramenta de analytics com suas configurações e quais colunas pertencem a cada configuração. Essa chave precisa obrigatoriamente receber o valor **ga** ou **adobe**. | Sim         |
@@ -156,6 +165,8 @@ Abaixo segue uma explicação e um exemplo de todos os campos das configuraçõe
 	"separator": ":",
 	"spaceSeparator": "_",
 	"csvSeparator": [",", ";", "|"],
+    "version": 1,
+    "insertTime": "20220101000000",
 	"columns": {
 		//Colunas que aparecerão no CSV
 		//A chave representa a coluna do CSV e o vetor de valores

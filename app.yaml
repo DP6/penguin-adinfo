@@ -1,1 +1,2 @@
 runtime: nodejs12
+service: adinfo-api

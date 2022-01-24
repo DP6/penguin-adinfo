@@ -98,7 +98,9 @@ class GA extends AnalyticsTool_1.AnalyticsTool {
 		Object.keys(this._utms).forEach((utm) => {
 			utmString += `${utm}=${this._utms[utm]}&`;
 		});
-		return `${this.csvLine.url}?${utmString.slice(0, -1)}`;
+		const ancora = this.csvLine.url.match(/#.*/);
+		const newUrl = this.csvLine.url.replace(`${ancora}`, '');
+		return `${newUrl}?${utmString.slice(0, -1)}${ancora == null ? '' : ancora}`;
 	}
 }
 exports.GA = GA;
