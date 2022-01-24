@@ -126,13 +126,12 @@ Para a configuração inicial do Firestore, são necessárias quatro coleções.
   ```
 
   Para esse documento, é importante manter o Código do Documento gerado automaticamente pelo google, pois ele será utilizado como o ID do usuário em alguns processos.
-   O campo **password** deve ser informado com a criptografia. Para preenchimento manual é possível utilizar o [Bcrypt Generator](https://bcrypt-generator.com/) para gerar a senha criptografada.
+  O campo **password** deve ser informado com a criptografia. Para preenchimento manual é possível utilizar o [Bcrypt Generator](https://bcrypt-generator.com/) para gerar a senha criptografada.
   O campo _agency_ diz respeito a agência a qual pertence o usuário que está sendo criado. Caso o nível de permissão desse usuário seja "owner" ou "admin", deixe este campo em branco.
 
 - **campaigns**: Essa coleção deve ser criada na raiz do firestore , mas não há a necessidade de criar nenhum documento dentro dela. Os documentos serão gerados automaticamente conforme o uso do adinfo, armazenando as campanhas que serão criadas e seus atributos
 
 - **blocklist**: Essa coleção deve ser criada na raiz do firestore , mas não há a necessidade de criar nenhum documento dentro dela. Os documentos serão gerados automaticamente conforme o uso do adinfo, adicionando os tokens dos usuários que derem logout na aplicação, pois este token, mesmo que ainda válido, não deve ser usado ainda para acessar a interface.
-
 
 ###### Padrão do Objeto de Configuração
 
