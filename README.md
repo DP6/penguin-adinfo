@@ -77,15 +77,16 @@ git clone https://github.com/DP6/penguin-adinfo.git
 
 3. Crie uma coleção no Firestore com o nome de **tokens** e insira um primeiro token com os seguintes campos (deixe o id do documento vazio para que seja gerado automaticamente):
 
-   ```
-   {
-   	company: "NOME_EMPRESA" (string)
-   	permission: "owner"(string)
-   email: "email_do_usuario" (string)
-   password: "senha_criptografada" (string),
-   activate: true (boolean)
-   }
-   ```
+```
+{
+	company: "NOME_EMPRESA" (string),
+    agency: "agencia do usuário" (string,
+	permission: "owner" (string)
+	email: "email_do_usuario" (string)
+	password: "senha_criptografada" (string),
+    activate: true (boolean)
+}
+```
 
 ### Instalação manual - GCP
 
@@ -101,7 +102,7 @@ Crie um bucket para armazenar os arquivos do adinfo, o bucket em questão deve s
 
 ##### Configuração inicial do Firestore
 
-Para a configuração inicial do Firestore, são necessárias duas coleções.
+Para a configuração inicial do Firestore, são necessárias quatro coleções.
 
 - **companies**: essa coleção deve deve conter um documento com o nome da empresa. Dentro desse documento, uma segunda coleção deve ser criada com o nome _config_. Seguindo a estrutura: companies > [nome_empresa] > config;
 
@@ -115,19 +116,26 @@ Para a configuração inicial do Firestore, são necessárias duas coleções.
 
   ```
   {
-  	company: "NOME_EMPRESA" (string)
-  	permission: "owner"(string)
-  	email: "email_do_usuario" (string)
+    company: "NOME_EMPRESA" (string),
+    agency: "agencia do usuário" (string,
+  	permission: "owner" (string),
+  	email: "email_do_usuario" (string),
   	password: "senha_criptografada" (string),
-  	activate: true (boolean)
+    activate: true (boolean)
   }
   ```
 
-  Obs.: O campo **password** deve ser informado com a criptografia. Para preenchimento manual é possível utilizar o [Bcrypt Generator](https://bcrypt-generator.com/) para gerar a senha criptografada.
+  Para esse documento, é importante manter o Código do Documento gerado automaticamente pelo google, pois ele será utilizado como o ID do usuário em alguns processos.
+  O campo **password** deve ser informado com a criptografia. Para preenchimento manual é possível utilizar o [Bcrypt Generator](https://bcrypt-generator.com/) para gerar a senha criptografada.
+  O campo _agency_ diz respeito a agência a qual pertence o usuário que está sendo criado. Caso o nível de permissão desse usuário seja "owner" ou "admin", deixe este campo em branco.
+
+- **campaigns**: Essa coleção deve ser criada na raiz do firestore , mas não há a necessidade de criar nenhum documento dentro dela. Os documentos serão gerados automaticamente conforme o uso do adinfo, armazenando as campanhas que serão criadas e seus atributos
+
+- **blocklist**: Essa coleção deve ser criada na raiz do firestore , mas não há a necessidade de criar nenhum documento dentro dela. Os documentos serão gerados automaticamente conforme o uso do adinfo, adicionando os tokens dos usuários que derem logout na aplicação, pois este token, mesmo que ainda válido, não deve ser usado ainda para acessar a interface.
 
 ###### Padrão do Objeto de Configuração
 
-Para utilizar a API, é necessário criar um documento de configuração no Firestore dentro da coleção: companies > [nome_empresa] > config. O nome do documento deve ser **config_1** e ele deve conter os campos: **csvSeparator**, **separator**, **spaceSeparator**, **columns** e um campo para a ferramenta de analytics, sendo esse o valor de **ga** ou **adobe**.
+Para utilizar a API, é necessário criar um documento de configuração no Firestore dentro da coleção: companies > [nome_empresa] > config. O nome do documento deve ser **config_1** e ele deve conter os campos: **version** inicialmente com o valor 1 (number), **insertTime** no formato _yyyyMMddHHmmss_, **csvSeparator**, **separator**, **spaceSeparator**, **columns** e um campo para a ferramenta de analytics, sendo esse o valor de **ga** ou **adobe**.
 
 Todos estes campos serão utilizados para realizar a parametrização do arquivo CSV que a API irá receber.
 
@@ -137,17 +145,17 @@ Entretanto, este campo no arquivo de configuração não é obrigatório. Caso o
 
 Abaixo segue uma explicação e um exemplo de todos os campos das configurações.
 
-| Chave                       | Tipo    | Descrição                                                                                                                                                                       | Obrigatório |
-| --------------------------- | ------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------- |
-| csvSeparator                | Array   | Array que irá conter todos os separadores de colunas que os arquivos CSV poderão conter.                                                                                        | Não         |
-| separator                   | String  | String que será utilizada na concatenação dos campos.                                                                                                                           | Sim         |
-| spaceSeparator              | String  | String que substituirá o espaço na URL, caso alguma campo tenha preenchido com mais de uma palavra.                                                                             | Sim         |
-| columns                     | Objeto  | Objeto contendo as colunas do CSV e seus valores de aceitação.                                                                                                                  | Sim         |
-| dependenciesConfig          | Objeto  | Objeto contendo as regras de dependências de validação.                                                                                                                         | Não         |
-| {{veículo}}                 | Objeto  | Chave do veículo de mídia com suas configurações e quais colunas pertencem a cada configuração.                                                                                 | Não         |
-| {{ferramenta de analytics}} | Objeto  | Chave da ferramenta de analytics com suas configurações e quais colunas pertencem a cada configuração. Essa chave precisa obrigatoriamente receber o valor **ga** ou **adobe**. | Sim         |
-| version                     | Integer | Versão da configuração                                                                                                                                                          | Sim         |
-| insertTime                  | String  | Timestamp de inserção da configuração no padrão YYYYMMDDHHmmSS                                                                                                                  | Sim         |
+| Chave                       | Tipo   | Descrição                                                                                                                                                                       | Obrigatório |
+| --------------------------- | ------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------- |
+| csvSeparator                | Array  | Array que irá conter todos os separadores de colunas que os arquivos CSV poderão conter.                                                                                        | Não         |
+| separator                   | String | String que será utilizada na concatenação dos campos.                                                                                                                           | Sim         |
+| spaceSeparator              | String | String que substituirá o espaço na URL, caso alguma campo tenha preenchido com mais de uma palavra.                                                                             | Sim         |
+| columns                     | Objeto | Objeto contendo as colunas do CSV e seus valores de aceitação.                                                                                                                  | Sim         |
+| dependenciesConfig          | Objeto | Objeto contendo as regras de dependências de validação.                                                                                                                         | Não         |
+| insertTime                  | String | Data da criação do config no formato _YYYYMMDDHHmmSS_.                                                                                                                          | Sim         |
+| version                     | Number | Número da versão do config.                                                                                                                                                     | Sim         |
+| {{veículo}}                 | Objeto | Chave do veículo de mídia com suas configurações e quais colunas pertencem a cada configuração.                                                                                 | Não         |
+| {{ferramenta de analytics}} | Objeto | Chave da ferramenta de analytics com suas configurações e quais colunas pertencem a cada configuração. Essa chave precisa obrigatoriamente receber o valor **ga** ou **adobe**. | Sim         |
 
 **Exemplo de configuração**:
 
@@ -203,7 +211,9 @@ Abaixo segue uma explicação e um exemplo de todos os campos das configuraçõe
 			"columnDestiny": "Tipo de Compra",
 			"matches": ["cpc", "cpa"]
 		}
-	]
+	],
+	"insertTime": "20211201193242",
+	"version": 1,
 }
 ```
 
