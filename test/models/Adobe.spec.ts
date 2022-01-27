@@ -89,7 +89,65 @@ describe('Adobe', () => {
 				JSON.stringify(abodeFields)
 			);
 		});
-		it('Validação caso a URL possua parâmetros e uma ancora', () => {
+		it('Validação caso a URL possua uma ancora', () => {
+			const csvLine = {
+				Url: 'www.teste.com.br#ancora',
+				'Tipo de Compra': 'cpc',
+				Dispositivo: 'desktop e mobile',
+				Bandeira: 'meu Produto',
+				Veículo: 'meuVeículo',
+			};
+			const config = new Config({
+				separator: ':',
+				spaceSeparator: '_',
+				columns: {
+					'Tipo de Compra': ['cpa', 'cpc'],
+					Bandeira: ['/meu\\ ?Produto/'],
+					Veículo: [],
+				},
+				adobe: {
+					cid: ['Tipo de Compra', 'Bandeira', 'Veículo'],
+				},
+			});
+			const adobe = new Adobe(csvLine, config);
+			const abodeFields = {
+				cid: 'cpc:meu_produto:meuveiculo',
+				'url adobe': 'www.teste.com.br?cid=cpc:meu_produto:meuveiculo#ancora',
+			};
+			expect(JSON.stringify(adobe.buildedLine().values)).to.equal(
+				JSON.stringify(abodeFields)
+			);
+		});
+		it('Validação caso a URL possua um parametro', () => {
+			const csvLine = {
+				Url: 'www.teste.com.br?cid=teste',
+				'Tipo de Compra': 'cpc',
+				Dispositivo: 'desktop e mobile',
+				Bandeira: 'meu Produto',
+				Veículo: 'meuVeículo',
+			};
+			const config = new Config({
+				separator: ':',
+				spaceSeparator: '_',
+				columns: {
+					'Tipo de Compra': ['cpa', 'cpc'],
+					Bandeira: ['/meu\\ ?Produto/'],
+					Veículo: [],
+				},
+				adobe: {
+					cid: ['Tipo de Compra', 'Bandeira', 'Veículo'],
+				},
+			});
+			const adobe = new Adobe(csvLine, config);
+			const abodeFields = {
+				cid: 'cpc:meu_produto:meuveiculo',
+				'url adobe': 'www.teste.com.br?cid=teste&cid=cpc:meu_produto:meuveiculo',
+			};
+			expect(JSON.stringify(adobe.buildedLine().values)).to.equal(
+				JSON.stringify(abodeFields)
+			);
+		});
+		it('Validação caso a URL possua um parametro e uma ancora', () => {
 			const csvLine = {
 				Url: 'www.teste.com.br?cid=teste#ancora',
 				'Tipo de Compra': 'cpc',
