@@ -89,9 +89,9 @@ describe('Adobe', () => {
 				JSON.stringify(abodeFields)
 			);
 		});
-		it('Validação caso a URL possua uma ancora', () => {
+		it('Validação caso a URL possua parâmetros e uma ancora', () => {
 			const csvLine = {
-				Url: 'www.teste.com.br#ancora',
+				Url: 'www.teste.com.br?cid=teste#ancora',
 				'Tipo de Compra': 'cpc',
 				Dispositivo: 'desktop e mobile',
 				Bandeira: 'meu Produto',
@@ -112,7 +112,7 @@ describe('Adobe', () => {
 			const adobe = new Adobe(csvLine, config);
 			const abodeFields = {
 				cid: 'cpc:meu_produto:meuveiculo',
-				'url adobe': 'www.teste.com.br?cid=cpc:meu_produto:meuveiculo#ancora',
+				'url adobe': 'www.teste.com.br?cid=teste&cid=cpc:meu_produto:meuveiculo#ancora',
 			};
 			expect(JSON.stringify(adobe.buildedLine().values)).to.equal(
 				JSON.stringify(abodeFields)

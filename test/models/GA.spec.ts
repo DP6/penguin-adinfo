@@ -99,7 +99,7 @@ describe('GA', () => {
 		});
 		it('Validação caso a URL possua uma ancora', () => {
 			const csvLine = {
-				Url: 'www.teste.com.br#ancora',
+				Url: 'www.teste.com.br?search=produto#ancora',
 				'Tipo de Compra': 'cpc',
 				Dispositivo: 'desktop e mobile',
 				Período: 'Maio 2020',
@@ -123,7 +123,7 @@ describe('GA', () => {
 				utm_medium: 'cpc',
 				utm_campaign: 'maio_2020:minha_bandeira',
 				'url ga':
-					'www.teste.com.br?utm_medium=cpc&utm_campaign=maio_2020:minha_bandeira#ancora',
+					'www.teste.com.br?search=produto&utm_medium=cpc&utm_campaign=maio_2020:minha_bandeira#ancora',
 			};
 			expect(JSON.stringify(ga.buildedLine().values)).to.equal(
 				JSON.stringify(gaFields)

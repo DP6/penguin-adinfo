@@ -100,6 +100,8 @@ class GA extends AnalyticsTool_1.AnalyticsTool {
 		});
 		const ancora = this.csvLine.url.match(/#.*/);
 		const newUrl = this.csvLine.url.replace(`${ancora}`, '');
+		const regex = /\?/;
+		if (regex.test(newUrl)) return `${newUrl}&${utmString.slice(0, -1)}${ancora == null ? '' : ancora}`;
 		return `${newUrl}?${utmString.slice(0, -1)}${ancora == null ? '' : ancora}`;
 	}
 }
