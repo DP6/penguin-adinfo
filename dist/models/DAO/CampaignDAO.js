@@ -90,29 +90,6 @@ class CampaignDAO {
 				return false;
 			});
 	}
-	getCampaignId() {
-		return this._objectStore
-			.getCollection(this._pathToCollection)
-			.where('name', '==', this._campaignName)
-			.get()
-			.then((querySnapshot) => {
-				if (querySnapshot.size > 0) {
-					querySnapshot.forEach((documentSnapshot) => {
-						const id = documentSnapshot.get('campaignId');
-						if (this._agency === documentSnapshot.get('agency')) {
-							return id;
-						} else {
-							throw new Error('Falha ao recuperar o ID da campanha!');
-						}
-					});
-				} else {
-					throw new Error('ID não encontrado!');
-				}
-			})
-			.catch((err) => {
-				throw err;
-			});
-	}
 	deactivateCampaign(campaignId, userRequestPermission) {
 		return this._objectStore
 			.getAllDocumentsFrom(this._authCollection)
