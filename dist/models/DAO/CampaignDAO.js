@@ -115,25 +115,21 @@ class CampaignDAO {
 	}
 	deactivateCampaign(campaignId, userRequestPermission) {
 		return this._objectStore
-			.getCollection(this._pathToCollection)
-			.where('campaignId', '==', campaignId)
-			.get()
-			.then((querySnapshot) => {
-				if (querySnapshot) {
-					querySnapshot.forEach((doc) => {
-						const campaign = doc.data();
-						if (userRequestPermission !== 'user') {
-							campaign.activate = false;
-						} else {
-							throw new Error('Permissões insuficientes para inavitar a campanha!');
-						}
-						return doc.ref.set(campaign);
-					});
+			.getAllDocumentsFrom(this._authCollection)
+			.then((campaigns) => {
+				if (userRequestPermission !== 'user') {
+					const [filteredCampaign] = campaigns.filter((campaign) => campaign.campaignId === campaignId);
+					filteredCampaign.activate = false;
+					return filteredCampaign;
 				} else {
-					throw new Error('ID não encontrado!');
+					throw new Error('Permissões insuficientes para inavitar a campanha!');
 				}
 			})
-			.then(() => {
+			.then((filteredCampaign) => {
+				this._objectStore
+					.getCollection(this._pathToCollection)
+					.doc(`${filteredCampaign.name} - ${filteredCampaign.agency}`)
+					.update(filteredCampaign);
 				return true;
 			})
 			.catch((err) => {
@@ -142,25 +138,21 @@ class CampaignDAO {
 	}
 	reactivateCampaign(campaignId, userRequestPermission) {
 		return this._objectStore
-			.getCollection(this._pathToCollection)
-			.where('campaignId', '==', campaignId)
-			.get()
-			.then((querySnapshot) => {
-				if (querySnapshot) {
-					querySnapshot.forEach((doc) => {
-						const campaign = doc.data();
-						if (userRequestPermission !== 'user') {
-							campaign.activate = true;
-						} else {
-							throw new Error('Permissões insuficientes para reativar a campanha!');
-						}
-						return doc.ref.set(campaign);
-					});
+			.getAllDocumentsFrom(this._authCollection)
+			.then((campaigns) => {
+				if (userRequestPermission !== 'user') {
+					const [filteredCampaign] = campaigns.filter((campaign) => campaign.campaignId === campaignId);
+					filteredCampaign.activate = true;
+					return filteredCampaign;
 				} else {
-					throw new Error('ID não encontrado!');
+					throw new Error('Permissões insuficientes para inavitar a campanha!');
 				}
 			})
-			.then(() => {
+			.then((filteredCampaign) => {
+				this._objectStore
+					.getCollection(this._pathToCollection)
+					.doc(`${filteredCampaign.name} - ${filteredCampaign.agency}`)
+					.update(filteredCampaign);
 				return true;
 			})
 			.catch((err) => {
