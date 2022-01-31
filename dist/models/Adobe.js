@@ -73,6 +73,8 @@ class Adobe extends AnalyticsTool_1.AnalyticsTool {
 	_buildUrl() {
 		const ancora = this.csvLine.url.match(/#.*/);
 		const newUrl = this.csvLine.url.replace(`${ancora}`, '');
+		const regex = /\?/;
+		if (regex.test(newUrl)) return `${newUrl}&cid=${this._cid}${ancora == null ? '' : ancora}`;
 		return `${newUrl}?cid=${this._cid}${ancora == null ? '' : ancora}`;
 	}
 }

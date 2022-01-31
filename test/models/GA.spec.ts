@@ -129,6 +129,70 @@ describe('GA', () => {
 				JSON.stringify(gaFields)
 			);
 		});
+		it('Validação caso a URL possua um parametro', () => {
+			const csvLine = {
+				Url: 'www.teste.com.br?search=produtos',
+				'Tipo de Compra': 'cpc',
+				Dispositivo: 'desktop e mobile',
+				Período: 'Maio 2020',
+				Bandeira: 'Minha Bandeira',
+			};
+			const config = new Config({
+				separator: ':',
+				spaceSeparator: '_',
+				columns: {
+					'Tipo de Compra': ['cpa', 'cpc'],
+					Período: ['/[a-zA-Z]* [0-9]{4}/'],
+					Bandeira: [],
+				},
+				ga: {
+					utm_medium: ['Tipo de Compra'],
+					utm_campaign: ['Período', 'Bandeira'],
+				},
+			});
+			const ga = new GA(csvLine, config);
+			const gaFields = {
+				utm_medium: 'cpc',
+				utm_campaign: 'maio_2020:minha_bandeira',
+				'url ga':
+					'www.teste.com.br?search=produtos&utm_medium=cpc&utm_campaign=maio_2020:minha_bandeira',
+			};
+			expect(JSON.stringify(ga.buildedLine().values)).to.equal(
+				JSON.stringify(gaFields)
+			);
+		});
+		it('Validação caso a URL possua um parametro e uma ancora', () => {
+			const csvLine = {
+				Url: 'www.teste.com.br?search=produtos#ancora',
+				'Tipo de Compra': 'cpc',
+				Dispositivo: 'desktop e mobile',
+				Período: 'Maio 2020',
+				Bandeira: 'Minha Bandeira',
+			};
+			const config = new Config({
+				separator: ':',
+				spaceSeparator: '_',
+				columns: {
+					'Tipo de Compra': ['cpa', 'cpc'],
+					Período: ['/[a-zA-Z]* [0-9]{4}/'],
+					Bandeira: [],
+				},
+				ga: {
+					utm_medium: ['Tipo de Compra'],
+					utm_campaign: ['Período', 'Bandeira'],
+				},
+			});
+			const ga = new GA(csvLine, config);
+			const gaFields = {
+				utm_medium: 'cpc',
+				utm_campaign: 'maio_2020:minha_bandeira',
+				'url ga':
+					'www.teste.com.br?search=produtos&utm_medium=cpc&utm_campaign=maio_2020:minha_bandeira#ancora',
+			};
+			expect(JSON.stringify(ga.buildedLine().values)).to.equal(
+				JSON.stringify(gaFields)
+			);
+		});
 	});
 	describe('Valida a geração da linha do GA com configuração de dependência', () => {
 		it('Validação caso todos os parâmetros sejam informados corretamente', () => {
