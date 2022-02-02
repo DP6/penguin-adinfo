@@ -7,31 +7,25 @@ class AgencyDAO {
 	constructor() {
 		this._objectStore = FirestoreConnectionSingleton_1.FirestoreConnectionSingleton.getInstance();
 		this._pathToCollection = ['tokens'];
+		this._authCollection = this._objectStore.getCollection(this._pathToCollection);
 	}
 	getAllAgenciesFrom(company, agency, userRequestPermission) {
 		return this._objectStore
-			.getCollection(['tokens'])
-			.where('company', '==', company)
-			.get()
-			.then((querySnapshot) => {
-				if (querySnapshot.size > 0) {
-					if (userRequestPermission === 'agencyOwner' || userRequestPermission === 'user') {
-						return [agency];
-					}
-					const agencies = [];
-					querySnapshot.forEach((documentSnapshot) => {
-						const searchId = documentSnapshot.ref.path.match(new RegExp('[^/]+$'));
-						if (searchId) {
-							const userAgency = documentSnapshot.get('agency');
-							if (userAgency && !agencies.includes(userAgency)) {
-								agencies.push(userAgency);
-							}
+			.getAllDocumentsFrom(this._authCollection)
+			.then((users) => {
+				if (userRequestPermission === 'agencyOwner' || userRequestPermission === 'user') {
+					return [agency];
+				}
+				const agenciesToReturn = users
+					.filter((user) => user.company === company)
+					.map((filteredUsers) => {
+						if (filteredUsers.agency !== undefined && filteredUsers.agency !== null) {
+							return filteredUsers.agency;
 						} else {
 							throw new Error('Nenhuma agência encontrada!');
 						}
 					});
-					return agencies;
-				}
+				return [...new Set(agenciesToReturn.filter((agency) => agency))];
 			})
 			.catch((err) => {
 				throw err;

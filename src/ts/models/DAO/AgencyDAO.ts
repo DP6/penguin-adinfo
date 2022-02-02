@@ -2,14 +2,17 @@ import { FirestoreConnectionSingleton } from '../cloud/FirestoreConnectionSingle
 import { QuerySnapshot } from '@google-cloud/firestore';
 import { ObjectStore } from './ObjectStore';
 import { User } from '../User';
+import { CollectionReference } from '@google-cloud/firestore';
 
 export class AgencyDAO {
 	private _objectStore: ObjectStore;
 	private _pathToCollection: string[];
+	private _authCollection: CollectionReference;
 
 	constructor() {
 		this._objectStore = FirestoreConnectionSingleton.getInstance();
 		this._pathToCollection = ['tokens'];
+		this._authCollection = this._objectStore.getCollection(this._pathToCollection);
 	}
 
 	/**
@@ -21,28 +24,21 @@ export class AgencyDAO {
 	 */
 	public getAllAgenciesFrom(company: string, agency: string, userRequestPermission: string): Promise<string[]> {
 		return this._objectStore
-			.getCollection(['tokens'])
-			.where('company', '==', company)
-			.get()
-			.then((querySnapshot: QuerySnapshot) => {
-				if (querySnapshot.size > 0) {
-					if (userRequestPermission === 'agencyOwner' || userRequestPermission === 'user') {
-						return [agency];
-					}
-					const agencies: string[] = [];
-					querySnapshot.forEach((documentSnapshot) => {
-						const searchId = documentSnapshot.ref.path.match(new RegExp('[^/]+$'));
-						if (searchId) {
-							const userAgency = documentSnapshot.get('agency');
-							if (userAgency && !agencies.includes(userAgency)) {
-								agencies.push(userAgency);
-							}
+			.getAllDocumentsFrom(this._authCollection)
+			.then((users) => {
+				if (userRequestPermission === 'agencyOwner' || userRequestPermission === 'user') {
+					return [agency];
+				}
+				const agenciesToReturn: string[] = users
+					.filter((user) => user.company === company)
+					.map((filteredUsers) => {
+						if (filteredUsers.agency !== undefined && filteredUsers.agency !== null) {
+							return filteredUsers.agency;
 						} else {
 							throw new Error('Nenhuma agência encontrada!');
 						}
 					});
-					return agencies;
-				}
+				return [...new Set(agenciesToReturn.filter((agency) => agency))];
 			})
 			.catch((err) => {
 				throw err;
