@@ -1,19 +1,14 @@
 import { ObjectStore } from './ObjectStore';
 import { FirestoreConnectionSingleton } from '../cloud/FirestoreConnectionSingleton';
-import { CollectionReference, QuerySnapshot } from '@google-cloud/firestore';
+import { CollectionReference } from '@google-cloud/firestore';
 import { Campaign } from '../Campaign';
-import campaign from '../../routes/campaign';
 
 export class CampaignDAO {
-	private _campaignName: string;
-	private _agency: string;
 	private _objectStore: ObjectStore;
 	private _authCollection: CollectionReference;
 	private _pathToCollection: string[];
 
-	constructor(campaign?: string, agency?: string) {
-		this._campaignName = campaign;
-		this._agency = agency;
+	constructor() {
 		this._objectStore = FirestoreConnectionSingleton.getInstance();
 		this._pathToCollection = ['campaigns'];
 		this._authCollection = this._objectStore.getCollection(this._pathToCollection);
