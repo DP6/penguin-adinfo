@@ -2,6 +2,7 @@ import { ObjectStore } from './ObjectStore';
 import { FirestoreConnectionSingleton } from '../cloud/FirestoreConnectionSingleton';
 import { CollectionReference, QuerySnapshot } from '@google-cloud/firestore';
 import { Campaign } from '../Campaign';
+import campaign from '../../routes/campaign';
 
 export class CampaignDAO {
 	private _campaignName: string;
@@ -19,25 +20,17 @@ export class CampaignDAO {
 	}
 
 	/**
-	 * Consulta a campanha na base de dados
+	 * Busca uma campanha da base de dados
+	 * @param campaignId ID da campanha a ser buscada
 	 * @returns Retorna campanha procurada
 	 */
 	public getCampaign(campaignId: string): Promise<string | void> {
 		return this._objectStore
-			.getCollection(this._pathToCollection)
-			.where('campaignId', '==', campaignId)
-			.get()
-			.then((querySnapshot: QuerySnapshot) => {
-				if (querySnapshot.size > 0) {
-					let campaign: string;
-					querySnapshot.forEach((documentSnapshot) => {
-						if (documentSnapshot.get('name')) {
-							campaign = documentSnapshot.get('name');
-						} else {
-							throw new Error('Nenhuma campanha encontrada!');
-						}
-					});
-					return campaign;
+			.getAllDocumentsFrom(this._authCollection)
+			.then((campaigns) => {
+				if (campaigns.length > 0) {
+					const [filteredCampaign] = campaigns.filter((campaign) => campaign.campaignId === campaignId);
+					return filteredCampaign.name;
 				} else {
 					throw new Error('Nenhuma campanha encontrada!');
 				}
@@ -58,43 +51,35 @@ export class CampaignDAO {
 		userRequestPermission: string
 	): Promise<{ campaignName: string; campaignId: string; agency: string; activate: boolean }[]> {
 		return this._objectStore
-			.getCollection(this._pathToCollection)
-			.where('agency', '==', agency)
-			.get()
-			.then((querySnapshot: QuerySnapshot) => {
+			.getAllDocumentsFrom(this._authCollection)
+			.then((campaigns) => {
 				if (!agency && (userRequestPermission === 'user' || userRequestPermission === 'agencyOwner')) {
 					throw new Error('Nenhuma campanha foi selecionada!');
 				}
-				if (querySnapshot.size > 0) {
-					const agencia = agency !== 'Campanhas Internas' ? agency : 'CompanyCampaigns';
-					const campaigns: { campaignName: string; campaignId: string; agency: string; activate: boolean }[] = [];
-					querySnapshot.forEach((documentSnapshot) => {
-						const documentAgency = documentSnapshot.get('agency');
-						if (agencia === documentAgency) {
-							const campaignInfos: { campaignName: string; campaignId: string; agency: string; activate: boolean } = {
-								campaignName: documentSnapshot.get('name'),
-								campaignId: documentSnapshot.get('campaignId'),
-								agency: documentSnapshot.get('agency'),
-								activate: documentSnapshot.get('activate'),
-							};
+				const agencia = agency !== 'Campanhas Internas' ? agency : 'CompanyCampaigns';
+
+				const campaignsToReturn: { campaignName: string; campaignId: string; agency: string; activate: boolean }[] =
+					campaigns
+						.filter((campaign) => campaign.agency === agencia)
+						.map((campaign) => {
 							if (
-								campaignInfos.campaignName &&
-								campaignInfos.campaignId &&
-								campaignInfos.agency &&
-								campaignInfos.activate !== null &&
-								campaignInfos.activate !== undefined &&
-								!campaigns.includes(campaignInfos)
+								campaign.campaignId &&
+								campaign.name &&
+								campaign.activate !== undefined &&
+								campaign.activate !== null
 							) {
-								campaigns.push(campaignInfos);
+								return {
+									campaignName: campaign.name,
+									campaignId: campaign.campaignId,
+									agency: campaign.agency,
+									activate: campaign.activate,
+								};
 							} else {
-								throw new Error('Erro na recuperação dos atributos da campanha ' + documentSnapshot.get('name') + '!');
+								throw new Error('Erro na recuperação dos atributos da campanha ' + campaign.name + '!');
 							}
-						} else {
-							throw new Error('Nenhuma campanha encontrada!');
-						}
-					});
-					return campaigns;
-				}
+						});
+
+				return campaignsToReturn;
 			})
 			.catch((err) => {
 				throw err;
