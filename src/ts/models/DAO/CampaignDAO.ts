@@ -1,43 +1,31 @@
 import { ObjectStore } from './ObjectStore';
 import { FirestoreConnectionSingleton } from '../cloud/FirestoreConnectionSingleton';
-import { CollectionReference, QuerySnapshot } from '@google-cloud/firestore';
+import { CollectionReference } from '@google-cloud/firestore';
 import { Campaign } from '../Campaign';
 
 export class CampaignDAO {
-	private _campaignName: string;
-	private _agency: string;
 	private _objectStore: ObjectStore;
 	private _authCollection: CollectionReference;
 	private _pathToCollection: string[];
 
-	constructor(campaign?: string, agency?: string) {
-		this._campaignName = campaign;
-		this._agency = agency;
+	constructor() {
 		this._objectStore = FirestoreConnectionSingleton.getInstance();
 		this._pathToCollection = ['campaigns'];
 		this._authCollection = this._objectStore.getCollection(this._pathToCollection);
 	}
 
 	/**
-	 * Consulta a campanha na base de dados
+	 * Busca uma campanha da base de dados
+	 * @param campaignId ID da campanha a ser buscada
 	 * @returns Retorna campanha procurada
 	 */
 	public getCampaign(campaignId: string): Promise<string | void> {
 		return this._objectStore
-			.getCollection(this._pathToCollection)
-			.where('campaignId', '==', campaignId)
-			.get()
-			.then((querySnapshot: QuerySnapshot) => {
-				if (querySnapshot.size > 0) {
-					let campaign: string;
-					querySnapshot.forEach((documentSnapshot) => {
-						if (documentSnapshot.get('name')) {
-							campaign = documentSnapshot.get('name');
-						} else {
-							throw new Error('Nenhuma campanha encontrada!');
-						}
-					});
-					return campaign;
+			.getAllDocumentsFrom(this._authCollection)
+			.then((campaigns) => {
+				if (campaigns.length > 0) {
+					const [filteredCampaign] = campaigns.filter((campaign) => campaign.campaignId === campaignId);
+					return filteredCampaign.name;
 				} else {
 					throw new Error('Nenhuma campanha encontrada!');
 				}
@@ -58,43 +46,35 @@ export class CampaignDAO {
 		userRequestPermission: string
 	): Promise<{ campaignName: string; campaignId: string; agency: string; activate: boolean }[]> {
 		return this._objectStore
-			.getCollection(this._pathToCollection)
-			.where('agency', '==', agency)
-			.get()
-			.then((querySnapshot: QuerySnapshot) => {
+			.getAllDocumentsFrom(this._authCollection)
+			.then((campaigns) => {
 				if (!agency && (userRequestPermission === 'user' || userRequestPermission === 'agencyOwner')) {
 					throw new Error('Nenhuma campanha foi selecionada!');
 				}
-				if (querySnapshot.size > 0) {
-					const agencia = agency !== 'Campanhas Internas' ? agency : 'CompanyCampaigns';
-					const campaigns: { campaignName: string; campaignId: string; agency: string; activate: boolean }[] = [];
-					querySnapshot.forEach((documentSnapshot) => {
-						const documentAgency = documentSnapshot.get('agency');
-						if (agencia === documentAgency) {
-							const campaignInfos: { campaignName: string; campaignId: string; agency: string; activate: boolean } = {
-								campaignName: documentSnapshot.get('name'),
-								campaignId: documentSnapshot.get('campaignId'),
-								agency: documentSnapshot.get('agency'),
-								activate: documentSnapshot.get('activate'),
-							};
+				const agencia = agency !== 'Campanhas Internas' ? agency : 'CompanyCampaigns';
+
+				const campaignsToReturn: { campaignName: string; campaignId: string; agency: string; activate: boolean }[] =
+					campaigns
+						.filter((campaign) => campaign.agency === agencia)
+						.map((campaign) => {
 							if (
-								campaignInfos.campaignName &&
-								campaignInfos.campaignId &&
-								campaignInfos.agency &&
-								campaignInfos.activate !== null &&
-								campaignInfos.activate !== undefined &&
-								!campaigns.includes(campaignInfos)
+								campaign.campaignId &&
+								campaign.name &&
+								campaign.activate !== undefined &&
+								campaign.activate !== null
 							) {
-								campaigns.push(campaignInfos);
+								return {
+									campaignName: campaign.name,
+									campaignId: campaign.campaignId,
+									agency: campaign.agency,
+									activate: campaign.activate,
+								};
 							} else {
-								throw new Error('Erro na recuperação dos atributos da campanha ' + documentSnapshot.get('name') + '!');
+								throw new Error('Erro na recuperação dos atributos da campanha ' + campaign.name + '!');
 							}
-						} else {
-							throw new Error('Nenhuma campanha encontrada!');
-						}
-					});
-					return campaigns;
-				}
+						});
+
+				return campaignsToReturn;
 			})
 			.catch((err) => {
 				throw err;
@@ -120,34 +100,6 @@ export class CampaignDAO {
 	}
 
 	/**
-	 * Busca o ID do campanha na base de dados
-	 * @returns ID do campanha
-	 */
-	public getCampaignId(): Promise<string | void> {
-		return this._objectStore
-			.getCollection(this._pathToCollection)
-			.where('name', '==', this._campaignName)
-			.get()
-			.then((querySnapshot: QuerySnapshot) => {
-				if (querySnapshot.size > 0) {
-					querySnapshot.forEach((documentSnapshot) => {
-						const id = documentSnapshot.get('campaignId');
-						if (this._agency === documentSnapshot.get('agency')) {
-							return id;
-						} else {
-							throw new Error('Falha ao recuperar o ID da campanha!');
-						}
-					});
-				} else {
-					throw new Error('ID não encontrado!');
-				}
-			})
-			.catch((err) => {
-				throw err;
-			});
-	}
-
-	/**
 	 * Desativa uma campanha
 	 * @param campaignId ID da campanha a ser desativada
 	 * @param userRequestPermission permissão do usuario que solicitou a alteração
@@ -155,25 +107,21 @@ export class CampaignDAO {
 	 */
 	public deactivateCampaign(campaignId: string, userRequestPermission: string): Promise<boolean | void> {
 		return this._objectStore
-			.getCollection(this._pathToCollection)
-			.where('campaignId', '==', campaignId)
-			.get()
-			.then((querySnapshot: QuerySnapshot) => {
-				if (querySnapshot) {
-					querySnapshot.forEach((doc) => {
-						const campaign = doc.data();
-						if (userRequestPermission !== 'user') {
-							campaign.activate = false;
-						} else {
-							throw new Error('Permissões insuficientes para inavitar a campanha!');
-						}
-						return doc.ref.set(campaign);
-					});
+			.getAllDocumentsFrom(this._authCollection)
+			.then((campaigns) => {
+				if (userRequestPermission !== 'user') {
+					const [filteredCampaign] = campaigns.filter((campaign) => campaign.campaignId === campaignId);
+					filteredCampaign.activate = false;
+					return filteredCampaign;
 				} else {
-					throw new Error('ID não encontrado!');
+					throw new Error('Permissões insuficientes para inavitar a campanha!');
 				}
 			})
-			.then(() => {
+			.then((filteredCampaign) => {
+				this._objectStore
+					.getCollection(this._pathToCollection)
+					.doc(`${filteredCampaign.name} - ${filteredCampaign.agency}`)
+					.update(filteredCampaign);
 				return true;
 			})
 			.catch((err) => {
@@ -189,25 +137,21 @@ export class CampaignDAO {
 	 */
 	public reactivateCampaign(campaignId: string, userRequestPermission: string): Promise<boolean | void> {
 		return this._objectStore
-			.getCollection(this._pathToCollection)
-			.where('campaignId', '==', campaignId)
-			.get()
-			.then((querySnapshot: QuerySnapshot) => {
-				if (querySnapshot) {
-					querySnapshot.forEach((doc) => {
-						const campaign = doc.data();
-						if (userRequestPermission !== 'user') {
-							campaign.activate = true;
-						} else {
-							throw new Error('Permissões insuficientes para reativar a campanha!');
-						}
-						return doc.ref.set(campaign);
-					});
+			.getAllDocumentsFrom(this._authCollection)
+			.then((campaigns) => {
+				if (userRequestPermission !== 'user') {
+					const [filteredCampaign] = campaigns.filter((campaign) => campaign.campaignId === campaignId);
+					filteredCampaign.activate = true;
+					return filteredCampaign;
 				} else {
-					throw new Error('ID não encontrado!');
+					throw new Error('Permissões insuficientes para inavitar a campanha!');
 				}
 			})
-			.then(() => {
+			.then((filteredCampaign) => {
+				this._objectStore
+					.getCollection(this._pathToCollection)
+					.doc(`${filteredCampaign.name} - ${filteredCampaign.agency}`)
+					.update(filteredCampaign);
 				return true;
 			})
 			.catch((err) => {
