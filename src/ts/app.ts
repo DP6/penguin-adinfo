@@ -62,7 +62,6 @@ app.all('*', async (req: { [key: string]: any }, res: { [key: string]: any }, ne
 		LoggingSingleton.getInstance().logInfo(JSON.stringify(log));
 		next();
 	} else {
-
 		const token = req.headers.token;
 		const programmaticToken = req.headers.programmaticToken;
 
@@ -70,7 +69,7 @@ app.all('*', async (req: { [key: string]: any }, res: { [key: string]: any }, ne
 		let permissionForRoute = false;
 
 		try {
-			if(token) {
+			if (token) {
 				const payload = await new JWT().validateToken(token);
 
 				const user = new User(
@@ -117,8 +116,7 @@ app.all('*', async (req: { [key: string]: any }, res: { [key: string]: any }, ne
 				req.email = user.email;
 				req.permission = user.permission;
 				req.token = req.headers.token;
-
-			} else if(programmaticToken) {
+			} else if (programmaticToken) {
 				const payloadProgrammaticAccess = await new ProgrammaticUserDAO().getProgrammaticUser(programmaticToken);
 				log = {
 					user: payloadProgrammaticAccess.id,
@@ -144,13 +142,12 @@ app.all('*', async (req: { [key: string]: any }, res: { [key: string]: any }, ne
 				req.email = programmaticUser.email;
 				req.permission = programmaticUser.permission;
 				req.token = req.headers.token;
-
 			} else {
 				apiResponse.responseText = 'Usuário sem permissão para realizar essa ação!';
 				apiResponse.statusCode = 403;
 				res.statusCode(apiResponse.statusCode).send(apiResponse.jsonResponse);
 			}
-		
+
 			LoggingSingleton.getInstance().logInfo(JSON.stringify(log));
 
 			if (!permissionForRoute) {
@@ -158,7 +155,6 @@ app.all('*', async (req: { [key: string]: any }, res: { [key: string]: any }, ne
 				apiResponse.statusCode = 403;
 				res.statusCode(apiResponse.statusCode).send(apiResponse.jsonResponse);
 			}
-
 
 			next();
 		} catch (e) {

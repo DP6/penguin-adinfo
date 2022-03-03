@@ -1,7 +1,7 @@
 import { ObjectStore } from '../DAO/ObjectStore';
 import { FirestoreConnectionSingleton } from '../cloud/FirestoreConnectionSingleton';
 import { CollectionReference, DocumentData, DocumentReference } from '@google-cloud/firestore';
-import { ProgrammaticUser } from '../ProgrammaticUser'
+import { ProgrammaticUser } from '../ProgrammaticUser';
 
 export class ConfigDAO {
 	private _objectStore: ObjectStore;
@@ -12,8 +12,7 @@ export class ConfigDAO {
 		this._programmaticUser = this._objectStore.getCollection([]);
 	}
 
-    getProgrammaticUser(token: string): ProgrammaticUser {
-        //IMPLEMENTAR
-    }
-
+	getProgrammaticUser(token: string): ProgrammaticUser {
+		//IMPLEMENTAR
+	}
 }

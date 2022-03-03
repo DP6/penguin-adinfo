@@ -1,17 +1,9 @@
 import { RoutesPermission } from './RoutesPermission';
-import { User } from './User'
+import { User } from './User';
 
 export class ProgrammaticUser extends User {
-
-	constructor(
-		id: string,
-		permission: string,
-		company: string,
-        email: string,
-		activate = true,
-		agency = '',
-	) {
-        super(id, permission, company, email, activate, agency, null);
+	constructor(id: string, permission: string, company: string, email: string, activate = true, agency = '') {
+		super(id, permission, company, email, activate, agency, null);
 	}
 
 	/**
@@ -59,7 +51,7 @@ export class ProgrammaticUser extends User {
 		return super.id;
 	}
 
-    get email(): string {
-        return super.email;
-    }
+	get email(): string {
+		return super.email;
+	}
 }
