@@ -1,28 +1,24 @@
-import { ObjectStore } from '../DAO/ObjectStore';
-import { FirestoreConnectionSingleton } from '../cloud/FirestoreConnectionSingleton';
-import { CollectionReference, QuerySnapshot } from '@google-cloud/firestore';
-import { ProgrammaticUser } from '../ProgrammaticUser';
-
-export class ProgrammaticUserDAO {
-	private _objectStore: ObjectStore;
-	private _programmaticUser: CollectionReference;
-
+'use strict';
+Object.defineProperty(exports, '__esModule', { value: true });
+exports.ProgrammaticUserDAO = void 0;
+const FirestoreConnectionSingleton_1 = require('../cloud/FirestoreConnectionSingleton');
+const ProgrammaticUser_1 = require('../ProgrammaticUser');
+class ProgrammaticUserDAO {
 	constructor() {
-		this._objectStore = FirestoreConnectionSingleton.getInstance();
+		this._objectStore = FirestoreConnectionSingleton_1.FirestoreConnectionSingleton.getInstance();
 		this._programmaticUser = this._objectStore.getCollection(['tokens_programaticos']);
 	}
-
-	getProgrammaticUser(token: string): Promise<ProgrammaticUser> {
+	getProgrammaticUser(token) {
 		return this._programmaticUser
 			.where('__name__', '==', token)
 			.get()
-			.then((querySnapshot: QuerySnapshot) => {
+			.then((querySnapshot) => {
 				if (querySnapshot.size > 0) {
-					let programmaticUser: ProgrammaticUser;
+					let programmaticUser;
 					querySnapshot.forEach((documentSnapshot) => {
 						const searchId = documentSnapshot.ref.path.match(new RegExp('[^/]+$'));
 						if (searchId) {
-							programmaticUser = new ProgrammaticUser(
+							programmaticUser = new ProgrammaticUser_1.ProgrammaticUser(
 								searchId[0],
 								documentSnapshot.get('permission'),
 								documentSnapshot.get('company'),
@@ -44,3 +40,4 @@ export class ProgrammaticUserDAO {
 			});
 	}
 }
+exports.ProgrammaticUserDAO = ProgrammaticUserDAO;

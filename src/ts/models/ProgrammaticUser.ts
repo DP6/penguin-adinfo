@@ -20,7 +20,14 @@ export class ProgrammaticUser extends User {
 	 * @returns JSON correspondente ao objeto User
 	 */
 	public toJson(): { [key: string]: string | boolean } {
-		// IMPLEMENTAR
+		return {
+			agency: this.agency,
+			company: this.company,
+			permission: this.permission,
+			email: this.email,
+			id: this.id,
+			activate: this.activate,
+		};
 	}
 
 	/**
@@ -28,7 +35,13 @@ export class ProgrammaticUser extends User {
 	 * @returns JSON correspondente ao objeto User com todos os atributos
 	 */
 	public toJsonSave(): { [key: string]: string | boolean } {
-		//IMPLEMENTAR
+		return {
+			agency: this.agency,
+			company: this.company,
+			permission: this.permission,
+			email: this.email,
+			activate: this.activate,
+		};
 	}
 
 	get permission(): string {

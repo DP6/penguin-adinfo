@@ -11,6 +11,7 @@ import { User } from './models/User';
 import { FirestoreConnectionSingleton } from './models/cloud/FirestoreConnectionSingleton';
 import { QuerySnapshot } from '@google-cloud/firestore';
 import { ProgrammaticUser } from './models/ProgrammaticUser';
+import { ProgrammaticUserDAO } from './models/DAO/ProgrammaticUserDAO';
 
 config({ path: __dirname + '/../.env' });
 
@@ -63,7 +64,7 @@ app.all('*', async (req: { [key: string]: any }, res: { [key: string]: any }, ne
 		next();
 	} else {
 		const token = req.headers.token;
-		const programmaticToken = req.headers.programmaticToken;
+		const programmaticToken = req.headers.programmatictoken;
 
 		let log = {};
 		let permissionForRoute = false;
@@ -131,6 +132,7 @@ app.all('*', async (req: { [key: string]: any }, res: { [key: string]: any }, ne
 					payloadProgrammaticAccess.id,
 					payloadProgrammaticAccess.permission,
 					payloadProgrammaticAccess.company,
+					payloadProgrammaticAccess.email,
 					payloadProgrammaticAccess.activate,
 					payloadProgrammaticAccess.agency
 				);
