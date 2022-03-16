@@ -73,8 +73,8 @@ export class UserDAO {
 									userPermission,
 									documentSnapshot.get('company'),
 									documentSnapshot.get('email'),
-									documentSnapshot.get('activate'),
-									documentSnapshot.get('agency')
+									documentSnapshot.get('active'),
+									documentSnapshot.get('adOpsTeam')
 								);
 								users.push(user);
 							}
@@ -100,27 +100,39 @@ export class UserDAO {
 			.where('email', '==', this._email)
 			.get()
 			.then((querySnapshot: QuerySnapshot) => {
+				console.log('entrei no then do get user');
 				if (querySnapshot.size > 0) {
 					let user: User;
 					querySnapshot.forEach((documentSnapshot) => {
 						const searchId = documentSnapshot.ref.path.match(new RegExp('[^/]+$'));
 						if (searchId) {
+							console.log(
+								'to no if pq encontrei o user',
+								'senha que peguei aqui do request ',
+								this._password,
+								'senha do pessword do firestore',
+								documentSnapshot.get('password')
+							);
 							const validatePassword = bcrypt.compareSync(this._password, documentSnapshot.get('password'));
+							console.log('validate password oq retorna: ', validatePassword);
 							if (!validatePassword) throw new Error('Email ou senha incorreto(s)!');
+							console.log('passei do throw error pq deu true');
 							user = new User(
 								searchId[0],
 								documentSnapshot.get('permission'),
 								documentSnapshot.get('company'),
 								documentSnapshot.get('email'),
-								documentSnapshot.get('activate'),
-								documentSnapshot.get('agency')
+								documentSnapshot.get('active'),
+								documentSnapshot.get('adOpsTeam')
 							);
+							console.log('objeto do user', user);
 						} else {
 							throw new Error('Nenhum usuário encontrado!');
 						}
 					});
 					return user;
 				} else {
+					console.log('erro no getUser()');
 					throw new Error('Email ou senha incorreto(s)!');
 				}
 			})
@@ -180,11 +192,11 @@ export class UserDAO {
 				const user = doc.data();
 				if (
 					user.permission === 'user' ||
-					((user.permission === 'admin' || user.permission === 'agencyOwner') && userRequestPermission === 'owner')
+					((user.permission === 'admin' || user.permission === 'adOpsManager') && userRequestPermission === 'owner')
 				) {
-					user.activate = false;
-				} else if (user.permission === 'agencyOwner' && userRequestPermission === 'admin') {
-					user.activate = false;
+					user.active = false;
+				} else if (user.permission === 'adOpsManager' && userRequestPermission === 'admin') {
+					user.active = false;
 				} else {
 					throw new Error('Permissões insuficientes para inavitar o usuário!');
 				}
@@ -213,11 +225,11 @@ export class UserDAO {
 				const user = doc.data();
 				if (
 					user.permission === 'user' ||
-					((user.permission === 'admin' || user.permission === 'agencyOwner') && userRequestPermission === 'owner')
+					((user.permission === 'admin' || user.permission === 'adOpsManager') && userRequestPermission === 'owner')
 				) {
-					user.activate = true;
-				} else if (user.permission === 'agencyOwner' && userRequestPermission === 'admin') {
-					user.activate = true;
+					user.active = true;
+				} else if (user.permission === 'adOpsManager' && userRequestPermission === 'admin') {
+					user.active = true;
 				} else {
 					throw new Error('Permissões insuficientes para inavitar o usuário!');
 				}

@@ -95,10 +95,10 @@ resource "google_firestore_document" "blocklist_collection" {
   fields      = "{}"
 }
 
-resource "google_firestore_document" "agencies_collection" {
+resource "google_firestore_document" "adOpsTeams_collection" {
   project     = var.project_id
-  collection  = "agencies"
-  document_id = "agencies - instance"
+  collection  = "adOpsTeams"
+  document_id = "adOpsTeams - instance"
   fields      = "{}"
 }
 
@@ -113,5 +113,5 @@ resource "google_firestore_document" "tokens_collection" {
   project     = var.project_id
   collection  = "tokens"
   document_id = "owner instance"
-  fields      = "{\"activate\": {\"booleanValue\": true}, \"company\": {\"stringValue\": \"${var.company}\"},\"email\": {\"stringValue\": \"${var.email}\"},\"password\": {\"stringValue\": \"${var.password}\"},\"permission\": {\"stringValue\": \"owner\"}}"
+  fields      = "{\"active\": {\"booleanValue\": true}, \"company\": {\"stringValue\": \"${var.company}\"},\"email\": {\"stringValue\": \"${var.email}\"},\"password\": {\"stringValue\": \"${var.password}\"},\"permission\": {\"stringValue\": \"owner\"}}"
 }

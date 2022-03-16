@@ -1,7 +1,7 @@
 import { ApiResponse } from '../models/ApiResponse';
 import { FileDAO } from '../models/DAO/FileDAO';
 import { CampaignDAO } from '../models/DAO/CampaignDAO';
-import { AgencyDAO } from '../models/DAO/AgencyDAO';
+import { AdOpsTeamDAO } from '../models/DAO/AdOpsTeamDAO';
 import { Campaign } from '../models/Campaign';
 import { DateUtils } from '../utils/DateUtils';
 
@@ -12,7 +12,7 @@ const campaign = (app: { [key: string]: any }): void => {
 		const created = DateUtils.today();
 		const campaignName = req.body.campaign;
 		const company = req.company;
-		const agency = req.body.agency ? req.body.agency : 'CompanyCampaigns';
+		const adOpsTeam = req.body.adOpsTeam ? req.body.adOpsTeam : 'CompanyCampaigns';
 		const campaignId = Date.now().toString(16);
 
 		if (req.permission === 'user') {
@@ -22,7 +22,7 @@ const campaign = (app: { [key: string]: any }): void => {
 			throw new Error('Necessário nome da Campanha!');
 		}
 
-		const campaignObject = new Campaign(campaignName, company, agency, campaignId, true, created);
+		const campaignObject = new Campaign(campaignName, company, adOpsTeam, campaignId, true, created);
 
 		new CampaignDAO()
 			.addCampaign(campaignObject)
@@ -44,29 +44,29 @@ const campaign = (app: { [key: string]: any }): void => {
 			});
 	});
 
-	app.get('/agencies/campaigns', async (req: { [key: string]: any }, res: { [key: string]: any }) => {
+	app.get('/adOpsTeams/campaigns', async (req: { [key: string]: any }, res: { [key: string]: any }) => {
 		const apiResponse = new ApiResponse();
 
 		const company = req.company;
-		const agency = req.agency;
+		const adOpsTeam = req.adOpsTeam;
 		const permission = req.permission;
 
-		const gettingAgencies = async () => {
-			return await new AgencyDAO().getAllAgenciesFrom(company, agency, permission);
+		const gettingAdOpsTeams = async () => {
+			return await new AdOpsTeamDAO().getAllAdOpsTeamsFrom(company, adOpsTeam, permission);
 		};
 
-		const allAgencies: string[] = await gettingAgencies();
+		const allAdOpsTeams: string[] = await gettingAdOpsTeams();
 		if (permission === 'owner' || permission === 'admin') {
-			allAgencies.push('CompanyCampaigns');
+			allAdOpsTeams.push('CompanyCampaigns');
 		}
-		const agenciesToReturn: {
-			[key: string]: { campaignName: string; campaignId: string; agency: string; activate: boolean }[];
+		const adOpsTeamsToReturn: {
+			[key: string]: { campaignName: string; campaignId: string; adOpsTeam: string; active: boolean }[];
 		}[] = [];
-		for await (const agencyInfos of allAgencies) {
+		for await (const adOpsTeamInfos of allAdOpsTeams) {
 			try {
-				const campaignsObject = await new CampaignDAO().getAllCampaignsFrom(agencyInfos, permission);
+				const campaignsObject = await new CampaignDAO().getAllCampaignsFrom(adOpsTeamInfos, permission);
 				if (campaignsObject) {
-					agenciesToReturn.push({ [agencyInfos]: campaignsObject });
+					adOpsTeamsToReturn.push({ [adOpsTeamInfos]: campaignsObject });
 				}
 			} catch (err) {
 				apiResponse.statusCode = 500;
@@ -77,20 +77,20 @@ const campaign = (app: { [key: string]: any }): void => {
 			}
 		}
 		apiResponse.statusCode = 200;
-		apiResponse.responseText = JSON.stringify(agenciesToReturn);
+		apiResponse.responseText = JSON.stringify(adOpsTeamsToReturn);
 		res.status(apiResponse.statusCode).send(apiResponse.responseText);
 	});
 
-	app.get('/campaign/:agency/list', async (req: { [key: string]: any }, res: { [key: string]: any }) => {
+	app.get('/campaign/:adOpsTeam/list', async (req: { [key: string]: any }, res: { [key: string]: any }) => {
 		const apiResponse = new ApiResponse();
 
-		const agency = req.params.agency !== 'Campanhas Internas' ? req.params.agency : 'CompanyCampaigns';
+		const adOpsTeam = req.params.adOpsTeam !== 'Campanhas Internas' ? req.params.adOpsTeam : 'CompanyCampaigns';
 		const permission = req.permission;
 
 		new CampaignDAO()
-			.getAllCampaignsFrom(agency, permission)
-			.then((agencies: { campaignName: string; campaignId: string }[]) => {
-				apiResponse.responseText = JSON.stringify(agencies);
+			.getAllCampaignsFrom(adOpsTeam, permission)
+			.then((adOpsTeams: { campaignName: string; campaignId: string }[]) => {
+				apiResponse.responseText = JSON.stringify(adOpsTeams);
 			})
 			.catch((err) => {
 				apiResponse.statusCode = 500;
@@ -102,12 +102,12 @@ const campaign = (app: { [key: string]: any }): void => {
 			});
 	});
 
-	app.get('/:agency/:campaignId/csv/list', async (req: { [key: string]: any }, res: { [key: string]: any }) => {
+	app.get('/:adOpsTeam/:campaignId/csv/list', async (req: { [key: string]: any }, res: { [key: string]: any }) => {
 		const apiResponse = new ApiResponse();
 		const campaignId = req.params.campaignId;
 
-		const agency = req.params.agency;
-		const agencyPath = agency === 'Campanhas Internas' ? 'CompanyCampaigns' : agency;
+		const adOpsTeam = req.params.adOpsTeam;
+		const adOpsTeamPath = adOpsTeam === 'Campanhas Internas' ? 'CompanyCampaigns' : adOpsTeam;
 		const company = req.company;
 		const permission = req.permission;
 		const campaignObject = new CampaignDAO();
@@ -115,8 +115,11 @@ const campaign = (app: { [key: string]: any }): void => {
 		const fileDAO = new FileDAO();
 
 		// uma evolucao aqui eh o owner/admin conseguir ver (e selecionar) as campanhas de todas as agencias
-		if ((permission === 'agencyOwner' || permission === 'user') && (!agency || agency === 'Campanhas Internas')) {
-			apiResponse.responseText = 'Nenhuma agência foi informada!';
+		if (
+			(permission === 'adOpsManager' || permission === 'user') &&
+			(!adOpsTeam || adOpsTeam === 'Campanhas Internas')
+		) {
+			apiResponse.responseText = 'Nenhuma adOpsTeam foi informada!';
 			apiResponse.statusCode = 400;
 			res.status(apiResponse.statusCode).send(apiResponse.jsonResponse);
 			return;
@@ -127,7 +130,7 @@ const campaign = (app: { [key: string]: any }): void => {
 			return;
 		}
 
-		const filePath = `${company}/${agencyPath}/${campaign}/`;
+		const filePath = `${company}/${adOpsTeamPath}/${campaign}/`;
 
 		fileDAO
 			.getAllFilesFromStore(filePath)

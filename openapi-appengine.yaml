@@ -165,9 +165,9 @@ paths:
         - name: company
           in: headers
           description: current company
-        - name: agency
+        - name: adOpsTeam
           in: headers
-          description: agency of the new user
+          description: adOpsTeam of the new user
         - name: email
           in: headers
           description: email of the new user for login

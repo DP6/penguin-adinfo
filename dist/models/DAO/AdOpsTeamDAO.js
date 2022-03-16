@@ -1,40 +1,40 @@
 'use strict';
 Object.defineProperty(exports, '__esModule', { value: true });
-exports.AgencyDAO = void 0;
+exports.AdOpsTeamDAO = void 0;
 const FirestoreConnectionSingleton_1 = require('../cloud/FirestoreConnectionSingleton');
 const User_1 = require('../User');
-class AgencyDAO {
+class AdOpsTeamDAO {
 	constructor() {
 		this._objectStore = FirestoreConnectionSingleton_1.FirestoreConnectionSingleton.getInstance();
 		this._pathToCollection = ['tokens'];
 		this._authCollection = this._objectStore.getCollection(this._pathToCollection);
 	}
-	getAllAgenciesFrom(company, agency, userRequestPermission) {
+	getAllAdOpsTeamsFrom(advertiser, adOpsTeam, userRequestPermission) {
 		return this._objectStore
 			.getAllDocumentsFrom(this._authCollection)
 			.then((users) => {
-				if (userRequestPermission === 'adOpsManager' || userRequestPermission === 'user') {
-					return [agency];
+				if (userRequestPermission === 'adOpsTeamManager' || userRequestPermission === 'user') {
+					return [adOpsTeam];
 				}
-				const agenciesToReturn = users
-					.filter((user) => user.company === company)
+				const adOpsTeamsToReturn = users
+					.filter((user) => user.company === advertiser)
 					.map((filteredUsers) => {
-						if (filteredUsers.agency !== undefined && filteredUsers.agency !== null) {
-							return filteredUsers.agency;
+						if (filteredUsers.adOpsTeam !== undefined && filteredUsers.adOpsTeam !== null) {
+							return filteredUsers.adOpsTeam;
 						} else {
-							throw new Error('Nenhuma agência encontrada!');
+							throw new Error('Nenhuma adOpsTeam encontrada!');
 						}
 					});
-				return [...new Set(agenciesToReturn.filter((agency) => agency))];
+				return [...new Set(adOpsTeamsToReturn.filter((adOpsTeam) => adOpsTeam))];
 			})
 			.catch((err) => {
 				throw err;
 			});
 	}
-	getAllUsersFromAgency(company, agency) {
+	getAllUsersFromAdOpsTeam(advertiser, adOpsTeam) {
 		return this._objectStore
 			.getCollection(this._pathToCollection)
-			.where('company', '==', company)
+			.where('advertiser', '==', advertiser)
 			.get()
 			.then((querySnapshot) => {
 				if (querySnapshot.size > 0) {
@@ -43,15 +43,15 @@ class AgencyDAO {
 						const searchId = documentSnapshot.ref.path.match(new RegExp('[^/]+$'));
 						if (searchId) {
 							const userPermission = documentSnapshot.get('permission');
-							const userAgency = documentSnapshot.get('agency');
-							if ((userPermission === 'adOpsManager' || userPermission === 'user') && userAgency === agency) {
+							const userAdOpsTeam = documentSnapshot.get('adOpsTeam');
+							if ((userPermission === 'adOpsTeamManager' || userPermission === 'user') && userAdOpsTeam === adOpsTeam) {
 								const user = new User_1.User(
 									searchId[0],
 									userPermission,
-									documentSnapshot.get('company'),
+									documentSnapshot.get('advertiser'),
 									documentSnapshot.get('email'),
 									documentSnapshot.get('active'),
-									documentSnapshot.get('agency')
+									documentSnapshot.get('adOpsTeam')
 								);
 								users.push(user);
 							}
@@ -67,4 +67,4 @@ class AgencyDAO {
 			});
 	}
 }
-exports.AgencyDAO = AgencyDAO;
+exports.AdOpsTeamDAO = AdOpsTeamDAO;

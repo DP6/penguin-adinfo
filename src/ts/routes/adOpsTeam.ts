@@ -1,19 +1,19 @@
 import { ApiResponse } from '../models/ApiResponse';
-import { AgencyDAO } from '../models/DAO/AgencyDAO';
+import { AdOpsTeamDAO } from '../models/DAO/AdOpsTeamDAO';
 import { User } from '../models/User';
 
-const agency = (app: { [key: string]: any }): void => {
-	app.get('/agency/list', async (req: { [key: string]: any }, res: { [key: string]: any }) => {
+const adOpsTeam = (app: { [key: string]: any }): void => {
+	app.get('/adOpsTeam/list', async (req: { [key: string]: any }, res: { [key: string]: any }) => {
 		const apiResponse = new ApiResponse();
 
 		const company = req.company;
-		const agency = req.agency;
+		const adOpsTeam = req.adOpsTeam;
 		const permission = req.permission;
 
-		new AgencyDAO()
-			.getAllAgenciesFrom(company, agency, permission)
-			.then((agencies: string[]) => {
-				apiResponse.responseText = JSON.stringify(agencies);
+		new AdOpsTeamDAO()
+			.getAllAdOpsTeamsFrom(company, adOpsTeam, permission)
+			.then((adOpsTeams: string[]) => {
+				apiResponse.responseText = JSON.stringify(adOpsTeams);
 			})
 			.catch((err) => {
 				apiResponse.statusCode = 500;
@@ -25,13 +25,13 @@ const agency = (app: { [key: string]: any }): void => {
 			});
 	});
 
-	app.get('/agency/users', async (req: { [key: string]: any }, res: { [key: string]: any }) => {
+	app.get('/adOpsTeam/users', async (req: { [key: string]: any }, res: { [key: string]: any }) => {
 		const apiResponse = new ApiResponse();
 		const company = req.company;
-		const agency = req.agency;
+		const adOpsTeam = req.adOpsTeam;
 
-		new AgencyDAO()
-			.getAllUsersFromAgency(company, agency)
+		new AdOpsTeamDAO()
+			.getAllUsersFromAdOpsTeam(company, adOpsTeam)
 			.then((users: User[]) => {
 				apiResponse.responseText = JSON.stringify(users.map((user: User) => user.toJson()));
 			})
@@ -45,4 +45,4 @@ const agency = (app: { [key: string]: any }): void => {
 			});
 	});
 };
-export default agency;
+export default adOpsTeam;

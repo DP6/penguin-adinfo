@@ -36,38 +36,33 @@ export class CampaignDAO {
 	}
 
 	/**
-	 * Retorna todas as agências de uma companhia
-	 * @param agency Agência das campanhas a serem buscados
+	 * Retorna todas as adOpsTeams de uma companhia
+	 * @param adOpsTeam adOpsTeam das campanhas a serem buscados
 	 * @param userRequestPermission permissão do usuario que solicitou a alteração
 	 * @returns Lista Objetos contendo atributos de cada campanha
 	 */
 	public getAllCampaignsFrom(
-		agency: string,
+		adOpsTeam: string,
 		userRequestPermission: string
-	): Promise<{ campaignName: string; campaignId: string; agency: string; activate: boolean }[]> {
+	): Promise<{ campaignName: string; campaignId: string; adOpsTeam: string; active: boolean }[]> {
 		return this._objectStore
 			.getAllDocumentsFrom(this._authCollection)
 			.then((campaigns) => {
-				if (!agency && (userRequestPermission === 'user' || userRequestPermission === 'agencyOwner')) {
+				if (!adOpsTeam && (userRequestPermission === 'user' || userRequestPermission === 'adOpsManager')) {
 					throw new Error('Nenhuma campanha foi selecionada!');
 				}
-				const agencia = agency !== 'Campanhas Internas' ? agency : 'CompanyCampaigns';
+				const agencia = adOpsTeam !== 'Campanhas Internas' ? adOpsTeam : 'CompanyCampaigns';
 
-				const campaignsToReturn: { campaignName: string; campaignId: string; agency: string; activate: boolean }[] =
+				const campaignsToReturn: { campaignName: string; campaignId: string; adOpsTeam: string; active: boolean }[] =
 					campaigns
-						.filter((campaign) => campaign.agency === agencia)
+						.filter((campaign) => campaign.adOpsTeam === agencia)
 						.map((campaign) => {
-							if (
-								campaign.campaignId &&
-								campaign.name &&
-								campaign.activate !== undefined &&
-								campaign.activate !== null
-							) {
+							if (campaign.campaignId && campaign.name && campaign.active !== undefined && campaign.active !== null) {
 								return {
 									campaignName: campaign.name,
 									campaignId: campaign.campaignId,
-									agency: campaign.agency,
-									activate: campaign.activate,
+									adOpsTeam: campaign.adOpsTeam,
+									active: campaign.active,
 								};
 							} else {
 								throw new Error('Erro na recuperação dos atributos da campanha ' + campaign.name + '!');
@@ -88,7 +83,7 @@ export class CampaignDAO {
 	 */
 	public addCampaign(campaign: Campaign): Promise<boolean> {
 		return this._objectStore
-			.addDocumentIn(this._authCollection, campaign.toJson(), campaign.name + ' - ' + campaign.agency)
+			.addDocumentIn(this._authCollection, campaign.toJson(), campaign.name + ' - ' + campaign.adOpsTeam)
 			.get()
 			.then(() => {
 				return true;
@@ -111,7 +106,7 @@ export class CampaignDAO {
 			.then((campaigns) => {
 				if (userRequestPermission !== 'user') {
 					const [filteredCampaign] = campaigns.filter((campaign) => campaign.campaignId === campaignId);
-					filteredCampaign.activate = false;
+					filteredCampaign.active = false;
 					return filteredCampaign;
 				} else {
 					throw new Error('Permissões insuficientes para inavitar a campanha!');
@@ -120,7 +115,7 @@ export class CampaignDAO {
 			.then((filteredCampaign) => {
 				this._objectStore
 					.getCollection(this._pathToCollection)
-					.doc(`${filteredCampaign.name} - ${filteredCampaign.agency}`)
+					.doc(`${filteredCampaign.name} - ${filteredCampaign.adOpsTeam}`)
 					.update(filteredCampaign);
 				return true;
 			})
@@ -141,7 +136,7 @@ export class CampaignDAO {
 			.then((campaigns) => {
 				if (userRequestPermission !== 'user') {
 					const [filteredCampaign] = campaigns.filter((campaign) => campaign.campaignId === campaignId);
-					filteredCampaign.activate = true;
+					filteredCampaign.active = true;
 					return filteredCampaign;
 				} else {
 					throw new Error('Permissões insuficientes para inavitar a campanha!');
@@ -150,7 +145,7 @@ export class CampaignDAO {
 			.then((filteredCampaign) => {
 				this._objectStore
 					.getCollection(this._pathToCollection)
-					.doc(`${filteredCampaign.name} - ${filteredCampaign.agency}`)
+					.doc(`${filteredCampaign.name} - ${filteredCampaign.adOpsTeam}`)
 					.update(filteredCampaign);
 				return true;
 			})

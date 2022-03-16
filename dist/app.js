@@ -56,7 +56,7 @@ app.use(
 	cors({
 		allowedHeaders: [
 			'token',
-			'agency',
+			'adOpsTeam',
 			'company',
 			'campaign',
 			'Content-Type',
@@ -95,8 +95,8 @@ app.all('*', (req, res, next) =>
 					payload.permission,
 					payload.company,
 					payload.email,
-					payload.activate,
-					payload.agency
+					payload.active,
+					payload.adOpsTeam
 				);
 				yield FirestoreConnectionSingleton_1.FirestoreConnectionSingleton.getInstance()
 					.getCollection(['tokens'])
@@ -105,7 +105,7 @@ app.all('*', (req, res, next) =>
 					.then((querySnapshot) => {
 						if (querySnapshot.size > 0) {
 							querySnapshot.forEach((documentSnapshot) => {
-								if (!documentSnapshot.get('activate')) {
+								if (!documentSnapshot.get('active')) {
 									throw new Error('Usuário sem permissão para realizar esta ação!');
 								}
 							});
@@ -120,7 +120,7 @@ app.all('*', (req, res, next) =>
 					user: user.id,
 					route: req.originalUrl,
 					email: user.email,
-					activate: user.activate,
+					active: user.active,
 					headers: req.headers,
 					body: req.body,
 				};
@@ -131,7 +131,7 @@ app.all('*', (req, res, next) =>
 					res.statusCode(apiResponse.statusCode).send(apiResponse.jsonResponse);
 				}
 				req.company = user.company;
-				req.agency = user.agency;
+				req.adOpsTeam = user.adOpsTeam;
 				req.email = user.email;
 				req.permission = user.permission;
 				req.token = req.headers.token;

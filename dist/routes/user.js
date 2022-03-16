@@ -23,7 +23,7 @@ const user = (app) => {
 		const apiResponse = new ApiResponse_1.ApiResponse();
 		const user = {
 			permission: req.permission,
-			agency: req.agency,
+			adOpsTeam: req.adOpsTeam,
 			company: req.company,
 			email: req.email,
 		};

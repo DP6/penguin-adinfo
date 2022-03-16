@@ -7,22 +7,22 @@ class RoutesPermission {
 		this._route = route;
 	}
 	validatePermission(user) {
-		const agencyUserPostRoutes = ['/build/.*', '/csv', '/user/changepass', '/logout', '/login'];
-		const agencyUserGetRoutes = [
+		const adOpsTeamUserPostRoutes = ['/build/.*', '/csv', '/user/changepass', '/logout', '/login'];
+		const adOpsTeamUserGetRoutes = [
 			'/config',
 			'/template',
 			'/csv/list',
 			'/csv',
 			'/user',
 			'/campaign/.*/list',
-			'/agency/list',
+			'/adOpsTeam/list',
 			'/campaign/.*/csv/list',
-			'/agencies/campaigns',
+			'/adOpsTeams/campaigns',
 		];
-		const agencyOwnerGetRoutes = agencyUserGetRoutes.slice();
-		const agencyOwnerPostRoutes = agencyUserPostRoutes.slice();
-		agencyOwnerGetRoutes.push('/template/excel', '/users', '/agency/users');
-		agencyOwnerPostRoutes.push(
+		const adOpsManagerGetRoutes = adOpsTeamUserGetRoutes.slice();
+		const adOpsManagerPostRoutes = adOpsTeamUserPostRoutes.slice();
+		adOpsManagerGetRoutes.push('/template/excel', '/users', '/adOpsTeam/users');
+		adOpsManagerPostRoutes.push(
 			'/register',
 			'/user/.*/deactivate',
 			'/user/.*/reactivate',
@@ -32,17 +32,17 @@ class RoutesPermission {
 		);
 		if (user.permission === 'user') {
 			if (this._method === 'POST') {
-				return agencyUserPostRoutes.filter((route) => new RegExp(route).test(this._route)).length > 0;
+				return adOpsTeamUserPostRoutes.filter((route) => new RegExp(route).test(this._route)).length > 0;
 			} else if (this._method === 'GET') {
-				return agencyUserGetRoutes.filter((route) => new RegExp(route).test(this._route)).length > 0;
+				return adOpsTeamUserGetRoutes.filter((route) => new RegExp(route).test(this._route)).length > 0;
 			} else {
 				return false;
 			}
-		} else if (user.permission === 'agencyOwner') {
+		} else if (user.permission === 'AdOpsManager') {
 			if (this._method === 'POST') {
-				return agencyOwnerPostRoutes.filter((route) => new RegExp(route).test(this._route)).length > 0;
+				return adOpsManagerPostRoutes.filter((route) => new RegExp(route).test(this._route)).length > 0;
 			} else if (this._method === 'GET') {
-				return agencyOwnerGetRoutes.filter((route) => new RegExp(route).test(this._route)).length > 0;
+				return adOpsManagerGetRoutes.filter((route) => new RegExp(route).test(this._route)).length > 0;
 			} else {
 				return false;
 			}

@@ -24,7 +24,7 @@ const user = (app: { [key: string]: any }): void => {
 		const apiResponse = new ApiResponse();
 		const user = {
 			permission: req.permission,
-			agency: req.agency,
+			adOpsTeam: req.adOpsTeam,
 			company: req.company,
 			email: req.email,
 		};

@@ -13,12 +13,12 @@ const build = (app: { [key: string]: any }): void => {
 		const analyticsTool = req.params.analyticsTool;
 		const media = req.params.media;
 		const company = req.company;
-		const agency = req.headers.agency;
-		const agencyPath = agency ? agency : 'CompanyCampaigns';
+		const adOpsTeam = req.headers.adOpsTeam;
+		const adOpsTeamPath = adOpsTeam ? adOpsTeam : 'CompanyCampaigns';
 		const campaign = req.headers.campaign;
 		const permission = req.permission;
 
-		const pathDefault = `${company}/${agencyPath}/${campaign}`;
+		const pathDefault = `${company}/${adOpsTeamPath}/${campaign}`;
 
 		const fullHistoricalFilePath = `${pathDefault}/historical`;
 		const correctHistoricalFilePath = `${pathDefault}/correctHistorical`;
@@ -37,21 +37,21 @@ const build = (app: { [key: string]: any }): void => {
 			return;
 		}
 
-		const agencyCampaigns = await new CampaignDAO().getAllCampaignsFrom(agencyPath, permission);
+		const adOpsTeamCampaigns = await new CampaignDAO().getAllCampaignsFrom(adOpsTeamPath, permission);
 
-		if (!agencyCampaigns) {
-			apiResponse.responseText = 'Campanha não cadastrada na agência!';
+		if (!adOpsTeamCampaigns) {
+			apiResponse.responseText = 'Campanha não cadastrada na adOpsTeam!';
 			apiResponse.statusCode = 400;
 			res.status(apiResponse.statusCode).send(apiResponse.jsonResponse);
 			return;
 		}
 
-		const agencyCampaignsNames = agencyCampaigns.map((campaign: { campaignName: string; campaignId: string }) => {
+		const adOpsTeamCampaignsNames = adOpsTeamCampaigns.map((campaign: { campaignName: string; campaignId: string }) => {
 			return campaign.campaignName;
 		});
 
-		if (!agencyCampaignsNames.includes(campaign)) {
-			apiResponse.responseText = 'Campanha não cadastrada na agência!';
+		if (!adOpsTeamCampaignsNames.includes(campaign)) {
+			apiResponse.responseText = 'Campanha não cadastrada na adOpsTeam!';
 			apiResponse.statusCode = 400;
 			res.status(apiResponse.statusCode).send(apiResponse.jsonResponse);
 			return;
@@ -61,7 +61,7 @@ const build = (app: { [key: string]: any }): void => {
 
 		const fileContent = req.files.data.data;
 
-		const filePath = `${company}/${agencyPath}/${campaign}/${DateUtils.generateDateString()}.csv`;
+		const filePath = `${company}/${adOpsTeamPath}/${campaign}/${DateUtils.generateDateString()}.csv`;
 
 		let companyConfig: Config;
 

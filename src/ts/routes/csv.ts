@@ -5,7 +5,7 @@ import { ApiResponse } from '../models/ApiResponse';
 const csv = (app: { [key: string]: any }): void => {
 	app.post('/csv', (req: { [key: string]: any }, res: { [key: string]: any }) => {
 		const campaign = req.headers.campaign;
-		const agency = req.agency;
+		const getAllAdOpsTeamsFrom = req.getAllAdOpsTeamsFrom;
 		const company = req.company;
 
 		const apiResponse = new ApiResponse();
@@ -24,8 +24,8 @@ const csv = (app: { [key: string]: any }): void => {
 
 		const content = req.files.data.data;
 
-		const filePath = agency
-			? `${company}/${agency}/${campaign}/${DateUtils.generateDateString()}.csv`
+		const filePath = getAllAdOpsTeamsFrom
+			? `${company}/${getAllAdOpsTeamsFrom}/${campaign}/${DateUtils.generateDateString()}.csv`
 			: `${company}/${campaign}/${DateUtils.generateDateString()}.csv`;
 
 		const fileDAO = new FileDAO();
@@ -50,7 +50,7 @@ const csv = (app: { [key: string]: any }): void => {
 		const fileName = req.headers.file;
 		const campaign = req.headers.campaign;
 		const company = req.company;
-		const agencyPath = req.headers.agency ? req.headers.agency : 'CompanyCampaigns';
+		const adOpsTeamPath = req.headers.getAllAdOpsTeamsFrom ? req.headers.getAllAdOpsTeamsFrom : 'CompanyCampaigns';
 		const apiResponse = new ApiResponse();
 
 		if (!fileName) {
@@ -64,7 +64,7 @@ const csv = (app: { [key: string]: any }): void => {
 			res.status(apiResponse.statusCode).send(apiResponse.jsonResponse);
 			return;
 		}
-		const filePath = `${company}/${agencyPath}/${campaign}/${fileName}.csv`;
+		const filePath = `${company}/${adOpsTeamPath}/${campaign}/${fileName}.csv`;
 
 		const fileDAO = new FileDAO();
 		fileDAO
@@ -91,7 +91,7 @@ const csv = (app: { [key: string]: any }): void => {
 	});
 
 	app.get('/csv/list', (req: { [key: string]: any }, res: { [key: string]: any }) => {
-		const agency = req.agency;
+		const getAllAdOpsTeamsFrom = req.getAllAdOpsTeamsFrom;
 		const company = req.company;
 		const campaign = req.headers.campaign;
 		const fileDAO = new FileDAO();
@@ -100,7 +100,7 @@ const csv = (app: { [key: string]: any }): void => {
 
 		const apiResponse = new ApiResponse();
 
-		if (agency) filePath += `${agency}/`;
+		if (getAllAdOpsTeamsFrom) filePath += `${getAllAdOpsTeamsFrom}/`;
 		if (campaign) filePath += `${campaign}/`;
 
 		fileDAO
