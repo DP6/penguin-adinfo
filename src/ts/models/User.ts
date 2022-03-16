@@ -4,7 +4,7 @@ import * as bcrypt from 'bcrypt';
 export class User {
 	private _permission: string;
 	private _adOpsTeam: string;
-	private _company: string;
+	private _advertiser: string;
 	private _email: string;
 	private _id: string;
 	private _password: string;
@@ -14,7 +14,7 @@ export class User {
 	constructor(
 		id: string,
 		permission: string,
-		company: string,
+		advertiser: string,
 		email: string,
 		active = true,
 		adOpsTeam = '',
@@ -22,7 +22,7 @@ export class User {
 	) {
 		this._permission = permission;
 		this._adOpsTeam = adOpsTeam;
-		this._company = company;
+		this._advertiser = advertiser;
 		this._email = email;
 		this._id = id;
 		this._password = password;
@@ -45,7 +45,7 @@ export class User {
 	public toJson(): { [key: string]: string | boolean } {
 		return {
 			adOpsTeam: this._adOpsTeam,
-			company: this._company,
+			advertiser: this._advertiser,
 			permission: this._permission,
 			email: this._email,
 			id: this._id,
@@ -60,7 +60,7 @@ export class User {
 	public toJsonSave(): { [key: string]: string | boolean } {
 		return {
 			adOpsTeam: this._adOpsTeam,
-			company: this._company,
+			advertiser: this._advertiser,
 			permission: this._permission,
 			email: this._email,
 			active: this._active,
@@ -80,8 +80,8 @@ export class User {
 		return this._adOpsTeam;
 	}
 
-	get company(): string {
-		return this._company;
+	get advertiser(): string {
+		return this._advertiser;
 	}
 
 	get email(): string {

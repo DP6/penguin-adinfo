@@ -165,7 +165,7 @@
 				</a>
 				<p>Para a configuração inicial do Firestore, são necessárias duas coleções.</p>
 				<ul>
-					<li><p><strong>companies</strong>: essa coleção deve ser criada na raiz do firestore e deve conter um documento com o nome da empresa. Dentro desse documento, uma segunda coleção deve ser criada com o nome <em>config</em>. Seguindo a estrutura: companies &gt; [nome_empresa] &gt; config;</p>
+					<li><p><strong>advertisers</strong>: essa coleção deve ser criada na raiz do firestore e deve conter um documento com o nome da empresa. Dentro desse documento, uma segunda coleção deve ser criada com o nome <em>config</em>. Seguindo a estrutura: advertisers &gt; [nome_empresa] &gt; config;</p>
 					</li>
 					<li><p><strong>tokens</strong>: essa coleção também deve ser criada na raiz do firestore com um documento seguindo a estrutura:</p>
 						<pre><code><span style="color: #000000">{</span>
@@ -179,7 +179,7 @@
 				<a href="#padrão-do-objeto-de-configuração" id="padrão-do-objeto-de-configuração" style="color: inherit; text-decoration: none;">
 					<h6>Padrão do Objeto de Configuração</h6>
 				</a>
-				<p>Para utilizar a API, é necessário criar um documento de configuração no Firestore dentro da coleção: companies &gt; [nome_empresa] &gt; config. O nome do documento deve ser <strong>config_1</strong> e ele deve conter os campos: <strong>csvSeparator</strong>, <strong>separator</strong>, <strong>spaceSeparator</strong>, <strong>columns</strong> e um campo para a ferramenta de analytics, sendo esse o valor de <strong>ga</strong> ou <strong>adobe</strong>.</p>
+				<p>Para utilizar a API, é necessário criar um documento de configuração no Firestore dentro da coleção: advertisers &gt; [nome_empresa] &gt; config. O nome do documento deve ser <strong>config_1</strong> e ele deve conter os campos: <strong>csvSeparator</strong>, <strong>separator</strong>, <strong>spaceSeparator</strong>, <strong>columns</strong> e um campo para a ferramenta de analytics, sendo esse o valor de <strong>ga</strong> ou <strong>adobe</strong>.</p>
 				<p>Abaixo segue uma explicação e um exemplo de todos os campos das configurações.</p>
 				<table>
 					<thead>

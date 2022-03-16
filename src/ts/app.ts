@@ -31,7 +31,7 @@ app.use(
 		allowedHeaders: [
 			'token',
 			'adOpsTeam',
-			'company',
+			'advertiser',
 			'campaign',
 			'Content-Type',
 			'file',
@@ -68,7 +68,7 @@ app.all('*', async (req: { [key: string]: any }, res: { [key: string]: any }, ne
 			const user = new User(
 				payload.id,
 				payload.permission,
-				payload.company,
+				payload.advertiser,
 				payload.email,
 				payload.active,
 				payload.adOpsTeam
@@ -110,7 +110,7 @@ app.all('*', async (req: { [key: string]: any }, res: { [key: string]: any }, ne
 				res.statusCode(apiResponse.statusCode).send(apiResponse.jsonResponse);
 			}
 
-			req.company = user.company;
+			req.advertiser = user.advertiser;
 			req.adOpsTeam = user.adOpsTeam;
 			req.email = user.email;
 			req.permission = user.permission;

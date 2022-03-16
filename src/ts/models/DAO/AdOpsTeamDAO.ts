@@ -16,7 +16,7 @@ export class AdOpsTeamDAO {
 	}
 
 	/**
-	 * Retorna todas os adOpsTeams de uma companhia
+	 * Retorna todas os adOpsTeams de um advertiser
 	 * @param advertiser Empresa(advertiser) das adOpsTeams a serem buscados
 	 * @param adOpsTeam Empresa(advertiser) das adOpsTeams a serem buscados
 	 * @param userRequestPermission permissão do usuario que solicitou a alteração
@@ -30,7 +30,7 @@ export class AdOpsTeamDAO {
 					return [adOpsTeam];
 				}
 				const adOpsTeamsToReturn: string[] = users
-					.filter((user) => user.company === advertiser)
+					.filter((user) => user.advertiser === advertiser)
 					.map((filteredUsers) => {
 						if (filteredUsers.adOpsTeam !== undefined && filteredUsers.adOpsTeam !== null) {
 							return filteredUsers.adOpsTeam;

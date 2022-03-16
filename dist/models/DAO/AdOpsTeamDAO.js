@@ -17,7 +17,7 @@ class AdOpsTeamDAO {
 					return [adOpsTeam];
 				}
 				const adOpsTeamsToReturn = users
-					.filter((user) => user.company === advertiser)
+					.filter((user) => user.advertiser === advertiser)
 					.map((filteredUsers) => {
 						if (filteredUsers.adOpsTeam !== undefined && filteredUsers.adOpsTeam !== null) {
 							return filteredUsers.adOpsTeam;

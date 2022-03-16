@@ -8,9 +8,9 @@ export class ConfigDAO {
 	private _objectStore: ObjectStore;
 	private _configCollection: CollectionReference;
 
-	constructor(companyName: string) {
+	constructor(advertiserName: string) {
 		this._objectStore = FirestoreConnectionSingleton.getInstance();
-		this._configCollection = this._objectStore.getCollection(['companies', companyName, 'config']);
+		this._configCollection = this._objectStore.getCollection(['advertisers', advertiserName, 'config']);
 	}
 
 	/**

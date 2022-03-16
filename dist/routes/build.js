@@ -21,12 +21,12 @@ const build = (app) => {
     app.post('/build/:analyticsTool/:media?', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         const analyticsTool = req.params.analyticsTool;
         const media = req.params.media;
-        const company = req.company;
-        const adOpsTeam = req.headers.adOpsTeam;
-        const adOpsTeamPath = adOpsTeam ? adOpsTeam : 'CompanyCampaigns';
+        const advertiser = req.advertiser;
+        const adOpsTeam = req.headers.adopsteam;
+        const adOpsTeamPath = adOpsTeam ? adOpsTeam : 'AdvertiserCampaigns';
         const campaign = req.headers.campaign;
         const permission = req.permission;
-        const pathDefault = `${company}/${adOpsTeamPath}/${campaign}`;
+        const pathDefault = `${advertiser}/${adOpsTeamPath}/${campaign}`;
         const fullHistoricalFilePath = `${pathDefault}/historical`;
         const correctHistoricalFilePath = `${pathDefault}/correctHistorical`;
         const apiResponse = new ApiResponse_1.ApiResponse();
@@ -60,20 +60,20 @@ const build = (app) => {
         }
         const fileName = DateUtils_1.DateUtils.generateDateString();
         const fileContent = req.files.data.data;
-        const filePath = `${company}/${adOpsTeamPath}/${campaign}/${DateUtils_1.DateUtils.generateDateString()}.csv`;
-        let companyConfig;
-        const configDAO = new ConfigDAO_1.ConfigDAO(company);
+        const filePath = `${advertiser}/${adOpsTeamPath}/${campaign}/${DateUtils_1.DateUtils.generateDateString()}.csv`;
+        let advertiserConfig;
+        const configDAO = new ConfigDAO_1.ConfigDAO(advertiser);
         configDAO
             .getLastConfig()
             .then((config) => {
-            companyConfig = config;
-            if (companyConfig) {
-                const companyConfigJson = companyConfig.toJson();
-                if (!companyConfigJson[analyticsTool]) {
+            advertiserConfig = config;
+            if (advertiserConfig) {
+                const advertiserConfigJson = advertiserConfig.toJson();
+                if (!advertiserConfigJson[analyticsTool]) {
                     apiResponse.statusCode = 400;
                     throw new Error(`Ferramenta de Analytics ${media} não foi configurada!`);
                 }
-                else if (media && !companyConfigJson[media]) {
+                else if (media && !advertiserConfigJson[media]) {
                     apiResponse.statusCode = 400;
                     throw new Error(`Mídia ${media} não foi configurada!`);
                 }
@@ -88,14 +88,14 @@ const build = (app) => {
         })
             .then(() => __awaiter(void 0, void 0, void 0, function* () {
             const csvContent = fileContent.toString();
-            const separator = CsvUtils_1.CsvUtils.identifyCsvSepartor(csvContent.split('\n')[0], companyConfig.csvSeparator);
+            const separator = CsvUtils_1.CsvUtils.identifyCsvSepartor(csvContent.split('\n')[0], advertiserConfig.csvSeparator);
             const jsonFromFile = CsvUtils_1.CsvUtils.csv2json(csvContent, separator);
-            const jsonParameterized = new Builder_1.Builder(jsonFromFile, companyConfig, analyticsTool, media).build();
-            const configVersion = companyConfig.version;
-            const configTimestamp = DateUtils_1.DateUtils.newDateStringFormat(companyConfig.insertTime, 'yyyymmddhhMMss', 'hh:MM:ss dd/mm/yyyy');
+            const jsonParameterized = new Builder_1.Builder(jsonFromFile, advertiserConfig, analyticsTool, media).build();
+            const configVersion = advertiserConfig.version;
+            const configTimestamp = DateUtils_1.DateUtils.newDateStringFormat(advertiserConfig.insertTime, 'yyyymmddhhMMss', 'hh:MM:ss dd/mm/yyyy');
             let [fullHistoricalContent, correctHistoricalContent] = yield Promise.all([
-                (yield new FileDAO_1.FileDAO().getContentFrom(`${fullHistoricalFilePath}_${companyConfig.version}.csv`)).toString(),
-                (yield new FileDAO_1.FileDAO().getContentFrom(`${correctHistoricalFilePath}_${companyConfig.version}.csv`)).toString(),
+                (yield new FileDAO_1.FileDAO().getContentFrom(`${fullHistoricalFilePath}_${advertiserConfig.version}.csv`)).toString(),
+                (yield new FileDAO_1.FileDAO().getContentFrom(`${correctHistoricalFilePath}_${advertiserConfig.version}.csv`)).toString(),
             ]);
             return new Promise((resolve, reject) => {
                 converter.json2csv(jsonParameterized, (err, csv) => __awaiter(void 0, void 0, void 0, function* () {
@@ -151,8 +151,8 @@ const build = (app) => {
                     if (err)
                         reject(err);
                     yield Promise.all([
-                        fullHistoricalFileDao.save(`${fullHistoricalFilePath}_${companyConfig.version}.csv`),
-                        correctHistoricalFileDao.save(`${correctHistoricalFilePath}_${companyConfig.version}.csv`),
+                        fullHistoricalFileDao.save(`${fullHistoricalFilePath}_${advertiserConfig.version}.csv`),
+                        correctHistoricalFileDao.save(`${correctHistoricalFilePath}_${advertiserConfig.version}.csv`),
                         fileDao.save(filePath.replace('.csv', '_parametrizado.csv')),
                     ]);
                     resolve(parametrizedCsv);

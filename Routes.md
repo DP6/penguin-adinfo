@@ -6,7 +6,7 @@
 | ----------- | ----------- | ------ | ---------------------------------------------------------------------------- |
 | token       | Header      | String | Token de permissão do usuário                                                |
 | adOpsTeam   | Header      | String | adOpsTeam do usuário                                                         |
-| company     | Header      | String | Empresa proprietária do adinfo                                               |
+| advertiser  | Header      | String | Empresa proprietária do adinfo                                               |
 | permission  | Header      | String | Nível de permissão do usuário, podendo ser: **user**, **admin** ou **owner** |
 | data        | Body        | File   | Arquivo CSV                                                                  |
 | file        | Header      | String | Nome do arquivo salvo no banco de arquivos (não informar a extensão)         |
@@ -74,11 +74,11 @@
 
 ### (POST) /register
 
-**Parâmetros**: token, adOpsTeam, permission, company, email.
+**Parâmetros**: token, adOpsTeam, permission, advertiser, email.
 
 **Restrição**: Apenas tokens de usuários com nível de permissão **adm** ou **owner** podem acessar esta rota.
 
-**Descrição**: Cria um novo usuário da API de acordo com os parâmetros de: **adOpsTeam**, **company**, **permission** e **email** informados, e retorna um token de acesso do novo usuário. Caso o nível de permissão informado para o novo usuário seja **admin**, não é necessário informar o parâmetro **adOpsTeam**.
+**Descrição**: Cria um novo usuário da API de acordo com os parâmetros de: **adOpsTeam**, **advertiser**, **permission** e **email** informados, e retorna um token de acesso do novo usuário. Caso o nível de permissão informado para o novo usuário seja **admin**, não é necessário informar o parâmetro **adOpsTeam**.
 
 ### (POST) /csv
 

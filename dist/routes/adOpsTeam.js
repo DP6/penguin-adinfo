@@ -37,11 +37,11 @@ const adOpsTeam = (app) => {
 	app.get('/adOpsTeam/list', (req, res) =>
 		__awaiter(void 0, void 0, void 0, function* () {
 			const apiResponse = new ApiResponse_1.ApiResponse();
-			const company = req.company;
+			const advertiser = req.advertiser;
 			const adOpsTeam = req.adOpsTeam;
 			const permission = req.permission;
 			new AdOpsTeamDAO_1.AdOpsTeamDAO()
-				.getAllAdOpsTeamsFrom(company, adOpsTeam, permission)
+				.getAllAdOpsTeamsFrom(advertiser, adOpsTeam, permission)
 				.then((adOpsTeams) => {
 					apiResponse.responseText = JSON.stringify(adOpsTeams);
 				})
@@ -58,10 +58,10 @@ const adOpsTeam = (app) => {
 	app.get('/adOpsTeam/users', (req, res) =>
 		__awaiter(void 0, void 0, void 0, function* () {
 			const apiResponse = new ApiResponse_1.ApiResponse();
-			const company = req.company;
+			const advertiser = req.advertiser;
 			const adOpsTeam = req.adOpsTeam;
 			new AdOpsTeamDAO_1.AdOpsTeamDAO()
-				.getAllUsersFromAdOpsTeam(company, adOpsTeam)
+				.getAllUsersFromAdOpsTeam(advertiser, adOpsTeam)
 				.then((users) => {
 					apiResponse.responseText = JSON.stringify(users.map((user) => user.toJson()));
 				})

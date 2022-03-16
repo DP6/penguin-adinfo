@@ -12,13 +12,13 @@ const build = (app: { [key: string]: any }): void => {
 	app.post('/build/:analyticsTool/:media?', async (req: { [key: string]: any }, res: { [key: string]: any }) => {
 		const analyticsTool = req.params.analyticsTool;
 		const media = req.params.media;
-		const company = req.company;
-		const adOpsTeam = req.headers.adOpsTeam;
-		const adOpsTeamPath = adOpsTeam ? adOpsTeam : 'CompanyCampaigns';
+		const advertiser = req.advertiser;
+		const adOpsTeam = req.headers.adopsteam;
+		const adOpsTeamPath = adOpsTeam ? adOpsTeam : 'AdvertiserCampaigns';
 		const campaign = req.headers.campaign;
 		const permission = req.permission;
 
-		const pathDefault = `${company}/${adOpsTeamPath}/${campaign}`;
+		const pathDefault = `${advertiser}/${adOpsTeamPath}/${campaign}`;
 
 		const fullHistoricalFilePath = `${pathDefault}/historical`;
 		const correctHistoricalFilePath = `${pathDefault}/correctHistorical`;
@@ -61,21 +61,21 @@ const build = (app: { [key: string]: any }): void => {
 
 		const fileContent = req.files.data.data;
 
-		const filePath = `${company}/${adOpsTeamPath}/${campaign}/${DateUtils.generateDateString()}.csv`;
+		const filePath = `${advertiser}/${adOpsTeamPath}/${campaign}/${DateUtils.generateDateString()}.csv`;
 
-		let companyConfig: Config;
+		let advertiserConfig: Config;
 
-		const configDAO = new ConfigDAO(company);
+		const configDAO = new ConfigDAO(advertiser);
 		configDAO
 			.getLastConfig()
 			.then((config: Config) => {
-				companyConfig = config;
-				if (companyConfig) {
-					const companyConfigJson = companyConfig.toJson();
-					if (!companyConfigJson[analyticsTool]) {
+				advertiserConfig = config;
+				if (advertiserConfig) {
+					const advertiserConfigJson = advertiserConfig.toJson();
+					if (!advertiserConfigJson[analyticsTool]) {
 						apiResponse.statusCode = 400;
 						throw new Error(`Ferramenta de Analytics ${media} não foi configurada!`);
-					} else if (media && !companyConfigJson[media]) {
+					} else if (media && !advertiserConfigJson[media]) {
 						apiResponse.statusCode = 400;
 						throw new Error(`Mídia ${media} não foi configurada!`);
 					}
@@ -89,19 +89,21 @@ const build = (app: { [key: string]: any }): void => {
 			})
 			.then(async () => {
 				const csvContent = fileContent.toString();
-				const separator = CsvUtils.identifyCsvSepartor(csvContent.split('\n')[0], companyConfig.csvSeparator);
+				const separator = CsvUtils.identifyCsvSepartor(csvContent.split('\n')[0], advertiserConfig.csvSeparator);
 				const jsonFromFile = CsvUtils.csv2json(csvContent, separator);
-				const jsonParameterized = new Builder(jsonFromFile, companyConfig, analyticsTool, media).build();
-				const configVersion = companyConfig.version;
+				const jsonParameterized = new Builder(jsonFromFile, advertiserConfig, analyticsTool, media).build();
+				const configVersion = advertiserConfig.version;
 				const configTimestamp = DateUtils.newDateStringFormat(
-					companyConfig.insertTime,
+					advertiserConfig.insertTime,
 					'yyyymmddhhMMss',
 					'hh:MM:ss dd/mm/yyyy'
 				);
 
 				let [fullHistoricalContent, correctHistoricalContent] = await Promise.all([
-					(await new FileDAO().getContentFrom(`${fullHistoricalFilePath}_${companyConfig.version}.csv`)).toString(),
-					(await new FileDAO().getContentFrom(`${correctHistoricalFilePath}_${companyConfig.version}.csv`)).toString(),
+					(await new FileDAO().getContentFrom(`${fullHistoricalFilePath}_${advertiserConfig.version}.csv`)).toString(),
+					(
+						await new FileDAO().getContentFrom(`${correctHistoricalFilePath}_${advertiserConfig.version}.csv`)
+					).toString(),
 				]);
 
 				return new Promise((resolve, reject) => {
@@ -173,8 +175,8 @@ const build = (app: { [key: string]: any }): void => {
 
 							if (err) reject(err);
 							await Promise.all([
-								fullHistoricalFileDao.save(`${fullHistoricalFilePath}_${companyConfig.version}.csv`),
-								correctHistoricalFileDao.save(`${correctHistoricalFilePath}_${companyConfig.version}.csv`),
+								fullHistoricalFileDao.save(`${fullHistoricalFilePath}_${advertiserConfig.version}.csv`),
+								correctHistoricalFileDao.save(`${correctHistoricalFilePath}_${advertiserConfig.version}.csv`),
 								fileDao.save(filePath.replace('.csv', '_parametrizado.csv')),
 							]);
 							resolve(parametrizedCsv);

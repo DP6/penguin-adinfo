@@ -44,7 +44,7 @@ const register = (app: { [key: string]: any }): void => {
 			const newUser = new User(
 				'',
 				req.body.permission,
-				req.company,
+				req.advertiser,
 				req.body.email,
 				true,
 				adOpsTeam,

@@ -6,7 +6,7 @@ const csv = (app: { [key: string]: any }): void => {
 	app.post('/csv', (req: { [key: string]: any }, res: { [key: string]: any }) => {
 		const campaign = req.headers.campaign;
 		const getAllAdOpsTeamsFrom = req.getAllAdOpsTeamsFrom;
-		const company = req.company;
+		const advertiser = req.advertiser;
 
 		const apiResponse = new ApiResponse();
 
@@ -25,8 +25,8 @@ const csv = (app: { [key: string]: any }): void => {
 		const content = req.files.data.data;
 
 		const filePath = getAllAdOpsTeamsFrom
-			? `${company}/${getAllAdOpsTeamsFrom}/${campaign}/${DateUtils.generateDateString()}.csv`
-			: `${company}/${campaign}/${DateUtils.generateDateString()}.csv`;
+			? `${advertiser}/${getAllAdOpsTeamsFrom}/${campaign}/${DateUtils.generateDateString()}.csv`
+			: `${advertiser}/${campaign}/${DateUtils.generateDateString()}.csv`;
 
 		const fileDAO = new FileDAO();
 		fileDAO.file = content;
@@ -49,8 +49,8 @@ const csv = (app: { [key: string]: any }): void => {
 	app.get('/csv', (req: { [key: string]: any }, res: { [key: string]: any }) => {
 		const fileName = req.headers.file;
 		const campaign = req.headers.campaign;
-		const company = req.company;
-		const adOpsTeamPath = req.headers.getAllAdOpsTeamsFrom ? req.headers.getAllAdOpsTeamsFrom : 'CompanyCampaigns';
+		const advertiser = req.advertiser;
+		const adOpsTeamPath = req.headers.getAllAdOpsTeamsFrom ? req.headers.getAllAdOpsTeamsFrom : 'AdvertiserCampaigns';
 		const apiResponse = new ApiResponse();
 
 		if (!fileName) {
@@ -64,7 +64,7 @@ const csv = (app: { [key: string]: any }): void => {
 			res.status(apiResponse.statusCode).send(apiResponse.jsonResponse);
 			return;
 		}
-		const filePath = `${company}/${adOpsTeamPath}/${campaign}/${fileName}.csv`;
+		const filePath = `${advertiser}/${adOpsTeamPath}/${campaign}/${fileName}.csv`;
 
 		const fileDAO = new FileDAO();
 		fileDAO
@@ -92,11 +92,11 @@ const csv = (app: { [key: string]: any }): void => {
 
 	app.get('/csv/list', (req: { [key: string]: any }, res: { [key: string]: any }) => {
 		const getAllAdOpsTeamsFrom = req.getAllAdOpsTeamsFrom;
-		const company = req.company;
+		const advertiser = req.advertiser;
 		const campaign = req.headers.campaign;
 		const fileDAO = new FileDAO();
 
-		let filePath = `${company}/`;
+		let filePath = `${advertiser}/`;
 
 		const apiResponse = new ApiResponse();
 

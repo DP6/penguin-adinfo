@@ -36,7 +36,7 @@ export class CampaignDAO {
 	}
 
 	/**
-	 * Retorna todas as adOpsTeams de uma companhia
+	 * Retorna todas as adOpsTeams de um advertiser
 	 * @param adOpsTeam adOpsTeam das campanhas a serem buscados
 	 * @param userRequestPermission permissão do usuario que solicitou a alteração
 	 * @returns Lista Objetos contendo atributos de cada campanha
@@ -51,7 +51,7 @@ export class CampaignDAO {
 				if (!adOpsTeam && (userRequestPermission === 'user' || userRequestPermission === 'adOpsManager')) {
 					throw new Error('Nenhuma campanha foi selecionada!');
 				}
-				const agencia = adOpsTeam !== 'Campanhas Internas' ? adOpsTeam : 'CompanyCampaigns';
+				const agencia = adOpsTeam !== 'Campanhas Internas' ? adOpsTeam : 'AdvertiserCampaigns';
 
 				const campaignsToReturn: { campaignName: string; campaignId: string; adOpsTeam: string; active: boolean }[] =
 					campaigns

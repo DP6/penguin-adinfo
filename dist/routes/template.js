@@ -5,8 +5,8 @@ const ApiResponse_1 = require('../models/ApiResponse');
 const TemplateExcel_1 = require('../models/TemplateExcel');
 const template = (app) => {
 	app.get('/template', (req, res) => {
-		const company = req.company;
-		const configDAO = new ConfigDAO_1.ConfigDAO(company);
+		const advertiser = req.advertiser;
+		const configDAO = new ConfigDAO_1.ConfigDAO(advertiser);
 		const apiResponse = new ApiResponse_1.ApiResponse();
 		configDAO
 			.getLastConfig()
@@ -30,8 +30,8 @@ const template = (app) => {
 			});
 	});
 	app.get('/template/excel', (req, res) => {
-		const company = req.company;
-		const configDAO = new ConfigDAO_1.ConfigDAO(company);
+		const advertiser = req.advertiser;
+		const configDAO = new ConfigDAO_1.ConfigDAO(advertiser);
 		const apiResponse = new ApiResponse_1.ApiResponse();
 		configDAO
 			.getLastConfig()

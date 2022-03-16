@@ -30,7 +30,7 @@ class CampaignDAO {
 				if (!adOpsTeam && (userRequestPermission === 'user' || userRequestPermission === 'adOpsManager')) {
 					throw new Error('Nenhuma campanha foi selecionada!');
 				}
-				const agencia = adOpsTeam !== 'Campanhas Internas' ? adOpsTeam : 'CompanyCampaigns';
+				const agencia = adOpsTeam !== 'Campanhas Internas' ? adOpsTeam : 'AdvertiserCampaigns';
 				const campaignsToReturn = campaigns
 					.filter((campaign) => campaign.adOpsTeam === agencia)
 					.map((campaign) => {

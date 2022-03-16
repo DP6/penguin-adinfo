@@ -57,7 +57,7 @@ app.use(
 		allowedHeaders: [
 			'token',
 			'adOpsTeam',
-			'company',
+			'advertiser',
 			'campaign',
 			'Content-Type',
 			'file',
@@ -93,7 +93,7 @@ app.all('*', (req, res, next) =>
 				const user = new User_1.User(
 					payload.id,
 					payload.permission,
-					payload.company,
+					payload.advertiser,
 					payload.email,
 					payload.active,
 					payload.adOpsTeam
@@ -130,7 +130,7 @@ app.all('*', (req, res, next) =>
 					apiResponse.statusCode = 403;
 					res.statusCode(apiResponse.statusCode).send(apiResponse.jsonResponse);
 				}
-				req.company = user.company;
+				req.advertiser = user.advertiser;
 				req.adOpsTeam = user.adOpsTeam;
 				req.email = user.email;
 				req.permission = user.permission;

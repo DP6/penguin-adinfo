@@ -11,8 +11,8 @@ const campaign = (app: { [key: string]: any }): void => {
 
 		const created = DateUtils.today();
 		const campaignName = req.body.campaign;
-		const company = req.company;
-		const adOpsTeam = req.body.adOpsTeam ? req.body.adOpsTeam : 'CompanyCampaigns';
+		const advertiser = req.advertiser;
+		const adOpsTeam = req.body.adOpsTeam ? req.body.adOpsTeam : 'AdvertiserCampaigns';
 		const campaignId = Date.now().toString(16);
 
 		if (req.permission === 'user') {
@@ -22,7 +22,7 @@ const campaign = (app: { [key: string]: any }): void => {
 			throw new Error('Necessário nome da Campanha!');
 		}
 
-		const campaignObject = new Campaign(campaignName, company, adOpsTeam, campaignId, true, created);
+		const campaignObject = new Campaign(campaignName, advertiser, adOpsTeam, campaignId, true, created);
 
 		new CampaignDAO()
 			.addCampaign(campaignObject)
@@ -47,17 +47,17 @@ const campaign = (app: { [key: string]: any }): void => {
 	app.get('/adOpsTeams/campaigns', async (req: { [key: string]: any }, res: { [key: string]: any }) => {
 		const apiResponse = new ApiResponse();
 
-		const company = req.company;
+		const advertiser = req.advertiser;
 		const adOpsTeam = req.adOpsTeam;
 		const permission = req.permission;
 
 		const gettingAdOpsTeams = async () => {
-			return await new AdOpsTeamDAO().getAllAdOpsTeamsFrom(company, adOpsTeam, permission);
+			return await new AdOpsTeamDAO().getAllAdOpsTeamsFrom(advertiser, adOpsTeam, permission);
 		};
 
 		const allAdOpsTeams: string[] = await gettingAdOpsTeams();
 		if (permission === 'owner' || permission === 'admin') {
-			allAdOpsTeams.push('CompanyCampaigns');
+			allAdOpsTeams.push('AdvertiserCampaigns');
 		}
 		const adOpsTeamsToReturn: {
 			[key: string]: { campaignName: string; campaignId: string; adOpsTeam: string; active: boolean }[];
@@ -84,7 +84,7 @@ const campaign = (app: { [key: string]: any }): void => {
 	app.get('/campaign/:adOpsTeam/list', async (req: { [key: string]: any }, res: { [key: string]: any }) => {
 		const apiResponse = new ApiResponse();
 
-		const adOpsTeam = req.params.adOpsTeam !== 'Campanhas Internas' ? req.params.adOpsTeam : 'CompanyCampaigns';
+		const adOpsTeam = req.params.adOpsTeam !== 'Campanhas Internas' ? req.params.adOpsTeam : 'AdvertiserCampaigns';
 		const permission = req.permission;
 
 		new CampaignDAO()
@@ -107,8 +107,8 @@ const campaign = (app: { [key: string]: any }): void => {
 		const campaignId = req.params.campaignId;
 
 		const adOpsTeam = req.params.adOpsTeam;
-		const adOpsTeamPath = adOpsTeam === 'Campanhas Internas' ? 'CompanyCampaigns' : adOpsTeam;
-		const company = req.company;
+		const adOpsTeamPath = adOpsTeam === 'Campanhas Internas' ? 'AdvertiserCampaigns' : adOpsTeam;
+		const advertiser = req.advertiser;
 		const permission = req.permission;
 		const campaignObject = new CampaignDAO();
 		const campaign = await campaignObject.getCampaign(campaignId);
@@ -130,7 +130,7 @@ const campaign = (app: { [key: string]: any }): void => {
 			return;
 		}
 
-		const filePath = `${company}/${adOpsTeamPath}/${campaign}/`;
+		const filePath = `${advertiser}/${adOpsTeamPath}/${campaign}/`;
 
 		fileDAO
 			.getAllFilesFromStore(filePath)

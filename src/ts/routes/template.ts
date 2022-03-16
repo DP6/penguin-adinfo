@@ -5,8 +5,8 @@ import { TemplateExcel } from '../models/TemplateExcel';
 
 const template = (app: { [key: string]: any }): void => {
 	app.get('/template', (req: { [key: string]: any }, res: { [key: string]: any }) => {
-		const company = req.company;
-		const configDAO = new ConfigDAO(company);
+		const advertiser = req.advertiser;
+		const configDAO = new ConfigDAO(advertiser);
 
 		const apiResponse = new ApiResponse();
 
@@ -33,8 +33,8 @@ const template = (app: { [key: string]: any }): void => {
 	});
 
 	app.get('/template/excel', (req: { [key: string]: any }, res: { [key: string]: any }) => {
-		const company = req.company;
-		const configDAO = new ConfigDAO(company);
+		const advertiser = req.advertiser;
+		const configDAO = new ConfigDAO(advertiser);
 		const apiResponse = new ApiResponse();
 		configDAO
 			.getLastConfig()

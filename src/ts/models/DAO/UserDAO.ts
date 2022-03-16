@@ -51,14 +51,14 @@ export class UserDAO {
 
 	/**
 	 * Retorna todos os usuários não owners da empresa
-	 * @param company Empresa(company) dos usuários a serem buscados
+	 * @param advertiser Empresa(advertiser) dos usuários a serem buscados
 	 * @param userRequestPermission permissão do usuario que solicitou a alteração
 	 * @returns Lista de usuários
 	 */
-	public getAllUsersFrom(company: string, userRequestPermission: string): Promise<User[] | void> {
+	public getAllUsersFrom(advertiser: string, userRequestPermission: string): Promise<User[] | void> {
 		return this._objectStore
 			.getCollection(this._pathToCollection)
-			.where('company', '==', company)
+			.where('advertiser', '==', advertiser)
 			.get()
 			.then((querySnapshot: QuerySnapshot) => {
 				if (querySnapshot.size > 0) {
@@ -71,7 +71,7 @@ export class UserDAO {
 								const user = new User(
 									searchId[0],
 									userPermission,
-									documentSnapshot.get('company'),
+									documentSnapshot.get('advertiser'),
 									documentSnapshot.get('email'),
 									documentSnapshot.get('active'),
 									documentSnapshot.get('adOpsTeam')
@@ -120,7 +120,7 @@ export class UserDAO {
 							user = new User(
 								searchId[0],
 								documentSnapshot.get('permission'),
-								documentSnapshot.get('company'),
+								documentSnapshot.get('advertiser'),
 								documentSnapshot.get('email'),
 								documentSnapshot.get('active'),
 								documentSnapshot.get('adOpsTeam')
