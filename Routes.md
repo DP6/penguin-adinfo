@@ -110,8 +110,56 @@
 
 **Descrição**: Retorna o JSON referente a configuração atual.
 
-### (POST) /build/:media
+### (POST) /build/:analyticsTool/:media
 
 **Parâmetros**: token, data.
 
-**Descrição**: Armazena o arquivo passado no parâmetro **data** no banco de arquivos e retorna um CSV com os campos de parametrização preenchidos, de acordo com a mídia informada na variável **:media**.
+**Descrição**: Armazena o arquivo passado no parâmetro **data** no banco de arquivos e retorna um CSV com os campos de parametrização preenchidos, de acordo com a ferramenta de mídia informada na variável **analyticsTool** e na mídia informada na variável **:media**.
+
+### (POST) /campaign
+
+**Parâmetros**: campaign, date.
+
+**Descrição**: Cria uma nova campanha com o nome passado no parâmetro **campaign** e com data de criação informada na variável **date**.
+
+### (GET) /agencies/campaigns
+
+**Parâmetros**: token.
+
+**Descrição**: Retorna todas as campanhas de todas as agências da companhia.
+
+### (GET) /campaign/:agency/list
+
+**Parâmetros**: token.
+
+**Descrição**: Retorna todas as campanhas de uma campanha em específico.
+
+### (GET) /:agency/:campaignId/csv/list
+
+**Parâmetros**: token.
+
+**Descrição**: Retorna todas os CSVs parametrizados de determinada campanha.
+
+### (POST) /campaign/:id/deactivate
+
+**Parâmetros**: token.
+
+**Descrição**: Desativa a campanha com o campaignId enviado.
+
+### (POST) /campaign/:id/reactivate
+
+**Parâmetros**: token.
+
+**Descrição**: Re-ativa a campanha com o campaignId enviado.
+
+### (GET) /agency/list
+
+**Parâmetros**: token.
+
+**Descrição**: Retorna todas as agências da companhia.
+
+### (GET) /agency/users
+
+**Parâmetros**: token.
+
+**Descrição**: Retorna todos os users de uma agência.
