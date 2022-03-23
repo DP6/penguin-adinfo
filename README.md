@@ -67,7 +67,8 @@ git clone https://github.com/DP6/penguin-adinfo.git
 3. [Terraform](https://www.terraform.io/);
 4. Habilitar o App Engine em ambiente de execução Node.js, Firestore e Cloud Storage (necessário ter um billing ativo), no GCP;
 5. Gerar uma senha com o [Bcrypt Generator](https://bcrypt-generator.com/) para informar no usuário owner do adinfo;
-6. Criar o arquivo **gcp_key_terraform.json** contendo a chave json de uma conta de serviço GCP com as permissões necessárias para as subidas dos serviços via terraform.
+6. Criar o arquivo **gcp_key_terraform.json** contendo a chave json de uma conta de serviço GCP com as permissões necessárias para as subidas dos serviços via terraform;
+7. Criação do arquivo **.env** especificado na sessão **Configuração do ambiente de desenvolvimento**.
 
 #### Passos
 
@@ -233,7 +234,7 @@ No caso de substituir o uso do Firestore para armazenamento de chaves. A nova cl
 
 - ENV: Deve apresentar o valor 'development', caso o ambiente atual seja o ambiente de desenvolvimento local, ou 'prod', caso o ambiente seja de produção;
 - PORT: Deve conter o número da porta onde a API será acessada. Em caso de omissão desse parâmetro, a porta considerada será 443;
-- BUCKET: Deve conter o nome do bucket do storage onde os arquivos CSVs serão salvos;
+- BUCKET: Deve conter o nome do bucket do storage onde os arquivos CSVs serão salvos. Para o deplou via Terraform, preencher o nome do bucket seguindo o padrão: {gcp_project_id}-adinfo-files-{company};
 - GCP_PROJECT_ID: Deve conter o id do projeto no GCP, caso o adinfo esteja hospedado no GCP;
 - GCP_KEY: Deve conter o JSON da chave de acesso aos serviços do GCP;
 - JWT_KEY: Chave para geração de assinaturas do JWT;

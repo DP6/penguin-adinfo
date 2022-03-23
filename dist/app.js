@@ -41,7 +41,8 @@ const ApiResponse_1 = require('./models/ApiResponse');
 const LoggingSingleton_1 = require('./models/cloud/LoggingSingleton');
 const JWT_1 = require('./models/JWT');
 const User_1 = require('./models/User');
-const FirestoreConnectionSingleton_1 = require('./models/cloud/FirestoreConnectionSingleton');
+const ProgrammaticUser_1 = require('./models/ProgrammaticUser');
+const ProgrammaticUserDAO_1 = require('./models/DAO/ProgrammaticUserDAO');
 dotenv_1.config({ path: __dirname + '/../.env' });
 const app = express();
 LoggingSingleton_1.LoggingSingleton.getInstance().logInfo('Iniciando Adinfo!');
@@ -88,53 +89,71 @@ app.all('*', (req, res, next) =>
 			next();
 		} else {
 			const token = req.headers.token;
+			const programmaticToken = req.headers.programmatictoken;
+			let log = {};
+			let permissionForRoute = false;
 			try {
-				const payload = yield new JWT_1.JWT().validateToken(token);
-				const user = new User_1.User(
-					payload.id,
-					payload.permission,
-					payload.company,
-					payload.email,
-					payload.activate,
-					payload.agency
-				);
-				yield FirestoreConnectionSingleton_1.FirestoreConnectionSingleton.getInstance()
-					.getCollection(['tokens'])
-					.where('__name__', '==', user.id)
-					.get()
-					.then((querySnapshot) => {
-						if (querySnapshot.size > 0) {
-							querySnapshot.forEach((documentSnapshot) => {
-								if (!documentSnapshot.get('activate')) {
-									throw new Error('Usuário sem permissão para realizar esta ação!');
-								}
-							});
-						} else {
-							throw new Error('Usuário inválido!');
-						}
-					})
-					.catch((err) => {
-						throw err;
-					});
-				const log = {
-					user: user.id,
-					route: req.originalUrl,
-					email: user.email,
-					activate: user.activate,
-					headers: req.headers,
-					body: req.body,
-				};
-				LoggingSingleton_1.LoggingSingleton.getInstance().logInfo(JSON.stringify(log));
-				if (!user.hasPermissionFor(url, req.method)) {
+				if (token) {
+					const payload = yield new JWT_1.JWT().validateToken(token);
+					const user = new User_1.User(
+						payload.id,
+						payload.permission,
+						payload.company,
+						payload.email,
+						payload.activate,
+						payload.agency
+					);
+					log = {
+						user: user.id,
+						route: req.originalUrl,
+						email: user.email,
+						activate: user.activate,
+						headers: req.headers,
+						body: req.body,
+					};
+					permissionForRoute = user.hasPermissionFor(url, req.method);
+					req.company = user.company;
+					req.agency = user.agency;
+					req.email = user.email;
+					req.permission = user.permission;
+					req.token = req.headers.token;
+				} else if (programmaticToken) {
+					const payloadProgrammaticAccess = yield new ProgrammaticUserDAO_1.ProgrammaticUserDAO().getProgrammaticUser(
+						programmaticToken
+					);
+					log = {
+						user: payloadProgrammaticAccess.id,
+						route: req.originalUrl,
+						email: '',
+						activate: payloadProgrammaticAccess.activate,
+						headers: req.headers,
+						body: req.body,
+					};
+					const programmaticUser = new ProgrammaticUser_1.ProgrammaticUser(
+						payloadProgrammaticAccess.id,
+						payloadProgrammaticAccess.permission,
+						payloadProgrammaticAccess.company,
+						payloadProgrammaticAccess.email,
+						payloadProgrammaticAccess.activate,
+						payloadProgrammaticAccess.agency
+					);
+					permissionForRoute = programmaticUser.hasPermissionFor(url, req.method);
+					req.company = programmaticUser.company;
+					req.agency = programmaticUser.agency;
+					req.email = programmaticUser.email;
+					req.permission = programmaticUser.permission;
+					req.token = req.headers.token;
+				} else {
 					apiResponse.responseText = 'Usuário sem permissão para realizar essa ação!';
 					apiResponse.statusCode = 403;
 					res.statusCode(apiResponse.statusCode).send(apiResponse.jsonResponse);
 				}
-				req.company = user.company;
-				req.agency = user.agency;
-				req.email = user.email;
-				req.permission = user.permission;
-				req.token = req.headers.token;
+				LoggingSingleton_1.LoggingSingleton.getInstance().logInfo(JSON.stringify(log));
+				if (!permissionForRoute) {
+					apiResponse.responseText = 'Usuário sem permissão para realizar essa ação!';
+					apiResponse.statusCode = 403;
+					res.statusCode(apiResponse.statusCode).send(apiResponse.jsonResponse);
+				}
 				next();
 			} catch (e) {
 				apiResponse.statusCode = 401;
