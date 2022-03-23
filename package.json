@@ -62,7 +62,7 @@
 	"dependencies": {
 		"@google-cloud/firestore": "^4.15.1",
 		"@google-cloud/logging-bunyan": "^3.0.1",
-		"@google-cloud/storage": "^5.16.0",
+		"@google-cloud/storage": "^5.18.2",
 		"@types/bcrypt": "^5.0.0",
 		"@types/bunyan": "^1.8.8",
 		"@types/jsonwebtoken": "^8.5.4",
