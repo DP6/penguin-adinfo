@@ -22,7 +22,7 @@ class AgencyDAO {
 						if (filteredUsers.agency !== undefined && filteredUsers.agency !== null) {
 							return filteredUsers.agency;
 						} else {
-							throw new Error('Nenhuma agência encontrada!');
+							return [];
 						}
 					});
 				return [...new Set(agenciesToReturn.filter((agency) => agency))];

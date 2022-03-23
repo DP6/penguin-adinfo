@@ -8,8 +8,6 @@ import { ApiResponse } from './models/ApiResponse';
 import { LoggingSingleton } from './models/cloud/LoggingSingleton';
 import { JWT } from './models/JWT';
 import { User } from './models/User';
-import { FirestoreConnectionSingleton } from './models/cloud/FirestoreConnectionSingleton';
-import { QuerySnapshot } from '@google-cloud/firestore';
 import { ProgrammaticUser } from './models/ProgrammaticUser';
 import { ProgrammaticUserDAO } from './models/DAO/ProgrammaticUserDAO';
 
