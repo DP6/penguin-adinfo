@@ -83,7 +83,6 @@ app.all('*', (req, res, next) =>
 				route: url,
 				email: req.body.email || 'E-mail não informado!',
 				headers: req.headers,
-				body: req.body,
 			};
 			LoggingSingleton_1.LoggingSingleton.getInstance().logInfo(JSON.stringify(log));
 			next();
@@ -103,12 +102,14 @@ app.all('*', (req, res, next) =>
 						payload.activate,
 						payload.agency
 					);
+					const headers = Object.assign({}, req.headers);
+					delete headers['token'];
 					log = {
 						user: user.id,
 						route: req.originalUrl,
 						email: user.email,
 						activate: user.activate,
-						headers: req.headers,
+						headers: headers,
 						body: req.body,
 					};
 					permissionForRoute = user.hasPermissionFor(url, req.method);
@@ -121,12 +122,14 @@ app.all('*', (req, res, next) =>
 					const payloadProgrammaticAccess = yield new ProgrammaticUserDAO_1.ProgrammaticUserDAO().getProgrammaticUser(
 						programmaticToken
 					);
+					const headers = Object.assign({}, req.headers);
+					delete headers['token'];
 					log = {
 						user: payloadProgrammaticAccess.id,
 						route: req.originalUrl,
 						email: '',
 						activate: payloadProgrammaticAccess.activate,
-						headers: req.headers,
+						headers: headers,
 						body: req.body,
 					};
 					const programmaticUser = new ProgrammaticUser_1.ProgrammaticUser(

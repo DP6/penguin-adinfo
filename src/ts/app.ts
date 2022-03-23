@@ -56,7 +56,6 @@ app.all('*', async (req: { [key: string]: any }, res: { [key: string]: any }, ne
 			route: url,
 			email: req.body.email || 'E-mail não informado!',
 			headers: req.headers,
-			body: req.body,
 		};
 		LoggingSingleton.getInstance().logInfo(JSON.stringify(log));
 		next();
@@ -80,31 +79,15 @@ app.all('*', async (req: { [key: string]: any }, res: { [key: string]: any }, ne
 					payload.agency
 				);
 
-				// await FirestoreConnectionSingleton.getInstance()
-				// 	.getCollection(['tokens'])
-				// 	.where('__name__', '==', user.id)
-				// 	.get()
-				// 	.then((querySnapshot: QuerySnapshot) => {
-				// 		if (querySnapshot.size > 0) {
-				// 			querySnapshot.forEach((documentSnapshot) => {
-				// 				if (!documentSnapshot.get('activate')) {
-				// 					throw new Error('Usuário sem permissão para realizar esta ação!');
-				// 				}
-				// 			});
-				// 		} else {
-				// 			throw new Error('Usuário inválido!');
-				// 		}
-				// 	})
-				// 	.catch((err) => {
-				// 		throw err;
-				// 	});
+				const headers = { ...req.headers };
+				delete headers['token'];
 
 				log = {
 					user: user.id,
 					route: req.originalUrl,
 					email: user.email,
 					activate: user.activate,
-					headers: req.headers,
+					headers: headers,
 					body: req.body,
 				};
 
@@ -117,12 +100,16 @@ app.all('*', async (req: { [key: string]: any }, res: { [key: string]: any }, ne
 				req.token = req.headers.token;
 			} else if (programmaticToken) {
 				const payloadProgrammaticAccess = await new ProgrammaticUserDAO().getProgrammaticUser(programmaticToken);
+
+				const headers = { ...req.headers };
+				delete headers['token'];
+
 				log = {
 					user: payloadProgrammaticAccess.id,
 					route: req.originalUrl,
 					email: '',
 					activate: payloadProgrammaticAccess.activate,
-					headers: req.headers,
+					headers: headers,
 					body: req.body,
 				};
 
