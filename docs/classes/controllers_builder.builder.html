@@ -89,6 +89,7 @@
 						<section class="tsd-index-section tsd-is-private tsd-is-private-protected">
 							<h3>Properties</h3>
 							<ul class="tsd-index-list">
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><a href="controllers_builder.builder.html#_analyticstool" class="tsd-kind-icon">_analytics<wbr>Tool</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><a href="controllers_builder.builder.html#_companyconfig" class="tsd-kind-icon">_company<wbr>Config</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><a href="controllers_builder.builder.html#_jsonfromfile" class="tsd-kind-icon">_json<wbr>From<wbr>File</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><a href="controllers_builder.builder.html#_media" class="tsd-kind-icon">_media</a></li>
@@ -109,13 +110,13 @@
 					<a name="constructor" class="tsd-anchor"></a>
 					<h3>constructor</h3>
 					<ul class="tsd-signatures tsd-kind-constructor tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">new <wbr>Builder<span class="tsd-signature-symbol">(</span>jsonFromFile<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">{}</span><span class="tsd-signature-symbol">[]</span>, companyConfig<span class="tsd-signature-symbol">: </span><a href="models_config.config.html" class="tsd-signature-type" data-tsd-kind="Class">Config</a>, media<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="controllers_builder.builder.html" class="tsd-signature-type" data-tsd-kind="Class">Builder</a></li>
+						<li class="tsd-signature tsd-kind-icon">new <wbr>Builder<span class="tsd-signature-symbol">(</span>jsonFromFile<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">{}</span><span class="tsd-signature-symbol">[]</span>, companyConfig<span class="tsd-signature-symbol">: </span><a href="models_config.config.html" class="tsd-signature-type" data-tsd-kind="Class">Config</a>, analyticsTool<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, media<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="controllers_builder.builder.html" class="tsd-signature-type" data-tsd-kind="Class">Builder</a></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/DP6/penguin-adinfo/blob/8b17891/src/ts/controllers/Builder.ts#L10">controllers/Builder.ts:10</a></li>
+									<li>Defined in <a href="https://github.com/DP6/adinfo/blob/6fe77f9/src/ts/controllers/Builder.ts#L11">controllers/Builder.ts:11</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -127,7 +128,10 @@
 									<h5>companyConfig: <a href="models_config.config.html" class="tsd-signature-type" data-tsd-kind="Class">Config</a></h5>
 								</li>
 								<li>
-									<h5>media: <span class="tsd-signature-type">string</span></h5>
+									<h5>analyticsTool: <span class="tsd-signature-type">string</span></h5>
+								</li>
+								<li>
+									<h5><span class="tsd-flag ts-flagOptional">Optional</span> media: <span class="tsd-signature-type">string</span></h5>
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <a href="controllers_builder.builder.html" class="tsd-signature-type" data-tsd-kind="Class">Builder</a></h4>
@@ -138,12 +142,22 @@
 			<section class="tsd-panel-group tsd-member-group tsd-is-private tsd-is-private-protected">
 				<h2>Properties</h2>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-private">
+					<a name="_analyticstool" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagPrivate">Private</span> _analytics<wbr>Tool</h3>
+					<div class="tsd-signature tsd-kind-icon">_analytics<wbr>Tool<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/DP6/adinfo/blob/6fe77f9/src/ts/controllers/Builder.ts#L11">controllers/Builder.ts:11</a></li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-private">
 					<a name="_companyconfig" class="tsd-anchor"></a>
 					<h3><span class="tsd-flag ts-flagPrivate">Private</span> _company<wbr>Config</h3>
 					<div class="tsd-signature tsd-kind-icon">_company<wbr>Config<span class="tsd-signature-symbol">:</span> <a href="models_config.config.html" class="tsd-signature-type" data-tsd-kind="Class">Config</a></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/DP6/penguin-adinfo/blob/8b17891/src/ts/controllers/Builder.ts#L9">controllers/Builder.ts:9</a></li>
+							<li>Defined in <a href="https://github.com/DP6/adinfo/blob/6fe77f9/src/ts/controllers/Builder.ts#L9">controllers/Builder.ts:9</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -153,7 +167,7 @@
 					<div class="tsd-signature tsd-kind-icon">_json<wbr>From<wbr>File<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">{}</span><span class="tsd-signature-symbol">[]</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/DP6/penguin-adinfo/blob/8b17891/src/ts/controllers/Builder.ts#L8">controllers/Builder.ts:8</a></li>
+							<li>Defined in <a href="https://github.com/DP6/adinfo/blob/6fe77f9/src/ts/controllers/Builder.ts#L8">controllers/Builder.ts:8</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -163,7 +177,7 @@
 					<div class="tsd-signature tsd-kind-icon">_media<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/DP6/penguin-adinfo/blob/8b17891/src/ts/controllers/Builder.ts#L10">controllers/Builder.ts:10</a></li>
+							<li>Defined in <a href="https://github.com/DP6/adinfo/blob/6fe77f9/src/ts/controllers/Builder.ts#L10">controllers/Builder.ts:10</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -180,7 +194,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/DP6/penguin-adinfo/blob/8b17891/src/ts/controllers/Builder.ts#L21">controllers/Builder.ts:21</a></li>
+									<li>Defined in <a href="https://github.com/DP6/adinfo/blob/6fe77f9/src/ts/controllers/Builder.ts#L23">controllers/Builder.ts:23</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -216,6 +230,9 @@
 								<a href="controllers_builder.builder.html#constructor" class="tsd-kind-icon">constructor</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-private">
+								<a href="controllers_builder.builder.html#_analyticstool" class="tsd-kind-icon">_analytics<wbr>Tool</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-private">
 								<a href="controllers_builder.builder.html#_companyconfig" class="tsd-kind-icon">_company<wbr>Config</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-private">
@@ -247,6 +264,9 @@
 			</ul>
 			<ul class="tsd-legend">
 				<li class="tsd-kind-function"><span class="tsd-kind-icon">Function</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-interface"><span class="tsd-kind-icon">Interface</span></li>
 			</ul>
 			<ul class="tsd-legend">
 				<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><span class="tsd-kind-icon">Private property</span></li>

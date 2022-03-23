@@ -127,7 +127,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/DP6/penguin-adinfo/blob/8b17891/src/ts/utils/CsvUtils.ts#L29">utils/CsvUtils.ts:29</a></li>
+									<li>Defined in <a href="https://github.com/DP6/adinfo/blob/6fe77f9/src/ts/utils/CsvUtils.ts#L29">utils/CsvUtils.ts:29</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -160,13 +160,13 @@
 					<a name="identifycsvsepartor" class="tsd-anchor"></a>
 					<h3><span class="tsd-flag ts-flagStatic">Static</span> identify<wbr>Csv<wbr>Separtor</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-static">
-						<li class="tsd-signature tsd-kind-icon">identify<wbr>Csv<wbr>Separtor<span class="tsd-signature-symbol">(</span>csvHeader<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, csvSeparatorDefault<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span></li>
+						<li class="tsd-signature tsd-kind-icon">identify<wbr>Csv<wbr>Separtor<span class="tsd-signature-symbol">(</span>csvHeader<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, csvSeparatorDefault<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/DP6/penguin-adinfo/blob/8b17891/src/ts/utils/CsvUtils.ts#L57">utils/CsvUtils.ts:57</a></li>
+									<li>Defined in <a href="https://github.com/DP6/adinfo/blob/6fe77f9/src/ts/utils/CsvUtils.ts#L59">utils/CsvUtils.ts:59</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -183,14 +183,15 @@
 									</div>
 								</li>
 								<li>
-									<h5>csvSeparatorDefault: <span class="tsd-signature-type">string</span></h5>
+									<h5>csvSeparatorDefault: <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">[]</span></h5>
 									<div class="tsd-comment tsd-typography">
-										<p>Separador configurado para ser o padrão</p>
+										<p>Lista de separadores configurados para validarmos a prioridade</p>
 									</div>
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">string</span></h4>
 							<p>Separador a ser utilizado</p>
+							<p>Função que identifica o separador utilizado no CSV, de acordo com os separadores já configurados no Config, para utilizarmos na parametrização</p>
 						</li>
 					</ul>
 				</section>
@@ -204,7 +205,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/DP6/penguin-adinfo/blob/8b17891/src/ts/utils/CsvUtils.ts#L9">utils/CsvUtils.ts:9</a></li>
+									<li>Defined in <a href="https://github.com/DP6/adinfo/blob/6fe77f9/src/ts/utils/CsvUtils.ts#L9">utils/CsvUtils.ts:9</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -237,7 +238,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/DP6/penguin-adinfo/blob/8b17891/src/ts/utils/CsvUtils.ts#L17">utils/CsvUtils.ts:17</a></li>
+									<li>Defined in <a href="https://github.com/DP6/adinfo/blob/6fe77f9/src/ts/utils/CsvUtils.ts#L17">utils/CsvUtils.ts:17</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -317,6 +318,9 @@
 			</ul>
 			<ul class="tsd-legend">
 				<li class="tsd-kind-function"><span class="tsd-kind-icon">Function</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-interface"><span class="tsd-kind-icon">Interface</span></li>
 			</ul>
 			<ul class="tsd-legend">
 				<li class="tsd-kind-method tsd-parent-kind-class tsd-is-static"><span class="tsd-kind-icon">Static method</span></li>

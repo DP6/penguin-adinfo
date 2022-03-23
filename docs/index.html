@@ -130,7 +130,10 @@
 					<li><a href="https://cloud.google.com/sdk/docs/install?hl=pt-br">Google Cloud SDK</a>;</li>
 					<li>Pacote zip;</li>
 					<li><a href="https://www.terraform.io/">Terraform</a>;</li>
-					<li>Habilitar o App Engine em ambiente de execução Node.js, Firestore e Cloud Storage (necessário ter um billing ativo), no GCP.</li>
+					<li>Habilitar o App Engine em ambiente de execução Node.js, Firestore e Cloud Storage (necessário ter um billing ativo), no GCP;</li>
+					<li>Gerar uma senha com o <a href="https://bcrypt-generator.com/">Bcrypt Generator</a> para informar no usuário owner do adinfo;</li>
+					<li>Criar o arquivo <strong>gcp_key_terraform.json</strong> contendo a chave json de uma conta de serviço GCP com as permissões necessárias para as subidas dos serviços via terraform;</li>
+					<li>Criação do arquivo <strong>.env</strong> especificado na sessão <strong>Configuração do ambiente de desenvolvimento</strong>.</li>
 				</ol>
 				<a href="#passos" id="passos" style="color: inherit; text-decoration: none;">
 					<h4>Passos</h4>
@@ -141,13 +144,17 @@
 					<li><p>Informe o nome da empresa, ferramenta analítica utilizada para a criação de um exemplo de configuração (Adobe Analytics ou Google Analytics) e o id do projeto. Também é possível informar o número da porta onde o adinfo irá rodar, entretanto esse último valor é opcional, caso nenhuma porta seja específica, por padrão ele executará na porta 443;</p>
 					</li>
 					<li><p>Crie uma coleção no Firestore com o nome de <strong>tokens</strong> e insira um primeiro token com os seguintes campos (deixe o id do documento vazio para que seja gerado automaticamente):</p>
-						<pre><code><span style="color: #000000">{</span>
-<span style="color: #000000">    company: </span><span style="color: #A31515">&quot;NOME_EMPRESA&quot;</span><span style="color: #000000"> (</span><span style="color: #001080">string</span><span style="color: #000000">)</span>
-<span style="color: #000000">    permission: </span><span style="color: #A31515">&quot;owner&quot;</span><span style="color: #000000">(</span><span style="color: #001080">string</span><span style="color: #000000">)</span>
-<span style="color: #000000">}</span>
-</code></pre>
 					</li>
 				</ol>
+				<pre><code><span style="color: #000000">{</span>
+<span style="color: #000000">    company: </span><span style="color: #A31515">&quot;NOME_EMPRESA&quot;</span><span style="color: #000000"> (</span><span style="color: #001080">string</span><span style="color: #000000">),</span>
+<span style="color: #000000">    agency: </span><span style="color: #A31515">&quot;agencia do usuário&quot;</span><span style="color: #000000"> (</span><span style="color: #001080">string</span><span style="color: #000000">,</span>
+<span style="color: #000000">    </span><span style="color: #001080">permission</span><span style="color: #000000">: </span><span style="color: #A31515">&quot;owner&quot;</span><span style="color: #000000"> (</span><span style="color: #001080">string</span><span style="color: #000000">)</span>
+<span style="color: #000000">    </span><span style="color: #001080">email</span><span style="color: #000000">: </span><span style="color: #A31515">&quot;email_do_usuario&quot;</span><span style="color: #000000"> (</span><span style="color: #001080">string</span><span style="color: #000000">)</span>
+<span style="color: #000000">    </span><span style="color: #001080">password</span><span style="color: #000000">: </span><span style="color: #A31515">&quot;senha_criptografada&quot;</span><span style="color: #000000"> (</span><span style="color: #001080">string</span><span style="color: #000000">),</span>
+<span style="color: #000000">    </span><span style="color: #001080">activate</span><span style="color: #000000">: </span><span style="color: #0000FF">true</span><span style="color: #000000"> (</span><span style="color: #001080">boolean</span><span style="color: #000000">)</span>
+<span style="color: #000000">}</span>
+</code></pre>
 				<a href="#instalação-manual---gcp" id="instalação-manual---gcp" style="color: inherit; text-decoration: none;">
 					<h3>Instalação manual - GCP</h3>
 				</a>
@@ -163,23 +170,42 @@
 				<a href="#configuração-inicial-do-firestore" id="configuração-inicial-do-firestore" style="color: inherit; text-decoration: none;">
 					<h5>Configuração inicial do Firestore</h5>
 				</a>
-				<p>Para a configuração inicial do Firestore, são necessárias duas coleções.</p>
+				<p>Para a configuração inicial do Firestore, são necessárias quatro coleções.</p>
 				<ul>
-					<li><p><strong>companies</strong>: essa coleção deve ser criada na raiz do firestore e deve conter um documento com o nome da empresa. Dentro desse documento, uma segunda coleção deve ser criada com o nome <em>config</em>. Seguindo a estrutura: companies &gt; [nome_empresa] &gt; config;</p>
+					<li><p><strong>companies</strong>: essa coleção deve deve conter um documento com o nome da empresa. Dentro desse documento, uma segunda coleção deve ser criada com o nome <em>config</em>. Seguindo a estrutura: companies &gt; [nome_empresa] &gt; config;</p>
 					</li>
-					<li><p><strong>tokens</strong>: essa coleção também deve ser criada na raiz do firestore com um documento seguindo a estrutura:</p>
+					<li><p><strong>blocklist</strong>: coleção criada para armazenar tokens bloqueados de login;</p>
+					</li>
+					<li><p><strong>campaigns</strong>: coleção criada para armazenar as campanhas de cada agência;</p>
+					</li>
+					<li><p><strong>agencies</strong>: coleção criada para armazenar as agências que utilizam o adinfo;</p>
+					</li>
+					<li><p><strong>tokens</strong>: essa coleção também deve ser criada com um documento seguindo a estrutura:</p>
 						<pre><code><span style="color: #000000">{</span>
-<span style="color: #000000">    company: </span><span style="color: #A31515">&quot;NOME_EMPRESA&quot;</span><span style="color: #000000"> (</span><span style="color: #001080">string</span><span style="color: #000000">)</span>
-<span style="color: #000000">    permission: </span><span style="color: #A31515">&quot;owner&quot;</span><span style="color: #000000">(</span><span style="color: #001080">string</span><span style="color: #000000">)</span>
+<span style="color: #000000">  company: </span><span style="color: #A31515">&quot;NOME_EMPRESA&quot;</span><span style="color: #000000"> (</span><span style="color: #001080">string</span><span style="color: #000000">),</span>
+<span style="color: #000000">  agency: </span><span style="color: #A31515">&quot;agencia do usuário&quot;</span><span style="color: #000000"> (</span><span style="color: #001080">string</span><span style="color: #000000">,</span>
+<span style="color: #000000">    </span><span style="color: #001080">permission</span><span style="color: #000000">: </span><span style="color: #A31515">&quot;owner&quot;</span><span style="color: #000000"> (</span><span style="color: #001080">string</span><span style="color: #000000">),</span>
+<span style="color: #000000">    </span><span style="color: #001080">email</span><span style="color: #000000">: </span><span style="color: #A31515">&quot;email_do_usuario&quot;</span><span style="color: #000000"> (</span><span style="color: #001080">string</span><span style="color: #000000">),</span>
+<span style="color: #000000">    </span><span style="color: #001080">password</span><span style="color: #000000">: </span><span style="color: #A31515">&quot;senha_criptografada&quot;</span><span style="color: #000000"> (</span><span style="color: #001080">string</span><span style="color: #000000">),</span>
+<span style="color: #000000">  </span><span style="color: #001080">activate</span><span style="color: #000000">: </span><span style="color: #0000FF">true</span><span style="color: #000000"> (</span><span style="color: #001080">boolean</span><span style="color: #000000">)</span>
 <span style="color: #000000">}</span>
 </code></pre>
-						<p>Para esse documento, é importante manter o Código do Documento gerado automaticamente pelo google. O código gerado para cada documento será o token de acesso utilizado na API.</p>
+						<p>Para esse documento, é importante manter o Código do Documento gerado automaticamente pelo google, pois ele será utilizado como o ID do usuário em alguns processos.
+							O campo <strong>password</strong> deve ser informado com a criptografia. Para preenchimento manual é possível utilizar o <a href="https://bcrypt-generator.com/">Bcrypt Generator</a> para gerar a senha criptografada.
+						O campo <em>agency</em> diz respeito a agência a qual pertence o usuário que está sendo criado. Caso o nível de permissão desse usuário seja &quot;owner&quot; ou &quot;admin&quot;, deixe este campo em branco.</p>
+					</li>
+					<li><p><strong>campaigns</strong>: Essa coleção deve ser criada na raiz do firestore , mas não há a necessidade de criar nenhum documento dentro dela. Os documentos serão gerados automaticamente conforme o uso do adinfo, armazenando as campanhas que serão criadas e seus atributos</p>
+					</li>
+					<li><p><strong>blocklist</strong>: Essa coleção deve ser criada na raiz do firestore , mas não há a necessidade de criar nenhum documento dentro dela. Os documentos serão gerados automaticamente conforme o uso do adinfo, adicionando os tokens dos usuários que derem logout na aplicação, pois este token, mesmo que ainda válido, não deve ser usado ainda para acessar a interface.</p>
 					</li>
 				</ul>
 				<a href="#padrão-do-objeto-de-configuração" id="padrão-do-objeto-de-configuração" style="color: inherit; text-decoration: none;">
 					<h6>Padrão do Objeto de Configuração</h6>
 				</a>
-				<p>Para utilizar a API, é necessário criar um documento de configuração no Firestore dentro da coleção: companies &gt; [nome_empresa] &gt; config. O nome do documento deve ser <strong>config_1</strong> e ele deve conter os campos: <strong>csvSeparator</strong>, <strong>separator</strong>, <strong>spaceSeparator</strong>, <strong>columns</strong> e um campo para a ferramenta de analytics, sendo esse o valor de <strong>ga</strong> ou <strong>adobe</strong>.</p>
+				<p>Para utilizar a API, é necessário criar um documento de configuração no Firestore dentro da coleção: companies &gt; [nome_empresa] &gt; config. O nome do documento deve ser <strong>config_1</strong> e ele deve conter os campos: <strong>version</strong> inicialmente com o valor 1 (number), <strong>insertTime</strong> no formato <em>yyyyMMddHHmmss</em>, <strong>csvSeparator</strong>, <strong>separator</strong>, <strong>spaceSeparator</strong>, <strong>columns</strong> e um campo para a ferramenta de analytics, sendo esse o valor de <strong>ga</strong> ou <strong>adobe</strong>.</p>
+				<p>Todos estes campos serão utilizados para realizar a parametrização do arquivo CSV que a API irá receber.</p>
+				<p>Aqui a API disponibiliza a funcionalidade de definirmos no campo <strong>csvSeparator</strong> uma lista contendo a prioridade de todos os possíveis caracteres que poderão ser utilizados como separadores no arquivo CSV pelos usuários. Com isso, a aplicação irá consultar essa fonte e utilizar o devido separador para parametrizar o arquivo submetido.</p>
+				<p>Entretanto, este campo no arquivo de configuração não é obrigatório. Caso o campo não seja preenchido, a aplicação irá tentar verificar se o arquivo submetido está utilizando <em>vírgula</em> ou <em>ponto e vírgula</em> como separador e utilizar o separador identificado para a parametrização. Caso não encontre nenhum dos dois caracteres, a API irá utilizar a vírgula como separador.</p>
 				<p>Abaixo segue uma explicação e um exemplo de todos os campos das configurações.</p>
 				<table>
 					<thead>
@@ -192,9 +218,9 @@
 					</thead>
 					<tbody><tr>
 							<td>csvSeparator</td>
-							<td>String</td>
-							<td>Separador de colunas do arquivo CSV.</td>
-							<td>Sim</td>
+							<td>Array</td>
+							<td>Array que irá conter todos os separadores de colunas que os arquivos CSV poderão conter.</td>
+							<td>Não</td>
 						</tr>
 						<tr>
 							<td>separator</td>
@@ -221,6 +247,18 @@
 							<td>Não</td>
 						</tr>
 						<tr>
+							<td>insertTime</td>
+							<td>String</td>
+							<td>Data da criação do config no formato <em>YYYYMMDDHHmmSS</em>.</td>
+							<td>Sim</td>
+						</tr>
+						<tr>
+							<td>version</td>
+							<td>Number</td>
+							<td>Número da versão do config.</td>
+							<td>Sim</td>
+						</tr>
+						<tr>
 							<td>{{veículo}}</td>
 							<td>Objeto</td>
 							<td>Chave do veículo de mídia com suas configurações e quais colunas pertencem a cada configuração.</td>
@@ -237,6 +275,9 @@
 				<pre><code class="language-javascript"><span style="color: #000000">{</span>
 <span style="color: #000000">    </span><span style="color: #A31515">&quot;separator&quot;</span><span style="color: #000000">: </span><span style="color: #A31515">&quot;:&quot;</span><span style="color: #000000">,</span>
 <span style="color: #000000">    </span><span style="color: #A31515">&quot;spaceSeparator&quot;</span><span style="color: #000000">: </span><span style="color: #A31515">&quot;_&quot;</span><span style="color: #000000">,</span>
+<span style="color: #000000">    </span><span style="color: #A31515">&quot;csvSeparator&quot;</span><span style="color: #000000">: [</span><span style="color: #A31515">&quot;,&quot;</span><span style="color: #000000">, </span><span style="color: #A31515">&quot;;&quot;</span><span style="color: #000000">, </span><span style="color: #A31515">&quot;|&quot;</span><span style="color: #000000">],</span>
+<span style="color: #000000">    </span><span style="color: #A31515">&quot;version&quot;</span><span style="color: #000000">: </span><span style="color: #098658">1</span><span style="color: #000000">,</span>
+<span style="color: #000000">    </span><span style="color: #A31515">&quot;insertTime&quot;</span><span style="color: #000000">: </span><span style="color: #A31515">&quot;20220101000000&quot;</span><span style="color: #000000">,</span>
 <span style="color: #000000">    </span><span style="color: #A31515">&quot;columns&quot;</span><span style="color: #000000">: {</span>
 <span style="color: #000000">        </span><span style="color: #008000">//Colunas que aparecerão no CSV</span>
 <span style="color: #000000">        </span><span style="color: #008000">//A chave representa a coluna do CSV e o vetor de valores</span>
@@ -282,7 +323,9 @@
 <span style="color: #000000">            </span><span style="color: #A31515">&quot;columnDestiny&quot;</span><span style="color: #001080">:</span><span style="color: #000000"> </span><span style="color: #A31515">&quot;Tipo de Compra&quot;</span><span style="color: #000000">,</span>
 <span style="color: #000000">            </span><span style="color: #A31515">&quot;matches&quot;</span><span style="color: #001080">:</span><span style="color: #000000"> [</span><span style="color: #A31515">&quot;cpc&quot;</span><span style="color: #000000">, </span><span style="color: #A31515">&quot;cpa&quot;</span><span style="color: #000000">]</span>
 <span style="color: #000000">        }</span>
-<span style="color: #000000">    ]</span>
+<span style="color: #000000">    ],</span>
+<span style="color: #000000">    </span><span style="color: #A31515">&quot;insertTime&quot;</span><span style="color: #000000">: </span><span style="color: #A31515">&quot;20211201193242&quot;</span><span style="color: #000000">,</span>
+<span style="color: #000000">    </span><span style="color: #A31515">&quot;version&quot;</span><span style="color: #000000">: </span><span style="color: #098658">1</span><span style="color: #000000">,</span>
 <span style="color: #000000">}</span>
 </code></pre>
 				<a href="#banco-de-dados-alternativos" id="banco-de-dados-alternativos" style="color: inherit; text-decoration: none;">
@@ -303,9 +346,12 @@
 				<ul>
 					<li>ENV: Deve apresentar o valor &#39;development&#39;, caso o ambiente atual seja o ambiente de desenvolvimento local, ou &#39;prod&#39;, caso o ambiente seja de produção;</li>
 					<li>PORT: Deve conter o número da porta onde a API será acessada. Em caso de omissão desse parâmetro, a porta considerada será 443;</li>
-					<li>BUCKET: Deve conter o nome do bucket do storage onde os arquivos CSVs serão salvos;</li>
+					<li>BUCKET: Deve conter o nome do bucket do storage onde os arquivos CSVs serão salvos. Para o deplou via Terraform, preencher o nome do bucket seguindo o padrão: {gcp_project_id}-adinfo-files-{company};</li>
 					<li>GCP_PROJECT_ID: Deve conter o id do projeto no GCP, caso o adinfo esteja hospedado no GCP;</li>
 					<li>GCP_KEY: Deve conter o JSON da chave de acesso aos serviços do GCP;</li>
+					<li>JWT_KEY: Chave para geração de assinaturas do JWT;</li>
+					<li>SALT: Configuração de salt do JWT;</li>
+					<li>EXPIRES_TOKEN: Duração do token JWT.</li>
 				</ul>
 				<ol start="2">
 					<li><strong>Arquivo .gitignore</strong>: Checar se o arquivo .gitignore está ignorando do arquivo .env.</li>
@@ -342,6 +388,42 @@
 						<a href="modules.html">Exports</a>
 					</li>
 					<li class=" tsd-kind-module">
+						<a href="modules/errors_stringemptyerror.html">Errors/<wbr>String<wbr>Empty<wbr>Error</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/errors_validatecolumnexistserror.html">Errors/<wbr>Validate<wbr>Column<wbr>Exists<wbr>Error</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/errors_validatefielddependencyerror.html">Errors/<wbr>Validate<wbr>Field<wbr>Dependency<wbr>Error</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/errors_validatefielderror.html">Errors/<wbr>Validate<wbr>Field<wbr>Error</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/errors_validaterulesforcolumnerror.html">Errors/<wbr>Validate<wbr>Rules<wbr>For<wbr>Column<wbr>Error</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/handlers_abstracthandler.html">Handlers/<wbr>Abstract<wbr>Handler</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/handlers_handler.html">Handlers/<wbr>Handler</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/handlers_stringemptyhandler.html">Handlers/<wbr>String<wbr>Empty<wbr>Handler</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/handlers_validatecolumnexistshandler.html">Handlers/<wbr>Validate<wbr>Column<wbr>Exists<wbr>Handler</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/handlers_validatefielddependencyhandler.html">Handlers/<wbr>Validate<wbr>Field<wbr>Dependency<wbr>Handler</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/handlers_validatefieldhandler.html">Handlers/<wbr>Validate<wbr>Field<wbr>Handler</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/handlers_validaterulesforcolumnhandler.html">Handlers/<wbr>Validate<wbr>Rules<wbr>For<wbr>Column<wbr>Handler</a>
+					</li>
+					<li class=" tsd-kind-module">
 						<a href="modules/app.html">app</a>
 					</li>
 					<li class=" tsd-kind-module">
@@ -357,13 +439,19 @@
 						<a href="modules/models_apiresponse.html">models/<wbr>Api<wbr>Response</a>
 					</li>
 					<li class=" tsd-kind-module">
-						<a href="modules/models_auth.html">models/<wbr>Auth</a>
+						<a href="modules/models_blocklist.html">models/<wbr>Block<wbr>List</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/models_campaign.html">models/<wbr>Campaign</a>
 					</li>
 					<li class=" tsd-kind-module">
 						<a href="modules/models_config.html">models/<wbr>Config</a>
 					</li>
 					<li class=" tsd-kind-module">
-						<a href="modules/models_dao_authdao.html">models/DAO/<wbr>AuthDAO</a>
+						<a href="modules/models_dao_agencydao.html">models/DAO/<wbr>AgencyDAO</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/models_dao_campaigndao.html">models/DAO/<wbr>CampaignDAO</a>
 					</li>
 					<li class=" tsd-kind-module">
 						<a href="modules/models_dao_configdao.html">models/DAO/<wbr>ConfigDAO</a>
@@ -376,6 +464,12 @@
 					</li>
 					<li class=" tsd-kind-module">
 						<a href="modules/models_dao_objectstore.html">models/DAO/<wbr>Object<wbr>Store</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/models_dao_programmaticuserdao.html">models/DAO/<wbr>Programmatic<wbr>UserDAO</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/models_dao_userdao.html">models/DAO/<wbr>UserDAO</a>
 					</li>
 					<li class=" tsd-kind-module">
 						<a href="modules/models_dependencyconfig.html">models/<wbr>Dependency<wbr>Config</a>
@@ -393,6 +487,9 @@
 						<a href="modules/models_googleads.html">models/<wbr>Google<wbr>Ads</a>
 					</li>
 					<li class=" tsd-kind-module">
+						<a href="modules/models_jwt.html">models/JWT</a>
+					</li>
+					<li class=" tsd-kind-module">
 						<a href="modules/models_log.html">models/<wbr>Log</a>
 					</li>
 					<li class=" tsd-kind-module">
@@ -402,7 +499,16 @@
 						<a href="modules/models_parametrizerfactory.html">models/<wbr>Parametrizer<wbr>Factory</a>
 					</li>
 					<li class=" tsd-kind-module">
+						<a href="modules/models_programmaticuser.html">models/<wbr>Programmatic<wbr>User</a>
+					</li>
+					<li class=" tsd-kind-module">
 						<a href="modules/models_routespermission.html">models/<wbr>Routes<wbr>Permission</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/models_templateexcel.html">models/<wbr>Template<wbr>Excel</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/models_user.html">models/<wbr>User</a>
 					</li>
 					<li class=" tsd-kind-module">
 						<a href="modules/models_vehicle.html">models/<wbr>Vehicle</a>
@@ -417,13 +523,22 @@
 						<a href="modules/models_cloud_storageconnectionsingleton.html">models/cloud/<wbr>Storage<wbr>Connection<wbr>Singleton</a>
 					</li>
 					<li class=" tsd-kind-module">
+						<a href="modules/routes_agency.html">routes/agency</a>
+					</li>
+					<li class=" tsd-kind-module">
 						<a href="modules/routes_build.html">routes/build</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/routes_campaign.html">routes/campaign</a>
 					</li>
 					<li class=" tsd-kind-module">
 						<a href="modules/routes_config.html">routes/config</a>
 					</li>
 					<li class=" tsd-kind-module">
 						<a href="modules/routes_csv.html">routes/csv</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/routes_login.html">routes/login</a>
 					</li>
 					<li class=" tsd-kind-module">
 						<a href="modules/routes_register.html">routes/register</a>
@@ -464,6 +579,9 @@
 		<div class="tsd-legend-group">
 			<ul class="tsd-legend">
 				<li class="tsd-kind-function"><span class="tsd-kind-icon">Function</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-interface"><span class="tsd-kind-icon">Interface</span></li>
 			</ul>
 			<ul class="tsd-legend">
 				<li class="tsd-kind-class"><span class="tsd-kind-icon">Class</span></li>

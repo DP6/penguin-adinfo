@@ -89,8 +89,9 @@
 						<section class="tsd-index-section ">
 							<h3>Methods</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-private tsd-is-static"><a href="utils_stringutils.stringutils.html#_isstringforregex" class="tsd-kind-icon">_is<wbr>String<wbr>For<wbr>Regex</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-static"><a href="utils_stringutils.stringutils.html#isempty" class="tsd-kind-icon">is<wbr>Empty</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-static"><a href="utils_stringutils.stringutils.html#isstringforregex" class="tsd-kind-icon">is<wbr>String<wbr>For<wbr>Regex</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-static"><a href="utils_stringutils.stringutils.html#isstringforregexall" class="tsd-kind-icon">is<wbr>String<wbr>For<wbr>Regex<wbr>All</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-static"><a href="utils_stringutils.stringutils.html#normalize" class="tsd-kind-icon">normalize</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-static"><a href="utils_stringutils.stringutils.html#replacewhitespace" class="tsd-kind-icon">replace<wbr>White<wbr>Space</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-static"><a href="utils_stringutils.stringutils.html#validatestring" class="tsd-kind-icon">validate<wbr>String</a></li>
@@ -118,17 +119,48 @@
 			</section>
 			<section class="tsd-panel-group tsd-member-group ">
 				<h2>Methods</h2>
-				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-private tsd-is-static">
-					<a name="_isstringforregex" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagStatic">Static</span> <span class="tsd-flag ts-flagPrivate">Private</span> _is<wbr>String<wbr>For<wbr>Regex</h3>
-					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-private tsd-is-static">
-						<li class="tsd-signature tsd-kind-icon">_is<wbr>String<wbr>For<wbr>Regex<span class="tsd-signature-symbol">(</span>string<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span></li>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-static">
+					<a name="isempty" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagStatic">Static</span> is<wbr>Empty</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-static">
+						<li class="tsd-signature tsd-kind-icon">is<wbr>Empty<span class="tsd-signature-symbol">(</span>string<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/DP6/penguin-adinfo/blob/8b17891/src/ts/utils/StringUtils.ts#L40">utils/StringUtils.ts:40</a></li>
+									<li>Defined in <a href="https://github.com/DP6/adinfo/blob/6fe77f9/src/ts/utils/StringUtils.ts#L85">utils/StringUtils.ts:85</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Verifica se a string está vazia</p>
+								</div>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>string: <span class="tsd-signature-type">string</span></h5>
+									<div class="tsd-comment tsd-typography">
+										<p>a ser checada</p>
+									</div>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">boolean</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-static">
+					<a name="isstringforregex" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagStatic">Static</span> is<wbr>String<wbr>For<wbr>Regex</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-static">
+						<li class="tsd-signature tsd-kind-icon">is<wbr>String<wbr>For<wbr>Regex<span class="tsd-signature-symbol">(</span>string<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/DP6/adinfo/blob/6fe77f9/src/ts/utils/StringUtils.ts#L40">utils/StringUtils.ts:40</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -153,33 +185,29 @@
 					</ul>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-static">
-					<a name="isempty" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagStatic">Static</span> is<wbr>Empty</h3>
+					<a name="isstringforregexall" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagStatic">Static</span> is<wbr>String<wbr>For<wbr>Regex<wbr>All</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-static">
-						<li class="tsd-signature tsd-kind-icon">is<wbr>Empty<span class="tsd-signature-symbol">(</span>string<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span></li>
+						<li class="tsd-signature tsd-kind-icon">is<wbr>String<wbr>For<wbr>Regex<wbr>All<span class="tsd-signature-symbol">(</span>string<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/DP6/penguin-adinfo/blob/8b17891/src/ts/utils/StringUtils.ts#L76">utils/StringUtils.ts:76</a></li>
+									<li>Defined in <a href="https://github.com/DP6/adinfo/blob/6fe77f9/src/ts/utils/StringUtils.ts#L49">utils/StringUtils.ts:49</a></li>
 								</ul>
 							</aside>
-							<div class="tsd-comment tsd-typography">
-								<div class="lead">
-									<p>Verifica se a string está vazia</p>
-								</div>
-							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
 									<h5>string: <span class="tsd-signature-type">string</span></h5>
 									<div class="tsd-comment tsd-typography">
-										<p>a ser checada</p>
+										<p>Verifica se a string corresponde exatamente à expressão regular /.*/</p>
 									</div>
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">boolean</span></h4>
+							<p>TRUE: String é a expressão regular /.*/, FALSE: String não é a expressão regular /.*/</p>
 						</li>
 					</ul>
 				</section>
@@ -193,7 +221,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/DP6/penguin-adinfo/blob/8b17891/src/ts/utils/StringUtils.ts#L9">utils/StringUtils.ts:9</a></li>
+									<li>Defined in <a href="https://github.com/DP6/adinfo/blob/6fe77f9/src/ts/utils/StringUtils.ts#L9">utils/StringUtils.ts:9</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -226,7 +254,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/DP6/penguin-adinfo/blob/8b17891/src/ts/utils/StringUtils.ts#L28">utils/StringUtils.ts:28</a></li>
+									<li>Defined in <a href="https://github.com/DP6/adinfo/blob/6fe77f9/src/ts/utils/StringUtils.ts#L28">utils/StringUtils.ts:28</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -265,7 +293,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/DP6/penguin-adinfo/blob/8b17891/src/ts/utils/StringUtils.ts#L55">utils/StringUtils.ts:55</a></li>
+									<li>Defined in <a href="https://github.com/DP6/adinfo/blob/6fe77f9/src/ts/utils/StringUtils.ts#L64">utils/StringUtils.ts:64</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -325,11 +353,14 @@
 							<li class=" tsd-kind-constructor tsd-parent-kind-class">
 								<a href="utils_stringutils.stringutils.html#constructor" class="tsd-kind-icon">constructor</a>
 							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-private tsd-is-static">
-								<a href="utils_stringutils.stringutils.html#_isstringforregex" class="tsd-kind-icon">_is<wbr>String<wbr>For<wbr>Regex</a>
-							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-static">
 								<a href="utils_stringutils.stringutils.html#isempty" class="tsd-kind-icon">is<wbr>Empty</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-static">
+								<a href="utils_stringutils.stringutils.html#isstringforregex" class="tsd-kind-icon">is<wbr>String<wbr>For<wbr>Regex</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-static">
+								<a href="utils_stringutils.stringutils.html#isstringforregexall" class="tsd-kind-icon">is<wbr>String<wbr>For<wbr>Regex<wbr>All</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-static">
 								<a href="utils_stringutils.stringutils.html#normalize" class="tsd-kind-icon">normalize</a>
@@ -359,6 +390,9 @@
 			</ul>
 			<ul class="tsd-legend">
 				<li class="tsd-kind-function"><span class="tsd-kind-icon">Function</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-interface"><span class="tsd-kind-icon">Interface</span></li>
 			</ul>
 			<ul class="tsd-legend">
 				<li class="tsd-kind-method tsd-parent-kind-class tsd-is-static"><span class="tsd-kind-icon">Static method</span></li>
