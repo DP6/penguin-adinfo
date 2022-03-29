@@ -1,4 +1,35 @@
 'use strict';
+var __awaiter =
+	(this && this.__awaiter) ||
+	function (thisArg, _arguments, P, generator) {
+		function adopt(value) {
+			return value instanceof P
+				? value
+				: new P(function (resolve) {
+						resolve(value);
+				  });
+		}
+		return new (P || (P = Promise))(function (resolve, reject) {
+			function fulfilled(value) {
+				try {
+					step(generator.next(value));
+				} catch (e) {
+					reject(e);
+				}
+			}
+			function rejected(value) {
+				try {
+					step(generator['throw'](value));
+				} catch (e) {
+					reject(e);
+				}
+			}
+			function step(result) {
+				result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected);
+			}
+			step((generator = generator.apply(thisArg, _arguments || [])).next());
+		});
+	};
 Object.defineProperty(exports, '__esModule', { value: true });
 exports.UserDAO = void 0;
 const FirestoreConnectionSingleton_1 = require('../cloud/FirestoreConnectionSingleton');
@@ -77,23 +108,13 @@ class UserDAO {
 			.where('email', '==', this._email)
 			.get()
 			.then((querySnapshot) => {
-				console.log('entrei no then do get user');
 				if (querySnapshot.size > 0) {
 					let user;
 					querySnapshot.forEach((documentSnapshot) => {
 						const searchId = documentSnapshot.ref.path.match(new RegExp('[^/]+$'));
 						if (searchId) {
-							console.log(
-								'to no if pq encontrei o user',
-								'senha que peguei aqui do request ',
-								this._password,
-								'senha do pessword do firestore',
-								documentSnapshot.get('password')
-							);
 							const validatePassword = bcrypt.compareSync(this._password, documentSnapshot.get('password'));
-							console.log('validate password oq retorna: ', validatePassword);
 							if (!validatePassword) throw new Error('Email ou senha incorreto(s)!');
-							console.log('passei do throw error pq deu true');
 							user = new User_1.User(
 								searchId[0],
 								documentSnapshot.get('permission'),
@@ -102,14 +123,12 @@ class UserDAO {
 								documentSnapshot.get('active'),
 								documentSnapshot.get('adOpsTeam')
 							);
-							console.log('objeto do user', user);
 						} else {
 							throw new Error('Nenhum usuário encontrado!');
 						}
 					});
 					return user;
 				} else {
-					console.log('erro no getUser()');
 					throw new Error('Email ou senha incorreto(s)!');
 				}
 			})
@@ -121,9 +140,12 @@ class UserDAO {
 		return this._objectStore
 			.addDocumentIn(this._authCollection, user.toJsonSave(), '')
 			.get()
-			.then((data) => {
-				return data.id;
-			})
+			.then((data) =>
+				__awaiter(this, void 0, void 0, function* () {
+					yield this._authCollection.doc(data.id).update({ userid: data.id });
+					return data.id;
+				})
+			)
 			.catch((err) => console.log(err));
 	}
 	changePassword(user) {

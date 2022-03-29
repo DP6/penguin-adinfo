@@ -100,23 +100,13 @@ export class UserDAO {
 			.where('email', '==', this._email)
 			.get()
 			.then((querySnapshot: QuerySnapshot) => {
-				console.log('entrei no then do get user');
 				if (querySnapshot.size > 0) {
 					let user: User;
 					querySnapshot.forEach((documentSnapshot) => {
 						const searchId = documentSnapshot.ref.path.match(new RegExp('[^/]+$'));
 						if (searchId) {
-							console.log(
-								'to no if pq encontrei o user',
-								'senha que peguei aqui do request ',
-								this._password,
-								'senha do pessword do firestore',
-								documentSnapshot.get('password')
-							);
 							const validatePassword = bcrypt.compareSync(this._password, documentSnapshot.get('password'));
-							console.log('validate password oq retorna: ', validatePassword);
 							if (!validatePassword) throw new Error('Email ou senha incorreto(s)!');
-							console.log('passei do throw error pq deu true');
 							user = new User(
 								searchId[0],
 								documentSnapshot.get('permission'),
@@ -125,14 +115,12 @@ export class UserDAO {
 								documentSnapshot.get('active'),
 								documentSnapshot.get('adOpsTeam')
 							);
-							console.log('objeto do user', user);
 						} else {
 							throw new Error('Nenhum usuário encontrado!');
 						}
 					});
 					return user;
 				} else {
-					console.log('erro no getUser()');
 					throw new Error('Email ou senha incorreto(s)!');
 				}
 			})
@@ -150,7 +138,8 @@ export class UserDAO {
 		return this._objectStore
 			.addDocumentIn(this._authCollection, user.toJsonSave(), '')
 			.get()
-			.then((data) => {
+			.then(async (data) => {
+				await this._authCollection.doc(data.id).update({ userid: data.id });
 				return data.id;
 			})
 			.catch((err) => console.log(err));
