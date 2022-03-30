@@ -26,11 +26,112 @@
 	"columns": {
 		"mapValue": {
 			"fields": {
-				"Exemplo": {
+				"Criativo": {
 					"arrayValue": {
-						"values": {
-							"stringValue": "/.*/"
-						}
+						"values": [
+							{
+								"stringValue": "/.*/"
+							}
+						]
+					}
+				},
+				"Dispositivo": {
+					"arrayValue": {
+						"values": [
+							{
+								"stringValue": "desktop"
+							},
+							{
+								"stringValue": "mobile"
+							},
+							{
+								"stringValue": "todos"
+							}
+						]
+					}
+				},
+				"Estrategia": {
+					"arrayValue": {
+						"values": [
+							{
+								"stringValue": "Awareness"
+							},
+							{
+								"stringValue": "Consideração"
+							},
+							{
+								"stringValue": "Performance"
+							}
+						]
+					}
+				},
+				"Formato": {
+					"arrayValue": {
+						"values": [
+							{
+								"stringValue": "/.*/"
+							}
+						]
+					}
+				},
+				"Palavra-Chave": {
+					"arrayValue": {
+						"values": [
+							{
+								"stringValue": "/.*/"
+							}
+						]
+					}
+				},
+				"Produto": {
+					"arrayValue": {
+						"values": [
+							{
+								"stringValue": "/.*/"
+							}
+						]
+					}
+				},
+				"Segmento": {
+					"arrayValue": {
+						"values": [
+							{
+								"stringValue": "todos"
+							},
+							{
+								"stringValue": "homens"
+							},
+							{
+								"stringValue": "mulheres"
+							}
+						]
+					}
+				},
+				"Tipo de Compra": {
+					"arrayValue": {
+						"values": [
+							{
+								"stringValue": "cpa"
+							},
+							{
+								"stringValue": "cpc"
+							}
+						]
+					}
+				},
+				"Veículo": {
+					"arrayValue": {
+						"values": [
+							{
+								"stringValue": "google"
+							},
+							{
+								"stringValue": "facebook"
+							},
+							{
+								"stringValue": "linkedin"
+							}
+						]
 					}
 				}
 			}
@@ -39,14 +140,187 @@
 	"ga": {
 		"mapValue": {
 			"fields": {
+				"utm_campaign": {
+					"arrayValue": {
+						"values": [
+							{
+								"stringValue": "Produto"
+							},
+							{
+								"stringValue": "Estratégia"
+							}
+						]
+					}
+				},
+				"utm_content": {
+					"arrayValue": {
+						"values": [
+							{
+								"stringValue": "Segmento"
+							},
+							{
+								"stringValue": "Dispositivo"
+							},
+							{
+								"stringValue": "Formato"
+							},
+							{
+								"stringValue": "Criativo"
+							}
+						]
+					}
+				},
+				"utm_medium": {
+					"arrayValue": {
+						"values": [
+							{
+								"stringValue": "Tipo de Compra"
+							}
+						]
+					}
+				},
 				"utm_source": {
 					"arrayValue": {
-						"values": {
-							"stringValue": "Exemplo"
-						}
+						"values": [
+							{
+								"stringValue": "Veículo"
+							}
+						]
+					}
+				},
+				"utm_term": {
+					"arrayValue": {
+						"values": [
+							{
+								"stringValue": "Palavra-Chave"
+							}
+						]
 					}
 				}
 			}
+		}
+	},
+	"googleads": {
+		"mapValue": {
+			"fields": {
+				"ad": {
+					"arrayValue": {
+						"values": [
+							{
+								"stringValue": "Formato"
+							},
+							{
+								"stringValue": "Criativo"
+							}
+						]
+					}
+				},
+				"ad-group": {
+					"arrayValue": {
+						"values": [
+							{
+								"stringValue": "Segmento"
+							},
+							{
+								"stringValue": "Dispositivo"
+							}
+						]
+					}
+				},
+				"campaign": {
+					"arrayValue": {
+						"values": [
+							{
+								"stringValue": "Produto"
+							},
+							{
+								"stringValue": "Estratégia"
+							}
+						]
+					}
+				}
+			}
+		}
+	},
+	"facebookads": {
+		"mapValue": {
+			"fields": {
+				"ad": {
+					"arrayValue": {
+						"values": [
+							{
+								"stringValue": "Formato"
+							},
+							{
+								"stringValue": "Criativo"
+							}
+						]
+					}
+				},
+				"ad-set": {
+					"arrayValue": {
+						"values": [
+							{
+								"stringValue": "Segmento"
+							},
+							{
+								"stringValue": "Dispositivo"
+							}
+						]
+					}
+				},
+				"campaign": {
+					"arrayValue": {
+						"values": [
+							{
+								"stringValue": "Produto"
+							},
+							{
+								"stringValue": "Estratégia"
+							}
+						]
+					}
+				}
+			}
+		}
+	},
+	"dependenciesConfig": {
+		"arrayValue": {
+			"values": [
+				{
+					"mapValue": {
+						"fields": {
+							"columnDestiny": {
+								"stringValue": "Formato"
+							},
+							"columnReference": {
+								"stringValue": "Veículo"
+							},
+							"hasMatch": {
+								"booleanValue": true
+							},
+							"matches": {
+								"arrayValue": {
+									"values": [
+										{
+											"stringValue": "darkpost"
+										}
+									]
+								}
+							},
+							"valuesReference": {
+								"arrayValue": {
+									"values": [
+										{
+											"stringValue": "facebook"
+										}
+									]
+								}
+							}
+						}
+					}
+				}
+			]
 		}
 	}
 }

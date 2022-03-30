@@ -26,11 +26,112 @@
 	"columns": {
 		"mapValue": {
 			"fields": {
-				"Exemplo": {
+				"Criativo": {
 					"arrayValue": {
-						"values": {
-							"stringValue": "/.*/"
-						}
+						"values": [
+							{
+								"stringValue": "/.*/"
+							}
+						]
+					}
+				},
+				"Dispositivo": {
+					"arrayValue": {
+						"values": [
+							{
+								"stringValue": "desktop"
+							},
+							{
+								"stringValue": "mobile"
+							},
+							{
+								"stringValue": "todos"
+							}
+						]
+					}
+				},
+				"Estrategia": {
+					"arrayValue": {
+						"values": [
+							{
+								"stringValue": "Awareness"
+							},
+							{
+								"stringValue": "Consideração"
+							},
+							{
+								"stringValue": "Performance"
+							}
+						]
+					}
+				},
+				"Formato": {
+					"arrayValue": {
+						"values": [
+							{
+								"stringValue": "/.*/"
+							}
+						]
+					}
+				},
+				"Palavra-Chave": {
+					"arrayValue": {
+						"values": [
+							{
+								"stringValue": "/.*/"
+							}
+						]
+					}
+				},
+				"Produto": {
+					"arrayValue": {
+						"values": [
+							{
+								"stringValue": "/.*/"
+							}
+						]
+					}
+				},
+				"Segmento": {
+					"arrayValue": {
+						"values": [
+							{
+								"stringValue": "todos"
+							},
+							{
+								"stringValue": "homens"
+							},
+							{
+								"stringValue": "mulheres"
+							}
+						]
+					}
+				},
+				"Tipo de Compra": {
+					"arrayValue": {
+						"values": [
+							{
+								"stringValue": "cpa"
+							},
+							{
+								"stringValue": "cpc"
+							}
+						]
+					}
+				},
+				"Veículo": {
+					"arrayValue": {
+						"values": [
+							{
+								"stringValue": "google"
+							},
+							{
+								"stringValue": "facebook"
+							},
+							{
+								"stringValue": "linkedin"
+							}
+						]
 					}
 				}
 			}
@@ -41,12 +142,158 @@
 			"fields": {
 				"cid": {
 					"arrayValue": {
-						"values": {
-							"stringValue": "Exemplo"
-						}
+						"values": [
+							{
+								"stringValue": "Veículo"
+							},
+							{
+								"stringValue": "Tipo de Compra"
+							},
+							{
+								"stringValue": "Produto"
+							},
+							{
+								"stringValue": "Estratégia"
+							},
+							{
+								"stringValue": "Segmento"
+							},
+							{
+								"stringValue": "Dispositivo"
+							},
+							{
+								"stringValue": "Formato"
+							},
+							{
+								"stringValue": "Criativo"
+							}
+						]
 					}
 				}
 			}
+		}
+	},
+	"googleads": {
+		"mapValue": {
+			"fields": {
+				"ad": {
+					"arrayValue": {
+						"values": [
+							{
+								"stringValue": "Formato"
+							},
+							{
+								"stringValue": "Criativo"
+							}
+						]
+					}
+				},
+				"ad-group": {
+					"arrayValue": {
+						"values": [
+							{
+								"stringValue": "Segmento"
+							},
+							{
+								"stringValue": "Dispositivo"
+							}
+						]
+					}
+				},
+				"campaign": {
+					"arrayValue": {
+						"values": [
+							{
+								"stringValue": "Produto"
+							},
+							{
+								"stringValue": "Estratégia"
+							}
+						]
+					}
+				}
+			}
+		}
+	},
+	"facebookads": {
+		"mapValue": {
+			"fields": {
+				"ad": {
+					"arrayValue": {
+						"values": [
+							{
+								"stringValue": "Formato"
+							},
+							{
+								"stringValue": "Criativo"
+							}
+						]
+					}
+				},
+				"ad-set": {
+					"arrayValue": {
+						"values": [
+							{
+								"stringValue": "Segmento"
+							},
+							{
+								"stringValue": "Dispositivo"
+							}
+						]
+					}
+				},
+				"campaign": {
+					"arrayValue": {
+						"values": [
+							{
+								"stringValue": "Produto"
+							},
+							{
+								"stringValue": "Estratégia"
+							}
+						]
+					}
+				}
+			}
+		}
+	},
+	"dependenciesConfig": {
+		"arrayValue": {
+			"values": [
+				{
+					"mapValue": {
+						"fields": {
+							"columnDestiny": {
+								"stringValue": "Formato"
+							},
+							"columnReference": {
+								"stringValue": "Veículo"
+							},
+							"hasMatch": {
+								"booleanValue": true
+							},
+							"matches": {
+								"arrayValue": {
+									"values": [
+										{
+											"stringValue": "darkpost"
+										}
+									]
+								}
+							},
+							"valuesReference": {
+								"arrayValue": {
+									"values": [
+										{
+											"stringValue": "facebook"
+										}
+									]
+								}
+							}
+						}
+					}
+				}
+			]
 		}
 	}
 }
