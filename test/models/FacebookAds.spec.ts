@@ -19,13 +19,17 @@ describe('FacebookAds', () => {
 					Dispositivo: ['desktop e mobile'],
 					Produto: ['/.*/'],
 				},
-				ga: {
-					utm_source: ['Tipo de Compra', 'Dispositivo'],
-					utm_campaign: ['Produto'],
+				analyticsTools: {
+					ga: {
+						utm_source: ['Tipo de Compra', 'Dispositivo'],
+						utm_campaign: ['Produto'],
+					}
 				},
-				facebookads: {
-					'ad.name': ['Tipo de Compra', 'Dispositivo'],
-					'campaign.name': ['Produto'],
+				mediaTaxonomy: {
+					facebookads: {
+						'ad.name': ['Tipo de Compra', 'Dispositivo'],
+						'campaign.name': ['Produto'],
+					}
 				},
 			});
 			const facebookAds = new FacebookAds(csvLine, config);
@@ -52,13 +56,17 @@ describe('FacebookAds', () => {
 					Dispositivo: ['desktop e mobile'],
 					Produto: ['fif'],
 				},
-				ga: {
-					utm_source: ['Tipo de Compra', 'Dispositivo'],
-					utm_campaign: ['Produto'],
+				analyticsTools: {
+					ga: {
+						utm_source: ['Tipo de Compra', 'Dispositivo'],
+						utm_campaign: ['Produto'],
+					}
 				},
-				facebookads: {
-					'ad.name': ['Tipo de Compra', 'Dispositivo'],
-					'campaign.name': ['Produto'],
+				mediaTaxonomy: {
+					facebookads: {
+						'ad.name': ['Tipo de Compra', 'Dispositivo'],
+						'campaign.name': ['Produto'],
+					}
 				},
 			});
 			const facebookAds = new FacebookAds(csvLine, config);
@@ -84,12 +92,17 @@ describe('FacebookAds', () => {
 					'Tipo de Compra': ['cpa', 'cpc'],
 					Dispositivo: ['desktop e mobile'],
 				},
-				ga: {
-					utm_source: ['Tipo de Compra', 'Dispositivo'],
+				analyticsTools: {
+					ga: {
+						utm_source: ['Tipo de Compra', 'Dispositivo'],
+						utm_campaign: ['Produto'],
+					}
 				},
-				facebookads: {
-					'ad.name': ['Tipo de Compra', 'Dispositivo'],
-					'campaign.name': ['Produto'],
+				mediaTaxonomy: {
+					facebookads: {
+						'ad.name': ['Tipo de Compra', 'Dispositivo'],
+						'campaign.name': ['Produto'],
+					}
 				},
 			});
 			const facebookAds = new FacebookAds(csvLine, config);
@@ -119,13 +132,17 @@ describe('FacebookAds', () => {
 					Dispositivo: ['desktop e mobile'],
 					Produto: ['/.*/'],
 				},
-				ga: {
-					utm_source: ['Tipo de Compra', 'Dispositivo'],
-					utm_campaign: ['Produto'],
+				analyticsTools: {
+					ga: {
+						utm_source: ['Tipo de Compra', 'Dispositivo'],
+						utm_campaign: ['Produto'],
+					}
 				},
-				facebookads: {
-					'ad.name': ['Tipo de Compra', 'Dispositivo'],
-					'campaign.name': ['Produto'],
+				mediaTaxonomy: {
+					facebookads: {
+						'ad.name': ['Tipo de Compra', 'Dispositivo'],
+						'campaign.name': ['Produto'],
+					}
 				},
 				dependenciesConfig: [
 					{
@@ -168,13 +185,17 @@ describe('FacebookAds', () => {
 					Dispositivo: ['desktop e mobile'],
 					Produto: ['fif'],
 				},
-				ga: {
-					utm_source: ['Tipo de Compra', 'Dispositivo'],
-					utm_campaign: ['Produto'],
+				analyticsTools: {
+					ga: {
+						utm_source: ['Tipo de Compra', 'Dispositivo'],
+						utm_campaign: ['Produto'],
+					}
 				},
-				facebookads: {
-					'ad.name': ['Tipo de Compra', 'Dispositivo'],
-					'campaign.name': ['Produto'],
+				mediaTaxonomy: {
+					facebookads: {
+						'ad.name': ['Tipo de Compra', 'Dispositivo'],
+						'campaign.name': ['Produto'],
+					}
 				},
 				dependenciesConfig: [
 					{
@@ -217,13 +238,17 @@ describe('FacebookAds', () => {
 					Dispositivo: ['desktop e mobile'],
 					Produto: ['fif'],
 				},
-				ga: {
-					utm_source: ['Tipo de Compra', 'Dispositivo'],
-					utm_campaign: ['Produto'],
+				analyticsTools: {
+					ga: {
+						utm_source: ['Tipo de Compra', 'Dispositivo'],
+						utm_campaign: ['Produto'],
+					}
 				},
-				facebookads: {
-					'ad.name': ['Tipo de Compra', 'Dispositivo'],
-					'campaign.name': ['Produto'],
+				mediaTaxonomy: {
+					facebookads: {
+						'ad.name': ['Tipo de Compra', 'Dispositivo'],
+						'campaign.name': ['Produto'],
+					}
 				},
 				dependenciesConfig: [
 					{
@@ -266,13 +291,17 @@ describe('FacebookAds', () => {
 					Dispositivo: ['desktop e mobile'],
 					Produto: ['fif'],
 				},
-				ga: {
-					utm_source: ['Tipo de Compra', 'Dispositivo'],
-					utm_campaign: ['Produto'],
+				analyticsTools: {
+					ga: {
+						utm_source: ['Tipo de Compra', 'Dispositivo'],
+						utm_campaign: ['Produto'],
+					}
 				},
-				facebookads: {
-					'ad.name': ['Tipo de Compra', 'Dispositivo'],
-					'campaign.name': ['Produto'],
+				mediaTaxonomy: {
+					facebookads: {
+						'ad.name': ['Tipo de Compra', 'Dispositivo'],
+						'campaign.name': ['Produto'],
+					}
 				},
 				dependenciesConfig: [
 					{

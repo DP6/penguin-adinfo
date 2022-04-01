@@ -13,9 +13,11 @@ describe('ValidateRulesForColumnHandler', () => {
 					Dispositivo: [],
 					Veículo: [],
 				},
-				adobe: {
-					cid: ['Tipo de Compra', 'Dispositivo', 'Veículo'],
-				}
+				analyticsTools: {
+					adobe: {
+						cid: ['Tipo de Compra', 'Dispositivo', 'Veículo'],
+					},
+				},
 			});
 			const rules = new ValidateRulesForColumnHandler(config, 'dispositivo');
             let errorName: string;
@@ -35,9 +37,11 @@ describe('ValidateRulesForColumnHandler', () => {
 					Dispositivo: [],
 					Veículo: [],
 				},
-				adobe: {
-					cid: ['Tipo de Compra', 'Dispositivo', 'Veículo'],
-				}
+				analyticsTools: {
+					adobe: {
+						cid: ['Tipo de Compra', 'Dispositivo', 'Veículo'],
+					},
+				},
 			});
 			const rules = new ValidateRulesForColumnHandler(config, 'Tipo de Compra');
             let result: boolean;

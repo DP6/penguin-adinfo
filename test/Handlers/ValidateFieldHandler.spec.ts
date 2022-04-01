@@ -19,9 +19,11 @@ describe('ValidateFieldHandler', () => {
 					Dispositivo: [],
 					Veículo: [],
 				},
-				adobe: {
-					cid: ['Tipo de Compra', 'Dispositivo', 'Veículo'],
-				}
+				analyticsTools: {
+					adobe: {
+						cid: ['Tipo de Compra', 'Dispositivo', 'Veículo'],
+					},
+				},
 			});
 			const field = new ValidateFieldHandler(config, 'Tipo de Compra');
             let errorName: string;
@@ -47,9 +49,11 @@ describe('ValidateFieldHandler', () => {
 					Dispositivo: [],
 					Veículo: [],
 				},
-				adobe: {
-					cid: ['Tipo de Compra', 'Dispositivo', 'Veículo'],
-				}
+				analyticsTools: {
+					adobe: {
+						cid: ['Tipo de Compra', 'Dispositivo', 'Veículo'],
+					},
+				},
 			});
 			const field = new ValidateFieldHandler(config, 'Tipo de Compra');
             let result: boolean;

@@ -19,13 +19,17 @@ describe('GoogleAds', () => {
 					Dispositivo: ['desktop e mobile'],
 					Produto: ['/.*/'],
 				},
-				ga: {
-					utm_source: ['Tipo de Compra', 'Dispositivo'],
-					utm_campaign: ['Produto'],
+				analyticsTools: {
+					ga: {
+						utm_source: ['Tipo de Compra', 'Dispositivo'],
+						utm_campaign: ['Produto'],
+					}
 				},
-				googleads: {
-					campanha: ['Tipo de Compra', 'Dispositivo'],
-					ad: ['Produto'],
+				mediaTaxonomy: {
+					googleads: {
+						campanha: ['Tipo de Compra', 'Dispositivo'],
+						ad: ['Produto'],
+					}
 				},
 			});
 			const googleAds = new GoogleAds(csvLine, config);
@@ -52,13 +56,17 @@ describe('GoogleAds', () => {
 					Dispositivo: ['desktop e mobile'],
 					Produto: ['fif'],
 				},
-				ga: {
-					utm_source: ['Tipo de Compra', 'Dispositivo'],
-					utm_campaign: ['Produto'],
+				analyticsTools: {
+					ga: {
+						utm_source: ['Tipo de Compra', 'Dispositivo'],
+						utm_campaign: ['Produto'],
+					}
 				},
-				googleads: {
-					campanha: ['Tipo de Compra', 'Dispositivo'],
-					ad: ['Produto'],
+				mediaTaxonomy: {
+					googleads: {
+						campanha: ['Tipo de Compra', 'Dispositivo'],
+						ad: ['Produto'],
+					}
 				},
 			});
 			const googleAds = new GoogleAds(csvLine, config);
@@ -87,13 +95,17 @@ describe('GoogleAds', () => {
 					Dispositivo: ['desktop e mobile'],
 					Produto: ['/.*/'],
 				},
-				ga: {
-					utm_source: ['Tipo de Compra', 'Dispositivo'],
-					utm_campaign: ['Produto'],
+				analyticsTools: {
+					ga: {
+						utm_source: ['Tipo de Compra', 'Dispositivo'],
+						utm_campaign: ['Produto'],
+					}
 				},
-				googleads: {
-					campanha: ['Tipo de Compra', 'Dispositivo'],
-					ad: ['Produto'],
+				mediaTaxonomy: {
+					googleads: {
+						campanha: ['Tipo de Compra', 'Dispositivo'],
+						ad: ['Produto'],
+					}
 				},
 				dependenciesConfig: [
 					{
@@ -136,13 +148,17 @@ describe('GoogleAds', () => {
 					Dispositivo: ['desktop'],
 					Produto: ['/.*/'],
 				},
-				ga: {
-					utm_source: ['Tipo de Compra', 'Dispositivo'],
-					utm_campaign: ['Produto'],
+				analyticsTools: {
+					ga: {
+						utm_source: ['Tipo de Compra', 'Dispositivo'],
+						utm_campaign: ['Produto'],
+					}
 				},
-				googleads: {
-					campanha: ['Tipo de Compra', 'Dispositivo'],
-					ad: ['Produto'],
+				mediaTaxonomy: {
+					googleads: {
+						campanha: ['Tipo de Compra', 'Dispositivo'],
+						ad: ['Produto'],
+					}
 				},
 				dependenciesConfig: [
 					{
@@ -185,13 +201,17 @@ describe('GoogleAds', () => {
 					Dispositivo: ['desktop'],
 					Produto: ['/.*/'],
 				},
-				ga: {
-					utm_source: ['Tipo de Compra', 'Dispositivo'],
-					utm_campaign: ['Produto'],
+				analyticsTools: {
+					ga: {
+						utm_source: ['Tipo de Compra', 'Dispositivo'],
+						utm_campaign: ['Produto'],
+					}
 				},
-				googleads: {
-					campanha: ['Tipo de Compra', 'Dispositivo'],
-					ad: ['Produto'],
+				mediaTaxonomy: {
+					googleads: {
+						campanha: ['Tipo de Compra', 'Dispositivo'],
+						ad: ['Produto'],
+					}
 				},
 				dependenciesConfig: [
 					{
@@ -234,13 +254,17 @@ describe('GoogleAds', () => {
 					Dispositivo: ['desktop e mobile'],
 					Produto: ['fif'],
 				},
-				ga: {
-					utm_source: ['Tipo de Compra', 'Dispositivo'],
-					utm_campaign: ['Produto'],
+				analyticsTools: {
+					ga: {
+						utm_source: ['Tipo de Compra', 'Dispositivo'],
+						utm_campaign: ['Produto'],
+					}
 				},
-				googleads: {
-					campanha: ['Tipo de Compra', 'Dispositivo'],
-					ad: ['Produto'],
+				mediaTaxonomy: {
+					googleads: {
+						campanha: ['Tipo de Compra', 'Dispositivo'],
+						ad: ['Produto'],
+					}
 				},
 				dependenciesConfig: [
 					{

@@ -12,8 +12,10 @@ describe('TemplateExcel', () => {
 			'Produto': ['/.*/'],
 			'Tipo de Midia': ['display', 'video', 'stories'],
 		},
-		adobe: {
-			cid: ['Tipo de Compra', 'Produto', 'Tipo de Midia'],
+		analyticsTools: {
+			adobe: {
+				cid: ['Tipo de Compra', 'Produto', 'Tipo de Midia'],
+			}
 		},
 	});
 	const templateExcel = new TemplateExcel(config);

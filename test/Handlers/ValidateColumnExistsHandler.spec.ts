@@ -13,9 +13,11 @@ describe('ValidateColumnExistsHandler', () => {
 					Bandeira: [],
 					Veículo: [],
 				},
-				adobe: {
-					cid: ['Tipo de Compra', 'Bandeira', 'Veículo'],
-				},
+				analyticsTools: {
+					adobe: {
+						cid: ['Tipo de Compra', 'Bandeira', 'Veículo'],
+					},
+				}
 			});
 			const columnsExists = new ValidateColumnExistsHandler(config, 'Produto');
             let errorName: string;
@@ -35,8 +37,10 @@ describe('ValidateColumnExistsHandler', () => {
 					Bandeira: [],
 					Veículo: [],
 				},
-				adobe: {
-					cid: ['Tipo de Compra', 'Bandeira', 'Veículo'],
+				analyticsTools: {
+					adobe: {
+						cid: ['Tipo de Compra', 'Bandeira', 'Veículo'],
+					},
 				},
 			});
 			const columnsExists = new ValidateColumnExistsHandler(config, 'Bandeira');

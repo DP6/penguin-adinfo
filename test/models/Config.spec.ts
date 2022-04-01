@@ -24,19 +24,21 @@ describe('Config', () => {
 					},
 				],
 				spaceSeparator: '+',
-				adobe: {
-					cid: [
-						'Veículo',
-						'Inserção',
-						'campanha',
-						'categoriaDoProduto',
-						'produto',
-						'segmentação',
-						'criativo',
-						'formato',
-						'campaignId',
-						'adId',
-					],
+				analyticsTools: {
+					adobe: {
+						cid: [
+							'Veículo',
+							'Inserção',
+							'campanha',
+							'categoriaDoProduto',
+							'produto',
+							'segmentação',
+							'criativo',
+							'formato',
+							'campaignId',
+							'adId',
+						],
+					}
 				},
 				columns: {
 					Veículo: [
@@ -70,11 +72,9 @@ describe('Config', () => {
 					campaignId: ['/\\d/'],
 					adId: ['/\\d/'],
 				},
-			};
+			}
 			const config = new Config(jsonConfig);
-			expect(JSON.stringify(config.toJson())).to.equal(
-				JSON.stringify(jsonConfig)
-			);
+			expect(config.toJson()).to.deep.equal(jsonConfig);
 		});
 		it('Validação do método toString', () => {
 			const jsonConfig = {
@@ -97,19 +97,21 @@ describe('Config', () => {
 					},
 				],
 				spaceSeparator: '+',
-				adobe: {
-					cid: [
-						'Veículo',
-						'Inserção',
-						'campanha',
-						'categoriaDoProduto',
-						'produto',
-						'segmentação',
-						'criativo',
-						'formato',
-						'campaignId',
-						'adId',
-					],
+				analyticsTools: {
+					adobe: {
+						cid: [
+							'Veículo',
+							'Inserção',
+							'campanha',
+							'categoriaDoProduto',
+							'produto',
+							'segmentação',
+							'criativo',
+							'formato',
+							'campaignId',
+							'adId',
+						],
+					}
 				},
 				columns: {
 					Veículo: [
@@ -145,7 +147,7 @@ describe('Config', () => {
 				},
 			};
 			const config = new Config(jsonConfig);
-			expect(config.toString()).to.equal(JSON.stringify(jsonConfig));
+			expect(config.toString()).to.deep.equal(JSON.stringify(jsonConfig));
 		});
 		it('Validação do método toCsvTemplate', () => {
 			const jsonConfig = {
@@ -186,13 +188,15 @@ describe('Config', () => {
 					campanha: ['fifinha-na-copa', 'fifinha na copa da emoção'],
 					categoriaDoProduto: ['videogame', 'game'],
 				},
-				adobe: {
-					cid: [
-						'Veículo',
-						'Inserção',
-						'campanha',
-						'categoriaDoProduto',
-					],
+				analyticsTools: {
+					adobe: {
+						cid: [
+							'Veículo',
+							'Inserção',
+							'campanha',
+							'categoriaDoProduto',
+						],
+					}
 				},
 			};
 			const config = new Config(jsonConfig);
@@ -221,13 +225,15 @@ describe('Config', () => {
 						matches: ['cpc', 'cpa'],
 					},
 				],
-				adobe: {
-					cid: [
-						'Veículo',
-						'Inserção',
-						'campanha',
-						'categoriaDoProduto',
-					],
+				analyticsTools: {
+					adobe: {
+						cid: [
+							'Veículo',
+							'Inserção',
+							'campanha',
+							'categoriaDoProduto',
+						],
+					}
 				},
 				columns: {
 					Veículo: [
@@ -276,9 +282,11 @@ describe('Config', () => {
 					},
 				],
 				spaceSeparator: '+',
-				ga: {
-					utm_source: ['Veículo', 'Inserção'],
-					utm_campaign: ['campanha', 'categoriaDoProduto'],
+				analyticsTools: {
+					ga: {
+						utm_source: ['Veículo', 'Inserção'],
+						utm_campaign: ['campanha', 'categoriaDoProduto'],
+					}
 				},
 				columns: {
 					Veículo: [
@@ -300,9 +308,7 @@ describe('Config', () => {
 				},
 			};
 			const config = new Config(jsonConfig);
-			expect(JSON.stringify(config.toJson())).to.equal(
-				JSON.stringify(jsonConfig)
-			);
+			expect(config.toJson()).to.deep.equal(jsonConfig)
 		});
 		it('Validação do método toString', () => {
 			const jsonConfig = {
@@ -325,9 +331,11 @@ describe('Config', () => {
 					},
 				],
 				spaceSeparator: '+',
-				ga: {
-					utm_source: ['Veículo', 'Inserção'],
-					utm_campaign: ['campanha', 'categoriaDoProduto'],
+				analyticsTools: {
+					ga: {
+						utm_source: ['Veículo', 'Inserção'],
+						utm_campaign: ['campanha', 'categoriaDoProduto'],
+					}
 				},
 				columns: {
 					Veículo: [
@@ -374,9 +382,11 @@ describe('Config', () => {
 					campanha: ['fifinha-na-copa', 'fifinha na copa da emoção'],
 					categoriaDoProduto: ['videogame', 'game'],
 				},
-				ga: {
-					utm_source: ['Veículo', 'Inserção'],
-					utm_campaign: ['campanha', 'categoriaDoProduto'],
+				analyticsTools: {
+					ga: {
+						utm_source: ['Veículo', 'Inserção'],
+						utm_campaign: ['campanha', 'categoriaDoProduto'],
+					}
 				},
 				dependenciesConfig: [
 					{
@@ -423,9 +433,11 @@ describe('Config', () => {
 					campanha: ['fifinha-na-copa', 'fifinha na copa da emoção'],
 					categoriaDoProduto: ['videogame', 'game'],
 				},
-				ga: {
-					utm_source: ['Veículo', 'Inserção'],
-					utm_campaign: ['campanha', 'categoriaDoProduto'],
+				analyticsTools: {
+					ga: {
+						utm_source: ['Veículo', 'Inserção'],
+						utm_campaign: ['campanha', 'categoriaDoProduto'],
+					}
 				},
 				dependenciesConfig: [
 					{

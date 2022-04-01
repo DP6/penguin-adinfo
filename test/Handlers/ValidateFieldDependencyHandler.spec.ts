@@ -19,8 +19,10 @@ describe('ValidateFieldDependencyHandler', () => {
 					Dispositivo: [],
 					Veículo: [],
 				},
-				adobe: {
-					cid: ['Tipo de Compra', 'Dispositivo', 'Veículo'],
+				analyticsTools: {
+					adobe: {
+						cid: ['Tipo de Compra', 'Dispositivo', 'Veículo'],
+					},
 				},
 				dependenciesConfig: [
 					{
@@ -56,8 +58,10 @@ describe('ValidateFieldDependencyHandler', () => {
 					Dispositivo: [],
 					Veículo: [],
 				},
-				adobe: {
-					cid: ['Tipo de Compra', 'Dispositivo', 'Veículo'],
+				analyticsTools: {
+					adobe: {
+						cid: ['Tipo de Compra', 'Dispositivo', 'Veículo'],
+					},
 				},
 				dependenciesConfig: [
 					{

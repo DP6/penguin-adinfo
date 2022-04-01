@@ -18,8 +18,10 @@ describe('Adobe', () => {
 					Bandeira: [],
 					Veículo: [],
 				},
-				adobe: {
-					cid: ['Tipo de Compra', 'Bandeira', 'Veículo'],
+				analyticsTools: {
+					adobe: {
+						cid: ['Tipo de Compra', 'Bandeira', 'Veículo'],
+					}
 				},
 			});
 			const adobe = new Adobe(csvLine, config);
@@ -47,8 +49,10 @@ describe('Adobe', () => {
 					Bandeira: ['/meuProdut[ai]/'],
 					Veículo: ['/.*/'],
 				},
-				adobe: {
-					cid: ['Tipo de Compra', 'Bandeira', 'Veículo'],
+				analyticsTools: {
+					adobe: {
+						cid: ['Tipo de Compra', 'Bandeira', 'Veículo'],
+					}
 				},
 			});
 			const adobe = new Adobe(csvLine, config);
@@ -76,8 +80,10 @@ describe('Adobe', () => {
 					Bandeira: ['/meu\\ ?Produto/'],
 					Veículo: [],
 				},
-				adobe: {
-					cid: ['Tipo de Compra', 'Bandeira', 'Veículo'],
+				analyticsTools: {
+					adobe: {
+						cid: ['Tipo de Compra', 'Bandeira', 'Veículo'],
+					}
 				},
 			});
 			const adobe = new Adobe(csvLine, config);
@@ -105,8 +111,10 @@ describe('Adobe', () => {
 					Bandeira: ['/meu\\ ?Produto/'],
 					Veículo: [],
 				},
-				adobe: {
-					cid: ['Tipo de Compra', 'Bandeira', 'Veículo'],
+				analyticsTools: {
+					adobe: {
+						cid: ['Tipo de Compra', 'Bandeira', 'Veículo'],
+					}
 				},
 			});
 			const adobe = new Adobe(csvLine, config);
@@ -134,8 +142,10 @@ describe('Adobe', () => {
 					Bandeira: ['/meu\\ ?Produto/'],
 					Veículo: [],
 				},
-				adobe: {
-					cid: ['Tipo de Compra', 'Bandeira', 'Veículo'],
+				analyticsTools: {
+					adobe: {
+						cid: ['Tipo de Compra', 'Bandeira', 'Veículo'],
+					}
 				},
 			});
 			const adobe = new Adobe(csvLine, config);
@@ -163,8 +173,10 @@ describe('Adobe', () => {
 					Bandeira: ['/meu\\ ?Produto/'],
 					Veículo: [],
 				},
-				adobe: {
-					cid: ['Tipo de Compra', 'Bandeira', 'Veículo'],
+				analyticsTools: {
+					adobe: {
+						cid: ['Tipo de Compra', 'Bandeira', 'Veículo'],
+					}
 				},
 			});
 			const adobe = new Adobe(csvLine, config);
@@ -193,8 +205,10 @@ describe('Adobe', () => {
 					Dispositivo: [],
 					Veículo: [],
 				},
-				adobe: {
-					cid: ['Tipo de Compra', 'Dispositivo', 'Veículo'],
+				analyticsTools: {
+					adobe: {
+						cid: ['Tipo de Compra', 'Dispositivo', 'Veículo'],
+					}
 				},
 				dependenciesConfig: [
 					{
@@ -232,8 +246,10 @@ describe('Adobe', () => {
 					Dispositivo: [],
 					Veículo: [],
 				},
-				adobe: {
-					cid: ['Tipo de Compra', 'Dispositivo', 'Veículo'],
+				analyticsTools: {
+					adobe: {
+						cid: ['Tipo de Compra', 'Dispositivo', 'Veículo'],
+					}
 				},
 				dependenciesConfig: [
 					{
@@ -278,8 +294,10 @@ describe('Adobe', () => {
 					Dispositivo: [],
 					Veículo: [],
 				},
-				adobe: {
-					cid: ['Tipo de Compra', 'Dispositivo', 'Veículo'],
+				analyticsTools: {
+					adobe: {
+						cid: ['Tipo de Compra', 'Dispositivo', 'Veículo'],
+					}
 				},
 				dependenciesConfig: [
 					{
@@ -323,8 +341,10 @@ describe('Adobe', () => {
 					Bandeira: ['/meu\\ ?Produto/'],
 					Veículo: [],
 				},
-				adobe: {
-					cid: ['Tipo de Compra', 'Bandeira', 'Veículo'],
+				analyticsTools: {
+					adobe: {
+						cid: ['Tipo de Compra', 'Bandeira', 'Veículo'],
+					}
 				},
 				dependenciesConfig: [
 					{

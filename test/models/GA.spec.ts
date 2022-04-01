@@ -18,10 +18,12 @@ describe('GA', () => {
 					Período: [],
 					Bandeira: [],
 				},
-				ga: {
-					utm_medium: ['Tipo de Compra'],
-					utm_campaign: ['Período', 'Bandeira'],
-				},
+				analyticsTools: {
+					ga: {
+						utm_medium: ['Tipo de Compra'],
+						utm_campaign: ['Período', 'Bandeira'],
+					},
+				}
 			});
 			const ga = new GA(csvLine, config);
 			const gaFields = {
@@ -50,10 +52,12 @@ describe('GA', () => {
 					Período: ['/[a-zA-Z]* [0-9]{4}/'],
 					Bandeira: ['bandeira2'],
 				},
-				ga: {
-					utm_medium: ['Tipo de Compra'],
-					utm_campaign: ['Bandeira', 'Período'],
-				},
+				analyticsTools: {
+					ga: {
+						utm_medium: ['Tipo de Compra'],
+						utm_campaign: ['Período', 'Bandeira'],
+					},
+				}
 			});
 			const ga = new GA(csvLine, config);
 			const gaFields = {
@@ -81,10 +85,12 @@ describe('GA', () => {
 					Período: ['/[a-zA-Z]* [0-9]{4}/'],
 					Bandeira: [],
 				},
-				ga: {
-					utm_medium: ['Tipo de Compra'],
-					utm_campaign: ['Período', 'Bandeira'],
-				},
+				analyticsTools: {
+					ga: {
+						utm_medium: ['Tipo de Compra'],
+						utm_campaign: ['Período', 'Bandeira'],
+					},
+				}
 			});
 			const ga = new GA(csvLine, config);
 			const gaFields = {
@@ -113,10 +119,12 @@ describe('GA', () => {
 					Período: ['/[a-zA-Z]* [0-9]{4}/'],
 					Bandeira: [],
 				},
-				ga: {
-					utm_medium: ['Tipo de Compra'],
-					utm_campaign: ['Período', 'Bandeira'],
-				},
+				analyticsTools: {
+					ga: {
+						utm_medium: ['Tipo de Compra'],
+						utm_campaign: ['Período', 'Bandeira'],
+					},
+				}
 			});
 			const ga = new GA(csvLine, config);
 			const gaFields = {
@@ -145,10 +153,12 @@ describe('GA', () => {
 					Período: ['/[a-zA-Z]* [0-9]{4}/'],
 					Bandeira: [],
 				},
-				ga: {
-					utm_medium: ['Tipo de Compra'],
-					utm_campaign: ['Período', 'Bandeira'],
-				},
+				analyticsTools: {
+					ga: {
+						utm_medium: ['Tipo de Compra'],
+						utm_campaign: ['Período', 'Bandeira'],
+					},
+				}
 			});
 			const ga = new GA(csvLine, config);
 			const gaFields = {
@@ -177,10 +187,12 @@ describe('GA', () => {
 					Período: ['/[a-zA-Z]* [0-9]{4}/'],
 					Bandeira: [],
 				},
-				ga: {
-					utm_medium: ['Tipo de Compra'],
-					utm_campaign: ['Período', 'Bandeira'],
-				},
+				analyticsTools: {
+					ga: {
+						utm_medium: ['Tipo de Compra'],
+						utm_campaign: ['Período', 'Bandeira'],
+					},
+				}
 			});
 			const ga = new GA(csvLine, config);
 			const gaFields = {
@@ -211,9 +223,11 @@ describe('GA', () => {
 					Período: ['/[a-zA-Z]* [0-9]{4}/'],
 					Bandeira: [],
 				},
-				ga: {
-					utm_medium: ['Tipo de Compra'],
-					utm_campaign: ['Período', 'Bandeira'],
+				analyticsTools: {
+					ga: {
+						utm_medium: ['Tipo de Compra'],
+						utm_campaign: ['Período', 'Bandeira'],
+					},
 				},
 				dependenciesConfig: [
 					{
@@ -252,9 +266,11 @@ describe('GA', () => {
 					Período: ['/[a-zA-Z]* [0-9]{4}/'],
 					Bandeira: [],
 				},
-				ga: {
-					utm_medium: ['Tipo de Compra'],
-					utm_campaign: ['Período', 'Bandeira'],
+				analyticsTools: {
+					ga: {
+						utm_medium: ['Tipo de Compra'],
+						utm_campaign: ['Período', 'Bandeira'],
+					},
 				},
 				dependenciesConfig: [
 					{
@@ -300,9 +316,11 @@ describe('GA', () => {
 					Período: ['/[a-zA-Z]* [0-9]{4}/'],
 					Bandeira: [],
 				},
-				ga: {
-					utm_medium: ['Tipo de Compra'],
-					utm_campaign: ['Período', 'Bandeira'],
+				analyticsTools: {
+					ga: {
+						utm_medium: ['Tipo de Compra'],
+						utm_campaign: ['Período', 'Bandeira'],
+					},
 				},
 				dependenciesConfig: [
 					{
@@ -347,9 +365,11 @@ describe('GA', () => {
 					Período: ['/[a-zA-Z]* [0-9]{4}/'],
 					Bandeira: [],
 				},
-				ga: {
-					utm_medium: ['Tipo de Compra'],
-					utm_campaign: ['Período', 'Bandeira'],
+				analyticsTools: {
+					ga: {
+						utm_medium: ['Tipo de Compra'],
+						utm_campaign: ['Período', 'Bandeira'],
+					},
 				},
 				dependenciesConfig: [
 					{
