@@ -29,9 +29,10 @@ const adOpsTeam = (app: { [key: string]: any }): void => {
 		const apiResponse = new ApiResponse();
 		const advertiser = req.advertiser;
 		const adOpsTeam = req.adOpsTeam;
+		const userid = req.userid;
 
 		new AdOpsTeamDAO()
-			.getAllUsersFromAdOpsTeam(advertiser, adOpsTeam)
+			.getAllUsersFromAdOpsTeam(advertiser, adOpsTeam, userid)
 			.then((users: User[]) => {
 				apiResponse.responseText = JSON.stringify(users.map((user: User) => user.toJson()));
 			})

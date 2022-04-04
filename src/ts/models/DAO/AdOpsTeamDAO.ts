@@ -49,37 +49,39 @@ export class AdOpsTeamDAO {
 	 * Retorna todos os usuários de uma determinada adOpsTeam
 	 * @param advertiser Empresa(advertiser) dos usuários a serem buscados
 	 * @param adOpsTeam adOpsTeam da qual usuários serão buscados
+	 * @param requestUserid id do usuário que está fazendo o request
 	 * @returns Lista de usuários
 	 */
-	public getAllUsersFromAdOpsTeam(advertiser: string, adOpsTeam: string): Promise<User[] | void> {
+
+	public getAllUsersFromAdOpsTeam(
+		advertiser: string,
+		adOpsTeam: string,
+		requestUserid: string
+	): Promise<User[] | void> {
 		return this._objectStore
-			.getCollection(this._pathToCollection)
-			.where('advertiser', '==', advertiser)
-			.get()
-			.then((querySnapshot: QuerySnapshot) => {
-				if (querySnapshot.size > 0) {
-					const users: User[] = [];
-					querySnapshot.forEach((documentSnapshot) => {
-						const searchId = documentSnapshot.ref.path.match(new RegExp('[^/]+$'));
-						if (searchId) {
-							const userPermission = documentSnapshot.get('permission');
-							const userAdOpsTeam = documentSnapshot.get('adOpsTeam');
-							if ((userPermission === 'adOpsTeamManager' || userPermission === 'user') && userAdOpsTeam === adOpsTeam) {
-								const user = new User(
-									searchId[0],
-									userPermission,
-									documentSnapshot.get('advertiser'),
-									documentSnapshot.get('email'),
-									documentSnapshot.get('active'),
-									documentSnapshot.get('adOpsTeam')
-								);
-								users.push(user);
-							}
-						} else {
-							throw new Error('Nenhum usuário encontrado!');
+			.getAllDocumentsFrom(this._authCollection)
+			.then((allUsersDocuments) => {
+				const filteredUsers = allUsersDocuments.filter((user) => user.advertiser === advertiser);
+				const users: User[] = [];
+				if (filteredUsers.length > 0) {
+					filteredUsers.forEach((user) => {
+						const userAdOpsTeam = user.adOpsTeam;
+						const userid = user.userid;
+						if (userAdOpsTeam === adOpsTeam && userid !== requestUserid) {
+							const userToPush = new User(
+								user.userid,
+								user.permission,
+								user.advertiser,
+								user.email,
+								user.active,
+								user.adOpsTeam
+							);
+							users.push(userToPush);
 						}
 					});
 					return users;
+				} else {
+					throw new Error('Nenhum usuário encontrado!');
 				}
 			})
 			.catch((err) => {
