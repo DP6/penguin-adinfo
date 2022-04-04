@@ -115,6 +115,7 @@ app.all('*', async (req: { [key: string]: any }, res: { [key: string]: any }, ne
 			req.email = user.email;
 			req.permission = user.permission;
 			req.token = req.headers.token;
+			req.userid = user.id;
 
 			next();
 		} catch (e) {
