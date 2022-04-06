@@ -61,23 +61,21 @@ export class AdOpsTeamDAO {
 		return this._objectStore
 			.getAllDocumentsFrom(this._authCollection)
 			.then((allUsersDocuments) => {
-				const filteredUsers = allUsersDocuments.filter((user) => user.advertiser === advertiser);
+				const filteredUsers = allUsersDocuments.filter(
+					(user) => user.advertiser === advertiser && user.adOpsTeam === adOpsTeam && user.userid !== requestUserid
+				);
 				const users: User[] = [];
 				if (filteredUsers.length > 0) {
 					filteredUsers.forEach((user) => {
-						const userAdOpsTeam = user.adOpsTeam;
-						const userid = user.userid;
-						if (userAdOpsTeam === adOpsTeam && userid !== requestUserid) {
-							const userToPush = new User(
-								user.userid,
-								user.permission,
-								user.advertiser,
-								user.email,
-								user.active,
-								user.adOpsTeam
-							);
-							users.push(userToPush);
-						}
+						const userToPush = new User(
+							user.userid,
+							user.permission,
+							user.advertiser,
+							user.email,
+							user.active,
+							user.adOpsTeam
+						);
+						users.push(userToPush);
 					});
 					return users;
 				} else {
