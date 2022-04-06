@@ -41,7 +41,6 @@ const login = (app) => {
 		new UserDAO_1.UserDAO(req.body.email, req.body.password)
 			.getUser()
 			.then((user) => {
-				console.log(user);
 				if (user.active) {
 					const token = new JWT_1.JWT(user).createToken();
 					res.set('Authorization', token);
