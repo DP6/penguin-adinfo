@@ -91,10 +91,10 @@ const build = (app) => {
 					advertiserConfig = config;
 					if (advertiserConfig) {
 						const advertiserConfigJson = advertiserConfig.toJson();
-						if (!advertiserConfigJson[analyticsTool]) {
+						if (!advertiserConfigJson['analyticsTools'][analyticsTool]) {
 							apiResponse.statusCode = 400;
-							throw new Error(`Ferramenta de Analytics ${media} não foi configurada!`);
-						} else if (media && !advertiserConfigJson[media]) {
+							throw new Error(`Ferramenta de Analytics ${analyticsTool} não foi configurada!`);
+						} else if (advertiserConfigJson['analyticsTools'] && !advertiserConfigJson['mediaTaxonomy'][media]) {
 							apiResponse.statusCode = 400;
 							throw new Error(`Mídia ${media} não foi configurada!`);
 						}
