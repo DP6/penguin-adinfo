@@ -83,9 +83,10 @@ export class CampaignDAO {
 	 */
 	public addCampaign(campaign: Campaign): Promise<boolean> {
 		return this._objectStore
-			.addDocumentIn(this._authCollection, campaign.toJson(), campaign.name + ' - ' + campaign.adOpsTeam)
+			.addDocumentIn(this._authCollection, campaign.toJson(), '')
 			.get()
-			.then(() => {
+			.then(async (data) => {
+				await this._authCollection.doc(data.id).update({ campaignId: data.id });
 				return true;
 			})
 			.catch((err) => {
