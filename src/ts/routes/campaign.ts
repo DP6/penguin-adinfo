@@ -13,7 +13,6 @@ const campaign = (app: { [key: string]: any }): void => {
 		const campaignName = req.body.campaign;
 		const advertiser = req.advertiser;
 		const adOpsTeam = req.body.adOpsTeam ? req.body.adOpsTeam : 'AdvertiserCampaigns';
-		const campaignId = Date.now().toString(16);
 
 		if (req.permission === 'user') {
 			throw new Error('Usuário sem permissão para realizar esta ação!');
@@ -22,7 +21,7 @@ const campaign = (app: { [key: string]: any }): void => {
 			throw new Error('Necessário nome da Campanha!');
 		}
 
-		const campaignObject = new Campaign(campaignName, advertiser, adOpsTeam, campaignId, true, created);
+		const campaignObject = new Campaign(campaignName, advertiser, adOpsTeam, '', true, created);
 
 		new CampaignDAO()
 			.addCampaign(campaignObject)

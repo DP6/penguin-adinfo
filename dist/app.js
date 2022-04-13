@@ -135,6 +135,7 @@ app.all('*', (req, res, next) =>
 				req.email = user.email;
 				req.permission = user.permission;
 				req.token = req.headers.token;
+				req.userid = user.id;
 				next();
 			} catch (e) {
 				apiResponse.statusCode = 401;

@@ -77,14 +77,13 @@ const campaign = (app) => {
 			const campaignName = req.body.campaign;
 			const advertiser = req.advertiser;
 			const adOpsTeam = req.body.adOpsTeam ? req.body.adOpsTeam : 'AdvertiserCampaigns';
-			const campaignId = Date.now().toString(16);
 			if (req.permission === 'user') {
 				throw new Error('Usuário sem permissão para realizar esta ação!');
 			}
 			if (!campaignName) {
 				throw new Error('Necessário nome da Campanha!');
 			}
-			const campaignObject = new Campaign_1.Campaign(campaignName, advertiser, adOpsTeam, campaignId, true, created);
+			const campaignObject = new Campaign_1.Campaign(campaignName, advertiser, adOpsTeam, '', true, created);
 			new CampaignDAO_1.CampaignDAO()
 				.addCampaign(campaignObject)
 				.then((result) => {

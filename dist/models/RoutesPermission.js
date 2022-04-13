@@ -38,7 +38,7 @@ class RoutesPermission {
 			} else {
 				return false;
 			}
-		} else if (user.permission === 'AdOpsManager') {
+		} else if (user.permission === 'adOpsManager') {
 			if (this._method === 'POST') {
 				return adOpsManagerPostRoutes.filter((route) => new RegExp(route).test(this._route)).length > 0;
 			} else if (this._method === 'GET') {

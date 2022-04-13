@@ -20,36 +20,6 @@ export class UserDAO {
 	}
 
 	/**
-	 * Busca o ID do usuario na base de dados
-	 * @returns ID do usuario
-	 */
-	public getUserId(): Promise<string | void> {
-		return this._objectStore
-			.getCollection(this._pathToCollection)
-			.where('email', '==', this._email)
-			.get()
-			.then((querySnapshot: QuerySnapshot) => {
-				if (querySnapshot.size > 0) {
-					querySnapshot.forEach((documentSnapshot) => {
-						const searchId = documentSnapshot.ref.path.match(new RegExp('[^/]+$'));
-						const validatePassword = bcrypt.compareSync(this._password, documentSnapshot.get('password'));
-						if (!validatePassword) throw new Error('Email ou senha incorreto(s)!');
-						if (searchId) {
-							return searchId[0];
-						} else {
-							throw new Error('Falha ao recuperar o ID do usuário');
-						}
-					});
-				} else {
-					throw new Error('ID não encontrado!');
-				}
-			})
-			.catch((err) => {
-				throw err;
-			});
-	}
-
-	/**
 	 * Retorna todos os usuários não owners da empresa
 	 * @param advertiser Empresa(advertiser) dos usuários a serem buscados
 	 * @param userRequestPermission permissão do usuario que solicitou a alteração
@@ -57,33 +27,30 @@ export class UserDAO {
 	 */
 	public getAllUsersFrom(advertiser: string, userRequestPermission: string): Promise<User[] | void> {
 		return this._objectStore
-			.getCollection(this._pathToCollection)
-			.where('advertiser', '==', advertiser)
-			.get()
-			.then((querySnapshot: QuerySnapshot) => {
-				if (querySnapshot.size > 0) {
-					const users: User[] = [];
-					querySnapshot.forEach((documentSnapshot) => {
-						const searchId = documentSnapshot.ref.path.match(new RegExp('[^/]+$'));
-						if (searchId) {
-							const userPermission = documentSnapshot.get('permission');
-							if (userPermission !== 'owner' || (userRequestPermission === 'admin' && userPermission === 'user')) {
-								const user = new User(
-									searchId[0],
-									userPermission,
-									documentSnapshot.get('advertiser'),
-									documentSnapshot.get('email'),
-									documentSnapshot.get('active'),
-									documentSnapshot.get('adOpsTeam')
-								);
-								users.push(user);
-							}
-						} else {
-							throw new Error('Nenhum usuário encontrado!');
+			.getAllDocumentsFrom(this._authCollection)
+			.then((allUsersDocuments) => {
+				const users: User[] = [];
+				const allAdvertiserUsers = allUsersDocuments.filter((user) => user.advertiser === advertiser);
+				if (allAdvertiserUsers.length > 0) {
+					allAdvertiserUsers.forEach((advertiserUser) => {
+						if (
+							advertiserUser.permission !== 'owner' ||
+							(userRequestPermission === 'admin' && advertiserUser.permission === 'user')
+						) {
+							const user = new User(
+								advertiserUser.userid,
+								advertiserUser.advertiser,
+								advertiserUser.email,
+								advertiserUser.active,
+								advertiserUser.adOpsTeam
+							);
+							users.push(user);
 						}
 					});
-					return users;
+				} else {
+					throw new Error('Nenhum usuário encontrado!');
 				}
+				return users;
 			})
 			.catch((err) => {
 				throw err;
@@ -96,29 +63,22 @@ export class UserDAO {
 	 */
 	public getUser(): Promise<User | void> {
 		return this._objectStore
-			.getCollection(this._pathToCollection)
-			.where('email', '==', this._email)
-			.get()
-			.then((querySnapshot: QuerySnapshot) => {
-				if (querySnapshot.size > 0) {
-					let user: User;
-					querySnapshot.forEach((documentSnapshot) => {
-						const searchId = documentSnapshot.ref.path.match(new RegExp('[^/]+$'));
-						if (searchId) {
-							const validatePassword = bcrypt.compareSync(this._password, documentSnapshot.get('password'));
-							if (!validatePassword) throw new Error('Email ou senha incorreto(s)!');
-							user = new User(
-								searchId[0],
-								documentSnapshot.get('permission'),
-								documentSnapshot.get('advertiser'),
-								documentSnapshot.get('email'),
-								documentSnapshot.get('active'),
-								documentSnapshot.get('adOpsTeam')
-							);
-						} else {
-							throw new Error('Nenhum usuário encontrado!');
-						}
-					});
+			.getAllDocumentsFrom(this._authCollection)
+			.then((allUsersDocuments) => {
+				if (allUsersDocuments.length > 0) {
+					const [userToValidate] = allUsersDocuments.filter((user) => user.email === this._email);
+					const validatePassword = bcrypt.compareSync(this._password, userToValidate.password);
+					if (!validatePassword) throw new Error('Email ou senha incorreto(s)!');
+
+					const user: User = new User(
+						userToValidate.userid,
+						userToValidate.permission,
+						userToValidate.advertiser,
+						userToValidate.email,
+						userToValidate.active,
+						userToValidate.adOpsTeam
+					);
+
 					return user;
 				} else {
 					throw new Error('Email ou senha incorreto(s)!');
@@ -172,26 +132,27 @@ export class UserDAO {
 	 * @param userRequestPermission permissão do usuario que solicitou a alteração
 	 * @returns retorna True em caso de sucesso
 	 */
+
 	public deactivateUser(userId: string, userRequestPermission: string): Promise<boolean | void> {
 		return this._objectStore
-			.getCollection(this._pathToCollection)
-			.doc(userId)
-			.get()
-			.then((doc: QueryDocumentSnapshot) => {
-				const user = doc.data();
+			.getAllDocumentsFrom(this._authCollection)
+			.then((allUsersDocuments) => {
+				const [userToDeactivate] = allUsersDocuments.filter((user) => user.userid === userId);
 				if (
-					user.permission === 'user' ||
-					((user.permission === 'admin' || user.permission === 'adOpsManager') && userRequestPermission === 'owner')
+					userToDeactivate.permission === 'user' ||
+					((userToDeactivate.permission === 'admin' || userToDeactivate.permission === 'adOpsManager') &&
+						userRequestPermission === 'owner')
 				) {
-					user.active = false;
-				} else if (user.permission === 'adOpsManager' && userRequestPermission === 'admin') {
-					user.active = false;
+					userToDeactivate.active = false;
+				} else if (userToDeactivate.permission === 'adOpsManager' && userRequestPermission === 'admin') {
+					userToDeactivate.active = false;
 				} else {
 					throw new Error('Permissões insuficientes para inavitar o usuário!');
 				}
-				return doc.ref.set(user);
+				return userToDeactivate;
 			})
-			.then(() => {
+			.then((userToDeactivate) => {
+				this._objectStore.getCollection(this._pathToCollection).doc(userToDeactivate.userid).update(userToDeactivate);
 				return true;
 			})
 			.catch((err) => {
@@ -205,26 +166,51 @@ export class UserDAO {
 	 * @param userRequestPermission permissão do usuario que solicitou a alteração
 	 * @returns retorna True em caso de sucesso
 	 */
+
 	public reactivateUser(userId: string, userRequestPermission: string): Promise<boolean | void> {
 		return this._objectStore
-			.getCollection(this._pathToCollection)
-			.doc(userId)
-			.get()
-			.then((doc: QueryDocumentSnapshot) => {
-				const user = doc.data();
+			.getAllDocumentsFrom(this._authCollection)
+			.then((allUsersDocuments) => {
+				const [userToReactivate] = allUsersDocuments.filter((user) => user.userid === userId);
 				if (
-					user.permission === 'user' ||
-					((user.permission === 'admin' || user.permission === 'adOpsManager') && userRequestPermission === 'owner')
+					userToReactivate.permission === 'user' ||
+					((userToReactivate.permission === 'admin' || userToReactivate.permission === 'adOpsManager') &&
+						userRequestPermission === 'owner')
 				) {
-					user.active = true;
-				} else if (user.permission === 'adOpsManager' && userRequestPermission === 'admin') {
-					user.active = true;
+					userToReactivate.active = true;
+				} else if (userToReactivate.permission === 'adOpsManager' && userRequestPermission === 'admin') {
+					userToReactivate.active = true;
 				} else {
 					throw new Error('Permissões insuficientes para inavitar o usuário!');
 				}
-				return doc.ref.set(user);
+				return userToReactivate;
 			})
-			.then(() => {
+			.then((userToReactivate) => {
+				this._objectStore.getCollection(this._pathToCollection).doc(userToReactivate.userid).update(userToReactivate);
+				return true;
+			})
+			.catch((err) => {
+				throw err;
+			});
+	}
+
+	public reactivateCampaign(campaignId: string, userRequestPermission: string): Promise<boolean | void> {
+		return this._objectStore
+			.getAllDocumentsFrom(this._authCollection)
+			.then((campaigns) => {
+				if (userRequestPermission !== 'user') {
+					const [filteredCampaign] = campaigns.filter((campaign) => campaign.campaignId === campaignId);
+					filteredCampaign.active = true;
+					return filteredCampaign;
+				} else {
+					throw new Error('Permissões insuficientes para inavitar a campanha!');
+				}
+			})
+			.then((filteredCampaign) => {
+				this._objectStore
+					.getCollection(this._pathToCollection)
+					.doc(`${filteredCampaign.name} - ${filteredCampaign.adOpsTeam}`)
+					.update(filteredCampaign);
 				return true;
 			})
 			.catch((err) => {
