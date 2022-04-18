@@ -4,42 +4,42 @@ exports.ProgrammaticUser = void 0;
 const RoutesPermission_1 = require('./RoutesPermission');
 const User_1 = require('./User');
 class ProgrammaticUser extends User_1.User {
-	constructor(id, permission, company, email, activate = true, agency = '') {
-		super(id, permission, company, email, activate, agency, null);
+	constructor(id, permission, advertiser, email, active = true, adOpsTeam = '') {
+		super(id, permission, advertiser, email, active, adOpsTeam, null);
 	}
 	hasPermissionFor(route, method) {
 		return new RoutesPermission_1.RoutesPermission(route, method).validatePermission(this);
 	}
 	toJson() {
 		return {
-			agency: this.agency,
-			company: this.company,
+			adOpsTeam: this.adOpsTeam,
+			advertiser: this.advertiser,
 			permission: this.permission,
 			email: this.email,
 			id: this.id,
-			activate: this.activate,
+			active: this.active,
 		};
 	}
 	toJsonSave() {
 		return {
-			agency: this.agency,
-			company: this.company,
+			adOpsTeam: this.adOpsTeam,
+			advertiser: this.advertiser,
 			permission: this.permission,
 			email: this.email,
-			activate: this.activate,
+			active: this.active,
 		};
 	}
 	get permission() {
 		return super.permission;
 	}
-	get agency() {
-		return super.agency;
+	get adOpsTeam() {
+		return super.adOpsTeam;
 	}
-	get company() {
-		return super.company;
+	get advertiser() {
+		return super.advertiser;
 	}
-	get activate() {
-		return super.activate;
+	get active() {
+		return super.active;
 	}
 	get id() {
 		return super.id;

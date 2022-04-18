@@ -6,7 +6,7 @@ const user = (app: { [key: string]: any }): void => {
 	app.get('/users', (req: { [key: string]: any }, res: { [key: string]: any }) => {
 		const apiResponse = new ApiResponse();
 		new UserDAO()
-			.getAllUsersFrom(req.company, req.permission)
+			.getAllUsersFrom(req.advertiser, req.permission)
 			.then((users: User[]) => {
 				apiResponse.responseText = JSON.stringify(users.map((user: User) => user.toJson()));
 			})
@@ -24,8 +24,8 @@ const user = (app: { [key: string]: any }): void => {
 		const apiResponse = new ApiResponse();
 		const user = {
 			permission: req.permission,
-			agency: req.agency,
-			company: req.company,
+			adOpsTeam: req.adOpsTeam,
+			advertiser: req.advertiser,
 			email: req.email,
 		};
 		apiResponse.statusCode = 200;

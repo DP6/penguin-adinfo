@@ -5,7 +5,7 @@ const Config_1 = require('../models/Config');
 const ApiResponse_1 = require('../models/ApiResponse');
 const config = (app) => {
 	app.post('/config', (req, res) => {
-		const company = req.company;
+		const advertiser = req.advertiser;
 		const configString = req.body.config;
 		const apiResponse = new ApiResponse_1.ApiResponse();
 		if (!configString) {
@@ -15,7 +15,7 @@ const config = (app) => {
 			return;
 		}
 		const config = new Config_1.Config(JSON.parse(configString));
-		const configDAO = new ConfigDAO_1.ConfigDAO(company);
+		const configDAO = new ConfigDAO_1.ConfigDAO(advertiser);
 		configDAO
 			.addConfig(config)
 			.then(() => {
@@ -32,8 +32,8 @@ const config = (app) => {
 			});
 	});
 	app.get('/config', (req, res) => {
-		const company = req.company;
-		const configDAO = new ConfigDAO_1.ConfigDAO(company);
+		const advertiser = req.advertiser;
+		const configDAO = new ConfigDAO_1.ConfigDAO(advertiser);
 		const apiResponse = new ApiResponse_1.ApiResponse();
 		configDAO
 			.getLastConfig()

@@ -2,8 +2,8 @@ import { RoutesPermission } from './RoutesPermission';
 import { User } from './User';
 
 export class ProgrammaticUser extends User {
-	constructor(id: string, permission: string, company: string, email: string, activate = true, agency = '') {
-		super(id, permission, company, email, activate, agency, null);
+	constructor(id: string, permission: string, advertiser: string, email: string, active = true, adOpsTeam = '') {
+		super(id, permission, advertiser, email, active, adOpsTeam, null);
 	}
 
 	/**
@@ -21,12 +21,12 @@ export class ProgrammaticUser extends User {
 	 */
 	public toJson(): { [key: string]: string | boolean } {
 		return {
-			agency: this.agency,
-			company: this.company,
+			adOpsTeam: this.adOpsTeam,
+			advertiser: this.advertiser,
 			permission: this.permission,
 			email: this.email,
 			id: this.id,
-			activate: this.activate,
+			active: this.active,
 		};
 	}
 
@@ -36,11 +36,11 @@ export class ProgrammaticUser extends User {
 	 */
 	public toJsonSave(): { [key: string]: string | boolean } {
 		return {
-			agency: this.agency,
-			company: this.company,
+			adOpsTeam: this.adOpsTeam,
+			advertiser: this.advertiser,
 			permission: this.permission,
 			email: this.email,
-			activate: this.activate,
+			active: this.active,
 		};
 	}
 
@@ -48,16 +48,16 @@ export class ProgrammaticUser extends User {
 		return super.permission;
 	}
 
-	get agency(): string {
-		return super.agency;
+	get adOpsTeam(): string {
+		return super.adOpsTeam;
 	}
 
-	get company(): string {
-		return super.company;
+	get advertiser(): string {
+		return super.advertiser;
 	}
 
-	get activate(): boolean {
-		return super.activate;
+	get active(): boolean {
+		return super.active;
 	}
 
 	get id(): string {

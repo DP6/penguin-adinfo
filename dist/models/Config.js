@@ -6,6 +6,7 @@ const DependencyConfig_1 = require('./DependencyConfig');
 const StringUtils_1 = require('../utils/StringUtils');
 class Config {
 	constructor(jsonConfig) {
+		this._analyticsToolName = [];
 		const jsonConfigTemp = Object.assign({}, jsonConfig);
 		this._separator = jsonConfigTemp.separator;
 		delete jsonConfigTemp.separator;
@@ -21,19 +22,24 @@ class Config {
 		delete jsonConfigTemp.insertTime;
 		this._version = jsonConfigTemp.version;
 		delete jsonConfigTemp.version;
-		if (jsonConfigTemp.ga) {
-			this._analyticsTool = { ga: jsonConfigTemp.ga };
-			this._analyticsToolName = 'ga';
-			delete jsonConfigTemp.ga;
-		} else if (jsonConfigTemp.adobe) {
-			this._analyticsTool = { adobe: jsonConfigTemp.adobe };
-			this._analyticsToolName = 'adobe';
-			delete jsonConfigTemp.adobe;
+		if (jsonConfigTemp.analyticsTools.ga) {
+			this._analyticsTools = { ga: jsonConfigTemp.analyticsTools.ga };
+			this._analyticsToolName.push('ga');
 		}
+		if (jsonConfigTemp.analyticsTools.adobe) {
+			this._analyticsTools
+				? (this.analyticsTool.adobe = jsonConfigTemp.analyticsTools.adobe)
+				: (this._analyticsTools = { adobe: jsonConfigTemp.analyticsTools.adobe });
+			this._analyticsToolName.push('adobe');
+		}
+		delete jsonConfigTemp.analyticsTools;
 		this._validationRules = jsonConfigTemp.columns;
 		this._columnNames = Object.keys(jsonConfigTemp.columns);
 		delete jsonConfigTemp.columns;
-		this._medias = jsonConfigTemp;
+		if (jsonConfigTemp.mediaTaxonomy) {
+			this._mediaTaxonomy = jsonConfigTemp.mediaTaxonomy;
+			delete jsonConfigTemp.mediaTaxonomy;
+		}
 	}
 	validateConfig() {
 		return !(
@@ -41,7 +47,7 @@ class Config {
 			!this._spaceSeparator ||
 			!this._insertTime ||
 			!this._version ||
-			!this._analyticsTool ||
+			!this._analyticsTools ||
 			!this._validationRules
 		);
 	}
@@ -57,9 +63,7 @@ class Config {
 	toJson() {
 		let jsonConfig = {};
 		Object.keys(this).forEach((key, index) => {
-			if (key === '_analyticsTool' || key === '_medias') {
-				jsonConfig = JsonUtils_1.JsonUtils.addParametersAt(jsonConfig, Object.values(this)[index]);
-			} else if (key === '_validationRules') {
+			if (key === '_validationRules') {
 				jsonConfig = JsonUtils_1.JsonUtils.addParametersAt(jsonConfig, {
 					columns: this._validationRules,
 				});
@@ -150,12 +154,12 @@ class Config {
 		this._version = version;
 	}
 	get analyticsTool() {
-		return this._analyticsTool;
+		return this._analyticsTools;
 	}
 	get medias() {
-		return this._medias;
+		return this._mediaTaxonomy;
 	}
-	get analyticsToolName() {
+	get analyticsToolNames() {
 		return this._analyticsToolName;
 	}
 	get csvSeparator() {

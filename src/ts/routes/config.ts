@@ -4,7 +4,7 @@ import { ApiResponse } from '../models/ApiResponse';
 
 const config = (app: { [key: string]: any }): void => {
 	app.post('/config', (req: { [key: string]: any }, res: { [key: string]: any }) => {
-		const company = req.company;
+		const advertiser = req.advertiser;
 		const configString = req.body.config;
 
 		const apiResponse = new ApiResponse();
@@ -17,7 +17,7 @@ const config = (app: { [key: string]: any }): void => {
 		}
 
 		const config = new Config(JSON.parse(configString));
-		const configDAO = new ConfigDAO(company);
+		const configDAO = new ConfigDAO(advertiser);
 
 		configDAO
 			.addConfig(config)
@@ -36,8 +36,8 @@ const config = (app: { [key: string]: any }): void => {
 	});
 
 	app.get('/config', (req: { [key: string]: any }, res: { [key: string]: any }) => {
-		const company = req.company;
-		const configDAO = new ConfigDAO(company);
+		const advertiser = req.advertiser;
+		const configDAO = new ConfigDAO(advertiser);
 
 		const apiResponse = new ApiResponse();
 

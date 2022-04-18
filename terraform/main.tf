@@ -73,19 +73,19 @@ resource "google_app_engine_standard_app_version" "adinfo" {
 ######################################################
 #Configurações Firestore
 ######################################################
-resource "google_firestore_document" "companies_collection" {
+resource "google_firestore_document" "advertisers_collection" {
   project     = var.project_id
-  collection  = "companies"
-  document_id = var.company
+  collection  = "advertisers"
+  document_id = var.advertiser
   fields      = "{}"
 }
 
-resource "google_firestore_document" "company_config" {
+resource "google_firestore_document" "advertiser_config" {
   project     = var.project_id
-  collection  = "${google_firestore_document.companies_collection.path}/config"
+  collection  = "${google_firestore_document.advertisers_collection.path}/config"
   document_id = "config_1"
   fields      = var.pre_config == "2" ? file("config_schemas/adobe.json") : file("config_schemas/ga.json")
-  depends_on  = [google_firestore_document.companies_collection]
+  depends_on  = [google_firestore_document.advertisers_collection]
 }
 
 resource "google_firestore_document" "blocklist_collection" {
@@ -95,10 +95,10 @@ resource "google_firestore_document" "blocklist_collection" {
   fields      = "{}"
 }
 
-resource "google_firestore_document" "agencies_collection" {
+resource "google_firestore_document" "adOpsTeams_collection" {
   project     = var.project_id
-  collection  = "agencies"
-  document_id = "agencies - instance"
+  collection  = "adOpsTeams"
+  document_id = "adOpsTeams - instance"
   fields      = "{}"
 }
 
@@ -113,5 +113,5 @@ resource "google_firestore_document" "tokens_collection" {
   project     = var.project_id
   collection  = "tokens"
   document_id = "owner instance"
-  fields      = "{\"activate\": {\"booleanValue\": true}, \"company\": {\"stringValue\": \"${var.company}\"},\"email\": {\"stringValue\": \"${var.email}\"},\"password\": {\"stringValue\": \"${var.password}\"},\"permission\": {\"stringValue\": \"owner\"}}"
+  fields      = "{\"active\": {\"booleanValue\": true}, \"advertiser\": {\"stringValue\": \"${var.advertiser}\"},\"email\": {\"stringValue\": \"${var.email}\"},\"password\": {\"stringValue\": \"${var.password}\"},\"permission\": {\"stringValue\": \"owner\"}}"
 }

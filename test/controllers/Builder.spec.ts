@@ -22,9 +22,11 @@ describe('Builder', () => {
 					Bandeira: [],
 					Veículo: [],
 				},
-				adobe: {
-					cid: ['Tipo de Compra', 'Bandeira', 'Veículo'],
-				},
+				analyticsTools: {
+					adobe: {
+						cid: ['Tipo de Compra', 'Bandeira', 'Veículo'],
+					},
+				}
 			});
 			const builder = new Builder(csvLine, config, 'adobe');
 			const abodeFields = [
@@ -64,10 +66,12 @@ describe('Builder', () => {
 					Período: ['/[a-zA-Z]* [0-9]{4}/'],
 					Bandeira: [],
 				},
-				ga: {
-					utm_medium: ['Tipo de Compra'],
-					utm_campaign: ['Período', 'Bandeira'],
-				},
+				analyticsTools: {
+					ga: {
+						utm_medium: ['Tipo de Compra'],
+						utm_campaign: ['Período', 'Bandeira'],
+					},
+				}
 			});
 			const builder = new Builder(csvLine, config, 'ga');
 			const gaFields = [

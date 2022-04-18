@@ -50,7 +50,7 @@ paths:
           description: 'Internal server error'
   '/csv/list':
     get:
-      description: Lists all csv files within a company
+      description: Lists all csv files within a advertiser
       operationId: csv_list
       parameters:
         - name: token
@@ -67,7 +67,7 @@ paths:
           description: 'Internal server error'
   '/config':
     post:
-      description: Creates a new config in the company
+      description: Creates a new config in the advertiser
       operationId: config
       parameters:
         - name: token
@@ -162,12 +162,12 @@ paths:
         - name: permission
           in: headers
           description: permission to new user
-        - name: company
+        - name: advertiser
           in: headers
-          description: current company
-        - name: agency
+          description: current advertiser
+        - name: adOpsTeam
           in: headers
-          description: agency of the new user
+          description: adOpsTeam of the new user
         - name: email
           in: headers
           description: email of the new user for login

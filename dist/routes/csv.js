@@ -6,8 +6,8 @@ const ApiResponse_1 = require('../models/ApiResponse');
 const csv = (app) => {
 	app.post('/csv', (req, res) => {
 		const campaign = req.headers.campaign;
-		const agency = req.agency;
-		const company = req.company;
+		const getAllAdOpsTeamsFrom = req.getAllAdOpsTeamsFrom;
+		const advertiser = req.advertiser;
 		const apiResponse = new ApiResponse_1.ApiResponse();
 		if (!campaign) {
 			apiResponse.responseText = 'Nenhuma campanha foi informada!';
@@ -21,9 +21,9 @@ const csv = (app) => {
 			return;
 		}
 		const content = req.files.data.data;
-		const filePath = agency
-			? `${company}/${agency}/${campaign}/${DateUtils_1.DateUtils.generateDateString()}.csv`
-			: `${company}/${campaign}/${DateUtils_1.DateUtils.generateDateString()}.csv`;
+		const filePath = getAllAdOpsTeamsFrom
+			? `${advertiser}/${getAllAdOpsTeamsFrom}/${campaign}/${DateUtils_1.DateUtils.generateDateString()}.csv`
+			: `${advertiser}/${campaign}/${DateUtils_1.DateUtils.generateDateString()}.csv`;
 		const fileDAO = new FileDAO_1.FileDAO();
 		fileDAO.file = content;
 		fileDAO
@@ -44,8 +44,8 @@ const csv = (app) => {
 	app.get('/csv', (req, res) => {
 		const fileName = req.headers.file;
 		const campaign = req.headers.campaign;
-		const company = req.company;
-		const agencyPath = req.headers.agency ? req.headers.agency : 'CompanyCampaigns';
+		const advertiser = req.advertiser;
+		const adOpsTeamPath = req.headers.getAllAdOpsTeamsFrom ? req.headers.getAllAdOpsTeamsFrom : 'AdvertiserCampaigns';
 		const apiResponse = new ApiResponse_1.ApiResponse();
 		if (!fileName) {
 			apiResponse.responseText = 'Nenhum arquivo foi informado!';
@@ -58,7 +58,7 @@ const csv = (app) => {
 			res.status(apiResponse.statusCode).send(apiResponse.jsonResponse);
 			return;
 		}
-		const filePath = `${company}/${agencyPath}/${campaign}/${fileName}.csv`;
+		const filePath = `${advertiser}/${adOpsTeamPath}/${campaign}/${fileName}.csv`;
 		const fileDAO = new FileDAO_1.FileDAO();
 		fileDAO
 			.getFromStore(filePath)
@@ -82,13 +82,13 @@ const csv = (app) => {
 			});
 	});
 	app.get('/csv/list', (req, res) => {
-		const agency = req.agency;
-		const company = req.company;
+		const getAllAdOpsTeamsFrom = req.getAllAdOpsTeamsFrom;
+		const advertiser = req.advertiser;
 		const campaign = req.headers.campaign;
 		const fileDAO = new FileDAO_1.FileDAO();
-		let filePath = `${company}/`;
+		let filePath = `${advertiser}/`;
 		const apiResponse = new ApiResponse_1.ApiResponse();
-		if (agency) filePath += `${agency}/`;
+		if (getAllAdOpsTeamsFrom) filePath += `${getAllAdOpsTeamsFrom}/`;
 		if (campaign) filePath += `${campaign}/`;
 		fileDAO
 			.getAllFilesFromStore(filePath)

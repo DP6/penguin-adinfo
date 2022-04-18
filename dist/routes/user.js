@@ -6,7 +6,7 @@ const user = (app) => {
 	app.get('/users', (req, res) => {
 		const apiResponse = new ApiResponse_1.ApiResponse();
 		new UserDAO_1.UserDAO()
-			.getAllUsersFrom(req.company, req.permission)
+			.getAllUsersFrom(req.advertiser, req.permission)
 			.then((users) => {
 				apiResponse.responseText = JSON.stringify(users.map((user) => user.toJson()));
 			})
@@ -23,8 +23,8 @@ const user = (app) => {
 		const apiResponse = new ApiResponse_1.ApiResponse();
 		const user = {
 			permission: req.permission,
-			agency: req.agency,
-			company: req.company,
+			adOpsTeam: req.adOpsTeam,
+			advertiser: req.advertiser,
 			email: req.email,
 		};
 		apiResponse.statusCode = 200;

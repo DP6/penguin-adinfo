@@ -4,36 +4,36 @@ exports.User = void 0;
 const RoutesPermission_1 = require('./RoutesPermission');
 const bcrypt = require('bcrypt');
 class User {
-	constructor(id, permission, company, email, activate = true, agency = '', password) {
+	constructor(id, permission, advertiser, email, active = true, adOpsTeam = '', password) {
 		this._salt = parseInt(process.env.SALT);
 		this._permission = permission;
-		this._agency = agency;
-		this._company = company;
+		this._adOpsTeam = adOpsTeam;
+		this._advertiser = advertiser;
 		this._email = email;
 		this._id = id;
 		this._password = password;
-		this._activate = activate;
+		this._active = active;
 	}
 	hasPermissionFor(route, method) {
 		return new RoutesPermission_1.RoutesPermission(route, method).validatePermission(this);
 	}
 	toJson() {
 		return {
-			agency: this._agency,
-			company: this._company,
+			adOpsTeam: this._adOpsTeam,
+			advertiser: this._advertiser,
 			permission: this._permission,
 			email: this._email,
 			id: this._id,
-			activate: this._activate,
+			active: this._active,
 		};
 	}
 	toJsonSave() {
 		return {
-			agency: this._agency,
-			company: this._company,
+			adOpsTeam: this._adOpsTeam,
+			advertiser: this._advertiser,
 			permission: this._permission,
 			email: this._email,
-			activate: this._activate,
+			active: this._active,
 			password: bcrypt.hashSync(this._password, this._salt),
 		};
 	}
@@ -43,17 +43,17 @@ class User {
 	get permission() {
 		return this._permission;
 	}
-	get agency() {
-		return this._agency;
+	get adOpsTeam() {
+		return this._adOpsTeam;
 	}
-	get company() {
-		return this._company;
+	get advertiser() {
+		return this._advertiser;
 	}
 	get email() {
 		return this._email;
 	}
-	get activate() {
-		return this._activate;
+	get active() {
+		return this._active;
 	}
 	get id() {
 		return this._id;

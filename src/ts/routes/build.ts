@@ -12,13 +12,13 @@ const build = (app: { [key: string]: any }): void => {
 	app.post('/build/:analyticsTool/:media?', async (req: { [key: string]: any }, res: { [key: string]: any }) => {
 		const analyticsTool = req.params.analyticsTool;
 		const media = req.params.media;
-		const company = req.company;
-		const agency = req.headers.agency;
-		const agencyPath = agency ? agency : 'CompanyCampaigns';
+		const advertiser = req.advertiser;
+		const adOpsTeam = req.headers.adopsteam;
+		const adOpsTeamPath = adOpsTeam ? adOpsTeam : 'AdvertiserCampaigns';
 		const campaign = req.headers.campaign;
 		const permission = req.permission;
 
-		const pathDefault = `${company}/${agencyPath}/${campaign}`;
+		const pathDefault = `${advertiser}/${adOpsTeamPath}/${campaign}`;
 
 		const fullHistoricalFilePath = `${pathDefault}/historical`;
 		const correctHistoricalFilePath = `${pathDefault}/correctHistorical`;
@@ -37,21 +37,21 @@ const build = (app: { [key: string]: any }): void => {
 			return;
 		}
 
-		const agencyCampaigns = await new CampaignDAO().getAllCampaignsFrom(agencyPath, permission);
+		const adOpsTeamCampaigns = await new CampaignDAO().getAllCampaignsFrom(adOpsTeamPath, permission);
 
-		if (!agencyCampaigns) {
-			apiResponse.responseText = 'Campanha não cadastrada na agência!';
+		if (!adOpsTeamCampaigns) {
+			apiResponse.responseText = 'Campanha não cadastrada na adOpsTeam!';
 			apiResponse.statusCode = 400;
 			res.status(apiResponse.statusCode).send(apiResponse.jsonResponse);
 			return;
 		}
 
-		const agencyCampaignsNames = agencyCampaigns.map((campaign: { campaignName: string; campaignId: string }) => {
+		const adOpsTeamCampaignsNames = adOpsTeamCampaigns.map((campaign: { campaignName: string; campaignId: string }) => {
 			return campaign.campaignName;
 		});
 
-		if (!agencyCampaignsNames.includes(campaign)) {
-			apiResponse.responseText = 'Campanha não cadastrada na agência!';
+		if (!adOpsTeamCampaignsNames.includes(campaign)) {
+			apiResponse.responseText = 'Campanha não cadastrada na adOpsTeam!';
 			apiResponse.statusCode = 400;
 			res.status(apiResponse.statusCode).send(apiResponse.jsonResponse);
 			return;
@@ -61,21 +61,25 @@ const build = (app: { [key: string]: any }): void => {
 
 		const fileContent = req.files.data.data;
 
-		const filePath = `${company}/${agencyPath}/${campaign}/${DateUtils.generateDateString()}.csv`;
+		const filePath = `${advertiser}/${adOpsTeamPath}/${campaign}/${DateUtils.generateDateString()}.csv`;
 
-		let companyConfig: Config;
+		let advertiserConfig: Config;
 
-		const configDAO = new ConfigDAO(company);
+		const configDAO = new ConfigDAO(advertiser);
 		configDAO
 			.getLastConfig()
 			.then((config: Config) => {
-				companyConfig = config;
-				if (companyConfig) {
-					const companyConfigJson = companyConfig.toJson();
-					if (!companyConfigJson[analyticsTool]) {
+				advertiserConfig = config;
+				if (advertiserConfig) {
+					const advertiserConfigJson = advertiserConfig.toJson();
+					if (!advertiserConfigJson['analyticsTools'][analyticsTool]) {
 						apiResponse.statusCode = 400;
-						throw new Error(`Ferramenta de Analytics ${media} não foi configurada!`);
-					} else if (media && !companyConfigJson[media]) {
+						throw new Error(`Ferramenta de Analytics ${analyticsTool} não foi configurada!`);
+					} else if (
+						advertiserConfigJson['analyticsTools'] &&
+						!!media &&
+						!advertiserConfigJson['mediaTaxonomy'][media]
+					) {
 						apiResponse.statusCode = 400;
 						throw new Error(`Mídia ${media} não foi configurada!`);
 					}
@@ -89,19 +93,21 @@ const build = (app: { [key: string]: any }): void => {
 			})
 			.then(async () => {
 				const csvContent = fileContent.toString();
-				const separator = CsvUtils.identifyCsvSepartor(csvContent.split('\n')[0], companyConfig.csvSeparator);
+				const separator = CsvUtils.identifyCsvSepartor(csvContent.split('\n')[0], advertiserConfig.csvSeparator);
 				const jsonFromFile = CsvUtils.csv2json(csvContent, separator);
-				const jsonParameterized = new Builder(jsonFromFile, companyConfig, analyticsTool, media).build();
-				const configVersion = companyConfig.version;
+				const jsonParameterized = new Builder(jsonFromFile, advertiserConfig, analyticsTool, media).build();
+				const configVersion = advertiserConfig.version;
 				const configTimestamp = DateUtils.newDateStringFormat(
-					companyConfig.insertTime,
+					advertiserConfig.insertTime,
 					'yyyymmddhhMMss',
 					'hh:MM:ss dd/mm/yyyy'
 				);
 
 				let [fullHistoricalContent, correctHistoricalContent] = await Promise.all([
-					(await new FileDAO().getContentFrom(`${fullHistoricalFilePath}_${companyConfig.version}.csv`)).toString(),
-					(await new FileDAO().getContentFrom(`${correctHistoricalFilePath}_${companyConfig.version}.csv`)).toString(),
+					(await new FileDAO().getContentFrom(`${fullHistoricalFilePath}_${advertiserConfig.version}.csv`)).toString(),
+					(
+						await new FileDAO().getContentFrom(`${correctHistoricalFilePath}_${advertiserConfig.version}.csv`)
+					).toString(),
 				]);
 
 				return new Promise((resolve, reject) => {
@@ -173,8 +179,8 @@ const build = (app: { [key: string]: any }): void => {
 
 							if (err) reject(err);
 							await Promise.all([
-								fullHistoricalFileDao.save(`${fullHistoricalFilePath}_${companyConfig.version}.csv`),
-								correctHistoricalFileDao.save(`${correctHistoricalFilePath}_${companyConfig.version}.csv`),
+								fullHistoricalFileDao.save(`${fullHistoricalFilePath}_${advertiserConfig.version}.csv`),
+								correctHistoricalFileDao.save(`${correctHistoricalFilePath}_${advertiserConfig.version}.csv`),
 								fileDao.save(filePath.replace('.csv', '_parametrizado.csv')),
 							]);
 							resolve(parametrizedCsv);

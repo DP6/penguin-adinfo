@@ -18,21 +18,21 @@ const register = (app) => {
 		(req, res) => {
 			const validationErrors = express_validator_1.validationResult(req).array();
 			const apiResponse = new ApiResponse_1.ApiResponse();
-			let agency = '';
-			if (req.agency && req.body.permission === 'user') {
-				agency = req.agency;
-			} else if (req.body.agency && req.body.permission === 'agencyOwner') {
-				agency = req.body.agency;
+			let adOpsTeam = '';
+			if (req.adOpsTeam && req.body.permission === 'user') {
+				adOpsTeam = req.adOpsTeam;
+			} else if (req.body.adOpsTeam && req.body.permission === 'adOpsManager') {
+				adOpsTeam = req.body.adOpsTeam;
 			} else if (
-				!req.agency &&
-				!req.body.agency &&
-				(req.body.permission === 'user' || req.body.permission === 'agencyOwner')
+				!req.adOpsTeam &&
+				!req.body.adOpsTeam &&
+				(req.body.permission === 'user' || req.body.permission === 'adOpsManager')
 			) {
 				validationErrors.push({
 					param: 'email',
-					value: req.body.agency,
+					value: req.body.adOpsTeam,
 					location: 'body',
-					msg: 'Não foi possível encontrar a agência.',
+					msg: 'Não foi possível encontrar o adOpsTeam.',
 				});
 			}
 			if (validationErrors.length > 0) {
@@ -45,10 +45,10 @@ const register = (app) => {
 			const newUser = new User_1.User(
 				'',
 				req.body.permission,
-				req.company,
+				req.advertiser,
 				req.body.email,
 				true,
-				agency,
+				adOpsTeam,
 				req.body.password
 			);
 			const userDAO = new UserDAO_1.UserDAO();

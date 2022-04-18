@@ -1,4 +1,35 @@
 'use strict';
+var __awaiter =
+	(this && this.__awaiter) ||
+	function (thisArg, _arguments, P, generator) {
+		function adopt(value) {
+			return value instanceof P
+				? value
+				: new P(function (resolve) {
+						resolve(value);
+				  });
+		}
+		return new (P || (P = Promise))(function (resolve, reject) {
+			function fulfilled(value) {
+				try {
+					step(generator.next(value));
+				} catch (e) {
+					reject(e);
+				}
+			}
+			function rejected(value) {
+				try {
+					step(generator['throw'](value));
+				} catch (e) {
+					reject(e);
+				}
+			}
+			function step(result) {
+				result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected);
+			}
+			step((generator = generator.apply(thisArg, _arguments || [])).next());
+		});
+	};
 Object.defineProperty(exports, '__esModule', { value: true });
 exports.UserDAO = void 0;
 const FirestoreConnectionSingleton_1 = require('../cloud/FirestoreConnectionSingleton');
@@ -12,60 +43,32 @@ class UserDAO {
 		this._pathToCollection = ['tokens'];
 		this._authCollection = this._objectStore.getCollection(this._pathToCollection);
 	}
-	getUserId() {
+	getAllUsersFrom(advertiser, userRequestPermission) {
 		return this._objectStore
-			.getCollection(this._pathToCollection)
-			.where('email', '==', this._email)
-			.get()
-			.then((querySnapshot) => {
-				if (querySnapshot.size > 0) {
-					querySnapshot.forEach((documentSnapshot) => {
-						const searchId = documentSnapshot.ref.path.match(new RegExp('[^/]+$'));
-						const validatePassword = bcrypt.compareSync(this._password, documentSnapshot.get('password'));
-						if (!validatePassword) throw new Error('Email ou senha incorreto(s)!');
-						if (searchId) {
-							return searchId[0];
-						} else {
-							throw new Error('Falha ao recuperar o ID do usuário');
+			.getAllDocumentsFrom(this._authCollection)
+			.then((allUsersDocuments) => {
+				const users = [];
+				const allAdvertiserUsers = allUsersDocuments.filter((user) => user.advertiser === advertiser);
+				if (allAdvertiserUsers.length > 0) {
+					allAdvertiserUsers.forEach((advertiserUser) => {
+						if (
+							advertiserUser.permission !== 'owner' ||
+							(userRequestPermission === 'admin' && advertiserUser.permission === 'user')
+						) {
+							const user = new User_1.User(
+								advertiserUser.userid,
+								advertiserUser.advertiser,
+								advertiserUser.email,
+								advertiserUser.active,
+								advertiserUser.adOpsTeam
+							);
+							users.push(user);
 						}
 					});
 				} else {
-					throw new Error('ID não encontrado!');
+					throw new Error('Nenhum usuário encontrado!');
 				}
-			})
-			.catch((err) => {
-				throw err;
-			});
-	}
-	getAllUsersFrom(company, userRequestPermission) {
-		return this._objectStore
-			.getCollection(this._pathToCollection)
-			.where('company', '==', company)
-			.get()
-			.then((querySnapshot) => {
-				if (querySnapshot.size > 0) {
-					const users = [];
-					querySnapshot.forEach((documentSnapshot) => {
-						const searchId = documentSnapshot.ref.path.match(new RegExp('[^/]+$'));
-						if (searchId) {
-							const userPermission = documentSnapshot.get('permission');
-							if (userPermission !== 'owner' || (userRequestPermission === 'admin' && userPermission === 'user')) {
-								const user = new User_1.User(
-									searchId[0],
-									userPermission,
-									documentSnapshot.get('company'),
-									documentSnapshot.get('email'),
-									documentSnapshot.get('activate'),
-									documentSnapshot.get('agency')
-								);
-								users.push(user);
-							}
-						} else {
-							throw new Error('Nenhum usuário encontrado!');
-						}
-					});
-					return users;
-				}
+				return users;
 			})
 			.catch((err) => {
 				throw err;
@@ -73,29 +76,20 @@ class UserDAO {
 	}
 	getUser() {
 		return this._objectStore
-			.getCollection(this._pathToCollection)
-			.where('email', '==', this._email)
-			.get()
-			.then((querySnapshot) => {
-				if (querySnapshot.size > 0) {
-					let user;
-					querySnapshot.forEach((documentSnapshot) => {
-						const searchId = documentSnapshot.ref.path.match(new RegExp('[^/]+$'));
-						if (searchId) {
-							const validatePassword = bcrypt.compareSync(this._password, documentSnapshot.get('password'));
-							if (!validatePassword) throw new Error('Email ou senha incorreto(s)!');
-							user = new User_1.User(
-								searchId[0],
-								documentSnapshot.get('permission'),
-								documentSnapshot.get('company'),
-								documentSnapshot.get('email'),
-								documentSnapshot.get('activate'),
-								documentSnapshot.get('agency')
-							);
-						} else {
-							throw new Error('Nenhum usuário encontrado!');
-						}
-					});
+			.getAllDocumentsFrom(this._authCollection)
+			.then((allUsersDocuments) => {
+				if (allUsersDocuments.length > 0) {
+					const [userToValidate] = allUsersDocuments.filter((user) => user.email === this._email);
+					const validatePassword = bcrypt.compareSync(this._password, userToValidate.password);
+					if (!validatePassword) throw new Error('Email ou senha incorreto(s)!');
+					const user = new User_1.User(
+						userToValidate.userid,
+						userToValidate.permission,
+						userToValidate.advertiser,
+						userToValidate.email,
+						userToValidate.active,
+						userToValidate.adOpsTeam
+					);
 					return user;
 				} else {
 					throw new Error('Email ou senha incorreto(s)!');
@@ -109,9 +103,12 @@ class UserDAO {
 		return this._objectStore
 			.addDocumentIn(this._authCollection, user.toJsonSave(), '')
 			.get()
-			.then((data) => {
-				return data.id;
-			})
+			.then((data) =>
+				__awaiter(this, void 0, void 0, function* () {
+					yield this._authCollection.doc(data.id).update({ userid: data.id });
+					return data.id;
+				})
+			)
 			.catch((err) => console.log(err));
 	}
 	changePassword(user) {
@@ -131,24 +128,24 @@ class UserDAO {
 	}
 	deactivateUser(userId, userRequestPermission) {
 		return this._objectStore
-			.getCollection(this._pathToCollection)
-			.doc(userId)
-			.get()
-			.then((doc) => {
-				const user = doc.data();
+			.getAllDocumentsFrom(this._authCollection)
+			.then((allUsersDocuments) => {
+				const [userToDeactivate] = allUsersDocuments.filter((user) => user.userid === userId);
 				if (
-					user.permission === 'user' ||
-					((user.permission === 'admin' || user.permission === 'agencyOwner') && userRequestPermission === 'owner')
+					userToDeactivate.permission === 'user' ||
+					((userToDeactivate.permission === 'admin' || userToDeactivate.permission === 'adOpsManager') &&
+						userRequestPermission === 'owner')
 				) {
-					user.activate = false;
-				} else if (user.permission === 'agencyOwner' && userRequestPermission === 'admin') {
-					user.activate = false;
+					userToDeactivate.active = false;
+				} else if (userToDeactivate.permission === 'adOpsManager' && userRequestPermission === 'admin') {
+					userToDeactivate.active = false;
 				} else {
 					throw new Error('Permissões insuficientes para inavitar o usuário!');
 				}
-				return doc.ref.set(user);
+				return userToDeactivate;
 			})
-			.then(() => {
+			.then((userToDeactivate) => {
+				this._objectStore.getCollection(this._pathToCollection).doc(userToDeactivate.userid).update(userToDeactivate);
 				return true;
 			})
 			.catch((err) => {
@@ -157,24 +154,47 @@ class UserDAO {
 	}
 	reactivateUser(userId, userRequestPermission) {
 		return this._objectStore
-			.getCollection(this._pathToCollection)
-			.doc(userId)
-			.get()
-			.then((doc) => {
-				const user = doc.data();
+			.getAllDocumentsFrom(this._authCollection)
+			.then((allUsersDocuments) => {
+				const [userToReactivate] = allUsersDocuments.filter((user) => user.userid === userId);
 				if (
-					user.permission === 'user' ||
-					((user.permission === 'admin' || user.permission === 'agencyOwner') && userRequestPermission === 'owner')
+					userToReactivate.permission === 'user' ||
+					((userToReactivate.permission === 'admin' || userToReactivate.permission === 'adOpsManager') &&
+						userRequestPermission === 'owner')
 				) {
-					user.activate = true;
-				} else if (user.permission === 'agencyOwner' && userRequestPermission === 'admin') {
-					user.activate = true;
+					userToReactivate.active = true;
+				} else if (userToReactivate.permission === 'adOpsManager' && userRequestPermission === 'admin') {
+					userToReactivate.active = true;
 				} else {
 					throw new Error('Permissões insuficientes para inavitar o usuário!');
 				}
-				return doc.ref.set(user);
+				return userToReactivate;
 			})
-			.then(() => {
+			.then((userToReactivate) => {
+				this._objectStore.getCollection(this._pathToCollection).doc(userToReactivate.userid).update(userToReactivate);
+				return true;
+			})
+			.catch((err) => {
+				throw err;
+			});
+	}
+	reactivateCampaign(campaignId, userRequestPermission) {
+		return this._objectStore
+			.getAllDocumentsFrom(this._authCollection)
+			.then((campaigns) => {
+				if (userRequestPermission !== 'user') {
+					const [filteredCampaign] = campaigns.filter((campaign) => campaign.campaignId === campaignId);
+					filteredCampaign.active = true;
+					return filteredCampaign;
+				} else {
+					throw new Error('Permissões insuficientes para inavitar a campanha!');
+				}
+			})
+			.then((filteredCampaign) => {
+				this._objectStore
+					.getCollection(this._pathToCollection)
+					.doc(`${filteredCampaign.name} - ${filteredCampaign.adOpsTeam}`)
+					.update(filteredCampaign);
 				return true;
 			})
 			.catch((err) => {

@@ -5,9 +5,9 @@ const FirestoreConnectionSingleton_1 = require('../cloud/FirestoreConnectionSing
 const Config_1 = require('../Config');
 const DateUtils_1 = require('../../utils/DateUtils');
 class ConfigDAO {
-	constructor(companyName) {
+	constructor(advertiserName) {
 		this._objectStore = FirestoreConnectionSingleton_1.FirestoreConnectionSingleton.getInstance();
-		this._configCollection = this._objectStore.getCollection(['companies', companyName, 'config']);
+		this._configCollection = this._objectStore.getCollection(['advertisers', advertiserName, 'config']);
 	}
 	getLastConfig() {
 		return this._objectStore

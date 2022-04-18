@@ -80,12 +80,12 @@ git clone https://github.com/DP6/penguin-adinfo.git
 
 ```
 {
-	company: "NOME_EMPRESA" (string),
-    agency: "agencia do usuário" (string,
+	advertiser: "NOME_EMPRESA" (string),
+    adOpsTeam: "agencia do usuário" (string,
 	permission: "owner" (string)
 	email: "email_do_usuario" (string)
 	password: "senha_criptografada" (string),
-    activate: true (boolean)
+    active: true (boolean)
 }
 ```
 
@@ -105,7 +105,7 @@ Crie um bucket para armazenar os arquivos do adinfo, o bucket em questão deve s
 
 Para a configuração inicial do Firestore, são necessárias quatro coleções.
 
-- **companies**: essa coleção deve deve conter um documento com o nome da empresa. Dentro desse documento, uma segunda coleção deve ser criada com o nome _config_. Seguindo a estrutura: companies > [nome_empresa] > config;
+- **advertisers**: essa coleção deve deve conter um documento com o nome da empresa. Dentro desse documento, uma segunda coleção deve ser criada com o nome _config_. Seguindo a estrutura: advertisers > [nome_empresa] > config;
 
 - **blocklist**: coleção criada para armazenar tokens bloqueados de login;
 
@@ -117,18 +117,18 @@ Para a configuração inicial do Firestore, são necessárias quatro coleções.
 
   ```
   {
-    company: "NOME_EMPRESA" (string),
-    agency: "agencia do usuário" (string,
+    advertiser: "NOME_EMPRESA" (string),
+    adOpsTeam: "agencia do usuário" (string,
   	permission: "owner" (string),
   	email: "email_do_usuario" (string),
   	password: "senha_criptografada" (string),
-    activate: true (boolean)
+    active: true (boolean)
   }
   ```
 
   Para esse documento, é importante manter o Código do Documento gerado automaticamente pelo google, pois ele será utilizado como o ID do usuário em alguns processos.
   O campo **password** deve ser informado com a criptografia. Para preenchimento manual é possível utilizar o [Bcrypt Generator](https://bcrypt-generator.com/) para gerar a senha criptografada.
-  O campo _agency_ diz respeito a agência a qual pertence o usuário que está sendo criado. Caso o nível de permissão desse usuário seja "owner" ou "admin", deixe este campo em branco.
+  O campo _adOpsTeam_ diz respeito ao time de adOps a qual pertence o usuário que está sendo criado. Caso o nível de permissão desse usuário seja "owner" ou "admin", deixe este campo em branco.
 
 - **campaigns**: Essa coleção deve ser criada na raiz do firestore , mas não há a necessidade de criar nenhum documento dentro dela. Os documentos serão gerados automaticamente conforme o uso do adinfo, armazenando as campanhas que serão criadas e seus atributos
 
@@ -136,7 +136,7 @@ Para a configuração inicial do Firestore, são necessárias quatro coleções.
 
 ###### Padrão do Objeto de Configuração
 
-Para utilizar a API, é necessário criar um documento de configuração no Firestore dentro da coleção: companies > [nome_empresa] > config. O nome do documento deve ser **config_1** e ele deve conter os campos: **version** inicialmente com o valor 1 (number), **insertTime** no formato _yyyyMMddHHmmss_, **csvSeparator**, **separator**, **spaceSeparator**, **columns** e um campo para a ferramenta de analytics, sendo esse o valor de **ga** ou **adobe**.
+Para utilizar a API, é necessário criar um documento de configuração no Firestore dentro da coleção: advertisers > [nome_empresa] > config. O nome do documento deve ser **config_1** e ele deve conter os campos: **version** inicialmente com o valor 1 (number), **insertTime** no formato _yyyyMMddHHmmss_, **csvSeparator**, **separator**, **spaceSeparator**, **columns** e um campo para a ferramenta de analytics, sendo esse o valor de **ga** ou **adobe**.
 
 Todos estes campos serão utilizados para realizar a parametrização do arquivo CSV que a API irá receber.
 

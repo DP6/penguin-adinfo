@@ -8,9 +8,9 @@ export class Config {
 	private _csvSeparator: string[];
 	private _insertTime: string;
 	private _version: number;
-	private _analyticsTool: { [key: string]: { [key: string]: string[] } };
-	private _analyticsToolName: string;
-	private _medias: { [key: string]: any };
+	private _analyticsTools: { [key: string]: { [key: string]: string[] } };
+	private _analyticsToolName: string[] = [];
+	private _mediaTaxonomy: { [key: string]: any };
 	private _validationRules: { [key: string]: string[] };
 	private _columnNames: string[];
 	private _dependenciesConfig: DependencyConfig[];
@@ -31,19 +31,24 @@ export class Config {
 		delete jsonConfigTemp.insertTime;
 		this._version = jsonConfigTemp.version;
 		delete jsonConfigTemp.version;
-		if (jsonConfigTemp.ga) {
-			this._analyticsTool = { ga: jsonConfigTemp.ga };
-			this._analyticsToolName = 'ga';
-			delete jsonConfigTemp.ga;
-		} else if (jsonConfigTemp.adobe) {
-			this._analyticsTool = { adobe: jsonConfigTemp.adobe };
-			this._analyticsToolName = 'adobe';
-			delete jsonConfigTemp.adobe;
+		if (jsonConfigTemp.analyticsTools.ga) {
+			this._analyticsTools = { ga: jsonConfigTemp.analyticsTools.ga };
+			this._analyticsToolName.push('ga');
 		}
+		if (jsonConfigTemp.analyticsTools.adobe) {
+			this._analyticsTools
+				? (this.analyticsTool.adobe = jsonConfigTemp.analyticsTools.adobe)
+				: (this._analyticsTools = { adobe: jsonConfigTemp.analyticsTools.adobe });
+			this._analyticsToolName.push('adobe');
+		}
+		delete jsonConfigTemp.analyticsTools;
 		this._validationRules = jsonConfigTemp.columns;
 		this._columnNames = Object.keys(jsonConfigTemp.columns);
 		delete jsonConfigTemp.columns;
-		this._medias = jsonConfigTemp;
+		if (jsonConfigTemp.mediaTaxonomy) {
+			this._mediaTaxonomy = jsonConfigTemp.mediaTaxonomy;
+			delete jsonConfigTemp.mediaTaxonomy;
+		}
 	}
 
 	/**
@@ -55,7 +60,7 @@ export class Config {
 			!this._spaceSeparator ||
 			!this._insertTime ||
 			!this._version ||
-			!this._analyticsTool ||
+			!this._analyticsTools ||
 			!this._validationRules
 		);
 	}
@@ -88,9 +93,7 @@ export class Config {
 	public toJson(): { [key: string]: any } {
 		let jsonConfig: { [key: string]: any } = {};
 		Object.keys(this).forEach((key: string, index: number) => {
-			if (key === '_analyticsTool' || key === '_medias') {
-				jsonConfig = JsonUtils.addParametersAt(jsonConfig, Object.values(this)[index]);
-			} else if (key === '_validationRules') {
+			if (key === '_validationRules') {
 				jsonConfig = JsonUtils.addParametersAt(jsonConfig, {
 					columns: this._validationRules,
 				});
@@ -227,14 +230,14 @@ export class Config {
 	}
 
 	get analyticsTool(): { [key: string]: { [key: string]: string[] } } {
-		return this._analyticsTool;
+		return this._analyticsTools;
 	}
 
 	get medias(): { [key: string]: any } {
-		return this._medias;
+		return this._mediaTaxonomy;
 	}
 
-	get analyticsToolName(): string {
+	get analyticsToolNames(): string[] {
 		return this._analyticsToolName;
 	}
 

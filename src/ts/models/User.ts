@@ -3,30 +3,30 @@ import * as bcrypt from 'bcrypt';
 
 export class User {
 	private _permission: string;
-	private _agency: string;
-	private _company: string;
+	private _adOpsTeam: string;
+	private _advertiser: string;
 	private _email: string;
 	private _id: string;
 	private _password: string;
-	private _activate: boolean;
+	private _active: boolean;
 	private _salt = parseInt(process.env.SALT);
 
 	constructor(
 		id: string,
 		permission: string,
-		company: string,
+		advertiser: string,
 		email: string,
-		activate = true,
-		agency = '',
+		active = true,
+		adOpsTeam = '',
 		password?: string
 	) {
 		this._permission = permission;
-		this._agency = agency;
-		this._company = company;
+		this._adOpsTeam = adOpsTeam;
+		this._advertiser = advertiser;
 		this._email = email;
 		this._id = id;
 		this._password = password;
-		this._activate = activate;
+		this._active = active;
 	}
 
 	/**
@@ -44,12 +44,12 @@ export class User {
 	 */
 	public toJson(): { [key: string]: string | boolean } {
 		return {
-			agency: this._agency,
-			company: this._company,
+			adOpsTeam: this._adOpsTeam,
+			advertiser: this._advertiser,
 			permission: this._permission,
 			email: this._email,
 			id: this._id,
-			activate: this._activate,
+			active: this._active,
 		};
 	}
 
@@ -59,11 +59,11 @@ export class User {
 	 */
 	public toJsonSave(): { [key: string]: string | boolean } {
 		return {
-			agency: this._agency,
-			company: this._company,
+			adOpsTeam: this._adOpsTeam,
+			advertiser: this._advertiser,
 			permission: this._permission,
 			email: this._email,
-			activate: this._activate,
+			active: this._active,
 			password: bcrypt.hashSync(this._password, this._salt),
 		};
 	}
@@ -76,20 +76,20 @@ export class User {
 		return this._permission;
 	}
 
-	get agency(): string {
-		return this._agency;
+	get adOpsTeam(): string {
+		return this._adOpsTeam;
 	}
 
-	get company(): string {
-		return this._company;
+	get advertiser(): string {
+		return this._advertiser;
 	}
 
 	get email(): string {
 		return this._email;
 	}
 
-	get activate(): boolean {
-		return this._activate;
+	get active(): boolean {
+		return this._active;
 	}
 
 	get id(): string {

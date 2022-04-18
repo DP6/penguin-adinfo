@@ -147,12 +147,12 @@
 					</li>
 				</ol>
 				<pre><code><span style="color: #000000">{</span>
-<span style="color: #000000">    company: </span><span style="color: #A31515">&quot;NOME_EMPRESA&quot;</span><span style="color: #000000"> (</span><span style="color: #001080">string</span><span style="color: #000000">),</span>
-<span style="color: #000000">    agency: </span><span style="color: #A31515">&quot;agencia do usuário&quot;</span><span style="color: #000000"> (</span><span style="color: #001080">string</span><span style="color: #000000">,</span>
+<span style="color: #000000">    advertiser: </span><span style="color: #A31515">&quot;NOME_EMPRESA&quot;</span><span style="color: #000000"> (</span><span style="color: #001080">string</span><span style="color: #000000">),</span>
+<span style="color: #000000">    adOpsTeam: </span><span style="color: #A31515">&quot;agencia do usuário&quot;</span><span style="color: #000000"> (</span><span style="color: #001080">string</span><span style="color: #000000">,</span>
 <span style="color: #000000">    </span><span style="color: #001080">permission</span><span style="color: #000000">: </span><span style="color: #A31515">&quot;owner&quot;</span><span style="color: #000000"> (</span><span style="color: #001080">string</span><span style="color: #000000">)</span>
 <span style="color: #000000">    </span><span style="color: #001080">email</span><span style="color: #000000">: </span><span style="color: #A31515">&quot;email_do_usuario&quot;</span><span style="color: #000000"> (</span><span style="color: #001080">string</span><span style="color: #000000">)</span>
 <span style="color: #000000">    </span><span style="color: #001080">password</span><span style="color: #000000">: </span><span style="color: #A31515">&quot;senha_criptografada&quot;</span><span style="color: #000000"> (</span><span style="color: #001080">string</span><span style="color: #000000">),</span>
-<span style="color: #000000">    </span><span style="color: #001080">activate</span><span style="color: #000000">: </span><span style="color: #0000FF">true</span><span style="color: #000000"> (</span><span style="color: #001080">boolean</span><span style="color: #000000">)</span>
+<span style="color: #000000">    </span><span style="color: #001080">active</span><span style="color: #000000">: </span><span style="color: #0000FF">true</span><span style="color: #000000"> (</span><span style="color: #001080">boolean</span><span style="color: #000000">)</span>
 <span style="color: #000000">}</span>
 </code></pre>
 				<a href="#instalação-manual---gcp" id="instalação-manual---gcp" style="color: inherit; text-decoration: none;">
@@ -172,7 +172,7 @@
 				</a>
 				<p>Para a configuração inicial do Firestore, são necessárias quatro coleções.</p>
 				<ul>
-					<li><p><strong>companies</strong>: essa coleção deve deve conter um documento com o nome da empresa. Dentro desse documento, uma segunda coleção deve ser criada com o nome <em>config</em>. Seguindo a estrutura: companies &gt; [nome_empresa] &gt; config;</p>
+					<li><p><strong>advertisers</strong>: essa coleção deve deve conter um documento com o nome da empresa. Dentro desse documento, uma segunda coleção deve ser criada com o nome <em>config</em>. Seguindo a estrutura: advertisers &gt; [nome_empresa] &gt; config;</p>
 					</li>
 					<li><p><strong>blocklist</strong>: coleção criada para armazenar tokens bloqueados de login;</p>
 					</li>
@@ -182,17 +182,17 @@
 					</li>
 					<li><p><strong>tokens</strong>: essa coleção também deve ser criada com um documento seguindo a estrutura:</p>
 						<pre><code><span style="color: #000000">{</span>
-<span style="color: #000000">  company: </span><span style="color: #A31515">&quot;NOME_EMPRESA&quot;</span><span style="color: #000000"> (</span><span style="color: #001080">string</span><span style="color: #000000">),</span>
-<span style="color: #000000">  agency: </span><span style="color: #A31515">&quot;agencia do usuário&quot;</span><span style="color: #000000"> (</span><span style="color: #001080">string</span><span style="color: #000000">,</span>
+<span style="color: #000000">  advertiser: </span><span style="color: #A31515">&quot;NOME_EMPRESA&quot;</span><span style="color: #000000"> (</span><span style="color: #001080">string</span><span style="color: #000000">),</span>
+<span style="color: #000000">  adOpsTeam: </span><span style="color: #A31515">&quot;agencia do usuário&quot;</span><span style="color: #000000"> (</span><span style="color: #001080">string</span><span style="color: #000000">,</span>
 <span style="color: #000000">    </span><span style="color: #001080">permission</span><span style="color: #000000">: </span><span style="color: #A31515">&quot;owner&quot;</span><span style="color: #000000"> (</span><span style="color: #001080">string</span><span style="color: #000000">),</span>
 <span style="color: #000000">    </span><span style="color: #001080">email</span><span style="color: #000000">: </span><span style="color: #A31515">&quot;email_do_usuario&quot;</span><span style="color: #000000"> (</span><span style="color: #001080">string</span><span style="color: #000000">),</span>
 <span style="color: #000000">    </span><span style="color: #001080">password</span><span style="color: #000000">: </span><span style="color: #A31515">&quot;senha_criptografada&quot;</span><span style="color: #000000"> (</span><span style="color: #001080">string</span><span style="color: #000000">),</span>
-<span style="color: #000000">  </span><span style="color: #001080">activate</span><span style="color: #000000">: </span><span style="color: #0000FF">true</span><span style="color: #000000"> (</span><span style="color: #001080">boolean</span><span style="color: #000000">)</span>
+<span style="color: #000000">  </span><span style="color: #001080">active</span><span style="color: #000000">: </span><span style="color: #0000FF">true</span><span style="color: #000000"> (</span><span style="color: #001080">boolean</span><span style="color: #000000">)</span>
 <span style="color: #000000">}</span>
 </code></pre>
 						<p>Para esse documento, é importante manter o Código do Documento gerado automaticamente pelo google, pois ele será utilizado como o ID do usuário em alguns processos.
 							O campo <strong>password</strong> deve ser informado com a criptografia. Para preenchimento manual é possível utilizar o <a href="https://bcrypt-generator.com/">Bcrypt Generator</a> para gerar a senha criptografada.
-						O campo <em>agency</em> diz respeito a agência a qual pertence o usuário que está sendo criado. Caso o nível de permissão desse usuário seja &quot;owner&quot; ou &quot;admin&quot;, deixe este campo em branco.</p>
+						O campo <em>adOpsTeam</em> diz respeito ao time de adOps a qual pertence o usuário que está sendo criado. Caso o nível de permissão desse usuário seja &quot;owner&quot; ou &quot;admin&quot;, deixe este campo em branco.</p>
 					</li>
 					<li><p><strong>campaigns</strong>: Essa coleção deve ser criada na raiz do firestore , mas não há a necessidade de criar nenhum documento dentro dela. Os documentos serão gerados automaticamente conforme o uso do adinfo, armazenando as campanhas que serão criadas e seus atributos</p>
 					</li>
@@ -202,7 +202,7 @@
 				<a href="#padrão-do-objeto-de-configuração" id="padrão-do-objeto-de-configuração" style="color: inherit; text-decoration: none;">
 					<h6>Padrão do Objeto de Configuração</h6>
 				</a>
-				<p>Para utilizar a API, é necessário criar um documento de configuração no Firestore dentro da coleção: companies &gt; [nome_empresa] &gt; config. O nome do documento deve ser <strong>config_1</strong> e ele deve conter os campos: <strong>version</strong> inicialmente com o valor 1 (number), <strong>insertTime</strong> no formato <em>yyyyMMddHHmmss</em>, <strong>csvSeparator</strong>, <strong>separator</strong>, <strong>spaceSeparator</strong>, <strong>columns</strong> e um campo para a ferramenta de analytics, sendo esse o valor de <strong>ga</strong> ou <strong>adobe</strong>.</p>
+				<p>Para utilizar a API, é necessário criar um documento de configuração no Firestore dentro da coleção: advertisers &gt; [nome_empresa] &gt; config. O nome do documento deve ser <strong>config_1</strong> e ele deve conter os campos: <strong>version</strong> inicialmente com o valor 1 (number), <strong>insertTime</strong> no formato <em>yyyyMMddHHmmss</em>, <strong>csvSeparator</strong>, <strong>separator</strong>, <strong>spaceSeparator</strong>, <strong>columns</strong> e um campo para a ferramenta de analytics, sendo esse o valor de <strong>ga</strong> ou <strong>adobe</strong>.</p>
 				<p>Todos estes campos serão utilizados para realizar a parametrização do arquivo CSV que a API irá receber.</p>
 				<p>Aqui a API disponibiliza a funcionalidade de definirmos no campo <strong>csvSeparator</strong> uma lista contendo a prioridade de todos os possíveis caracteres que poderão ser utilizados como separadores no arquivo CSV pelos usuários. Com isso, a aplicação irá consultar essa fonte e utilizar o devido separador para parametrizar o arquivo submetido.</p>
 				<p>Entretanto, este campo no arquivo de configuração não é obrigatório. Caso o campo não seja preenchido, a aplicação irá tentar verificar se o arquivo submetido está utilizando <em>vírgula</em> ou <em>ponto e vírgula</em> como separador e utilizar o separador identificado para a parametrização. Caso não encontre nenhum dos dois caracteres, a API irá utilizar a vírgula como separador.</p>
@@ -385,145 +385,145 @@
 			<nav class="tsd-navigation primary">
 				<ul>
 					<li class=" ">
-						<a href="modules.html">Exports</a>
+						<a href="modules.html">Modules</a>
 					</li>
 					<li class=" tsd-kind-module">
-						<a href="modules/errors_stringemptyerror.html">Errors/<wbr>String<wbr>Empty<wbr>Error</a>
+						<a href="modules/Errors_StringEmptyError.html">Errors/<wbr>String<wbr>Empty<wbr>Error</a>
 					</li>
 					<li class=" tsd-kind-module">
-						<a href="modules/errors_validatecolumnexistserror.html">Errors/<wbr>Validate<wbr>Column<wbr>Exists<wbr>Error</a>
+						<a href="modules/Errors_ValidateColumnExistsError.html">Errors/<wbr>Validate<wbr>Column<wbr>Exists<wbr>Error</a>
 					</li>
 					<li class=" tsd-kind-module">
-						<a href="modules/errors_validatefielddependencyerror.html">Errors/<wbr>Validate<wbr>Field<wbr>Dependency<wbr>Error</a>
+						<a href="modules/Errors_ValidateFieldDependencyError.html">Errors/<wbr>Validate<wbr>Field<wbr>Dependency<wbr>Error</a>
 					</li>
 					<li class=" tsd-kind-module">
-						<a href="modules/errors_validatefielderror.html">Errors/<wbr>Validate<wbr>Field<wbr>Error</a>
+						<a href="modules/Errors_ValidateFieldError.html">Errors/<wbr>Validate<wbr>Field<wbr>Error</a>
 					</li>
 					<li class=" tsd-kind-module">
-						<a href="modules/errors_validaterulesforcolumnerror.html">Errors/<wbr>Validate<wbr>Rules<wbr>For<wbr>Column<wbr>Error</a>
+						<a href="modules/Errors_ValidateRulesForColumnError.html">Errors/<wbr>Validate<wbr>Rules<wbr>For<wbr>Column<wbr>Error</a>
 					</li>
 					<li class=" tsd-kind-module">
-						<a href="modules/handlers_abstracthandler.html">Handlers/<wbr>Abstract<wbr>Handler</a>
+						<a href="modules/Handlers_AbstractHandler.html">Handlers/<wbr>Abstract<wbr>Handler</a>
 					</li>
 					<li class=" tsd-kind-module">
-						<a href="modules/handlers_handler.html">Handlers/<wbr>Handler</a>
+						<a href="modules/Handlers_Handler.html">Handlers/<wbr>Handler</a>
 					</li>
 					<li class=" tsd-kind-module">
-						<a href="modules/handlers_stringemptyhandler.html">Handlers/<wbr>String<wbr>Empty<wbr>Handler</a>
+						<a href="modules/Handlers_StringEmptyHandler.html">Handlers/<wbr>String<wbr>Empty<wbr>Handler</a>
 					</li>
 					<li class=" tsd-kind-module">
-						<a href="modules/handlers_validatecolumnexistshandler.html">Handlers/<wbr>Validate<wbr>Column<wbr>Exists<wbr>Handler</a>
+						<a href="modules/Handlers_ValidateColumnExistsHandler.html">Handlers/<wbr>Validate<wbr>Column<wbr>Exists<wbr>Handler</a>
 					</li>
 					<li class=" tsd-kind-module">
-						<a href="modules/handlers_validatefielddependencyhandler.html">Handlers/<wbr>Validate<wbr>Field<wbr>Dependency<wbr>Handler</a>
+						<a href="modules/Handlers_ValidateFieldDependencyHandler.html">Handlers/<wbr>Validate<wbr>Field<wbr>Dependency<wbr>Handler</a>
 					</li>
 					<li class=" tsd-kind-module">
-						<a href="modules/handlers_validatefieldhandler.html">Handlers/<wbr>Validate<wbr>Field<wbr>Handler</a>
+						<a href="modules/Handlers_ValidateFieldHandler.html">Handlers/<wbr>Validate<wbr>Field<wbr>Handler</a>
 					</li>
 					<li class=" tsd-kind-module">
-						<a href="modules/handlers_validaterulesforcolumnhandler.html">Handlers/<wbr>Validate<wbr>Rules<wbr>For<wbr>Column<wbr>Handler</a>
+						<a href="modules/Handlers_ValidateRulesForColumnHandler.html">Handlers/<wbr>Validate<wbr>Rules<wbr>For<wbr>Column<wbr>Handler</a>
 					</li>
 					<li class=" tsd-kind-module">
-						<a href="modules/app.html">app</a>
+						<a href="modules/controllers_Builder.html">controllers/<wbr>Builder</a>
 					</li>
 					<li class=" tsd-kind-module">
-						<a href="modules/controllers_builder.html">controllers/<wbr>Builder</a>
+						<a href="modules/models_Adobe.html">models/<wbr>Adobe</a>
 					</li>
 					<li class=" tsd-kind-module">
-						<a href="modules/models_adobe.html">models/<wbr>Adobe</a>
+						<a href="modules/models_AnalyticsTool.html">models/<wbr>Analytics<wbr>Tool</a>
 					</li>
 					<li class=" tsd-kind-module">
-						<a href="modules/models_analyticstool.html">models/<wbr>Analytics<wbr>Tool</a>
+						<a href="modules/models_ApiResponse.html">models/<wbr>Api<wbr>Response</a>
 					</li>
 					<li class=" tsd-kind-module">
-						<a href="modules/models_apiresponse.html">models/<wbr>Api<wbr>Response</a>
+						<a href="modules/models_BlockList.html">models/<wbr>Block<wbr>List</a>
 					</li>
 					<li class=" tsd-kind-module">
-						<a href="modules/models_blocklist.html">models/<wbr>Block<wbr>List</a>
+						<a href="modules/models_Campaign.html">models/<wbr>Campaign</a>
 					</li>
 					<li class=" tsd-kind-module">
-						<a href="modules/models_campaign.html">models/<wbr>Campaign</a>
+						<a href="modules/models_Config.html">models/<wbr>Config</a>
 					</li>
 					<li class=" tsd-kind-module">
-						<a href="modules/models_config.html">models/<wbr>Config</a>
+						<a href="modules/models_DAO_AdOpsTeamDAO.html">models/DAO/<wbr>AdOps<wbr>TeamDAO</a>
 					</li>
 					<li class=" tsd-kind-module">
-						<a href="modules/models_dao_agencydao.html">models/DAO/<wbr>AgencyDAO</a>
+						<a href="modules/models_DAO_AgencyDAO.html">models/DAO/<wbr>AgencyDAO</a>
 					</li>
 					<li class=" tsd-kind-module">
-						<a href="modules/models_dao_campaigndao.html">models/DAO/<wbr>CampaignDAO</a>
+						<a href="modules/models_DAO_CampaignDAO.html">models/DAO/<wbr>CampaignDAO</a>
 					</li>
 					<li class=" tsd-kind-module">
-						<a href="modules/models_dao_configdao.html">models/DAO/<wbr>ConfigDAO</a>
+						<a href="modules/models_DAO_ConfigDAO.html">models/DAO/<wbr>ConfigDAO</a>
 					</li>
 					<li class=" tsd-kind-module">
-						<a href="modules/models_dao_filedao.html">models/DAO/<wbr>FileDAO</a>
+						<a href="modules/models_DAO_FileDAO.html">models/DAO/<wbr>FileDAO</a>
 					</li>
 					<li class=" tsd-kind-module">
-						<a href="modules/models_dao_filestore.html">models/DAO/<wbr>File<wbr>Store</a>
+						<a href="modules/models_DAO_FileStore.html">models/DAO/<wbr>File<wbr>Store</a>
 					</li>
 					<li class=" tsd-kind-module">
-						<a href="modules/models_dao_objectstore.html">models/DAO/<wbr>Object<wbr>Store</a>
+						<a href="modules/models_DAO_ObjectStore.html">models/DAO/<wbr>Object<wbr>Store</a>
 					</li>
 					<li class=" tsd-kind-module">
-						<a href="modules/models_dao_programmaticuserdao.html">models/DAO/<wbr>Programmatic<wbr>UserDAO</a>
+						<a href="modules/models_DAO_ProgrammaticUserDAO.html">models/DAO/<wbr>Programmatic<wbr>UserDAO</a>
 					</li>
 					<li class=" tsd-kind-module">
-						<a href="modules/models_dao_userdao.html">models/DAO/<wbr>UserDAO</a>
+						<a href="modules/models_DAO_UserDAO.html">models/DAO/<wbr>UserDAO</a>
 					</li>
 					<li class=" tsd-kind-module">
-						<a href="modules/models_dependencyconfig.html">models/<wbr>Dependency<wbr>Config</a>
+						<a href="modules/models_DependencyConfig.html">models/<wbr>Dependency<wbr>Config</a>
 					</li>
 					<li class=" tsd-kind-module">
-						<a href="modules/models_facebookads.html">models/<wbr>Facebook<wbr>Ads</a>
+						<a href="modules/models_FacebookAds.html">models/<wbr>Facebook<wbr>Ads</a>
 					</li>
 					<li class=" tsd-kind-module">
-						<a href="modules/models_ga.html">models/GA</a>
+						<a href="modules/models_GA.html">models/GA</a>
 					</li>
 					<li class=" tsd-kind-module">
-						<a href="modules/models_generalvehicle.html">models/<wbr>General<wbr>Vehicle</a>
+						<a href="modules/models_GeneralVehicle.html">models/<wbr>General<wbr>Vehicle</a>
 					</li>
 					<li class=" tsd-kind-module">
-						<a href="modules/models_googleads.html">models/<wbr>Google<wbr>Ads</a>
+						<a href="modules/models_GoogleAds.html">models/<wbr>Google<wbr>Ads</a>
 					</li>
 					<li class=" tsd-kind-module">
-						<a href="modules/models_jwt.html">models/JWT</a>
+						<a href="modules/models_JWT.html">models/JWT</a>
 					</li>
 					<li class=" tsd-kind-module">
-						<a href="modules/models_log.html">models/<wbr>Log</a>
+						<a href="modules/models_Log.html">models/<wbr>Log</a>
 					</li>
 					<li class=" tsd-kind-module">
-						<a href="modules/models_parametrizer.html">models/<wbr>Parametrizer</a>
+						<a href="modules/models_Parametrizer.html">models/<wbr>Parametrizer</a>
 					</li>
 					<li class=" tsd-kind-module">
-						<a href="modules/models_parametrizerfactory.html">models/<wbr>Parametrizer<wbr>Factory</a>
+						<a href="modules/models_ParametrizerFactory.html">models/<wbr>Parametrizer<wbr>Factory</a>
 					</li>
 					<li class=" tsd-kind-module">
-						<a href="modules/models_programmaticuser.html">models/<wbr>Programmatic<wbr>User</a>
+						<a href="modules/models_ProgrammaticUser.html">models/<wbr>Programmatic<wbr>User</a>
 					</li>
 					<li class=" tsd-kind-module">
-						<a href="modules/models_routespermission.html">models/<wbr>Routes<wbr>Permission</a>
+						<a href="modules/models_RoutesPermission.html">models/<wbr>Routes<wbr>Permission</a>
 					</li>
 					<li class=" tsd-kind-module">
-						<a href="modules/models_templateexcel.html">models/<wbr>Template<wbr>Excel</a>
+						<a href="modules/models_TemplateExcel.html">models/<wbr>Template<wbr>Excel</a>
 					</li>
 					<li class=" tsd-kind-module">
-						<a href="modules/models_user.html">models/<wbr>User</a>
+						<a href="modules/models_User.html">models/<wbr>User</a>
 					</li>
 					<li class=" tsd-kind-module">
-						<a href="modules/models_vehicle.html">models/<wbr>Vehicle</a>
+						<a href="modules/models_Vehicle.html">models/<wbr>Vehicle</a>
 					</li>
 					<li class=" tsd-kind-module">
-						<a href="modules/models_cloud_firestoreconnectionsingleton.html">models/cloud/<wbr>Firestore<wbr>Connection<wbr>Singleton</a>
+						<a href="modules/models_cloud_FirestoreConnectionSingleton.html">models/cloud/<wbr>Firestore<wbr>Connection<wbr>Singleton</a>
 					</li>
 					<li class=" tsd-kind-module">
-						<a href="modules/models_cloud_loggingsingleton.html">models/cloud/<wbr>Logging<wbr>Singleton</a>
+						<a href="modules/models_cloud_LoggingSingleton.html">models/cloud/<wbr>Logging<wbr>Singleton</a>
 					</li>
 					<li class=" tsd-kind-module">
-						<a href="modules/models_cloud_storageconnectionsingleton.html">models/cloud/<wbr>Storage<wbr>Connection<wbr>Singleton</a>
+						<a href="modules/models_cloud_StorageConnectionSingleton.html">models/cloud/<wbr>Storage<wbr>Connection<wbr>Singleton</a>
 					</li>
 					<li class=" tsd-kind-module">
-						<a href="modules/routes_agency.html">routes/agency</a>
+						<a href="modules/routes_adOpsTeam.html">routes/ad<wbr>Ops<wbr>Team</a>
 					</li>
 					<li class=" tsd-kind-module">
 						<a href="modules/routes_build.html">routes/build</a>
@@ -553,16 +553,16 @@
 						<a href="modules/routes_user.html">routes/user</a>
 					</li>
 					<li class=" tsd-kind-module">
-						<a href="modules/utils_csvutils.html">utils/<wbr>Csv<wbr>Utils</a>
+						<a href="modules/utils_CsvUtils.html">utils/<wbr>Csv<wbr>Utils</a>
 					</li>
 					<li class=" tsd-kind-module">
-						<a href="modules/utils_dateutils.html">utils/<wbr>Date<wbr>Utils</a>
+						<a href="modules/utils_DateUtils.html">utils/<wbr>Date<wbr>Utils</a>
 					</li>
 					<li class=" tsd-kind-module">
-						<a href="modules/utils_jsonutils.html">utils/<wbr>Json<wbr>Utils</a>
+						<a href="modules/utils_JsonUtils.html">utils/<wbr>Json<wbr>Utils</a>
 					</li>
 					<li class=" tsd-kind-module">
-						<a href="modules/utils_stringutils.html">utils/<wbr>String<wbr>Utils</a>
+						<a href="modules/utils_StringUtils.html">utils/<wbr>String<wbr>Utils</a>
 					</li>
 				</ul>
 			</nav>

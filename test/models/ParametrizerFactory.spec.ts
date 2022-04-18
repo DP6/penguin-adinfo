@@ -20,8 +20,10 @@ describe('ParametrizerFactory', () => {
 					Bandeira: ['/meu\\ ?Produto/'],
 					Veículo: [],
 				},
-				adobe: {
-					cid: ['Tipo de Compra', 'Bandeira', 'Veículo'],
+				analyticsTools: {
+					adobe: {
+						cid: ['Tipo de Compra', 'Bandeira', 'Veículo'],
+					}
 				},
 			});
 			const object = new ParametrizerFactory(csvLine, config).build(
@@ -44,8 +46,10 @@ describe('ParametrizerFactory', () => {
 					'Tipo de Compra': ['cpa', 'cpc'],
 					Bandeira: ['/meu\\ ?Produto/'],
 				},
-				ga: {
-					utm_source: ['Tipo de Compra', 'Bandeira'],
+				analyticsTools: {
+					ga: {
+						utm_source: ['Tipo de Compra', 'Bandeira'],
+					}
 				},
 			});
 			const object = new ParametrizerFactory(csvLine, config).build('ga');
@@ -67,9 +71,17 @@ describe('ParametrizerFactory', () => {
 					Dispositivo: ['desktop e mobile'],
 					Veículo: ['/.*/'],
 				},
-				criteo: {
-					ad: ['Dispositivo'],
-					campaign: ['Tipo de Compra', 'Veículo'],
+				analyticsTools: {
+					ga: {
+						utm_source: ['Dispositivo'],
+						utm_campaign: ['Tipo de Compra', 'Veículo'],
+					}
+				},
+				mediaTaxonomy: {
+					criteo: {
+						ad: ['Dispositivo'],
+						campaign: ['Tipo de Compra', 'Veículo'],
+					}
 				},
 			});
 			const object = new ParametrizerFactory(csvLine, config).build(

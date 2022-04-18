@@ -6,7 +6,7 @@ import register from './register';
 import user from './user';
 import login from './login';
 import campaign from './campaign';
-import agency from './agency';
+import adOpsTeam from './adOpsTeam';
 
 const routes = (app: { [key: string]: any }): void => {
 	config(app);
@@ -17,7 +17,7 @@ const routes = (app: { [key: string]: any }): void => {
 	user(app);
 	login(app);
 	campaign(app);
-	agency(app);
+	adOpsTeam(app);
 };
 
 export default routes;

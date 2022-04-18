@@ -6,21 +6,22 @@ const JsonUtils_1 = require('../utils/JsonUtils');
 const StringUtils_1 = require('../utils/StringUtils');
 const ParametrizerFactory_1 = require('../models/ParametrizerFactory');
 class Builder {
-	constructor(jsonFromFile, companyConfig, analyticsTool, media) {
+	constructor(jsonFromFile, advertiserConfig, analyticsTool, media) {
 		this._jsonFromFile = jsonFromFile;
-		this._companyConfig = companyConfig;
+		this._advertiserConfig = advertiserConfig;
 		this._media = media;
 		this._analyticsTool = analyticsTool;
 	}
 	build() {
 		const linesWithContent = this._jsonFromFile.filter((line) => !CsvUtils_1.CsvUtils.isLineEmpty(line));
 		const linesBuilded = linesWithContent.map((lineFromFile) => {
-			const parametrizerObject = new ParametrizerFactory_1.ParametrizerFactory(lineFromFile, this._companyConfig).build(
-				this._analyticsTool
-			);
+			const parametrizerObject = new ParametrizerFactory_1.ParametrizerFactory(
+				lineFromFile,
+				this._advertiserConfig
+			).build(this._analyticsTool);
 			const parameters = parametrizerObject.buildedLine();
 			if (this._media) {
-				const mediaParameters = new ParametrizerFactory_1.ParametrizerFactory(lineFromFile, this._companyConfig)
+				const mediaParameters = new ParametrizerFactory_1.ParametrizerFactory(lineFromFile, this._advertiserConfig)
 					.build(StringUtils_1.StringUtils.normalize(this._media))
 					.buildedLine();
 				const allParameters = Object.assign(

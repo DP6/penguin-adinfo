@@ -19,13 +19,17 @@ describe('Veículo Genérico', () => {
 					Dispositivo: ['desktop e mobile'],
 					Produto: ['/.*/'],
 				},
-				ga: {
-					utm_source: ['Tipo de Compra', 'Dispositivo'],
-					utm_campaign: ['Produto'],
+				analyticsTools: {
+					ga: {
+						utm_source: ['Tipo de Compra', 'Dispositivo'],
+						utm_campaign: ['Produto'],
+					}
 				},
-				criteo: {
-					campanha: ['Tipo de Compra', 'Dispositivo'],
-					ad: ['Produto'],
+				mediaTaxonomy: {
+					criteo: {
+						campanha: ['Tipo de Compra', 'Dispositivo'],
+						ad: ['Produto'],
+					}
 				},
 			});
 			const criteo = new GeneralVehicle(csvLine, config, 'criteo');
@@ -52,13 +56,17 @@ describe('Veículo Genérico', () => {
 					Dispositivo: ['desktop e mobile'],
 					Produto: ['fif'],
 				},
-				ga: {
-					utm_source: ['Tipo de Compra', 'Dispositivo'],
-					utm_campaign: ['Produto'],
+				analyticsTools: {
+					ga: {
+						utm_source: ['Tipo de Compra', 'Dispositivo'],
+						utm_campaign: ['Produto'],
+					}
 				},
-				criteo: {
-					campanha: ['Tipo de Compra', 'Dispositivo'],
-					ad: ['Produto'],
+				mediaTaxonomy: {
+					criteo: {
+						campanha: ['Tipo de Compra', 'Dispositivo'],
+						ad: ['Produto'],
+					}
 				},
 			});
 			const criteo = new GeneralVehicle(csvLine, config, 'criteo');
@@ -84,12 +92,17 @@ describe('Veículo Genérico', () => {
 					'Tipo de Compra': ['cpa', 'cpc'],
 					Dispositivo: ['desktop e mobile'],
 				},
-				ga: {
-					utm_source: ['Tipo de Compra', 'Dispositivo'],
+				analyticsTools: {
+					ga: {
+						utm_source: ['Tipo de Compra', 'Dispositivo'],
+						utm_campaign: ['Produto'],
+					}
 				},
-				criteo: {
-					campanha: ['Tipo de Compra', 'Dispositivo'],
-					ad: ['Produto'],
+				mediaTaxonomy: {
+					criteo: {
+						campanha: ['Tipo de Compra', 'Dispositivo'],
+						ad: ['Produto'],
+					}
 				},
 			});
 			const criteo = new GeneralVehicle(csvLine, config, 'criteo');
@@ -118,13 +131,17 @@ describe('Veículo Genérico', () => {
 					Dispositivo: ['desktop e mobile'],
 					Produto: ['/.*/'],
 				},
-				ga: {
-					utm_source: ['Tipo de Compra', 'Dispositivo'],
-					utm_campaign: ['Produto'],
+				analyticsTools: {
+					ga: {
+						utm_source: ['Tipo de Compra', 'Dispositivo'],
+						utm_campaign: ['Produto'],
+					}
 				},
-				criteo: {
-					campanha: ['Tipo de Compra', 'Dispositivo'],
-					ad: ['Produto'],
+				mediaTaxonomy: {
+					criteo: {
+						campanha: ['Tipo de Compra', 'Dispositivo'],
+						ad: ['Produto'],
+					}
 				},
 				dependenciesConfig: [
 					{
@@ -160,13 +177,17 @@ describe('Veículo Genérico', () => {
 					Dispositivo: ['desktop e mobile'],
 					Produto: ['fif'],
 				},
-				ga: {
-					utm_source: ['Tipo de Compra', 'Dispositivo'],
-					utm_campaign: ['Produto'],
+				analyticsTools: {
+					ga: {
+						utm_source: ['Tipo de Compra', 'Dispositivo'],
+						utm_campaign: ['Produto'],
+					}
 				},
-				criteo: {
-					campanha: ['Tipo de Compra', 'Dispositivo'],
-					ad: ['Produto'],
+				mediaTaxonomy: {
+					criteo: {
+						campanha: ['Tipo de Compra', 'Dispositivo'],
+						ad: ['Produto'],
+					}
 				},
 				dependenciesConfig: [
 					{

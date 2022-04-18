@@ -30,8 +30,8 @@ app.use(
 	cors({
 		allowedHeaders: [
 			'token',
-			'agency',
-			'company',
+			'adOpsTeam',
+			'advertiser',
 			'campaign',
 			'Content-Type',
 			'file',
@@ -73,10 +73,10 @@ app.all('*', async (req: { [key: string]: any }, res: { [key: string]: any }, ne
 				const user = new User(
 					payload.id,
 					payload.permission,
-					payload.company,
+					payload.advertiser,
 					payload.email,
-					payload.activate,
-					payload.agency
+					payload.active,
+					payload.adOpsTeam
 				);
 
 				const headers = { ...req.headers };
@@ -86,15 +86,15 @@ app.all('*', async (req: { [key: string]: any }, res: { [key: string]: any }, ne
 					user: user.id,
 					route: req.originalUrl,
 					email: user.email,
-					activate: user.activate,
+					active: user.active,
 					headers: headers,
 					body: req.body,
 				};
 
 				permissionForRoute = user.hasPermissionFor(url, req.method);
 
-				req.company = user.company;
-				req.agency = user.agency;
+				req.advertiser = user.advertiser;
+				req.adOpsTeam = user.adOpsTeam;
 				req.email = user.email;
 				req.permission = user.permission;
 				req.token = req.headers.token;
@@ -108,7 +108,7 @@ app.all('*', async (req: { [key: string]: any }, res: { [key: string]: any }, ne
 					user: payloadProgrammaticAccess.id,
 					route: req.originalUrl,
 					email: '',
-					activate: payloadProgrammaticAccess.activate,
+					active: payloadProgrammaticAccess.active,
 					headers: headers,
 					body: req.body,
 				};
@@ -116,16 +116,16 @@ app.all('*', async (req: { [key: string]: any }, res: { [key: string]: any }, ne
 				const programmaticUser = new ProgrammaticUser(
 					payloadProgrammaticAccess.id,
 					payloadProgrammaticAccess.permission,
-					payloadProgrammaticAccess.company,
+					payloadProgrammaticAccess.advertiser,
 					payloadProgrammaticAccess.email,
-					payloadProgrammaticAccess.activate,
-					payloadProgrammaticAccess.agency
+					payloadProgrammaticAccess.active,
+					payloadProgrammaticAccess.adOpsTeam
 				);
 
 				permissionForRoute = programmaticUser.hasPermissionFor(url, req.method);
 
-				req.company = programmaticUser.company;
-				req.agency = programmaticUser.agency;
+				req.advertiser = programmaticUser.advertiser;
+				req.adOpsTeam = programmaticUser.adOpsTeam;
 				req.email = programmaticUser.email;
 				req.permission = programmaticUser.permission;
 				req.token = req.headers.token;

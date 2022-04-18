@@ -4,14 +4,14 @@
 locals {
   project_prefix          = "adinfo-files"
   project_name            = "project-name"
-  code_bucket             = "${var.project_id}-adinfo-code-${var.company}"
-  final_bucket_name       = "${var.project_id}-${local.project_prefix}-${var.company}"
+  code_bucket             = "${var.project_id}-adinfo-code-${var.advertiser}"
+  final_bucket_name       = "${var.project_id}-${local.project_prefix}-${var.advertiser}"
 }
 
 #######################################
 #Variaveis de configuração
 #######################################
-variable "company" {
+variable "advertiser" {
   type        = string
   description = "O valor informado será usado em conjunto com o project_prefix para formar o nome do bucket"
 }
