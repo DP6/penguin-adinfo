@@ -53,7 +53,7 @@ const build = (app) => {
 			const fullHistoricalFilePath = `${pathDefault}/historical`;
 			const correctHistoricalFilePath = `${pathDefault}/correctHistorical`;
 			const apiResponse = new ApiResponse_1.ApiResponse();
-			if (!req.files || !req.files.data) {
+			if ((!req.files || !req.files.data) && !req.body.csv) {
 				apiResponse.responseText = 'Nenhum arquivo foi enviado!';
 				apiResponse.statusCode = 400;
 				res.status(apiResponse.statusCode).send(apiResponse.jsonResponse);
@@ -81,7 +81,8 @@ const build = (app) => {
 				return;
 			}
 			const fileName = DateUtils_1.DateUtils.generateDateString();
-			const fileContent = req.files.data.data;
+			console.log(req.body.csv);
+			const fileContent = req.files ? req.files.data : req.body.csv;
 			const filePath = `${advertiser}/${adOpsTeamPath}/${campaign}/${DateUtils_1.DateUtils.generateDateString()}.csv`;
 			let advertiserConfig;
 			const configDAO = new ConfigDAO_1.ConfigDAO(advertiser);
@@ -112,7 +113,10 @@ const build = (app) => {
 				})
 				.then(() =>
 					__awaiter(void 0, void 0, void 0, function* () {
-						const csvContent = fileContent.toString();
+						let csvContent = fileContent;
+						if (req.files) {
+							csvContent = fileContent.toString();
+						}
 						const separator = CsvUtils_1.CsvUtils.identifyCsvSepartor(
 							csvContent.split('\n')[0],
 							advertiserConfig.csvSeparator
