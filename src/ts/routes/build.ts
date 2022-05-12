@@ -58,7 +58,6 @@ const build = (app: { [key: string]: any }): void => {
 		}
 
 		const fileName = DateUtils.generateDateString();
-		console.log(req.body.csv);
 
 		const fileContent = req.files ? req.files.data : req.body.csv;
 

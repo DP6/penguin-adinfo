@@ -81,7 +81,6 @@ const build = (app) => {
 				return;
 			}
 			const fileName = DateUtils_1.DateUtils.generateDateString();
-			console.log(req.body.csv);
 			const fileContent = req.files ? req.files.data : req.body.csv;
 			const filePath = `${advertiser}/${adOpsTeamPath}/${campaign}/${DateUtils_1.DateUtils.generateDateString()}.csv`;
 			let advertiserConfig;
