@@ -19,6 +19,7 @@ export class GeneralVehicle extends Vehicle {
 		super(csvLine, config);
 		this._vehicleName = vehicleName;
 		this._buildGeneralParams();
+		console.log('build general params:', this._buildGeneralParams());
 	}
 
 	/**
@@ -40,6 +41,7 @@ export class GeneralVehicle extends Vehicle {
 			this._undefinedParameterErrorFields[param] = [];
 			const csvColumns: string[] = this.config.medias[this._vehicleName][param];
 			csvColumns.forEach((column) => {
+				// console.log('column', column)
 				const normalizedColumn = StringUtils.normalize(column);
 
 				const validateColumnExistsError = new ValidateColumnExistsHandler(this.config, column);
@@ -49,11 +51,16 @@ export class GeneralVehicle extends Vehicle {
 				validateColumnExistsError.setNext(validateFieldHandler).setNext(validateFieldDependencyHandler);
 
 				try {
+					console.log('csvline da coluna normalizada:', this.csvLine[normalizedColumn]);
+					console.log('csvline:', this.csvLine);
 					validateColumnExistsError.handle(this.csvLine[normalizedColumn]);
 				} catch (e) {
 					if (e.name === 'ValidateColumnExistsError') {
+						// console.log('to no erro de column exist error')
+						// console.log('param:', param, '\ncolumn:', column)
 						this._undefinedParameterFounded(param, column);
 					} else if (e.name === 'ValidateFieldError' || e.name === 'ValidateFieldDependencyError') {
+						// console.log('to no erro de field error')
 						this._validationErrorFounded(param, column);
 					}
 				}
