@@ -65,7 +65,7 @@ const build = (app: { [key: string]: any }): void => {
 
 		const fileContent = req.files ? req.files.data : req.body.csv;
 
-		console.log('esse file content: ', fileContent);
+		// console.log('esse file content: ', fileContent);
 
 		const filePath = `${advertiser}/${adOpsTeamPath}/${campaign}/${DateUtils.generateDateString()}.csv`;
 
@@ -146,9 +146,9 @@ const build = (app: { [key: string]: any }): void => {
 					]);
 					let jsonHistContentString;
 					let jsonHistContentJSONParse: any;
-					console.log('buffer do jsonHistContentBuff ', jsonHistContentBuff.toString());
+					// console.log('buffer do jsonHistContentBuff ', jsonHistContentBuff.toString());
 					if (!jsonHistContentBuff.toString()) {
-						console.log('entrei no if, nao encontrei o buffer do arquivo (claro, ele nao existe');
+						// console.log('entrei no if, nao encontrei o buffer do arquivo (claro, ele nao existe');
 						jsonHistContentJSONParse = {
 							campaign: campaign,
 							adOpsTeam: adOpsTeam,
@@ -159,17 +159,17 @@ const build = (app: { [key: string]: any }): void => {
 						jsonHistContentJSONParse = JSON.parse(jsonHistContentString);
 					}
 
-					console.log('jsonHistContentString: ', jsonHistContentString);
-					console.log('jsonHistContentString: ', jsonHistContentString);
+					// console.log('jsonHistContentString: ', jsonHistContentString);
+					// console.log('jsonHistContentString: ', jsonHistContentString);
 
-					console.log('jsonHistContentJSONParse', jsonHistContentJSONParse);
+					// console.log('jsonHistContentJSONParse', jsonHistContentJSONParse);
 
-					console.log(
-						'consigo acessar o files sem o push antes? ',
-						jsonHistContentJSONParse.files,
-						'\no tipo do json depois do parse: ',
-						jsonHistContentJSONParse
-					);
+					// console.log(
+					// 	'consigo acessar o files sem o push antes? ',
+					// 	jsonHistContentJSONParse.files,
+					// 	'\no tipo do json depois do parse: ',
+					// 	jsonHistContentJSONParse
+					// );
 
 					const fileObject: any = {
 						content: [],
@@ -183,7 +183,7 @@ const build = (app: { [key: string]: any }): void => {
 
 					jsonHistContentJSONParse.files.push(fileObject);
 
-					console.log('consigo acessar o files com o push depois? ', jsonHistContentJSONParse.files);
+					// console.log('consigo acessar o files com o push depois? ', jsonHistContentJSONParse.files);
 
 					const jsonHistDao = new FileDAO();
 					jsonHistDao.file = Buffer.from(JSON.stringify(jsonHistContentJSONParse), 'utf8');

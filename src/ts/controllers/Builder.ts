@@ -32,6 +32,7 @@ export class Builder {
 				this._analyticsTool
 			);
 			const parameters = parametrizerObject.buildedLine();
+			// console.log('parameters no build():', parameters)
 			if (this._media) {
 				const mediaParameters = new ParametrizerFactory(lineFromFile, this._advertiserConfig)
 					.build(StringUtils.normalize(this._media))
@@ -46,6 +47,7 @@ export class Builder {
 				return JsonUtils.addParametersAt(lineFromFile, { ...parameters.values, hasError: parameters.hasError });
 			}
 		});
+		// console.log('linesbuilded:', linesBuilded)
 		return linesBuilded;
 	}
 }
