@@ -121,6 +121,7 @@ const build = (app) => {
 							advertiserConfig.csvSeparator
 						);
 						const jsonFromFile = CsvUtils_1.CsvUtils.csv2json(csvContent, separator);
+						const headersFromInputJsonFile = Object.keys(jsonFromFile[0]);
 						const jsonParameterized = new Builder_1.Builder(
 							jsonFromFile,
 							advertiserConfig,

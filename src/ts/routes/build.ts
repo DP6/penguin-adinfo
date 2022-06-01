@@ -65,8 +65,6 @@ const build = (app: { [key: string]: any }): void => {
 
 		const fileContent = req.files ? req.files.data : req.body.csv;
 
-		// console.log('esse file content: ', fileContent);
-
 		const filePath = `${advertiser}/${adOpsTeamPath}/${campaign}/${DateUtils.generateDateString()}.csv`;
 
 		let advertiserConfig: Config;
@@ -104,6 +102,7 @@ const build = (app: { [key: string]: any }): void => {
 				}
 				const separator = CsvUtils.identifyCsvSepartor(csvContent.split('\n')[0], advertiserConfig.csvSeparator);
 				const jsonFromFile = CsvUtils.csv2json(csvContent, separator);
+				const headersFromInputJsonFile = Object.keys(jsonFromFile[0]);
 				const jsonParameterized = new Builder(jsonFromFile, advertiserConfig, analyticsTool, media).build();
 				const configVersion = advertiserConfig.version;
 				const configTimestamp = DateUtils.newDateStringFormat(
@@ -146,44 +145,65 @@ const build = (app: { [key: string]: any }): void => {
 					]);
 					let jsonHistContentString;
 					let jsonHistContentJSONParse: any;
-					// console.log('buffer do jsonHistContentBuff ', jsonHistContentBuff.toString());
 					if (!jsonHistContentBuff.toString()) {
-						// console.log('entrei no if, nao encontrei o buffer do arquivo (claro, ele nao existe');
 						jsonHistContentJSONParse = {
 							campaign: campaign,
 							adOpsTeam: adOpsTeam,
-							files: [],
+							[fileDate]: {}, //data da inserção
 						};
 					} else {
 						jsonHistContentString = jsonHistContentBuff.toString();
 						jsonHistContentJSONParse = JSON.parse(jsonHistContentString);
+						jsonHistContentJSONParse[fileDate] = {};
 					}
 
-					// console.log('jsonHistContentString: ', jsonHistContentString);
-					// console.log('jsonHistContentString: ', jsonHistContentString);
-
-					// console.log('jsonHistContentJSONParse', jsonHistContentJSONParse);
-
-					// console.log(
-					// 	'consigo acessar o files sem o push antes? ',
-					// 	jsonHistContentJSONParse.files,
-					// 	'\no tipo do json depois do parse: ',
-					// 	jsonHistContentJSONParse
-					// );
-
-					const fileObject: any = {
-						content: [],
+					//Filling in parametrization metadata
+					jsonHistContentJSONParse[fileDate]['metadata'] = {
+						file_date: new Date().toISOString(),
+						status: 'active', //Ver depois de pegar dinamicamente da instancia
+						agency_status: 'active', //Pegar dinamicamente quando tivermos a instancia de agencia
+						author: userEmail,
 					};
 
-					jsonParameterized.forEach((json) => {
-						fileObject['data'] = fileDate;
-						fileObject['author'] = userEmail;
-						fileObject.content.push(json);
+					//Filling in input key from parametrization
+					jsonHistContentJSONParse[fileDate]['input'] = [];
+
+					const linesParameterized = Object.values(jsonParameterized);
+
+					linesParameterized.forEach((line) => {
+						const lineKeys = Object.keys(line);
+						const objetosFiltrados = lineKeys
+							.filter((key) => {
+								return headersFromInputJsonFile.includes(key);
+							})
+							.reduce((object: any, key: any) => {
+								object[key] = line[key];
+								return object;
+							}, {});
+
+						jsonHistContentJSONParse[fileDate]['input'].push(objetosFiltrados);
 					});
 
-					jsonHistContentJSONParse.files.push(fileObject);
+					//Filling in result key from parametrization
+					jsonHistContentJSONParse[fileDate]['result'] = [];
+					const jsonParameterizedTemp = { ...jsonParameterized };
 
-					// console.log('consigo acessar o files com o push depois? ', jsonHistContentJSONParse.files);
+					Object.values(jsonParameterizedTemp).forEach((line: any) => {
+						headersFromInputJsonFile.forEach((header: any) => {
+							delete line[header];
+						});
+					});
+
+					jsonParameterized.forEach((line) => {
+						const objToPush = { ...line };
+
+						objToPush['metadata'] = {
+							hasError: objToPush.hasError,
+						};
+						delete objToPush.hasError;
+
+						jsonHistContentJSONParse[fileDate]['result'].push(objToPush);
+					});
 
 					const jsonHistDao = new FileDAO();
 					jsonHistDao.file = Buffer.from(JSON.stringify(jsonHistContentJSONParse), 'utf8');

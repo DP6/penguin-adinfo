@@ -76,7 +76,6 @@ class GA extends AnalyticsTool_1.AnalyticsTool {
 				try {
 					stringEmptyHandler.handle(this.csvLine[columnNormalized]);
 				} catch (e) {
-					console.log('entrei no catch do utm');
 					if (e.name === 'StringEmptyError') {
 						this._hasUndefinedParameterError[utm] = true;
 						this._undefinedParameterErroMessage[utm] += ` ${column} -`;

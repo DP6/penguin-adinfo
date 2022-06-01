@@ -90,7 +90,6 @@ export class CampaignDAO {
 				return true;
 			})
 			.catch((err) => {
-				console.log(err);
 				return false;
 			});
 	}

@@ -18,7 +18,6 @@ class GeneralVehicle extends Vehicle_1.Vehicle {
 		this._undefinedParameterErrorFields = {};
 		this._vehicleName = vehicleName;
 		this._buildGeneralParams();
-		console.log('build general params:', this._buildGeneralParams());
 	}
 	buildedLine() {
 		return {
@@ -46,8 +45,6 @@ class GeneralVehicle extends Vehicle_1.Vehicle {
 				);
 				validateColumnExistsError.setNext(validateFieldHandler).setNext(validateFieldDependencyHandler);
 				try {
-					console.log('csvline da coluna normalizada:', this.csvLine[normalizedColumn]);
-					console.log('csvline:', this.csvLine);
 					validateColumnExistsError.handle(this.csvLine[normalizedColumn]);
 				} catch (e) {
 					if (e.name === 'ValidateColumnExistsError') {

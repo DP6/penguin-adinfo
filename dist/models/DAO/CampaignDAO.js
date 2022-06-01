@@ -94,7 +94,6 @@ class CampaignDAO {
 				})
 			)
 			.catch((err) => {
-				console.log(err);
 				return false;
 			});
 	}
