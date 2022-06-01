@@ -43,7 +43,12 @@ export class Config {
 		}
 		delete jsonConfigTemp.analyticsTools;
 		this._validationRules = jsonConfigTemp.columns;
-		this._columnNames = Object.keys(jsonConfigTemp.columns).map((column) => column.toLowerCase());
+		// this._validationRules = Object.keys(jsonConfigTemp.columns).reduce((accumulator:{ [key: string]: string[]; }, key) => {
+		// 	accumulator[key.toLowerCase()] = jsonConfigTemp.columns[key];
+		// 	return accumulator;
+		//   }, {});
+		// this._columnNames = Object.keys(jsonConfigTemp.columns).map((column) => column.toLowerCase());
+		this._columnNames = Object.keys(jsonConfigTemp.columns);
 		delete jsonConfigTemp.columns;
 		if (jsonConfigTemp.mediaTaxonomy) {
 			this._mediaTaxonomy = jsonConfigTemp.mediaTaxonomy;
@@ -194,8 +199,8 @@ export class Config {
 	 * @param csvColumn
 	 */
 	public existsColumn(csvColumn: string): boolean {
-		// return !!this.validationRules[csvColumn];
-		return this._columnNames.includes(csvColumn.toLowerCase());
+		const lowerColumns = this._columnNames.map((column) => column.toLowerCase());
+		return lowerColumns.includes(csvColumn.toLowerCase());
 	}
 
 	get validationRules(): { [key: string]: string[] } {

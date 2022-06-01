@@ -34,7 +34,7 @@ class Config {
 		}
 		delete jsonConfigTemp.analyticsTools;
 		this._validationRules = jsonConfigTemp.columns;
-		this._columnNames = Object.keys(jsonConfigTemp.columns).map((column) => column.toLowerCase());
+		this._columnNames = Object.keys(jsonConfigTemp.columns);
 		delete jsonConfigTemp.columns;
 		if (jsonConfigTemp.mediaTaxonomy) {
 			this._mediaTaxonomy = jsonConfigTemp.mediaTaxonomy;
@@ -127,7 +127,8 @@ class Config {
 		);
 	}
 	existsColumn(csvColumn) {
-		return this._columnNames.includes(csvColumn.toLowerCase());
+		const lowerColumns = this._columnNames.map((column) => column.toLowerCase());
+		return lowerColumns.includes(csvColumn.toLowerCase());
 	}
 	get validationRules() {
 		return this._validationRules;
