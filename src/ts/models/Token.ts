@@ -1,7 +1,7 @@
 import { RoutesPermission } from './RoutesPermission';
 import { User } from './User';
 
-export class ProgrammaticUser extends User {
+export class Token extends User {
 	constructor(id: string, permission: string, advertiser: string, email: string, active = true, adOpsTeam = '') {
 		super(id, permission, advertiser, email, active, adOpsTeam, null);
 	}

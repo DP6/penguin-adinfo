@@ -111,7 +111,7 @@ resource "google_firestore_document" "campaigns_collection" {
 
 resource "google_firestore_document" "tokens_collection" {
   project     = var.project_id
-  collection  = "tokens"
+  collection  = "users"
   document_id = "owner instance"
   fields      = "{\"active\": {\"booleanValue\": true}, \"advertiser\": {\"stringValue\": \"${var.advertiser}\"},\"email\": {\"stringValue\": \"${var.email}\"},\"password\": {\"stringValue\": \"${var.password}\"},\"permission\": {\"stringValue\": \"owner\"}}"
 }

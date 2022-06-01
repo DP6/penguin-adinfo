@@ -40,7 +40,7 @@ class UserDAO {
 		this._email = email;
 		this._password = password;
 		this._objectStore = FirestoreConnectionSingleton_1.FirestoreConnectionSingleton.getInstance();
-		this._pathToCollection = ['tokens'];
+		this._pathToCollection = ['users'];
 		this._authCollection = this._objectStore.getCollection(this._pathToCollection);
 	}
 	getAllUsersFrom(advertiser, userRequestPermission) {

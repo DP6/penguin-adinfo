@@ -76,7 +76,7 @@ git clone https://github.com/DP6/penguin-adinfo.git
 
 2. Informe o nome da empresa, ferramenta analítica utilizada para a criação de um exemplo de configuração (Adobe Analytics ou Google Analytics) e o id do projeto. Também é possível informar o número da porta onde o adinfo irá rodar, entretanto esse último valor é opcional, caso nenhuma porta seja específica, por padrão ele executará na porta 443;
 
-3. Crie uma coleção no Firestore com o nome de **tokens** e insira um primeiro token com os seguintes campos (deixe o id do documento vazio para que seja gerado automaticamente):
+3. Crie uma coleção no Firestore com o nome de **users** e insira um primeiro user com os seguintes campos (deixe o id do documento vazio para que seja gerado automaticamente):
 
 ```
 {

@@ -6,7 +6,7 @@ const User_1 = require('../User');
 class AdOpsTeamDAO {
 	constructor() {
 		this._objectStore = FirestoreConnectionSingleton_1.FirestoreConnectionSingleton.getInstance();
-		this._pathToCollection = ['tokens'];
+		this._pathToCollection = ['users'];
 		this._authCollection = this._objectStore.getCollection(this._pathToCollection);
 	}
 	getAllAdOpsTeamsFrom(advertiser, adOpsTeam, userRequestPermission) {

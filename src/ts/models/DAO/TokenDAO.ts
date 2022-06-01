@@ -1,40 +1,40 @@
-import { ObjectStore } from '../DAO/ObjectStore';
+import { ObjectStore } from './ObjectStore';
 import { FirestoreConnectionSingleton } from '../cloud/FirestoreConnectionSingleton';
 import { CollectionReference, QuerySnapshot } from '@google-cloud/firestore';
-import { ProgrammaticUser } from '../ProgrammaticUser';
+import { Token } from '../Token';
 
-export class ProgrammaticUserDAO {
+export class TokenDAO {
 	private _objectStore: ObjectStore;
-	private _programmaticUser: CollectionReference;
+	private _token: CollectionReference;
 
 	constructor() {
 		this._objectStore = FirestoreConnectionSingleton.getInstance();
-		this._programmaticUser = this._objectStore.getCollection(['tokens_programaticos']);
+		this._token = this._objectStore.getCollection(['tokens']);
 	}
 
-	getProgrammaticUser(token: string): Promise<ProgrammaticUser> {
-		return this._programmaticUser
+	getToken(token: string): Promise<Token> {
+		return this._token
 			.where('__name__', '==', token)
 			.get()
 			.then((querySnapshot: QuerySnapshot) => {
 				if (querySnapshot.size > 0) {
-					let programmaticUser: ProgrammaticUser;
+					let token: Token;
 					querySnapshot.forEach((documentSnapshot) => {
 						const searchId = documentSnapshot.ref.path.match(new RegExp('[^/]+$'));
 						if (searchId) {
-							programmaticUser = new ProgrammaticUser(
+							token = new Token(
 								searchId[0],
 								documentSnapshot.get('permission'),
-								documentSnapshot.get('company'),
+								documentSnapshot.get('advertiser'),
 								documentSnapshot.get('email'),
-								documentSnapshot.get('activate'),
-								documentSnapshot.get('agency')
+								documentSnapshot.get('active'),
+								documentSnapshot.get('adOpsTeam')
 							);
 						} else {
 							throw new Error('Nenhum token encontrado!');
 						}
 					});
-					return programmaticUser;
+					return token;
 				} else {
 					throw new Error('Nenhum token encontrado!');
 				}

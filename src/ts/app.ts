@@ -8,8 +8,8 @@ import { ApiResponse } from './models/ApiResponse';
 import { LoggingSingleton } from './models/cloud/LoggingSingleton';
 import { JWT } from './models/JWT';
 import { User } from './models/User';
-import { ProgrammaticUser } from './models/ProgrammaticUser';
-import { ProgrammaticUserDAO } from './models/DAO/ProgrammaticUserDAO';
+import { Token } from './models/Token';
+import { TokenDAO } from './models/DAO/TokenDAO';
 
 config({ path: __dirname + '/../.env' });
 
@@ -99,35 +99,35 @@ app.all('*', async (req: { [key: string]: any }, res: { [key: string]: any }, ne
 				req.permission = user.permission;
 				req.token = req.headers.token;
 			} else if (programmaticToken) {
-				const payloadProgrammaticAccess = await new ProgrammaticUserDAO().getProgrammaticUser(programmaticToken);
+				const payloadTokenAccess = await new TokenDAO().getToken(programmaticToken);
 
 				const headers = { ...req.headers };
 				delete headers['token'];
 
 				log = {
-					user: payloadProgrammaticAccess.id,
+					user: payloadTokenAccess.id,
 					route: req.originalUrl,
 					email: '',
-					active: payloadProgrammaticAccess.active,
+					active: payloadTokenAccess.active,
 					headers: headers,
 					body: req.body,
 				};
 
-				const programmaticUser = new ProgrammaticUser(
-					payloadProgrammaticAccess.id,
-					payloadProgrammaticAccess.permission,
-					payloadProgrammaticAccess.advertiser,
-					payloadProgrammaticAccess.email,
-					payloadProgrammaticAccess.active,
-					payloadProgrammaticAccess.adOpsTeam
+				const token = new Token(
+					payloadTokenAccess.id,
+					payloadTokenAccess.permission,
+					payloadTokenAccess.advertiser,
+					payloadTokenAccess.email,
+					payloadTokenAccess.active,
+					payloadTokenAccess.adOpsTeam
 				);
 
-				permissionForRoute = programmaticUser.hasPermissionFor(url, req.method);
+				permissionForRoute = token.hasPermissionFor(url, req.method);
 
-				req.advertiser = programmaticUser.advertiser;
-				req.adOpsTeam = programmaticUser.adOpsTeam;
-				req.email = programmaticUser.email;
-				req.permission = programmaticUser.permission;
+				req.advertiser = token.advertiser;
+				req.adOpsTeam = token.adOpsTeam;
+				req.email = token.email;
+				req.permission = token.permission;
 				req.token = req.headers.token;
 			} else {
 				apiResponse.responseText = 'Usuário sem permissão para realizar essa ação!';

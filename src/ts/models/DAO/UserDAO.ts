@@ -1,7 +1,7 @@
 import { ObjectStore } from './ObjectStore';
 import { FirestoreConnectionSingleton } from '../cloud/FirestoreConnectionSingleton';
 import { User } from '../User';
-import { CollectionReference, QuerySnapshot, QueryDocumentSnapshot } from '@google-cloud/firestore';
+import { CollectionReference, QueryDocumentSnapshot } from '@google-cloud/firestore';
 import * as bcrypt from 'bcrypt';
 
 export class UserDAO {
@@ -15,7 +15,7 @@ export class UserDAO {
 		this._email = email;
 		this._password = password;
 		this._objectStore = FirestoreConnectionSingleton.getInstance();
-		this._pathToCollection = ['tokens'];
+		this._pathToCollection = ['users'];
 		this._authCollection = this._objectStore.getCollection(this._pathToCollection);
 	}
 

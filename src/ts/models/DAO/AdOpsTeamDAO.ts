@@ -1,5 +1,4 @@
 import { FirestoreConnectionSingleton } from '../cloud/FirestoreConnectionSingleton';
-import { QuerySnapshot } from '@google-cloud/firestore';
 import { ObjectStore } from './ObjectStore';
 import { User } from '../User';
 import { CollectionReference } from '@google-cloud/firestore';
@@ -11,7 +10,7 @@ export class AdOpsTeamDAO {
 
 	constructor() {
 		this._objectStore = FirestoreConnectionSingleton.getInstance();
-		this._pathToCollection = ['tokens'];
+		this._pathToCollection = ['users'];
 		this._authCollection = this._objectStore.getCollection(this._pathToCollection);
 	}
 
