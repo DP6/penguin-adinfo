@@ -1,4 +1,14 @@
-import { CollectionReference, DocumentReference, Firestore, DocumentData } from '@google-cloud/firestore';
+import {
+	CollectionReference,
+	DocumentReference,
+	Firestore,
+	DocumentData,
+	WriteResult,
+	DocumentSnapshot,
+	WhereFilterOp,
+	QuerySnapshot,
+	Query,
+} from '@google-cloud/firestore';
 import { ObjectStore } from '../DAO/ObjectStore';
 
 export class FirestoreConnectionSingleton extends ObjectStore {
@@ -103,5 +113,48 @@ export class FirestoreConnectionSingleton extends ObjectStore {
 		}
 		docRef.set(document);
 		return docRef;
+	}
+
+	/**
+	 * Pega um documento no Banco de Documentos pelo ID
+	 * @param collection Coleção onde o documento se encontra
+	 * @param id ID do documento
+	 * @returns Documento selecionado
+	 */
+	public getDocumentById(collection: CollectionReference, id: string): Promise<DocumentSnapshot<DocumentData>> {
+		return collection.doc(id).get();
+	}
+
+	/**
+	 * Atualiza os valores de um documento no banco de Documentos
+	 * @param collection Coleção onde está o documento
+	 * @param id ID do documento
+	 * @param updateData Campos a serem atualizados
+	 * @returns Documento Atualizado
+	 */
+	public updateDocumentById(
+		collection: CollectionReference,
+		id: string,
+		updateData: { [key: string]: any }
+	): Promise<WriteResult> {
+		return collection.doc(id).update(updateData);
+	}
+
+	/**
+	 * Retorna documentos do Banco de Documentos a partir de filtros
+	 * @param collection Coleção onde estão os documentos
+	 * @param conditions Condições de filtragem
+	 * @returns Documentos filtrados
+	 */
+	public getDocumentFiltered(
+		collection: CollectionReference,
+		conditions: { key: string; operator: WhereFilterOp; value: string | number | boolean }[]
+	): Promise<QuerySnapshot<DocumentData>> {
+		let query: Query<DocumentData>;
+		for (let i = 0; i < conditions.length; i++) {
+			if (i == 0) query = collection.where(conditions[i].key, conditions[i].operator, conditions[i].value);
+			else query = query.where(conditions[i].key, conditions[i].operator, conditions[i].value);
+		}
+		return query.get();
 	}
 }

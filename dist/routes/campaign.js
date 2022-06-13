@@ -30,43 +30,10 @@ var __awaiter =
 			step((generator = generator.apply(thisArg, _arguments || [])).next());
 		});
 	};
-var __asyncValues =
-	(this && this.__asyncValues) ||
-	function (o) {
-		if (!Symbol.asyncIterator) throw new TypeError('Symbol.asyncIterator is not defined.');
-		var m = o[Symbol.asyncIterator],
-			i;
-		return m
-			? m.call(o)
-			: ((o = typeof __values === 'function' ? __values(o) : o[Symbol.iterator]()),
-			  (i = {}),
-			  verb('next'),
-			  verb('throw'),
-			  verb('return'),
-			  (i[Symbol.asyncIterator] = function () {
-					return this;
-			  }),
-			  i);
-		function verb(n) {
-			i[n] =
-				o[n] &&
-				function (v) {
-					return new Promise(function (resolve, reject) {
-						(v = o[n](v)), settle(resolve, reject, v.done, v.value);
-					});
-				};
-		}
-		function settle(resolve, reject, d, v) {
-			Promise.resolve(v).then(function (v) {
-				resolve({ value: v, done: d });
-			}, reject);
-		}
-	};
 Object.defineProperty(exports, '__esModule', { value: true });
 const ApiResponse_1 = require('../models/ApiResponse');
 const FileDAO_1 = require('../models/DAO/FileDAO');
 const CampaignDAO_1 = require('../models/DAO/CampaignDAO');
-const AdOpsTeamDAO_1 = require('../models/DAO/AdOpsTeamDAO');
 const Campaign_1 = require('../models/Campaign');
 const DateUtils_1 = require('../utils/DateUtils');
 const campaign = (app) => {
@@ -102,60 +69,6 @@ const campaign = (app) => {
 				.finally(() => {
 					res.status(apiResponse.statusCode).send(apiResponse.jsonResponse);
 				});
-		})
-	);
-	app.get('/adOpsTeams/campaigns', (req, res) =>
-		__awaiter(void 0, void 0, void 0, function* () {
-			var e_1, _a;
-			const apiResponse = new ApiResponse_1.ApiResponse();
-			const advertiser = req.advertiser;
-			const adOpsTeam = req.adOpsTeam;
-			const permission = req.permission;
-			const gettingAdOpsTeams = () =>
-				__awaiter(void 0, void 0, void 0, function* () {
-					return yield new AdOpsTeamDAO_1.AdOpsTeamDAO().getAllAdOpsTeamsFrom(advertiser, adOpsTeam, permission);
-				});
-			const allAdOpsTeams = yield gettingAdOpsTeams();
-			if (permission === 'owner' || permission === 'admin') {
-				allAdOpsTeams.push('AdvertiserCampaigns');
-			}
-			const adOpsTeamsToReturn = [];
-			try {
-				for (
-					var allAdOpsTeams_1 = __asyncValues(allAdOpsTeams), allAdOpsTeams_1_1;
-					(allAdOpsTeams_1_1 = yield allAdOpsTeams_1.next()), !allAdOpsTeams_1_1.done;
-
-				) {
-					const adOpsTeamInfos = allAdOpsTeams_1_1.value;
-					try {
-						const campaignsObject = yield new CampaignDAO_1.CampaignDAO().getAllCampaignsFrom(
-							adOpsTeamInfos,
-							permission
-						);
-						if (campaignsObject) {
-							adOpsTeamsToReturn.push({ [adOpsTeamInfos]: campaignsObject });
-						}
-					} catch (err) {
-						apiResponse.statusCode = 500;
-						apiResponse.responseText = 'Erro ao resgatar a campanha!';
-						apiResponse.errorMessage = err.message;
-						res.status(apiResponse.statusCode).send(apiResponse.jsonResponse);
-						return;
-					}
-				}
-			} catch (e_1_1) {
-				e_1 = { error: e_1_1 };
-			} finally {
-				try {
-					if (allAdOpsTeams_1_1 && !allAdOpsTeams_1_1.done && (_a = allAdOpsTeams_1.return))
-						yield _a.call(allAdOpsTeams_1);
-				} finally {
-					if (e_1) throw e_1.error;
-				}
-			}
-			apiResponse.statusCode = 200;
-			apiResponse.responseText = JSON.stringify(adOpsTeamsToReturn);
-			res.status(apiResponse.statusCode).send(apiResponse.responseText);
 		})
 	);
 	app.get('/campaign/:adOpsTeam/list', (req, res) =>

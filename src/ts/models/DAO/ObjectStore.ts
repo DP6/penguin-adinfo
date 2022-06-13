@@ -1,4 +1,12 @@
-import { CollectionReference, DocumentReference, DocumentData } from '@google-cloud/firestore';
+import {
+	CollectionReference,
+	DocumentReference,
+	DocumentData,
+	WriteResult,
+	DocumentSnapshot,
+	WhereFilterOp,
+	QuerySnapshot,
+} from '@google-cloud/firestore';
 
 export abstract class ObjectStore {
 	abstract getCollection(path: string[]): CollectionReference;
@@ -9,4 +17,14 @@ export abstract class ObjectStore {
 		document: { [key: string]: any },
 		documentName: string
 	): DocumentReference;
+	abstract getDocumentById(collection: CollectionReference, id: string): Promise<DocumentSnapshot<DocumentData>>;
+	abstract updateDocumentById(
+		collection: CollectionReference,
+		id: string,
+		updateData: { [key: string]: any }
+	): Promise<WriteResult>;
+	abstract getDocumentFiltered(
+		collection: CollectionReference,
+		conditions: { key: string; operator: WhereFilterOp; value: string | number | boolean }[]
+	): Promise<QuerySnapshot<DocumentData>>;
 }

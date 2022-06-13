@@ -33,15 +33,16 @@ var __awaiter =
 Object.defineProperty(exports, '__esModule', { value: true });
 exports.CampaignDAO = void 0;
 const FirestoreConnectionSingleton_1 = require('../cloud/FirestoreConnectionSingleton');
+const Campaign_1 = require('../Campaign');
 class CampaignDAO {
 	constructor() {
 		this._objectStore = FirestoreConnectionSingleton_1.FirestoreConnectionSingleton.getInstance();
 		this._pathToCollection = ['campaigns'];
-		this._authCollection = this._objectStore.getCollection(this._pathToCollection);
+		this._campaignCollection = this._objectStore.getCollection(this._pathToCollection);
 	}
 	getCampaign(campaignId) {
 		return this._objectStore
-			.getAllDocumentsFrom(this._authCollection)
+			.getAllDocumentsFrom(this._campaignCollection)
 			.then((campaigns) => {
 				if (campaigns.length > 0) {
 					const [filteredCampaign] = campaigns.filter((campaign) => campaign.campaignId === campaignId);
@@ -56,7 +57,7 @@ class CampaignDAO {
 	}
 	getAllCampaignsFrom(adOpsTeam, userRequestPermission) {
 		return this._objectStore
-			.getAllDocumentsFrom(this._authCollection)
+			.getAllDocumentsFrom(this._campaignCollection)
 			.then((campaigns) => {
 				if (!adOpsTeam && (userRequestPermission === 'user' || userRequestPermission === 'adOpsManager')) {
 					throw new Error('Nenhuma campanha foi selecionada!');
@@ -84,11 +85,11 @@ class CampaignDAO {
 	}
 	addCampaign(campaign) {
 		return this._objectStore
-			.addDocumentIn(this._authCollection, campaign.toJson(), '')
+			.addDocumentIn(this._campaignCollection, campaign.toJson(), '')
 			.get()
 			.then((data) =>
 				__awaiter(this, void 0, void 0, function* () {
-					yield this._authCollection.doc(data.id).update({ campaignId: data.id });
+					yield this._campaignCollection.doc(data.id).update({ campaignId: data.id });
 					return true;
 				})
 			)
@@ -99,7 +100,7 @@ class CampaignDAO {
 	}
 	deactivateCampaign(campaignId, userRequestPermission) {
 		return this._objectStore
-			.getAllDocumentsFrom(this._authCollection)
+			.getAllDocumentsFrom(this._campaignCollection)
 			.then((campaigns) => {
 				if (userRequestPermission !== 'user') {
 					const [filteredCampaign] = campaigns.filter((campaign) => campaign.campaignId === campaignId);
@@ -122,7 +123,7 @@ class CampaignDAO {
 	}
 	reactivateCampaign(campaignId, userRequestPermission) {
 		return this._objectStore
-			.getAllDocumentsFrom(this._authCollection)
+			.getAllDocumentsFrom(this._campaignCollection)
 			.then((campaigns) => {
 				if (userRequestPermission !== 'user') {
 					const [filteredCampaign] = campaigns.filter((campaign) => campaign.campaignId === campaignId);
@@ -138,6 +139,42 @@ class CampaignDAO {
 					.doc(`${filteredCampaign.name} - ${filteredCampaign.adOpsTeam}`)
 					.update(filteredCampaign);
 				return true;
+			})
+			.catch((err) => {
+				throw err;
+			});
+	}
+	getAllCampaignsFromAdOpsTeam(advertiserId, adOpsTeamId) {
+		const equal = '==';
+		const conditions = [
+			{
+				key: 'advertiser',
+				operator: equal,
+				value: advertiserId,
+			},
+			{
+				key: 'adOpsTeam',
+				operator: equal,
+				value: adOpsTeamId,
+			},
+		];
+		return this._objectStore
+			.getDocumentFiltered(this._campaignCollection, conditions)
+			.then((campaignsDocuments) => {
+				const campaigns = [];
+				campaignsDocuments.docs.map((campaignDocument) => {
+					campaigns.push(
+						new Campaign_1.Campaign(
+							campaignDocument.get('name'),
+							campaignDocument.get('advertiser'),
+							campaignDocument.get('adOpsTeam'),
+							campaignDocument.get('campaignId'),
+							campaignDocument.get('active'),
+							campaignDocument.get('created')
+						)
+					);
+				});
+				return campaigns;
 			})
 			.catch((err) => {
 				throw err;

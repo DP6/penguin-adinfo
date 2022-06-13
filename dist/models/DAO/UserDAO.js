@@ -41,11 +41,11 @@ class UserDAO {
 		this._password = password;
 		this._objectStore = FirestoreConnectionSingleton_1.FirestoreConnectionSingleton.getInstance();
 		this._pathToCollection = ['users'];
-		this._authCollection = this._objectStore.getCollection(this._pathToCollection);
+		this._userCollection = this._objectStore.getCollection(this._pathToCollection);
 	}
 	getAllUsersFrom(advertiser, userRequestPermission) {
 		return this._objectStore
-			.getAllDocumentsFrom(this._authCollection)
+			.getAllDocumentsFrom(this._userCollection)
 			.then((allUsersDocuments) => {
 				const users = [];
 				const allAdvertiserUsers = allUsersDocuments.filter((user) => user.advertiser === advertiser);
@@ -74,9 +74,45 @@ class UserDAO {
 				throw err;
 			});
 	}
+	getAllUsersFromAdOpsTeam(advertiserId, adOpsTeamId) {
+		const equal = '==';
+		const conditions = [
+			{
+				key: 'advertiser',
+				operator: equal,
+				value: advertiserId,
+			},
+			{
+				key: 'adOpsTeam',
+				operator: equal,
+				value: adOpsTeamId,
+			},
+		];
+		return this._objectStore
+			.getDocumentFiltered(this._userCollection, conditions)
+			.then((usersDocuments) => {
+				const users = [];
+				usersDocuments.docs.map((userDocument) => {
+					users.push(
+						new User_1.User(
+							userDocument.get('id'),
+							userDocument.get('permission'),
+							userDocument.get('advertiser'),
+							userDocument.get('email'),
+							userDocument.get('active'),
+							userDocument.get('adOpsTeam')
+						)
+					);
+				});
+				return users;
+			})
+			.catch((err) => {
+				throw err;
+			});
+	}
 	getUser() {
 		return this._objectStore
-			.getAllDocumentsFrom(this._authCollection)
+			.getAllDocumentsFrom(this._userCollection)
 			.then((allUsersDocuments) => {
 				if (allUsersDocuments.length > 0) {
 					const [userToValidate] = allUsersDocuments.filter((user) => user.email === this._email);
@@ -101,11 +137,11 @@ class UserDAO {
 	}
 	addUser(user) {
 		return this._objectStore
-			.addDocumentIn(this._authCollection, user.toJsonSave(), '')
+			.addDocumentIn(this._userCollection, user.toJsonSave(), '')
 			.get()
 			.then((data) =>
 				__awaiter(this, void 0, void 0, function* () {
-					yield this._authCollection.doc(data.id).update({ userid: data.id });
+					yield this._userCollection.doc(data.id).update({ userid: data.id });
 					return data.id;
 				})
 			)
@@ -128,7 +164,7 @@ class UserDAO {
 	}
 	deactivateUser(userId, userRequestPermission) {
 		return this._objectStore
-			.getAllDocumentsFrom(this._authCollection)
+			.getAllDocumentsFrom(this._userCollection)
 			.then((allUsersDocuments) => {
 				const [userToDeactivate] = allUsersDocuments.filter((user) => user.userid === userId);
 				if (
@@ -154,7 +190,7 @@ class UserDAO {
 	}
 	reactivateUser(userId, userRequestPermission) {
 		return this._objectStore
-			.getAllDocumentsFrom(this._authCollection)
+			.getAllDocumentsFrom(this._userCollection)
 			.then((allUsersDocuments) => {
 				const [userToReactivate] = allUsersDocuments.filter((user) => user.userid === userId);
 				if (
@@ -172,29 +208,6 @@ class UserDAO {
 			})
 			.then((userToReactivate) => {
 				this._objectStore.getCollection(this._pathToCollection).doc(userToReactivate.userid).update(userToReactivate);
-				return true;
-			})
-			.catch((err) => {
-				throw err;
-			});
-	}
-	reactivateCampaign(campaignId, userRequestPermission) {
-		return this._objectStore
-			.getAllDocumentsFrom(this._authCollection)
-			.then((campaigns) => {
-				if (userRequestPermission !== 'user') {
-					const [filteredCampaign] = campaigns.filter((campaign) => campaign.campaignId === campaignId);
-					filteredCampaign.active = true;
-					return filteredCampaign;
-				} else {
-					throw new Error('Permissões insuficientes para inavitar a campanha!');
-				}
-			})
-			.then((filteredCampaign) => {
-				this._objectStore
-					.getCollection(this._pathToCollection)
-					.doc(`${filteredCampaign.name} - ${filteredCampaign.adOpsTeam}`)
-					.update(filteredCampaign);
 				return true;
 			})
 			.catch((err) => {

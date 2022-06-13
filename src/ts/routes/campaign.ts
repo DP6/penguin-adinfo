@@ -1,7 +1,6 @@
 import { ApiResponse } from '../models/ApiResponse';
 import { FileDAO } from '../models/DAO/FileDAO';
 import { CampaignDAO } from '../models/DAO/CampaignDAO';
-import { AdOpsTeamDAO } from '../models/DAO/AdOpsTeamDAO';
 import { Campaign } from '../models/Campaign';
 import { DateUtils } from '../utils/DateUtils';
 
@@ -14,6 +13,7 @@ const campaign = (app: { [key: string]: any }): void => {
 		const advertiser = req.advertiser;
 		const adOpsTeam = req.body.adOpsTeam ? req.body.adOpsTeam : 'AdvertiserCampaigns';
 
+		//TODO RETIRAR
 		if (req.permission === 'user') {
 			throw new Error('Usuário sem permissão para realizar esta ação!');
 		}
@@ -41,43 +41,6 @@ const campaign = (app: { [key: string]: any }): void => {
 			.finally(() => {
 				res.status(apiResponse.statusCode).send(apiResponse.jsonResponse);
 			});
-	});
-
-	app.get('/adOpsTeams/campaigns', async (req: { [key: string]: any }, res: { [key: string]: any }) => {
-		const apiResponse = new ApiResponse();
-
-		const advertiser = req.advertiser;
-		const adOpsTeam = req.adOpsTeam;
-		const permission = req.permission;
-
-		const gettingAdOpsTeams = async () => {
-			return await new AdOpsTeamDAO().getAllAdOpsTeamsFrom(advertiser, adOpsTeam, permission);
-		};
-
-		const allAdOpsTeams: string[] = await gettingAdOpsTeams();
-		if (permission === 'owner' || permission === 'admin') {
-			allAdOpsTeams.push('AdvertiserCampaigns');
-		}
-		const adOpsTeamsToReturn: {
-			[key: string]: { campaignName: string; campaignId: string; adOpsTeam: string; active: boolean }[];
-		}[] = [];
-		for await (const adOpsTeamInfos of allAdOpsTeams) {
-			try {
-				const campaignsObject = await new CampaignDAO().getAllCampaignsFrom(adOpsTeamInfos, permission);
-				if (campaignsObject) {
-					adOpsTeamsToReturn.push({ [adOpsTeamInfos]: campaignsObject });
-				}
-			} catch (err) {
-				apiResponse.statusCode = 500;
-				apiResponse.responseText = 'Erro ao resgatar a campanha!';
-				apiResponse.errorMessage = err.message;
-				res.status(apiResponse.statusCode).send(apiResponse.jsonResponse);
-				return;
-			}
-		}
-		apiResponse.statusCode = 200;
-		apiResponse.responseText = JSON.stringify(adOpsTeamsToReturn);
-		res.status(apiResponse.statusCode).send(apiResponse.responseText);
 	});
 
 	app.get('/campaign/:adOpsTeam/list', async (req: { [key: string]: any }, res: { [key: string]: any }) => {

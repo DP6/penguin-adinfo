@@ -1,17 +1,17 @@
 import { ObjectStore } from './ObjectStore';
 import { FirestoreConnectionSingleton } from '../cloud/FirestoreConnectionSingleton';
-import { CollectionReference } from '@google-cloud/firestore';
+import { CollectionReference, WhereFilterOp } from '@google-cloud/firestore';
 import { Campaign } from '../Campaign';
 
 export class CampaignDAO {
 	private _objectStore: ObjectStore;
-	private _authCollection: CollectionReference;
+	private _campaignCollection: CollectionReference;
 	private _pathToCollection: string[];
 
 	constructor() {
 		this._objectStore = FirestoreConnectionSingleton.getInstance();
 		this._pathToCollection = ['campaigns'];
-		this._authCollection = this._objectStore.getCollection(this._pathToCollection);
+		this._campaignCollection = this._objectStore.getCollection(this._pathToCollection);
 	}
 
 	/**
@@ -21,7 +21,7 @@ export class CampaignDAO {
 	 */
 	public getCampaign(campaignId: string): Promise<string | void> {
 		return this._objectStore
-			.getAllDocumentsFrom(this._authCollection)
+			.getAllDocumentsFrom(this._campaignCollection)
 			.then((campaigns) => {
 				if (campaigns.length > 0) {
 					const [filteredCampaign] = campaigns.filter((campaign) => campaign.campaignId === campaignId);
@@ -46,7 +46,7 @@ export class CampaignDAO {
 		userRequestPermission: string
 	): Promise<{ campaignName: string; campaignId: string; adOpsTeam: string; active: boolean }[]> {
 		return this._objectStore
-			.getAllDocumentsFrom(this._authCollection)
+			.getAllDocumentsFrom(this._campaignCollection)
 			.then((campaigns) => {
 				if (!adOpsTeam && (userRequestPermission === 'user' || userRequestPermission === 'adOpsManager')) {
 					throw new Error('Nenhuma campanha foi selecionada!');
@@ -77,16 +77,16 @@ export class CampaignDAO {
 	}
 
 	/**
-	 * Adiciona uam nova campanha na base de dados
+	 * Adiciona uma nova campanha na base de dados
 	 * @param campaign Campanha a ser adicionada
-	 * @returns Booleano indicando sucesso ou fracasso da criação do usuário
+	 * @returns Booleano indicando sucesso ou fracasso da criação da campanha
 	 */
 	public addCampaign(campaign: Campaign): Promise<boolean> {
 		return this._objectStore
-			.addDocumentIn(this._authCollection, campaign.toJson(), '')
+			.addDocumentIn(this._campaignCollection, campaign.toJson(), '')
 			.get()
 			.then(async (data) => {
-				await this._authCollection.doc(data.id).update({ campaignId: data.id });
+				await this._campaignCollection.doc(data.id).update({ campaignId: data.id });
 				return true;
 			})
 			.catch((err) => {
@@ -103,7 +103,7 @@ export class CampaignDAO {
 	 */
 	public deactivateCampaign(campaignId: string, userRequestPermission: string): Promise<boolean | void> {
 		return this._objectStore
-			.getAllDocumentsFrom(this._authCollection)
+			.getAllDocumentsFrom(this._campaignCollection)
 			.then((campaigns) => {
 				if (userRequestPermission !== 'user') {
 					const [filteredCampaign] = campaigns.filter((campaign) => campaign.campaignId === campaignId);
@@ -126,14 +126,14 @@ export class CampaignDAO {
 	}
 
 	/**
-	 * Resativa um usuário
+	 * Reativa uma campanha
 	 * @param campaignName ID da campanha a ser reativada
 	 * @param userRequestPermission permissão do usuario que solicitou a alteração
 	 * @returns retorna True em caso de sucesso
 	 */
 	public reactivateCampaign(campaignId: string, userRequestPermission: string): Promise<boolean | void> {
 		return this._objectStore
-			.getAllDocumentsFrom(this._authCollection)
+			.getAllDocumentsFrom(this._campaignCollection)
 			.then((campaigns) => {
 				if (userRequestPermission !== 'user') {
 					const [filteredCampaign] = campaigns.filter((campaign) => campaign.campaignId === campaignId);
@@ -149,6 +149,49 @@ export class CampaignDAO {
 					.doc(`${filteredCampaign.name} - ${filteredCampaign.adOpsTeam}`)
 					.update(filteredCampaign);
 				return true;
+			})
+			.catch((err) => {
+				throw err;
+			});
+	}
+
+	/**
+	 * Pega todas as campanhas para um adOpsTeam especificado
+	 * @param advertiserId Advertiser das campanhas a serem selecionadas
+	 * @param adOpsTeamId AdOpsTeams das campanhas a serem selecionadas
+	 * @returns Lista de campanhas de acordo com os filtros especificados
+	 */
+	public getAllCampaignsFromAdOpsTeam(advertiserId: string, adOpsTeamId: string): Promise<Campaign[]> {
+		const equal: WhereFilterOp = '==';
+		const conditions = [
+			{
+				key: 'advertiser',
+				operator: equal,
+				value: advertiserId,
+			},
+			{
+				key: 'adOpsTeam',
+				operator: equal,
+				value: adOpsTeamId,
+			},
+		];
+		return this._objectStore
+			.getDocumentFiltered(this._campaignCollection, conditions)
+			.then((campaignsDocuments) => {
+				const campaigns: Campaign[] = [];
+				campaignsDocuments.docs.map((campaignDocument) => {
+					campaigns.push(
+						new Campaign(
+							campaignDocument.get('name'),
+							campaignDocument.get('advertiser'),
+							campaignDocument.get('adOpsTeam'),
+							campaignDocument.get('campaignId'),
+							campaignDocument.get('active'),
+							campaignDocument.get('created')
+						)
+					);
+				});
+				return campaigns;
 			})
 			.catch((err) => {
 				throw err;

@@ -1,14 +1,14 @@
 import { ObjectStore } from './ObjectStore';
 import { FirestoreConnectionSingleton } from '../cloud/FirestoreConnectionSingleton';
 import { User } from '../User';
-import { CollectionReference, QueryDocumentSnapshot } from '@google-cloud/firestore';
+import { CollectionReference, QueryDocumentSnapshot, WhereFilterOp } from '@google-cloud/firestore';
 import * as bcrypt from 'bcrypt';
 
 export class UserDAO {
 	private _email: string;
 	private _password: string;
 	private _objectStore: ObjectStore;
-	private _authCollection: CollectionReference;
+	private _userCollection: CollectionReference;
 	private _pathToCollection: string[];
 
 	constructor(email?: string, password?: string) {
@@ -16,7 +16,7 @@ export class UserDAO {
 		this._password = password;
 		this._objectStore = FirestoreConnectionSingleton.getInstance();
 		this._pathToCollection = ['users'];
-		this._authCollection = this._objectStore.getCollection(this._pathToCollection);
+		this._userCollection = this._objectStore.getCollection(this._pathToCollection);
 	}
 
 	/**
@@ -27,7 +27,7 @@ export class UserDAO {
 	 */
 	public getAllUsersFrom(advertiser: string, userRequestPermission: string): Promise<User[] | void> {
 		return this._objectStore
-			.getAllDocumentsFrom(this._authCollection)
+			.getAllDocumentsFrom(this._userCollection)
 			.then((allUsersDocuments) => {
 				const users: User[] = [];
 				const allAdvertiserUsers = allUsersDocuments.filter((user) => user.advertiser === advertiser);
@@ -58,12 +58,55 @@ export class UserDAO {
 	}
 
 	/**
+	 * Pega todos os usuários de um adOpsTeam
+	 * @param advertiserId advertiser dos usuários a serem selecionados
+	 * @param adOpsTeamId AdOpsTeam dos usuários a serem selecionados
+	 * @returns Lista de usuários do AdOpsTeam especificado
+	 */
+	public getAllUsersFromAdOpsTeam(advertiserId: string, adOpsTeamId: string): Promise<User[]> {
+		const equal: WhereFilterOp = '==';
+		const conditions = [
+			{
+				key: 'advertiser',
+				operator: equal,
+				value: advertiserId,
+			},
+			{
+				key: 'adOpsTeam',
+				operator: equal,
+				value: adOpsTeamId,
+			},
+		];
+		return this._objectStore
+			.getDocumentFiltered(this._userCollection, conditions)
+			.then((usersDocuments) => {
+				const users: User[] = [];
+				usersDocuments.docs.map((userDocument) => {
+					users.push(
+						new User(
+							userDocument.get('id'),
+							userDocument.get('permission'),
+							userDocument.get('advertiser'),
+							userDocument.get('email'),
+							userDocument.get('active'),
+							userDocument.get('adOpsTeam')
+						)
+					);
+				});
+				return users;
+			})
+			.catch((err) => {
+				throw err;
+			});
+	}
+
+	/**
 	 * Consulta o usuario na base de dados
 	 * @returns Retorna o usuario procurado
 	 */
 	public getUser(): Promise<User | void> {
 		return this._objectStore
-			.getAllDocumentsFrom(this._authCollection)
+			.getAllDocumentsFrom(this._userCollection)
 			.then((allUsersDocuments) => {
 				if (allUsersDocuments.length > 0) {
 					const [userToValidate] = allUsersDocuments.filter((user) => user.email === this._email);
@@ -96,10 +139,10 @@ export class UserDAO {
 	 */
 	public addUser(user: User): Promise<string | void> {
 		return this._objectStore
-			.addDocumentIn(this._authCollection, user.toJsonSave(), '')
+			.addDocumentIn(this._userCollection, user.toJsonSave(), '')
 			.get()
 			.then(async (data) => {
-				await this._authCollection.doc(data.id).update({ userid: data.id });
+				await this._userCollection.doc(data.id).update({ userid: data.id });
 				return data.id;
 			})
 			.catch((err) => console.log(err));
@@ -135,7 +178,7 @@ export class UserDAO {
 
 	public deactivateUser(userId: string, userRequestPermission: string): Promise<boolean | void> {
 		return this._objectStore
-			.getAllDocumentsFrom(this._authCollection)
+			.getAllDocumentsFrom(this._userCollection)
 			.then((allUsersDocuments) => {
 				const [userToDeactivate] = allUsersDocuments.filter((user) => user.userid === userId);
 				if (
@@ -169,7 +212,7 @@ export class UserDAO {
 
 	public reactivateUser(userId: string, userRequestPermission: string): Promise<boolean | void> {
 		return this._objectStore
-			.getAllDocumentsFrom(this._authCollection)
+			.getAllDocumentsFrom(this._userCollection)
 			.then((allUsersDocuments) => {
 				const [userToReactivate] = allUsersDocuments.filter((user) => user.userid === userId);
 				if (
@@ -187,30 +230,6 @@ export class UserDAO {
 			})
 			.then((userToReactivate) => {
 				this._objectStore.getCollection(this._pathToCollection).doc(userToReactivate.userid).update(userToReactivate);
-				return true;
-			})
-			.catch((err) => {
-				throw err;
-			});
-	}
-
-	public reactivateCampaign(campaignId: string, userRequestPermission: string): Promise<boolean | void> {
-		return this._objectStore
-			.getAllDocumentsFrom(this._authCollection)
-			.then((campaigns) => {
-				if (userRequestPermission !== 'user') {
-					const [filteredCampaign] = campaigns.filter((campaign) => campaign.campaignId === campaignId);
-					filteredCampaign.active = true;
-					return filteredCampaign;
-				} else {
-					throw new Error('Permissões insuficientes para inavitar a campanha!');
-				}
-			})
-			.then((filteredCampaign) => {
-				this._objectStore
-					.getCollection(this._pathToCollection)
-					.doc(`${filteredCampaign.name} - ${filteredCampaign.adOpsTeam}`)
-					.update(filteredCampaign);
 				return true;
 			})
 			.catch((err) => {

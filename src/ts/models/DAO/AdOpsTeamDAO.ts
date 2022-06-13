@@ -1,43 +1,41 @@
 import { FirestoreConnectionSingleton } from '../cloud/FirestoreConnectionSingleton';
 import { ObjectStore } from './ObjectStore';
-import { User } from '../User';
 import { CollectionReference } from '@google-cloud/firestore';
+import { AdOpsTeam } from '../AdOpsTeam';
 
 export class AdOpsTeamDAO {
 	private _objectStore: ObjectStore;
 	private _pathToCollection: string[];
-	private _authCollection: CollectionReference;
+	private _adOpsTeamCollection: CollectionReference;
 
 	constructor() {
 		this._objectStore = FirestoreConnectionSingleton.getInstance();
-		this._pathToCollection = ['users'];
-		this._authCollection = this._objectStore.getCollection(this._pathToCollection);
+		this._pathToCollection = ['adOpsTeam'];
+		this._adOpsTeamCollection = this._objectStore.getCollection(this._pathToCollection);
 	}
 
 	/**
-	 * Retorna todas os adOpsTeams de um advertiser
-	 * @param advertiser Empresa(advertiser) das adOpsTeams a serem buscados
-	 * @param adOpsTeam Empresa(advertiser) das adOpsTeams a serem buscados
-	 * @param userRequestPermission permissão do usuario que solicitou a alteração
-	 * @returns Lista de adOpsTeams
+	 * Adiciona um novo adOpsTeam na base de dados
+	 * @param adOpsTeam AdOpsTeam a ser adicionado
+	 * @returns ID do novo adOpsTeam
 	 */
-	public getAllAdOpsTeamsFrom(advertiser: string, adOpsTeam: string, userRequestPermission: string): Promise<string[]> {
+	public addAdOpsTeam(adOpsTeam: AdOpsTeam): Promise<boolean | void> {
 		return this._objectStore
-			.getAllDocumentsFrom(this._authCollection)
-			.then((users) => {
-				if (userRequestPermission === 'adOpsTeamManager' || userRequestPermission === 'user') {
-					return [adOpsTeam];
-				}
-				const adOpsTeamsToReturn: string[] = users
-					.filter((user) => user.advertiser === advertiser)
-					.map((filteredUsers) => {
-						if (filteredUsers.adOpsTeam !== undefined && filteredUsers.adOpsTeam !== null) {
-							return filteredUsers.adOpsTeam;
-						} else {
-							throw new Error('Nenhuma adOpsTeam encontrada!');
-						}
-					});
-				return [...new Set(adOpsTeamsToReturn.filter((adOpsTeam) => adOpsTeam))];
+			.getAllDocumentsFrom(this._adOpsTeamCollection)
+			.then((adOpsTeamsDocuments) => {
+				const existsAdOpsTeam =
+					adOpsTeamsDocuments.filter((adOpsTeamDocument) => adOpsTeamDocument.name === adOpsTeam.name).length > 0
+						? true
+						: false;
+				if (existsAdOpsTeam) throw new Error('AdOpsTeam já existe!');
+				return this._objectStore;
+			})
+			.then((objectStore) => {
+				return objectStore.addDocumentIn(this._adOpsTeamCollection, adOpsTeam.toJson(), adOpsTeam.name).get();
+			})
+			.then(async (data) => {
+				await this._adOpsTeamCollection.doc(data.id).update({ id: data.id });
+				return true;
 			})
 			.catch((err) => {
 				throw err;
@@ -45,42 +43,66 @@ export class AdOpsTeamDAO {
 	}
 
 	/**
-	 * Retorna todos os usuários de uma determinada adOpsTeam
-	 * @param advertiser Empresa(advertiser) dos usuários a serem buscados
-	 * @param adOpsTeam adOpsTeam da qual usuários serão buscados
-	 * @param requestUserid id do usuário que está fazendo o request
-	 * @returns Lista de usuários
+	 * Busca um time adOps da base de dados
+	 * @param adOpsTeamId ID do time adOps a ser buscada
+	 * @returns Retorna o adOps procurado
 	 */
-
-	public getAllUsersFromAdOpsTeam(
-		advertiser: string,
-		adOpsTeam: string,
-		requestUserid: string
-	): Promise<User[] | void> {
+	public getAdOpsTeam(adOpsTeamId: string): Promise<AdOpsTeam> {
 		return this._objectStore
-			.getAllDocumentsFrom(this._authCollection)
-			.then((allUsersDocuments) => {
-				const filteredUsers = allUsersDocuments.filter(
-					(user) => user.advertiser === advertiser && user.adOpsTeam === adOpsTeam && user.userid !== requestUserid
-				);
-				const users: User[] = [];
-				if (filteredUsers.length > 0) {
-					filteredUsers.forEach((user) => {
-						const userToPush = new User(
-							user.userid,
-							user.permission,
-							user.advertiser,
-							user.email,
-							user.active,
-							user.adOpsTeam
-						);
-						users.push(userToPush);
-					});
-					return users;
-				} else {
-					throw new Error('Nenhum usuário encontrado!');
-				}
+			.getDocumentById(this._adOpsTeamCollection, adOpsTeamId)
+			.then((adOpsTeam) => {
+				if (!adOpsTeam.get('name')) throw new Error('AdOpsTeam não encontrado!');
+				return new AdOpsTeam(adOpsTeam.get('name'), adOpsTeam.get('active'), adOpsTeam.get('advertiserId'));
 			})
+			.catch((err) => {
+				throw err;
+			});
+	}
+
+	/**
+	 * Retorna todas as adOpsTeams de um advertiser
+	 * @param advertiser advertiser onde serão buscados os times de adOps
+	 * @param userRequestPermission permissão do usuario que solicitou a alteração
+	 * @returns Lista Objetos contendo atributos de cada campanha
+	 */
+	public getAllAdOpsTeamsFrom(advertiser: string): Promise<AdOpsTeam[]> {
+		return this._objectStore
+			.getAllDocumentsFrom(this._adOpsTeamCollection)
+			.then((adOpsTeams) => {
+				return adOpsTeams
+					.filter((adOpsTeam) => adOpsTeam.advertiserId === advertiser)
+					.map((adOpsTeam) => new AdOpsTeam(adOpsTeam.name, adOpsTeam.active, adOpsTeam.advertiserId));
+			})
+			.catch((err) => {
+				throw err;
+			});
+	}
+
+	/**
+	 * Desativa um time de adOps
+	 * @param adOpsTeamId ID do adOpsTeam a a ser desativado
+	 * @param userRequestPermission permissão do usuario que solicitou a alteração
+	 * @returns retorna True em caso de sucesso
+	 */
+	public deactivateAdOpsTeam(adOpsTeamId: string): Promise<boolean> {
+		return this._objectStore
+			.updateDocumentById(this._adOpsTeamCollection, adOpsTeamId, { active: false })
+			.then(() => true)
+			.catch((err) => {
+				throw err;
+			});
+	}
+
+	/**
+	 * Reativa um adOpsTeam
+	 * @param adOpsTeamId ID do time adOps a ser reativado
+	 * @param userRequestPermission permissão do usuario que solicitou a alteração
+	 * @returns retorna True em caso de sucesso
+	 */
+	public reactivateAdOpsTeam(adOpsTeamId: string): Promise<boolean> {
+		return this._objectStore
+			.updateDocumentById(this._adOpsTeamCollection, adOpsTeamId, { active: true })
+			.then(() => true)
 			.catch((err) => {
 				throw err;
 			});

@@ -15,6 +15,7 @@
 | email       | Body        | String | Email do usuário                                                             |
 | password    | Body        | String | Senha do usuário                                                             |
 | newPassword | Body        | String | Nova senha do usuário                                                        |
+| name        | Body        | String | Nome do time adOps                                                           |
 
 ## Rotas
 
@@ -163,3 +164,57 @@
 **Parâmetros**: token.
 
 **Descrição**: Retorna todos os users de uma agência.
+
+### (POST) /adOpsTeam
+
+**Parâmetros**: token, name.
+
+**Descrição**: Cria um novo time AdOps.
+
+### (GET) /adOpsTeam
+
+**Parâmetros**: token.
+
+**Descrição**: Retorna o time de AdOps do usuário atual.
+
+### (GET) /adOpsTeam/list
+
+**Parâmetros**: token.
+
+**Descrição**: Retorna uma lista de time adOps do advertiser do usuário.
+
+### (POST) /adOpsTeam/:adOpsTeam/deactivate
+
+**Parâmetros**: token.
+
+**Descrição**: Desativa um time adOps.
+
+### (POST) /adOpsTeam/:adOpsTeam/reactivate
+
+**Parâmetros**: token.
+
+**Descrição**: Reativa um time adOps.
+
+### (GET) /adOpsTeam/users
+
+**Parâmetros**: token.
+
+**Descrição**: Retorna uma lista dos usuários pertencentes ao AdOpsTeam do usuário atual.
+
+### (GET) //adOpsTeam/:adOpsTeam/users
+
+**Parâmetros**: token.
+
+**Descrição**: Retorna uma lista dos usuários pertencentes ao AdOpsTeam selecionado.
+
+### (GET) /adOpsTeam/campaigns
+
+**Parâmetros**: token.
+
+**Descrição**: Retorna uma lista das campanhas pertencentes ao AdOpsTeam do usuário atual.
+
+### (GET) //adOpsTeam/:adOpsTeam/campaigns
+
+**Parâmetros**: token.
+
+**Descrição**: Retorna uma lista das campanhas pertencentes ao AdOpsTeam selecionado.
