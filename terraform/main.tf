@@ -98,8 +98,8 @@ resource "google_firestore_document" "blocklist_collection" {
 resource "google_firestore_document" "adOpsTeams_collection" {
   project     = var.project_id
   collection  = "adOpsTeams"
-  document_id = "adOpsTeams - instance"
-  fields      = "{}"
+  document_id = "adOpsInterno"
+  fields      = "{\"active\": {\"booleanValue\": true}, \"advertiser\": {\"stringValue\": \"${var.advertiser}\"}, \"name\": {\"stringValue\": \"adOpsInterno\"}}"
 }
 
 resource "google_firestore_document" "campaigns_collection" {
@@ -109,7 +109,7 @@ resource "google_firestore_document" "campaigns_collection" {
   fields      = "{}"
 }
 
-resource "google_firestore_document" "tokens_collection" {
+resource "google_firestore_document" "users_collection" {
   project     = var.project_id
   collection  = "users"
   document_id = "owner instance"
