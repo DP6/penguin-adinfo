@@ -1,6 +1,6 @@
 import { FirestoreConnectionSingleton } from '../cloud/FirestoreConnectionSingleton';
 import { ObjectStore } from './ObjectStore';
-import { CollectionReference } from '@google-cloud/firestore';
+import { CollectionReference, WhereFilterOp } from '@google-cloud/firestore';
 import { AdOpsTeam } from '../AdOpsTeam';
 
 export class AdOpsTeamDAO {
@@ -21,20 +21,15 @@ export class AdOpsTeamDAO {
 	 */
 	public addAdOpsTeam(adOpsTeam: AdOpsTeam): Promise<boolean | void> {
 		return this._objectStore
-			.getAllDocumentsFrom(this._adOpsTeamCollection)
+			.getDocumentById(this._adOpsTeamCollection, adOpsTeam.name)
 			.then((adOpsTeamsDocuments) => {
-				const existsAdOpsTeam =
-					adOpsTeamsDocuments.filter((adOpsTeamDocument) => adOpsTeamDocument.name === adOpsTeam.name).length > 0
-						? true
-						: false;
-				if (existsAdOpsTeam) throw new Error('AdOpsTeam já existe!');
+				if (adOpsTeamsDocuments.get('name')) throw new Error('AdOpsTeam já existe!');
 				return this._objectStore;
 			})
 			.then((objectStore) => {
 				return objectStore.addDocumentIn(this._adOpsTeamCollection, adOpsTeam.toJson(), adOpsTeam.name).get();
 			})
-			.then(async (data) => {
-				await this._adOpsTeamCollection.doc(data.id).update({ id: data.id });
+			.then(() => {
 				return true;
 			})
 			.catch((err) => {
@@ -66,12 +61,28 @@ export class AdOpsTeamDAO {
 	 * @returns Lista Objetos contendo atributos de cada campanha
 	 */
 	public getAllAdOpsTeamsFrom(advertiser: string): Promise<AdOpsTeam[]> {
+		const equal: WhereFilterOp = '==';
+		const conditions = [
+			{
+				key: 'advertiserId',
+				operator: equal,
+				value: advertiser,
+			},
+		];
 		return this._objectStore
-			.getAllDocumentsFrom(this._adOpsTeamCollection)
-			.then((adOpsTeams) => {
-				return adOpsTeams
-					.filter((adOpsTeam) => adOpsTeam.advertiserId === advertiser)
-					.map((adOpsTeam) => new AdOpsTeam(adOpsTeam.name, adOpsTeam.active, adOpsTeam.advertiserId));
+			.getDocumentFiltered(this._adOpsTeamCollection, conditions)
+			.then((adOpsTeamsDocuments) => {
+				const adOpsTeams: AdOpsTeam[] = [];
+				adOpsTeamsDocuments.docs.map((adOpsTeamDocument) => {
+					adOpsTeams.push(
+						new AdOpsTeam(
+							adOpsTeamDocument.get('name'),
+							adOpsTeamDocument.get('active'),
+							adOpsTeamDocument.get('advertiserId')
+						)
+					);
+				});
+				return adOpsTeams;
 			})
 			.catch((err) => {
 				throw err;
