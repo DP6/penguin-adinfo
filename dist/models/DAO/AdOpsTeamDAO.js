@@ -6,7 +6,7 @@ const AdOpsTeam_1 = require('../AdOpsTeam');
 class AdOpsTeamDAO {
 	constructor() {
 		this._objectStore = FirestoreConnectionSingleton_1.FirestoreConnectionSingleton.getInstance();
-		this._pathToCollection = ['adOpsTeam'];
+		this._pathToCollection = ['adOpsTeams'];
 		this._adOpsTeamCollection = this._objectStore.getCollection(this._pathToCollection);
 	}
 	addAdOpsTeam(adOpsTeam) {
