@@ -21,8 +21,6 @@ const build = (app: { [key: string]: any }): void => {
 
 		const pathDefault = `${advertiser}/${adOpsTeamPath}/${campaign}`;
 
-		// const fullHistoricalFilePath = `${pathDefault}/historical`;
-		// const correctHistoricalFilePath = `${pathDefault}/correctHistorical`;
 		const fullHistoricalFilePath = `${pathDefault}/historical`;
 
 		const apiResponse = new ApiResponse();
@@ -58,8 +56,6 @@ const build = (app: { [key: string]: any }): void => {
 			res.status(apiResponse.statusCode).send(apiResponse.jsonResponse);
 			return;
 		}
-
-		// const fileName = DateUtils.generateDateString();
 
 		const fileDate = DateUtils.generateDateString();
 
@@ -149,7 +145,7 @@ const build = (app: { [key: string]: any }): void => {
 						jsonHistContentJSONParse = {
 							campaign: campaign,
 							adOpsTeam: adOpsTeam,
-							[fileDate]: {}, //data da inserção
+							[fileDate]: {}, //insertion date
 						};
 					} else {
 						jsonHistContentString = jsonHistContentBuff.toString();
@@ -160,8 +156,8 @@ const build = (app: { [key: string]: any }): void => {
 					//Filling in parametrization metadata
 					jsonHistContentJSONParse[fileDate]['metadata'] = {
 						file_date: new Date().toISOString(),
-						status: 'active', //Ver depois de pegar dinamicamente da instancia
-						agency_status: 'active', //Pegar dinamicamente quando tivermos a instancia de agencia
+						status: 'active', //
+						agency_status: 'active', //upgrade to get from adOpsTeam instance
 						author: userEmail,
 					};
 
@@ -172,7 +168,7 @@ const build = (app: { [key: string]: any }): void => {
 
 					linesParameterized.forEach((line) => {
 						const lineKeys = Object.keys(line);
-						const objetosFiltrados = lineKeys
+						const filteredObjects = lineKeys
 							.filter((key) => {
 								return headersFromInputJsonFile.includes(key);
 							})
@@ -181,7 +177,7 @@ const build = (app: { [key: string]: any }): void => {
 								return object;
 							}, {});
 
-						jsonHistContentJSONParse[fileDate]['input'].push(objetosFiltrados);
+						jsonHistContentJSONParse[fileDate]['input'].push(filteredObjects);
 					});
 
 					//Filling in result key from parametrization
