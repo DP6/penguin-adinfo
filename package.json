@@ -82,7 +82,7 @@
 		"remark": "^14.0.2"
 	},
 	"devDependencies": {
-		"@types/chai": "^4.3.0",
+		"@types/chai": "^4.3.1",
 		"@types/cors": "^2.8.12",
 		"@types/express": "^4.17.13",
 		"@types/express-fileupload": "^1.2.2",
