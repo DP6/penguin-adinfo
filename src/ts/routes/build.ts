@@ -59,7 +59,7 @@ const build = (app: { [key: string]: any }): void => {
 
 		const fileDate = DateUtils.generateDateString();
 
-		const fileContent = req.files ? req.files.data : req.body.csv;
+		const fileContent = req.files ? req.files.data.data : req.body.csv;
 
 		const filePath = `${advertiser}/${adOpsTeamPath}/${campaign}/${DateUtils.generateDateString()}.csv`;
 
@@ -137,7 +137,7 @@ const build = (app: { [key: string]: any }): void => {
 
 				if (csv) {
 					const [jsonHistContentBuff] = await Promise.all([
-						await await new FileDAO().getContentFrom(`${fullHistoricalFilePath}.json`),
+						new FileDAO().getContentFrom(`${fullHistoricalFilePath}.json`),
 					]);
 					let jsonHistContentString;
 					let jsonHistContentJSONParse: any;

@@ -81,7 +81,7 @@ const build = (app) => {
 				return;
 			}
 			const fileDate = DateUtils_1.DateUtils.generateDateString();
-			const fileContent = req.files ? req.files.data : req.body.csv;
+			const fileContent = req.files ? req.files.data.data : req.body.csv;
 			const filePath = `${advertiser}/${adOpsTeamPath}/${campaign}/${DateUtils_1.DateUtils.generateDateString()}.csv`;
 			let advertiserConfig;
 			const configDAO = new ConfigDAO_1.ConfigDAO(advertiser);
@@ -160,7 +160,7 @@ const build = (app) => {
 						});
 						if (csv) {
 							const [jsonHistContentBuff] = yield Promise.all([
-								yield yield new FileDAO_1.FileDAO().getContentFrom(`${fullHistoricalFilePath}.json`),
+								new FileDAO_1.FileDAO().getContentFrom(`${fullHistoricalFilePath}.json`),
 							]);
 							let jsonHistContentString;
 							let jsonHistContentJSONParse;
