@@ -122,7 +122,10 @@ const build = (app: { [key: string]: any }): void => {
 							parametrizedCsv += '\n\nConfiguracao versao' + separator + configVersion;
 							parametrizedCsv += '\nConfiguracao inserida em' + separator + configTimestamp;
 
-							if (err) reject(err);
+							if (err) {
+								reject(err);
+								throw Error('Falha na geração do CSV!');
+							}
 
 							await Promise.all([fileDao.save(filePath.replace('.csv', '_parametrizado.csv'))]);
 							resolve(parametrizedCsv);
@@ -135,79 +138,75 @@ const build = (app: { [key: string]: any }): void => {
 					);
 				});
 
-				if (csv) {
-					const [jsonHistContentBuff] = await Promise.all([
-						new FileDAO().getContentFrom(`${fullHistoricalFilePath}.json`),
-					]);
-					let jsonHistContentString;
-					let jsonHistContentJSONParse: any;
-					if (!jsonHistContentBuff.toString()) {
-						jsonHistContentJSONParse = {
-							campaign: campaign,
-							adOpsTeam: adOpsTeam,
-							[fileDate]: {}, //insertion date
-						};
-					} else {
-						jsonHistContentString = jsonHistContentBuff.toString();
-						jsonHistContentJSONParse = JSON.parse(jsonHistContentString);
-						jsonHistContentJSONParse[fileDate] = {};
-					}
-
-					//Filling in parametrization metadata
-					jsonHistContentJSONParse[fileDate]['metadata'] = {
-						file_date: new Date().toISOString(),
-						status: 'active', //
-						agency_status: 'active', //upgrade to get from adOpsTeam instance
-						author: userEmail,
+				const [jsonHistContentBuff] = await Promise.all([
+					new FileDAO().getContentFrom(`${fullHistoricalFilePath}.json`),
+				]);
+				let jsonHistContentString;
+				let jsonHistContentJSONParse: any;
+				if (!jsonHistContentBuff.toString()) {
+					jsonHistContentJSONParse = {
+						campaign: campaign,
+						adOpsTeam: adOpsTeam,
+						[fileDate]: {},
 					};
-
-					//Filling in input key from parametrization
-					jsonHistContentJSONParse[fileDate]['input'] = [];
-
-					const linesParameterized = Object.values(jsonParameterized);
-
-					linesParameterized.forEach((line) => {
-						const lineKeys = Object.keys(line);
-						const filteredObjects = lineKeys
-							.filter((key) => {
-								return headersFromInputJsonFile.includes(key);
-							})
-							.reduce((object: any, key: any) => {
-								object[key] = line[key];
-								return object;
-							}, {});
-
-						jsonHistContentJSONParse[fileDate]['input'].push(filteredObjects);
-					});
-
-					//Filling in result key from parametrization
-					jsonHistContentJSONParse[fileDate]['result'] = [];
-					const jsonParameterizedTemp = { ...jsonParameterized };
-
-					Object.values(jsonParameterizedTemp).forEach((line: any) => {
-						headersFromInputJsonFile.forEach((header: any) => {
-							delete line[header];
-						});
-					});
-
-					jsonParameterized.forEach((line) => {
-						const objToPush = { ...line };
-
-						objToPush['metadata'] = {
-							hasError: objToPush.hasError,
-						};
-						delete objToPush.hasError;
-
-						jsonHistContentJSONParse[fileDate]['result'].push(objToPush);
-					});
-
-					const jsonHistDao = new FileDAO();
-					jsonHistDao.file = Buffer.from(JSON.stringify(jsonHistContentJSONParse), 'utf8');
-
-					await Promise.all([jsonHistDao.save(`${fullHistoricalFilePath}.json`)]);
 				} else {
-					throw Error('Falha na geração do CSV!');
+					jsonHistContentString = jsonHistContentBuff.toString();
+					jsonHistContentJSONParse = JSON.parse(jsonHistContentString);
+					jsonHistContentJSONParse[fileDate] = {};
 				}
+
+				//Filling in parametrization metadata
+				jsonHistContentJSONParse[fileDate]['metadata'] = {
+					file_date: new Date().toISOString(),
+					status: 'active',
+					agency_status: 'active', //upgrade to get from adOpsTeam instance
+					author: userEmail,
+				};
+
+				//Filling in input key from parametrization
+				jsonHistContentJSONParse[fileDate]['input'] = [];
+
+				const linesParameterized = Object.values(jsonParameterized);
+
+				linesParameterized.forEach((line) => {
+					const lineKeys = Object.keys(line);
+					const filteredObjects = lineKeys
+						.filter((key) => {
+							return headersFromInputJsonFile.includes(key);
+						})
+						.reduce((object: any, key: any) => {
+							object[key] = line[key];
+							return object;
+						}, {});
+
+					jsonHistContentJSONParse[fileDate]['input'].push(filteredObjects);
+				});
+
+				//Filling in result key from parametrization
+				jsonHistContentJSONParse[fileDate]['result'] = [];
+				const jsonParameterizedTemp = { ...jsonParameterized };
+
+				Object.values(jsonParameterizedTemp).forEach((line: any) => {
+					headersFromInputJsonFile.forEach((header: any) => {
+						delete line[header];
+					});
+				});
+
+				jsonParameterized.forEach((line) => {
+					const objToPush = { ...line };
+
+					objToPush['metadata'] = {
+						hasError: objToPush.hasError,
+					};
+					delete objToPush.hasError;
+
+					jsonHistContentJSONParse[fileDate]['result'].push(objToPush);
+				});
+
+				const jsonHistDao = new FileDAO();
+				jsonHistDao.file = Buffer.from(JSON.stringify(jsonHistContentJSONParse), 'utf8');
+
+				await Promise.all([jsonHistDao.save(`${fullHistoricalFilePath}.json`)]);
 
 				return csv;
 			})
