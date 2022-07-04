@@ -43,11 +43,6 @@ export class Config {
 		}
 		delete jsonConfigTemp.analyticsTools;
 		this._validationRules = jsonConfigTemp.columns;
-		// this._validationRules = Object.keys(jsonConfigTemp.columns).reduce((accumulator:{ [key: string]: string[]; }, key) => {
-		// 	accumulator[key.toLowerCase()] = jsonConfigTemp.columns[key];
-		// 	return accumulator;
-		//   }, {});
-		// this._columnNames = Object.keys(jsonConfigTemp.columns).map((column) => column.toLowerCase());
 		this._columnNames = Object.keys(jsonConfigTemp.columns);
 		delete jsonConfigTemp.columns;
 		if (jsonConfigTemp.mediaTaxonomy) {
