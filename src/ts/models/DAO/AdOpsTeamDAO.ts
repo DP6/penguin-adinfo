@@ -60,7 +60,7 @@ export class AdOpsTeamDAO {
 	 * @param userRequestPermission permissão do usuario que solicitou a alteração
 	 * @returns Lista Objetos contendo atributos de cada campanha
 	 */
-	public getAllAdOpsTeamsFrom(advertiser: string): Promise<AdOpsTeam[]> {
+	public getAllAdOpsTeamsFrom(advertiser: string, permission: string): Promise<AdOpsTeam[]> {
 		const equal: WhereFilterOp = '==';
 		const conditions = [
 			{
@@ -82,7 +82,9 @@ export class AdOpsTeamDAO {
 						)
 					);
 				});
-				return adOpsTeams;
+				return permission !== 'owner' && permission !== 'admin'
+					? adOpsTeams.filter((AdOpsTeam) => AdOpsTeam.name !== 'Campanhas Internas')
+					: adOpsTeams;
 			})
 			.catch((err) => {
 				throw err;

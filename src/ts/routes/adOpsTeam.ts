@@ -56,18 +56,11 @@ const adOpsTeam = (app: { [key: string]: any }): void => {
 
 		const advertiser = req.advertiser;
 		const permission = req.permission;
-		console.log('permissao', permission);
 
 		new AdOpsTeamDAO()
-			.getAllAdOpsTeamsFrom(advertiser)
+			.getAllAdOpsTeamsFrom(advertiser, permission)
 			.then((adOpsTeams: AdOpsTeam[]) => {
-				const jsonAdopsTeams = adOpsTeams.map((adOpsTeam) => adOpsTeam.toJson());
-				const adOpsTeamsToReturn =
-					permission !== 'owner' && permission !== 'admin'
-						? jsonAdopsTeams.filter((AdOpsTeam) => AdOpsTeam.name !== 'Campanhas Internas')
-						: jsonAdopsTeams;
-
-				apiResponse.responseText = JSON.stringify(adOpsTeamsToReturn);
+				apiResponse.responseText = JSON.stringify(adOpsTeams.map((adOpsTeam) => adOpsTeam.toJson()));
 			})
 			.catch((err) => {
 				apiResponse.statusCode = 500;
