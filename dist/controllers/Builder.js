@@ -7,7 +7,7 @@ const StringUtils_1 = require('../utils/StringUtils');
 const ParametrizerFactory_1 = require('../models/ParametrizerFactory');
 class Builder {
 	constructor(jsonFromFile, advertiserConfig, analyticsTool, media) {
-		this._jsonFromFile = Object.assign({}, jsonFromFile);
+		this._jsonFromFile = jsonFromFile;
 		this._advertiserConfig = advertiserConfig;
 		this._media = media;
 		this._analyticsTool = analyticsTool;
