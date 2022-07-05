@@ -16,7 +16,7 @@ export class Builder {
 		analyticsTool: string,
 		media?: string
 	) {
-		this._jsonFromFile = { ...jsonFromFile };
+		this._jsonFromFile = jsonFromFile;
 		this._advertiserConfig = advertiserConfig;
 		this._media = media;
 		this._analyticsTool = analyticsTool;
