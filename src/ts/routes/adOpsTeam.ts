@@ -55,9 +55,10 @@ const adOpsTeam = (app: { [key: string]: any }): void => {
 		const apiResponse = new ApiResponse();
 
 		const advertiser = req.advertiser;
+		const permission = req.permission;
 
 		new AdOpsTeamDAO()
-			.getAllAdOpsTeamsFrom(advertiser)
+			.getAllAdOpsTeamsFrom(advertiser, permission)
 			.then((adOpsTeams: AdOpsTeam[]) => {
 				apiResponse.responseText = JSON.stringify(adOpsTeams.map((adOpsTeam) => adOpsTeam.toJson()));
 			})

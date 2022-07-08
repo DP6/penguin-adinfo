@@ -194,7 +194,8 @@ export class Config {
 	 * @param csvColumn
 	 */
 	public existsColumn(csvColumn: string): boolean {
-		return !!this.validationRules[csvColumn];
+		const lowerColumns = this._columnNames.map((column) => column.toLowerCase());
+		return lowerColumns.includes(csvColumn.toLowerCase());
 	}
 
 	get validationRules(): { [key: string]: string[] } {

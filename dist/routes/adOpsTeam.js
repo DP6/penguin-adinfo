@@ -82,8 +82,9 @@ const adOpsTeam = (app) => {
 		__awaiter(void 0, void 0, void 0, function* () {
 			const apiResponse = new ApiResponse_1.ApiResponse();
 			const advertiser = req.advertiser;
+			const permission = req.permission;
 			new AdOpsTeamDAO_1.AdOpsTeamDAO()
-				.getAllAdOpsTeamsFrom(advertiser)
+				.getAllAdOpsTeamsFrom(advertiser, permission)
 				.then((adOpsTeams) => {
 					apiResponse.responseText = JSON.stringify(adOpsTeams.map((adOpsTeam) => adOpsTeam.toJson()));
 				})

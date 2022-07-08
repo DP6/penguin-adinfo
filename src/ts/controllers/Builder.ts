@@ -26,7 +26,7 @@ export class Builder {
 	 * Parametriza o csv de acordo com a midia
 	 */
 	public build(): { [key: string]: any }[] {
-		const linesWithContent = this._jsonFromFile.filter((line) => !CsvUtils.isLineEmpty(line));
+		const linesWithContent = Object.values(this._jsonFromFile).filter((line) => !CsvUtils.isLineEmpty(line));
 		const linesBuilded: { [key: string]: string }[] = linesWithContent.map((lineFromFile) => {
 			const parametrizerObject = new ParametrizerFactory(lineFromFile, this._advertiserConfig).build(
 				this._analyticsTool

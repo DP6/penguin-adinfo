@@ -13,7 +13,7 @@ class Builder {
 		this._analyticsTool = analyticsTool;
 	}
 	build() {
-		const linesWithContent = this._jsonFromFile.filter((line) => !CsvUtils_1.CsvUtils.isLineEmpty(line));
+		const linesWithContent = Object.values(this._jsonFromFile).filter((line) => !CsvUtils_1.CsvUtils.isLineEmpty(line));
 		const linesBuilded = linesWithContent.map((lineFromFile) => {
 			const parametrizerObject = new ParametrizerFactory_1.ParametrizerFactory(
 				lineFromFile,

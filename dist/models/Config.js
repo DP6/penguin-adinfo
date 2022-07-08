@@ -127,7 +127,8 @@ class Config {
 		);
 	}
 	existsColumn(csvColumn) {
-		return !!this.validationRules[csvColumn];
+		const lowerColumns = this._columnNames.map((column) => column.toLowerCase());
+		return lowerColumns.includes(csvColumn.toLowerCase());
 	}
 	get validationRules() {
 		return this._validationRules;

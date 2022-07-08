@@ -94,7 +94,6 @@ class CampaignDAO {
 				})
 			)
 			.catch((err) => {
-				console.log(err);
 				return false;
 			});
 	}
@@ -111,10 +110,7 @@ class CampaignDAO {
 				}
 			})
 			.then((filteredCampaign) => {
-				this._objectStore
-					.getCollection(this._pathToCollection)
-					.doc(`${filteredCampaign.name} - ${filteredCampaign.adOpsTeam}`)
-					.update(filteredCampaign);
+				this._objectStore.getCollection(this._pathToCollection).doc(campaignId).update(filteredCampaign);
 				return true;
 			})
 			.catch((err) => {
@@ -134,10 +130,7 @@ class CampaignDAO {
 				}
 			})
 			.then((filteredCampaign) => {
-				this._objectStore
-					.getCollection(this._pathToCollection)
-					.doc(`${filteredCampaign.name} - ${filteredCampaign.adOpsTeam}`)
-					.update(filteredCampaign);
+				this._objectStore.getCollection(this._pathToCollection).doc(campaignId).update(filteredCampaign);
 				return true;
 			})
 			.catch((err) => {

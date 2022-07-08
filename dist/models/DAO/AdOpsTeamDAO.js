@@ -37,7 +37,7 @@ class AdOpsTeamDAO {
 				throw err;
 			});
 	}
-	getAllAdOpsTeamsFrom(advertiser) {
+	getAllAdOpsTeamsFrom(advertiser, permission) {
 		const equal = '==';
 		const conditions = [
 			{
@@ -59,7 +59,9 @@ class AdOpsTeamDAO {
 						)
 					);
 				});
-				return adOpsTeams;
+				return permission !== 'owner' && permission !== 'admin'
+					? adOpsTeams.filter((AdOpsTeam) => AdOpsTeam.name !== 'Campanhas Internas')
+					: adOpsTeams;
 			})
 			.catch((err) => {
 				throw err;
