@@ -39,6 +39,7 @@ export class UserDAO {
 						) {
 							const user = new User(
 								advertiserUser.userid,
+								advertiserUser.permission,
 								advertiserUser.advertiser,
 								advertiserUser.email,
 								advertiserUser.active,
