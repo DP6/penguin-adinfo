@@ -16,32 +16,8 @@ const register = (app) => {
 			.withMessage('Email inválido.'),
 		express_validator_1.body('password').exists().withMessage('Parâmetro password é obrigatório.'),
 		(req, res) => {
-			const validationErrors = express_validator_1.validationResult(req).array();
 			const apiResponse = new ApiResponse_1.ApiResponse();
-			let adOpsTeam = '';
-			if (req.adOpsTeam && req.body.permission === 'user') {
-				adOpsTeam = req.adOpsTeam;
-			} else if (req.body.adOpsTeam && req.body.permission === 'adOpsManager') {
-				adOpsTeam = req.body.adOpsTeam;
-			} else if (
-				!req.adOpsTeam &&
-				!req.body.adOpsTeam &&
-				(req.body.permission === 'user' || req.body.permission === 'adOpsManager')
-			) {
-				validationErrors.push({
-					param: 'email',
-					value: req.body.adOpsTeam,
-					location: 'body',
-					msg: 'Não foi possível encontrar o adOpsTeam.',
-				});
-			}
-			if (validationErrors.length > 0) {
-				const message = validationErrors.map((err) => err.msg).join(' ');
-				apiResponse.responseText = message;
-				apiResponse.statusCode = 400;
-				res.status(apiResponse.statusCode).send(apiResponse.jsonResponse);
-				return;
-			}
+			const adOpsTeam = req.body.adOpsTeam;
 			const newUser = new User_1.User(
 				'',
 				req.body.permission,

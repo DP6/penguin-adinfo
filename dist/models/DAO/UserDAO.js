@@ -57,6 +57,7 @@ class UserDAO {
 						) {
 							const user = new User_1.User(
 								advertiserUser.userid,
+								advertiserUser.permission,
 								advertiserUser.advertiser,
 								advertiserUser.email,
 								advertiserUser.active,
