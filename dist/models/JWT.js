@@ -33,6 +33,7 @@ var __awaiter =
 Object.defineProperty(exports, '__esModule', { value: true });
 exports.JWT = void 0;
 const jwt = require('jsonwebtoken');
+const jsonwebtoken_1 = require('jsonwebtoken');
 const BlockList_1 = require('./BlockList');
 class JWT {
 	constructor(user) {
@@ -65,10 +66,10 @@ class JWT {
 					return payload;
 				}
 			} catch (er) {
-				if (er.message === 'jwt expired') {
-					throw new Error('token expirado, faça login novamente');
+				if (er instanceof jsonwebtoken_1.TokenExpiredError) {
+					throw new Error('Token expirado! Faça o login novamente.');
 				}
-				throw new Error(er.message);
+				throw new Error(er);
 			}
 		});
 	}
