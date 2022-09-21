@@ -7,14 +7,13 @@ const ApiResponse_1 = require('../models/ApiResponse');
 const register = (app) => {
 	app.post(
 		'/register',
-		express_validator_1.body('permission').exists().withMessage('Parâmetro permission é obrigatório.'),
-		express_validator_1
-			.body('email')
+		(0, express_validator_1.body)('permission').exists().withMessage('Parâmetro permission é obrigatório.'),
+		(0, express_validator_1.body)('email')
 			.exists()
 			.withMessage('Parâmetro email é obrigatório.')
 			.isEmail()
 			.withMessage('Email inválido.'),
-		express_validator_1.body('password').exists().withMessage('Parâmetro password é obrigatório.'),
+		(0, express_validator_1.body)('password').exists().withMessage('Parâmetro password é obrigatório.'),
 		(req, res) => {
 			const apiResponse = new ApiResponse_1.ApiResponse();
 			const adOpsTeam = req.body.adOpsTeam;

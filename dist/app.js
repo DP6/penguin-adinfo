@@ -43,7 +43,7 @@ const JWT_1 = require('./models/JWT');
 const User_1 = require('./models/User');
 const Token_1 = require('./models/Token');
 const TokenDAO_1 = require('./models/DAO/TokenDAO');
-dotenv_1.config({ path: __dirname + '/../.env' });
+(0, dotenv_1.config)({ path: __dirname + '/../.env' });
 const app = express();
 LoggingSingleton_1.LoggingSingleton.getInstance().logInfo('Iniciando Adinfo!');
 app.use(
@@ -147,13 +147,13 @@ app.all('*', (req, res, next) =>
 				} else {
 					apiResponse.responseText = 'Usuário sem permissão para realizar essa ação!';
 					apiResponse.statusCode = 403;
-					res.statusCode(apiResponse.statusCode).send(apiResponse.jsonResponse);
+					res.status(apiResponse.statusCode).send(apiResponse.jsonResponse);
 				}
 				LoggingSingleton_1.LoggingSingleton.getInstance().logInfo(JSON.stringify(log));
 				if (!permissionForRoute) {
 					apiResponse.responseText = 'Usuário sem permissão para realizar essa ação!';
 					apiResponse.statusCode = 403;
-					res.statusCode(apiResponse.statusCode).send(apiResponse.jsonResponse);
+					res.status(apiResponse.statusCode).send(apiResponse.jsonResponse);
 				}
 				next();
 			} catch (e) {
@@ -164,6 +164,6 @@ app.all('*', (req, res, next) =>
 		}
 	})
 );
-routes_1.default(app);
+(0, routes_1.default)(app);
 app.get('/', (req, res) => res.status(200).send('OK'));
 module.exports = app;
