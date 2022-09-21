@@ -132,7 +132,7 @@ app.all('*', async (req: { [key: string]: any }, res: { [key: string]: any }, ne
 			} else {
 				apiResponse.responseText = 'Usuário sem permissão para realizar essa ação!';
 				apiResponse.statusCode = 403;
-				res.statusCode(apiResponse.statusCode).send(apiResponse.jsonResponse);
+				res.status(apiResponse.statusCode).send(apiResponse.jsonResponse);
 			}
 
 			LoggingSingleton.getInstance().logInfo(JSON.stringify(log));
@@ -140,7 +140,7 @@ app.all('*', async (req: { [key: string]: any }, res: { [key: string]: any }, ne
 			if (!permissionForRoute) {
 				apiResponse.responseText = 'Usuário sem permissão para realizar essa ação!';
 				apiResponse.statusCode = 403;
-				res.statusCode(apiResponse.statusCode).send(apiResponse.jsonResponse);
+				res.status(apiResponse.statusCode).send(apiResponse.jsonResponse);
 			}
 
 			next();
