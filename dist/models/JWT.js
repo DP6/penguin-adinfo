@@ -35,42 +35,44 @@ exports.JWT = void 0;
 const jwt = require('jsonwebtoken');
 const BlockList_1 = require('./BlockList');
 class JWT {
-	constructor(user) {
-		this._pass = process.env.JWT_KEY;
-		this._expiresToken = process.env.EXPIRES_TOKEN;
-		this._user = user || undefined;
-	}
-	createToken() {
-		const payload = this._user.toJson();
-		const token = jwt.sign(payload, this._pass, { expiresIn: this._expiresToken });
-		return token;
-	}
-	verifyWithoutBlocklist(token) {
-		try {
-			jwt.verify(token, this._pass);
-			return true;
-		} catch (err) {
-			return false;
-		}
-	}
-	validateToken(token) {
-		return __awaiter(this, void 0, void 0, function* () {
-			const userInBlocklist = yield new BlockList_1.BlockList().findToken(token);
-			if (userInBlocklist) {
-				throw new Error('Token inválido!');
-			}
-			try {
-				const payload = jwt.verify(token, this._pass);
-				if (typeof payload === 'object') {
-					return payload;
-				}
-			} catch (er) {
-				if (er.message === 'jwt expired') {
-					throw new Error('Token expirado! Faça o login novamente.');
-				}
-				throw new Error(er.message);
-			}
-		});
-	}
+    constructor(user) {
+        this._pass = process.env.JWT_KEY;
+        this._expiresToken = process.env.EXPIRES_TOKEN;
+        this._user = user || undefined;
+    }
+    createToken() {
+        const payload = this._user.toJson();
+        const token = jwt.sign(payload, this._pass, { expiresIn: this._expiresToken });
+        return token;
+    }
+    verifyWithoutBlocklist(token) {
+        try {
+            jwt.verify(token, this._pass);
+            return true;
+        }
+        catch (err) {
+            return false;
+        }
+    }
+    validateToken(token) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const userInBlocklist = yield new BlockList_1.BlockList().findToken(token);
+            if (userInBlocklist) {
+                throw new Error('Token inválido!');
+            }
+            try {
+                const payload = jwt.verify(token, this._pass);
+                if (typeof payload === 'object') {
+                    return payload;
+                }
+            }
+            catch (er) {
+                if (er.message === 'jwt expired') {
+                    throw new Error("token expirado, faça login novamente");
+                }
+                throw new Error(er.message);
+            }
+        });
+    }
 }
 exports.JWT = JWT;
