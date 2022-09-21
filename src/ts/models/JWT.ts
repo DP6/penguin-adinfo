@@ -46,14 +46,14 @@ export class JWT {
 		if (userInBlocklist) {
 			throw new Error('Token inválido!');
 		}
-		try { 
+		try {
 			const payload = jwt.verify(token, this._pass);
 			if (typeof payload === 'object') {
 				return payload;
 			}
 		} catch (er) {
-			if (er.message === 'jwt expired'){
-				throw new Error("Token expirado! Faça o login novamente.");
+			if (er.message === 'jwt expired') {
+				throw new Error('Token expirado! Faça o login novamente.');
 			}
 			throw new Error(er.message);
 		}
