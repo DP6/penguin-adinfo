@@ -1,5 +1,5 @@
 import * as jwt from 'jsonwebtoken';
-import { JwtPayload, TokenExpiredError } from 'jsonwebtoken';
+import { JwtPayload, TokenExpiredError, JsonWebTokenError } from 'jsonwebtoken';
 import { BlockList } from './BlockList';
 import { User } from './User';
 
@@ -54,6 +54,8 @@ export class JWT {
 		} catch (er) {
 			if (er instanceof TokenExpiredError) {
 				throw new Error('Token expirado! Faça o login novamente.');
+			} else if (er instanceof JsonWebTokenError) {
+				throw new Error('Token inválido!');
 			}
 			throw new Error(er);
 		}
