@@ -54,9 +54,8 @@ export class JWT {
 		} catch (er) {
 			if (er instanceof TokenExpiredError) {
 				throw new Error('Token expirado! Faça o login novamente.');
-			}
-			else if (er instanceof JsonWebTokenError) {
-				throw new Error('Token inválido!')
+			} else if (er instanceof JsonWebTokenError) {
+				throw new Error('Token inválido!');
 			}
 			throw new Error(er);
 		}
