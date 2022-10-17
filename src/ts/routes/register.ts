@@ -2,6 +2,8 @@ import { body, validationResult } from 'express-validator';
 import { User } from '../models/User';
 import { UserDAO } from '../models/DAO/UserDAO';
 import { ApiResponse } from '../models/ApiResponse';
+import { AdOpsTeamDAO } from '../models/DAO/AdOpsTeamDAO';
+import { AdOpsTeamMissingError } from '../Errors/AdOpsTeamMissingError';
 
 const register = (app: { [key: string]: any }): void => {
 	app.post(
@@ -13,6 +15,7 @@ const register = (app: { [key: string]: any }): void => {
 			const apiResponse = new ApiResponse();
 
 			const adOpsTeam = req.body.adOpsTeam;
+			const adOpsTeamDAO = new AdOpsTeamDAO();
 
 			const newUser = new User(
 				'',
@@ -23,20 +26,29 @@ const register = (app: { [key: string]: any }): void => {
 				adOpsTeam,
 				req.body.password
 			);
-
-			const userDAO = new UserDAO();
-			userDAO
-				.addUser(newUser)
+			adOpsTeamDAO
+				.getAdOpsTeam(adOpsTeam)
+				.then(() => {
+					const userDAO = new UserDAO();
+					userDAO.addUser(newUser);
+				})
 				.then(() => {
 					const message = `Usuário criado para o email ${newUser.email}`;
 					apiResponse.responseText = message;
 					apiResponse.statusCode = 200;
 				})
 				.catch((err) => {
-					const message = 'Falha ao criar permissão!';
-					apiResponse.responseText = message;
-					apiResponse.errorMessage = err.message;
-					apiResponse.statusCode = 500;
+					if (err.name === 'AdOpsTeamMissingError') {
+						const message = err.message;
+						apiResponse.responseText = message;
+						apiResponse.errorMessage = err.message;
+						apiResponse.statusCode = 400;
+					} else {
+						const message = 'Falha ao criar permissão!';
+						apiResponse.responseText = message;
+						apiResponse.errorMessage = err.message;
+						apiResponse.statusCode = 500;
+					}
 				})
 				.finally(() => {
 					res.status(apiResponse.statusCode).send(apiResponse.jsonResponse);
