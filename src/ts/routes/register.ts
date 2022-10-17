@@ -38,16 +38,17 @@ const register = (app: { [key: string]: any }): void => {
 					apiResponse.statusCode = 200;
 				})
 				.catch((err) => {
-					if (err.name === AdOpsTeamMissingError) {
+					if (err.name === 'AdOpsTeamMissingError') {
 						const message = err.message;
 						apiResponse.responseText = message;
 						apiResponse.errorMessage = err.message;
 						apiResponse.statusCode = 400;
+					} else {
+						const message = 'Falha ao criar permissão!';
+						apiResponse.responseText = message;
+						apiResponse.errorMessage = err.message;
+						apiResponse.statusCode = 500;
 					}
-					const message = 'Falha ao criar permissão!';
-					apiResponse.responseText = message;
-					apiResponse.errorMessage = err.message;
-					apiResponse.statusCode = 500;
 				})
 				.finally(() => {
 					res.status(apiResponse.statusCode).send(apiResponse.jsonResponse);
