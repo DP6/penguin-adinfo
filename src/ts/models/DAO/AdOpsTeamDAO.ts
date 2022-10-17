@@ -2,6 +2,7 @@ import { FirestoreConnectionSingleton } from '../cloud/FirestoreConnectionSingle
 import { ObjectStore } from './ObjectStore';
 import { CollectionReference, WhereFilterOp } from '@google-cloud/firestore';
 import { AdOpsTeam } from '../AdOpsTeam';
+import { AdOpsTeamMissingError } from '../../Errors/AdOpsTeamMissingError';
 
 export class AdOpsTeamDAO {
 	private _objectStore: ObjectStore;
@@ -46,7 +47,7 @@ export class AdOpsTeamDAO {
 		return this._objectStore
 			.getDocumentById(this._adOpsTeamCollection, adOpsTeamId)
 			.then((adOpsTeam) => {
-				if (!adOpsTeam.get('name')) throw new Error('AdOpsTeam não encontrado!');
+				if (!adOpsTeam.get('name')) throw new AdOpsTeamMissingError('AdOpsTeam inexistente!');
 				return new AdOpsTeam(adOpsTeam.get('name'), adOpsTeam.get('active'), adOpsTeam.get('advertiserId'));
 			})
 			.catch((err) => {
