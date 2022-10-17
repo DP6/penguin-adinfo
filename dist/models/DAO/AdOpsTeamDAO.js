@@ -3,6 +3,7 @@ Object.defineProperty(exports, '__esModule', { value: true });
 exports.AdOpsTeamDAO = void 0;
 const FirestoreConnectionSingleton_1 = require('../cloud/FirestoreConnectionSingleton');
 const AdOpsTeam_1 = require('../AdOpsTeam');
+const AdOpsTeamMissingError_1 = require('../../Errors/AdOpsTeamMissingError');
 class AdOpsTeamDAO {
 	constructor() {
 		this._objectStore = FirestoreConnectionSingleton_1.FirestoreConnectionSingleton.getInstance();
@@ -30,7 +31,8 @@ class AdOpsTeamDAO {
 		return this._objectStore
 			.getDocumentById(this._adOpsTeamCollection, adOpsTeamId)
 			.then((adOpsTeam) => {
-				if (!adOpsTeam.get('name')) throw new Error('AdOpsTeam não encontrado!');
+				if (!adOpsTeam.get('name'))
+					throw new AdOpsTeamMissingError_1.AdOpsTeamMissingError('AdOpsTeam não encontrado!');
 				return new AdOpsTeam_1.AdOpsTeam(adOpsTeam.get('name'), adOpsTeam.get('active'), adOpsTeam.get('advertiserId'));
 			})
 			.catch((err) => {
