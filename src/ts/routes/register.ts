@@ -3,7 +3,6 @@ import { User } from '../models/User';
 import { UserDAO } from '../models/DAO/UserDAO';
 import { ApiResponse } from '../models/ApiResponse';
 import { AdOpsTeamDAO } from '../models/DAO/AdOpsTeamDAO';
-import { AdOpsTeamMissingError } from '../Errors/AdOpsTeamMissingError';
 
 const register = (app: { [key: string]: any }): void => {
 	app.post(
@@ -14,8 +13,12 @@ const register = (app: { [key: string]: any }): void => {
 		(req: { [key: string]: any }, res: { [key: string]: any }) => {
 			const apiResponse = new ApiResponse();
 
-			const adOpsTeam = req.body.adOpsTeam;
+			let adOpsTeam = req.body.adOpsTeam;
 			const adOpsTeamDAO = new AdOpsTeamDAO();
+
+			if (req.permission === 'AdOpsTeamManager') {
+				adOpsTeam = req.adOpsTeam;
+			}
 
 			const newUser = new User(
 				'',
@@ -26,6 +29,20 @@ const register = (app: { [key: string]: any }): void => {
 				adOpsTeam,
 				req.body.password
 			);
+
+			if (
+				(req.permission === 'owner' || req.permission === 'admin') &&
+				(req.body.permission === 'user' || req.body.permission === 'adopsteammanager') &&
+				adOpsTeam == false
+			) {
+				const message = 'AdOpsTeam não informado.';
+				apiResponse.responseText = message;
+				apiResponse.errorMessage = message;
+				apiResponse.statusCode = 400;
+				res.status(apiResponse.statusCode).send(apiResponse.jsonResponse);
+				return;
+			}
+
 			adOpsTeamDAO
 				.getAdOpsTeam(adOpsTeam)
 				.then(() => {
