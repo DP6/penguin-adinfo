@@ -17,8 +17,11 @@ const register = (app) => {
 		(0, express_validator_1.body)('password').exists().withMessage('Parâmetro password é obrigatório.'),
 		(req, res) => {
 			const apiResponse = new ApiResponse_1.ApiResponse();
-			const adOpsTeam = req.body.adOpsTeam;
+			let adOpsTeam = req.body.adOpsTeam;
 			const adOpsTeamDAO = new AdOpsTeamDAO_1.AdOpsTeamDAO();
+			if (req.permission === 'AdOpsTeamManager') {
+				adOpsTeam = req.adOpsTeam;
+			}
 			const newUser = new User_1.User(
 				'',
 				req.body.permission,
@@ -28,6 +31,18 @@ const register = (app) => {
 				adOpsTeam,
 				req.body.password
 			);
+			if (
+				(req.permission === 'owner' || req.permission === 'admin') &&
+				(req.body.permission === 'user' || req.body.permission === 'adopsteammanager') &&
+				adOpsTeam == false
+			) {
+				const message = 'AdOpsTeam não informado.';
+				apiResponse.responseText = message;
+				apiResponse.errorMessage = message;
+				apiResponse.statusCode = 400;
+				res.status(apiResponse.statusCode).send(apiResponse.jsonResponse);
+				return;
+			}
 			adOpsTeamDAO
 				.getAdOpsTeam(adOpsTeam)
 				.then(() => {
