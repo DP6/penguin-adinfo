@@ -49,6 +49,7 @@ const register = (app: { [key: string]: any }): void => {
 					apiResponse.errorMessage = err.message;
 					apiResponse.statusCode = 400;
 					res.status(apiResponse.statusCode).send(apiResponse.jsonResponse);
+
 					return;
 				});
 			}
@@ -62,7 +63,8 @@ const register = (app: { [key: string]: any }): void => {
 				apiResponse.errorMessage = message;
 				apiResponse.statusCode = 500;
 				res.status(apiResponse.statusCode).send(apiResponse.jsonResponse);
-				return;
+        return;
+				});
 			}
 
 			new UserDAO()
