@@ -94,14 +94,7 @@ class AdOpsTeamDAO {
 				value: adOpsTeamName,
 			},
 		];
-		return this._objectStore
-			.getDocumentFiltered(this._adOpsTeamCollection, conditions)
-			.then((adOpsTeamsDocuments) => {
-				return adOpsTeamsDocuments.docs.length > 0;
-			})
-			.catch((err) => {
-				throw err;
-			});
+		return this._objectStore.documentExists(this._adOpsTeamCollection, conditions);
 	}
 }
 exports.AdOpsTeamDAO = AdOpsTeamDAO;

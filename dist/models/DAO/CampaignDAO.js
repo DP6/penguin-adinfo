@@ -182,14 +182,7 @@ class CampaignDAO {
 				value: campaignName,
 			},
 		];
-		return this._objectStore
-			.getDocumentFiltered(this._campaignCollection, conditions)
-			.then((campaignsDocuments) => {
-				return campaignsDocuments.docs.length > 0;
-			})
-			.catch((err) => {
-				throw err;
-			});
+		return this._objectStore.documentExists(this._campaignCollection, conditions);
 	}
 }
 exports.CampaignDAO = CampaignDAO;

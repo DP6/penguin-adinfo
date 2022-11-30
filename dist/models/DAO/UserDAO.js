@@ -145,14 +145,7 @@ class UserDAO {
 				value: email,
 			},
 		];
-		return this._objectStore
-			.getDocumentFiltered(this._userCollection, conditions)
-			.then((usersDocuments) => {
-				return usersDocuments.docs.length > 0;
-			})
-			.catch((err) => {
-				throw err;
-			});
+		return this._objectStore.documentExists(this._userCollection, conditions);
 	}
 	addUser(user) {
 		return this._objectStore

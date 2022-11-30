@@ -87,5 +87,12 @@ class FirestoreConnectionSingleton extends ObjectStore_1.ObjectStore {
 		}
 		return query.get();
 	}
+	documentExists(collection, conditions) {
+		return this.getDocumentFiltered(collection, conditions)
+			.then((documents) => documents.docs.length > 0)
+			.catch((err) => {
+				throw err;
+			});
+	}
 }
 exports.FirestoreConnectionSingleton = FirestoreConnectionSingleton;

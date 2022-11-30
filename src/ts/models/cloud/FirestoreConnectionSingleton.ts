@@ -157,4 +157,22 @@ export class FirestoreConnectionSingleton extends ObjectStore {
 		}
 		return query.get();
 	}
+
+	/**
+	 * Valida se existe algum documento de acordo com as condições especificadas
+	 * @param collection Coleção onde estão os documentos
+	 * @param conditions Condições de filtragem
+	 * @returns Boolean
+	 */
+
+	public documentExists(
+		collection: CollectionReference,
+		conditions: { key: string; operator: WhereFilterOp; value: string | number | boolean }[]
+	): Promise<boolean> {
+		return this.getDocumentFiltered(collection, conditions)
+			.then((documents) => documents.docs.length > 0)
+			.catch((err) => {
+				throw err;
+			});
+	}
 }
