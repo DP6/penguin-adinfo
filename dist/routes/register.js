@@ -93,6 +93,18 @@ const register = (app) => {
 						return;
 					});
 				}
+				if (
+					(req.permission === 'admin' && req.body.permission === 'owner') ||
+					(req.permission === 'adopsteammanager' && req.body.permission === 'admin') ||
+					(req.permission === 'adopsteammanager' && req.body.permission === 'owner')
+				) {
+					const message = 'Usuário sem permissão para tal rota!';
+					apiResponse.responseText = message;
+					apiResponse.errorMessage = message;
+					apiResponse.statusCode = 500;
+					res.status(apiResponse.statusCode).send(apiResponse.jsonResponse);
+					return;
+				}
 				new UserDAO_1.UserDAO()
 					.addUser(newUser)
 					.then(() => {
