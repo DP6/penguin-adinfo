@@ -173,5 +173,16 @@ class CampaignDAO {
 				throw err;
 			});
 	}
+	campaignExists(campaignName) {
+		const equal = '==';
+		const conditions = [
+			{
+				key: 'name',
+				operator: equal,
+				value: campaignName,
+			},
+		];
+		return this._objectStore.documentExists(this._campaignCollection, conditions);
+	}
 }
 exports.CampaignDAO = CampaignDAO;

@@ -3,6 +3,9 @@ import { FirestoreConnectionSingleton } from '../cloud/FirestoreConnectionSingle
 import { User } from '../User';
 import { CollectionReference, QueryDocumentSnapshot, WhereFilterOp } from '@google-cloud/firestore';
 import * as bcrypt from 'bcrypt';
+import e = require('express');
+import { use } from 'chai';
+import user from '../../routes/user';
 
 export class UserDAO {
 	private _email: string;
@@ -131,6 +134,24 @@ export class UserDAO {
 			.catch((err) => {
 				throw err;
 			});
+	}
+
+	/**
+	 * Checa se o email inserido consta na base de dados
+	 * @param email Email a ser checado
+	 * @returns retorna True se o usuario ja existir na base de dados, do contrario retorna False.
+	 */
+
+	public userExists(email?: string): Promise<boolean> {
+		const equal: WhereFilterOp = '==';
+		const conditions = [
+			{
+				key: 'email',
+				operator: equal,
+				value: email,
+			},
+		];
+		return this._objectStore.documentExists(this._userCollection, conditions);
 	}
 
 	/**

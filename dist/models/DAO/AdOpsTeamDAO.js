@@ -85,5 +85,16 @@ class AdOpsTeamDAO {
 				throw err;
 			});
 	}
+	adOpsTeamExists(adOpsTeamName) {
+		const equal = '==';
+		const conditions = [
+			{
+				key: 'name',
+				operator: equal,
+				value: adOpsTeamName,
+			},
+		];
+		return this._objectStore.documentExists(this._adOpsTeamCollection, conditions);
+	}
 }
 exports.AdOpsTeamDAO = AdOpsTeamDAO;

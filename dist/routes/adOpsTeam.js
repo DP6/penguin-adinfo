@@ -42,7 +42,15 @@ const adOpsTeam = (app) => {
 			const apiResponse = new ApiResponse_1.ApiResponse();
 			const adOpsTeamName = req.body.name;
 			const advertiser = req.advertiser;
+			const adopsteamDAO = new AdOpsTeamDAO_1.AdOpsTeamDAO();
 			const adOpsTeam = new AdOpsTeam_1.AdOpsTeam(adOpsTeamName, true, advertiser);
+			if (yield adopsteamDAO.adOpsTeamExists(adOpsTeamName)) {
+				apiResponse.statusCode = 400;
+				apiResponse.responseText = 'esse AdOpsTeam já existe.';
+				apiResponse.errorMessage = 'esse AdOpsTeam já existe.';
+				res.status(apiResponse.statusCode).send(apiResponse.jsonResponse);
+				return;
+			}
 			new AdOpsTeamDAO_1.AdOpsTeamDAO()
 				.addAdOpsTeam(adOpsTeam)
 				.then((status) => {

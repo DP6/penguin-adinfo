@@ -1,6 +1,6 @@
 export class AdOpsTeamMissingError {
 	/**
-	 * Erro referente à não existência da coluna no config
+	 * Erro referente à adposteam não encontrado.
 	 * @param msg Mensagem a ser informada no erro
 	 */
 	constructor(msg: string) {

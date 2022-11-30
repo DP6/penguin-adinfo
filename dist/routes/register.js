@@ -51,6 +51,7 @@ const register = (app) => {
 				const apiResponse = new ApiResponse_1.ApiResponse();
 				let adOpsTeam = req.body.adOpsTeam;
 				const adOpsTeamDAO = new AdOpsTeamDAO_1.AdOpsTeamDAO();
+				const userDAO = new UserDAO_1.UserDAO();
 				if (req.permission === 'AdOpsTeamManager') {
 					adOpsTeam = req.adOpsTeam;
 				}
@@ -63,6 +64,14 @@ const register = (app) => {
 					adOpsTeam,
 					req.body.password
 				);
+				if (yield userDAO.userExists(req.body.email)) {
+					const message = 'Usuário já existe.';
+					apiResponse.responseText = message;
+					apiResponse.errorMessage = message;
+					apiResponse.statusCode = 400;
+					res.status(apiResponse.statusCode).send(apiResponse.jsonResponse);
+					return;
+				}
 				if (
 					(req.permission === 'owner' || req.permission === 'admin') &&
 					(req.body.permission === 'user' || req.body.permission === 'adopsteammanager') &&
@@ -81,8 +90,8 @@ const register = (app) => {
 						apiResponse.errorMessage = err.message;
 						apiResponse.statusCode = 400;
 						res.status(apiResponse.statusCode).send(apiResponse.jsonResponse);
+						return;
 					});
-					return;
 				}
 				new UserDAO_1.UserDAO()
 					.addUser(newUser)

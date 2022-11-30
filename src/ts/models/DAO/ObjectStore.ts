@@ -27,4 +27,8 @@ export abstract class ObjectStore {
 		collection: CollectionReference,
 		conditions: { key: string; operator: WhereFilterOp; value: string | number | boolean }[]
 	): Promise<QuerySnapshot<DocumentData>>;
+	abstract documentExists(
+		collection: CollectionReference,
+		conditions: { key: string; operator: WhereFilterOp; value: string | number | boolean }[]
+	): Promise<boolean>;
 }

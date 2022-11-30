@@ -15,6 +15,7 @@ const register = (app: { [key: string]: any }): void => {
 
 			let adOpsTeam = req.body.adOpsTeam;
 			const adOpsTeamDAO = new AdOpsTeamDAO();
+			const userDAO = new UserDAO();
 
 			if (req.permission === 'AdOpsTeamManager') {
 				adOpsTeam = req.adOpsTeam;
@@ -29,6 +30,15 @@ const register = (app: { [key: string]: any }): void => {
 				adOpsTeam,
 				req.body.password
 			);
+
+			if (await userDAO.userExists(req.body.email)) {
+				const message = 'Usuário já existe.';
+				apiResponse.responseText = message;
+				apiResponse.errorMessage = message;
+				apiResponse.statusCode = 400;
+				res.status(apiResponse.statusCode).send(apiResponse.jsonResponse);
+				return;
+			}
 
 			if (
 				(req.permission === 'owner' || req.permission === 'admin') &&
@@ -49,8 +59,8 @@ const register = (app: { [key: string]: any }): void => {
 					apiResponse.errorMessage = err.message;
 					apiResponse.statusCode = 400;
 					res.status(apiResponse.statusCode).send(apiResponse.jsonResponse);
+					return;
 				});
-				return;
 			}
 
 			new UserDAO()

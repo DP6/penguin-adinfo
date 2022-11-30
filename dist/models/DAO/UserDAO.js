@@ -136,6 +136,17 @@ class UserDAO {
 				throw err;
 			});
 	}
+	userExists(email) {
+		const equal = '==';
+		const conditions = [
+			{
+				key: 'email',
+				operator: equal,
+				value: email,
+			},
+		];
+		return this._objectStore.documentExists(this._userCollection, conditions);
+	}
 	addUser(user) {
 		return this._objectStore
 			.addDocumentIn(this._userCollection, user.toJsonSave(), '')

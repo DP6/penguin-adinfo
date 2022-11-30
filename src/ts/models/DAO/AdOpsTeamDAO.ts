@@ -1,6 +1,6 @@
 import { FirestoreConnectionSingleton } from '../cloud/FirestoreConnectionSingleton';
 import { ObjectStore } from './ObjectStore';
-import { CollectionReference, WhereFilterOp } from '@google-cloud/firestore';
+import { CollectionReference, Primitive, WhereFilterOp } from '@google-cloud/firestore';
 import { AdOpsTeam } from '../AdOpsTeam';
 import { AdOpsTeamMissingError } from '../../Errors/AdOpsTeamMissingError';
 
@@ -120,5 +120,22 @@ export class AdOpsTeamDAO {
 			.catch((err) => {
 				throw err;
 			});
+	}
+
+	/**
+	 * verifica se um AdOpsTeam já existe na base de dados.
+	 * @param adOpsTeamName nome do AdOpsTeam a ser checado.
+	 * @returns caso encontre um AdOpsTeam com mesmo nome retorna True.
+	 */
+	adOpsTeamExists(adOpsTeamName?: string): Promise<boolean> {
+		const equal: WhereFilterOp = '==';
+		const conditions = [
+			{
+				key: 'name',
+				operator: equal,
+				value: adOpsTeamName,
+			},
+		];
+		return this._objectStore.documentExists(this._adOpsTeamCollection, conditions);
 	}
 }
