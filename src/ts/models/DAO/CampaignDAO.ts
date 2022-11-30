@@ -190,4 +190,28 @@ export class CampaignDAO {
 				throw err;
 			});
 	}
+
+	/**
+	 * checa pelo nome se a nova campanha ja existe.
+	 * @param campaignName nome da nova campanha.
+	 * @returns verifica se a o nome dessa nova campanha já existe na base de dados, se sim retorna true, senão false.
+	 */
+	public campaignExists(campaignName?: string): Promise<boolean> {
+		const equal: WhereFilterOp = '==';
+		const conditions = [
+			{
+				key: 'name',
+				operator: equal,
+				value: campaignName,
+			},
+		];
+		return this._objectStore
+			.getDocumentFiltered(this._campaignCollection, conditions)
+			.then((campaignsDocuments) => {
+				return campaignsDocuments.docs.length > 0;
+			})
+			.catch((err) => {
+				throw err;
+			});
+	}
 }

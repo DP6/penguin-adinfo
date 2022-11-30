@@ -44,6 +44,7 @@ const campaign = (app) => {
 			const campaignName = req.body.campaign;
 			const advertiser = req.advertiser;
 			const adOpsTeam = req.body.adOpsTeam ? req.body.adOpsTeam : 'AdvertiserCampaigns';
+			const campaignDAO = new CampaignDAO_1.CampaignDAO();
 			if (req.permission === 'user') {
 				throw new Error('Usuário sem permissão para realizar esta ação!');
 			}
@@ -51,6 +52,13 @@ const campaign = (app) => {
 				throw new Error('Necessário nome da Campanha!');
 			}
 			const campaignObject = new Campaign_1.Campaign(campaignName, advertiser, adOpsTeam, '', true, created);
+			if (yield campaignDAO.campaignExists(campaignName)) {
+				apiResponse.statusCode = 400;
+				apiResponse.responseText = 'essa campanha já existe!';
+				apiResponse.errorMessage = 'essa campanha já existe!';
+				res.status(apiResponse.statusCode).send(apiResponse.jsonResponse);
+				return;
+			}
 			new CampaignDAO_1.CampaignDAO()
 				.addCampaign(campaignObject)
 				.then((result) => {

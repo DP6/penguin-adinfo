@@ -12,6 +12,7 @@ const campaign = (app: { [key: string]: any }): void => {
 		const campaignName = req.body.campaign;
 		const advertiser = req.advertiser;
 		const adOpsTeam = req.body.adOpsTeam ? req.body.adOpsTeam : 'AdvertiserCampaigns';
+		const campaignDAO = new CampaignDAO();
 
 		//TODO RETIRAR
 		if (req.permission === 'user') {
@@ -22,6 +23,14 @@ const campaign = (app: { [key: string]: any }): void => {
 		}
 
 		const campaignObject = new Campaign(campaignName, advertiser, adOpsTeam, '', true, created);
+
+		if (await campaignDAO.campaignExists(campaignName)) {
+			apiResponse.statusCode = 400;
+			apiResponse.responseText = 'essa campanha já existe!';
+			apiResponse.errorMessage = 'essa campanha já existe!';
+			res.status(apiResponse.statusCode).send(apiResponse.jsonResponse);
+			return;
+		}
 
 		new CampaignDAO()
 			.addCampaign(campaignObject)

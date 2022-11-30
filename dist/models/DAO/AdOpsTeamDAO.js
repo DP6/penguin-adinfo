@@ -85,5 +85,23 @@ class AdOpsTeamDAO {
 				throw err;
 			});
 	}
+	adOpsTeamExists(adOpsTeamName) {
+		const equal = '==';
+		const conditions = [
+			{
+				key: 'name',
+				operator: equal,
+				value: adOpsTeamName,
+			},
+		];
+		return this._objectStore
+			.getDocumentFiltered(this._adOpsTeamCollection, conditions)
+			.then((adOpsTeamsDocuments) => {
+				return adOpsTeamsDocuments.docs.length > 0;
+			})
+			.catch((err) => {
+				throw err;
+			});
+	}
 }
 exports.AdOpsTeamDAO = AdOpsTeamDAO;

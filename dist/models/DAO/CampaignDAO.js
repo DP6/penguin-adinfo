@@ -173,5 +173,23 @@ class CampaignDAO {
 				throw err;
 			});
 	}
+	campaignExists(campaignName) {
+		const equal = '==';
+		const conditions = [
+			{
+				key: 'name',
+				operator: equal,
+				value: campaignName,
+			},
+		];
+		return this._objectStore
+			.getDocumentFiltered(this._campaignCollection, conditions)
+			.then((campaignsDocuments) => {
+				return campaignsDocuments.docs.length > 0;
+			})
+			.catch((err) => {
+				throw err;
+			});
+	}
 }
 exports.CampaignDAO = CampaignDAO;

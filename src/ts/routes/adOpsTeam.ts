@@ -9,11 +9,19 @@ import { User } from '../models/User';
 const adOpsTeam = (app: { [key: string]: any }): void => {
 	app.post('/adOpsTeam', async (req: { [key: string]: any }, res: { [key: string]: any }) => {
 		const apiResponse = new ApiResponse();
-
 		const adOpsTeamName = req.body.name;
 		const advertiser = req.advertiser;
+		const adopsteamDAO = new AdOpsTeamDAO();
 
 		const adOpsTeam = new AdOpsTeam(adOpsTeamName, true, advertiser);
+
+		if (await adopsteamDAO.adOpsTeamExists(adOpsTeamName)) {
+			apiResponse.statusCode = 400;
+			apiResponse.responseText = 'esse AdOpsTeam já existe.';
+			apiResponse.errorMessage = 'esse AdOpsTeam já existe.';
+			res.status(apiResponse.statusCode).send(apiResponse.jsonResponse);
+			return;
+		}
 
 		new AdOpsTeamDAO()
 			.addAdOpsTeam(adOpsTeam)
