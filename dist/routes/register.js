@@ -52,7 +52,7 @@ const register = (app) => {
 				let adOpsTeam = req.body.adOpsTeam;
 				const adOpsTeamDAO = new AdOpsTeamDAO_1.AdOpsTeamDAO();
 				const userDAO = new UserDAO_1.UserDAO();
-				if (req.permission === 'AdOpsTeamManager') {
+				if (req.permission === 'adOpsManager') {
 					adOpsTeam = req.adOpsTeam;
 				}
 				const newUser = new User_1.User(
@@ -64,6 +64,18 @@ const register = (app) => {
 					adOpsTeam,
 					req.body.password
 				);
+				if (
+					(req.permission === 'admin' && req.body.permission === 'owner') ||
+					(req.permission === 'adOpsManager' && req.body.permission === 'admin') ||
+					(req.permission === 'adOpsManager' && req.body.permission === 'owner')
+				) {
+					const message = `Usuário sem permissão para criar um novo usuário de permissão ${newUser.permission}`;
+					apiResponse.responseText = message;
+					apiResponse.errorMessage = message;
+					apiResponse.statusCode = 500;
+					res.status(apiResponse.statusCode).send(apiResponse.jsonResponse);
+					return;
+				}
 				if (yield userDAO.userExists(req.body.email)) {
 					const message = 'Usuário já existe.';
 					apiResponse.responseText = message;
@@ -74,7 +86,7 @@ const register = (app) => {
 				}
 				if (
 					(req.permission === 'owner' || req.permission === 'admin') &&
-					(req.body.permission === 'user' || req.body.permission === 'adopsteammanager') &&
+					(req.body.permission === 'user' || req.body.permission === 'adOpsManager') &&
 					!adOpsTeam
 				) {
 					const message = 'AdOpsTeam não informado.';
