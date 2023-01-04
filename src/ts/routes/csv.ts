@@ -1,6 +1,7 @@
 import { FileDAO } from '../models/DAO/FileDAO';
 import { DateUtils } from '../utils/DateUtils';
 import { ApiResponse } from '../models/ApiResponse';
+import { CampaignDAO } from '../models/DAO/CampaignDAO';
 
 const csv = (app: { [key: string]: any }): void => {
 	app.post('/csv', (req: { [key: string]: any }, res: { [key: string]: any }) => {
@@ -87,6 +88,53 @@ const csv = (app: { [key: string]: any }): void => {
 				} else {
 					res.status(apiResponse.statusCode).send(apiResponse.jsonResponse);
 				}
+			});
+	});
+
+	app.get('/:adOpsTeam/:campaignId/csv/list', async (req: { [key: string]: any }, res: { [key: string]: any }) => {
+		const apiResponse = new ApiResponse();
+		const campaignId = req.params.campaignId;
+
+		const adOpsTeam = req.params.adOpsTeam;
+		const adOpsTeamPath = adOpsTeam === 'Campanhas Internas' ? 'AdvertiserCampaigns' : adOpsTeam;
+		const advertiser = req.advertiser;
+		const permission = req.permission;
+		const campaignObject = new CampaignDAO();
+		const campaign = await campaignObject.getCampaign(campaignId);
+		const fileDAO = new FileDAO();
+
+		// uma evolucao aqui eh o owner/admin conseguir ver (e selecionar) as campanhas de todas as agencias
+		if (
+			(permission === 'adOpsManager' || permission === 'user') &&
+			(!adOpsTeam || adOpsTeam === 'Campanhas Internas')
+		) {
+			apiResponse.responseText = 'Nenhuma adOpsTeam foi informada!';
+			apiResponse.statusCode = 400;
+			res.status(apiResponse.statusCode).send(apiResponse.jsonResponse);
+			return;
+		} else if (!campaign) {
+			apiResponse.responseText = 'Nenhuma campanha foi informada!';
+			apiResponse.statusCode = 400;
+			res.status(apiResponse.statusCode).send(apiResponse.jsonResponse);
+			return;
+		}
+
+		const filePath = `${advertiser}/${adOpsTeamPath}/${campaign}/`;
+
+		fileDAO
+			.getAllFilesFromStore(filePath)
+			.then((data) => {
+				const files = data[0].filter((file) => /\.csv$/.test(file.name)).map((file) => file.name);
+				apiResponse.responseText = files.join(',');
+				apiResponse.statusCode = 200;
+			})
+			.catch((err) => {
+				apiResponse.errorMessage = err.message;
+				apiResponse.responseText = `Falha ao restaurar os arquivos!`;
+				apiResponse.statusCode = 500;
+			})
+			.finally(() => {
+				res.status(apiResponse.statusCode).send(apiResponse.jsonResponse);
 			});
 	});
 

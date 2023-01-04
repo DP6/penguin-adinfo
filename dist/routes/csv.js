@@ -1,8 +1,40 @@
 'use strict';
+var __awaiter =
+	(this && this.__awaiter) ||
+	function (thisArg, _arguments, P, generator) {
+		function adopt(value) {
+			return value instanceof P
+				? value
+				: new P(function (resolve) {
+						resolve(value);
+				  });
+		}
+		return new (P || (P = Promise))(function (resolve, reject) {
+			function fulfilled(value) {
+				try {
+					step(generator.next(value));
+				} catch (e) {
+					reject(e);
+				}
+			}
+			function rejected(value) {
+				try {
+					step(generator['throw'](value));
+				} catch (e) {
+					reject(e);
+				}
+			}
+			function step(result) {
+				result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected);
+			}
+			step((generator = generator.apply(thisArg, _arguments || [])).next());
+		});
+	};
 Object.defineProperty(exports, '__esModule', { value: true });
 const FileDAO_1 = require('../models/DAO/FileDAO');
 const DateUtils_1 = require('../utils/DateUtils');
 const ApiResponse_1 = require('../models/ApiResponse');
+const CampaignDAO_1 = require('../models/DAO/CampaignDAO');
 const csv = (app) => {
 	app.post('/csv', (req, res) => {
 		const campaign = req.headers.campaign;
@@ -81,6 +113,49 @@ const csv = (app) => {
 				}
 			});
 	});
+	app.get('/:adOpsTeam/:campaignId/csv/list', (req, res) =>
+		__awaiter(void 0, void 0, void 0, function* () {
+			const apiResponse = new ApiResponse_1.ApiResponse();
+			const campaignId = req.params.campaignId;
+			const adOpsTeam = req.params.adOpsTeam;
+			const adOpsTeamPath = adOpsTeam === 'Campanhas Internas' ? 'AdvertiserCampaigns' : adOpsTeam;
+			const advertiser = req.advertiser;
+			const permission = req.permission;
+			const campaignObject = new CampaignDAO_1.CampaignDAO();
+			const campaign = yield campaignObject.getCampaign(campaignId);
+			const fileDAO = new FileDAO_1.FileDAO();
+			if (
+				(permission === 'adOpsManager' || permission === 'user') &&
+				(!adOpsTeam || adOpsTeam === 'Campanhas Internas')
+			) {
+				apiResponse.responseText = 'Nenhuma adOpsTeam foi informada!';
+				apiResponse.statusCode = 400;
+				res.status(apiResponse.statusCode).send(apiResponse.jsonResponse);
+				return;
+			} else if (!campaign) {
+				apiResponse.responseText = 'Nenhuma campanha foi informada!';
+				apiResponse.statusCode = 400;
+				res.status(apiResponse.statusCode).send(apiResponse.jsonResponse);
+				return;
+			}
+			const filePath = `${advertiser}/${adOpsTeamPath}/${campaign}/`;
+			fileDAO
+				.getAllFilesFromStore(filePath)
+				.then((data) => {
+					const files = data[0].filter((file) => /\.csv$/.test(file.name)).map((file) => file.name);
+					apiResponse.responseText = files.join(',');
+					apiResponse.statusCode = 200;
+				})
+				.catch((err) => {
+					apiResponse.errorMessage = err.message;
+					apiResponse.responseText = `Falha ao restaurar os arquivos!`;
+					apiResponse.statusCode = 500;
+				})
+				.finally(() => {
+					res.status(apiResponse.statusCode).send(apiResponse.jsonResponse);
+				});
+		})
+	);
 	app.get('/csv/list', (req, res) => {
 		const getAllAdOpsTeamsFrom = req.getAllAdOpsTeamsFrom;
 		const advertiser = req.advertiser;
