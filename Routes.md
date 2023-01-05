@@ -123,19 +123,19 @@
 
 **Descrição**: Cria uma nova campanha com o nome passado no parâmetro **campaign** e com data de criação informada na variável **date**.
 
-### (GET) /agencies/campaigns
+### (GET) /adOpsTeam/campaigns
 
 **Parâmetros**: token.
 
-**Descrição**: Retorna todas as campanhas de todas as agências da companhia.
+**Descrição**: Retorna todas as campanhas de todas as adOpsTeam da companhia.
 
-### (GET) /campaign/:agency/list
+### (GET) /campaign/:adOpsTeam/list
 
 **Parâmetros**: token.
 
-**Descrição**: Retorna todas as campanhas de uma campanha em específico.
+**Descrição**: Retorna todas as campanhas de um adOpsTeam em específico.
 
-### (GET) /:agency/:campaignId/csv/list
+### (GET) /:adOpsTeam/:campaignId/csv/list
 
 **Parâmetros**: token.
 
@@ -153,17 +153,17 @@
 
 **Descrição**: Re-ativa a campanha com o campaignId enviado.
 
-### (GET) /agency/list
+### (GET) /adOpsTeam/list
 
 **Parâmetros**: token.
 
-**Descrição**: Retorna todas as agências da companhia.
+**Descrição**: Retorna todas as adOpsTeam da companhia.
 
-### (GET) /agency/users
+### (GET) /adOpsTeam/users
 
 **Parâmetros**: token.
 
-**Descrição**: Retorna todos os users de uma agência.
+**Descrição**: Retorna todos os users de um adOpsTeam.
 
 ### (POST) /adOpsTeam
 
