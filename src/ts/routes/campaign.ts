@@ -19,7 +19,11 @@ const campaign = (app: { [key: string]: any }): void => {
 			throw new Error('Usuário sem permissão para realizar esta ação!');
 		}
 		if (!campaignName) {
-			throw new Error('Necessário nome da Campanha!');
+			apiResponse.statusCode = 400;
+			apiResponse.responseText = 'Necessário nome da Campanha!';
+			apiResponse.errorMessage = 'Necessário nome da Campanha!';
+			res.status(apiResponse.statusCode).send(apiResponse.jsonResponse);
+			return;
 		}
 
 		const campaignObject = new Campaign(campaignName, advertiser, adOpsTeam, '', true, created);

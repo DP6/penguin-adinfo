@@ -49,7 +49,11 @@ const campaign = (app) => {
 				throw new Error('Usuário sem permissão para realizar esta ação!');
 			}
 			if (!campaignName) {
-				throw new Error('Necessário nome da Campanha!');
+				apiResponse.statusCode = 400;
+				apiResponse.responseText = 'Necessário nome da Campanha!';
+				apiResponse.errorMessage = 'Necessário nome da Campanha!';
+				res.status(apiResponse.statusCode).send(apiResponse.jsonResponse);
+				return;
 			}
 			const campaignObject = new Campaign_1.Campaign(campaignName, advertiser, adOpsTeam, '', true, created);
 			if (yield campaignDAO.campaignExists(campaignName)) {
