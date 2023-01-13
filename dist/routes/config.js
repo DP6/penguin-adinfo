@@ -16,6 +16,31 @@ const config = (app) => {
 		}
 		const config = new Config_1.Config(JSON.parse(configString));
 		const configDAO = new ConfigDAO_1.ConfigDAO(advertiser);
+		const validateArray = (array) => {
+			for (let i = 0; i < array.length; i++) {
+				for (let j = 0; j < array.length; j++) {
+					if (array[i] === array[j] && i != j) {
+						apiResponse.responseText = 'Erro ao criar a configuração! Configuração com valores repetidos!';
+						apiResponse.errorMessage = 'Erro ao criar a configuração! Configuração com valores repetidos!';
+						apiResponse.statusCode = 500;
+					}
+				}
+			}
+			apiResponse.responseText = 'Configuração criada com sucesso!';
+			apiResponse.statusCode = 200;
+			res.status(apiResponse.statusCode).send(apiResponse.jsonResponse);
+			return;
+		};
+		const percorreObjeto = (objetos) => {
+			for (const propriedade in objetos) {
+				if (Array.isArray(objetos[propriedade])) {
+					console.log(validateArray(objetos[propriedade]), objetos[propriedade]);
+				} else if (typeof objetos[propriedade] == 'object') {
+					percorreObjeto(objetos[propriedade]);
+				}
+			}
+		};
+		percorreObjeto(JSON.parse(configString));
 		configDAO
 			.addConfig(config)
 			.then(() => {
