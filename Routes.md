@@ -16,6 +16,7 @@
 | password    | Body        | String | Senha do usuário                                                             |
 | newPassword | Body        | String | Nova senha do usuário                                                        |
 | name        | Body        | String | Nome do time adOps                                                           |
+| ID          | URL         | String | ID do Parametro no Firestore                                                 |
 
 ## Rotas
 
@@ -201,7 +202,7 @@
 
 **Descrição**: Retorna uma lista dos usuários pertencentes ao AdOpsTeam do usuário atual.
 
-### (GET) //adOpsTeam/:adOpsTeam/users
+### (GET) /adOpsTeam/:adOpsTeam/users
 
 **Parâmetros**: token.
 
@@ -213,7 +214,7 @@
 
 **Descrição**: Retorna uma lista das campanhas pertencentes ao AdOpsTeam do usuário atual.
 
-### (GET) //adOpsTeam/:adOpsTeam/campaigns
+### (GET) /adOpsTeam/:adOpsTeam/campaigns
 
 **Parâmetros**: token.
 
