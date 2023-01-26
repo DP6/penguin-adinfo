@@ -93,6 +93,22 @@ export class AdOpsTeamDAO {
 	}
 
 	/**
+	 * Deleta um adOpsTeam
+	 * @param adOpsTeamId AdOpsTeam que será deletado
+	 * @returns Retorna True caso o adOpsTeam tenha sido deletado com sucesso
+	 */
+	public deleteAdopsteam(adOpsTeamId: string): Promise<boolean | void> {
+		return this._objectStore
+			.deleteDocumentById(this._adOpsTeamCollection, adOpsTeamId)
+			.then(() => {
+				return true;
+			})
+			.catch(() => {
+				return false;
+			});
+	}
+
+	/**
 	 * Desativa um time de adOps
 	 * @param adOpsTeamId ID do adOpsTeam a a ser desativado
 	 * @param userRequestPermission permissão do usuario que solicitou a alteração

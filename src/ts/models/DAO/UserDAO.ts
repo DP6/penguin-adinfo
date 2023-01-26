@@ -192,6 +192,22 @@ export class UserDAO {
 	}
 
 	/**
+	 * Deleta um usuario
+	 * @param userId Usuario que será deletado
+	 * @returns Retorna True caso o usuario tenha sido deletado com sucesso
+	 */
+	public deleteUser(userId: string): Promise<boolean | void> {
+		return this._objectStore
+			.deleteDocumentById(this._userCollection, userId)
+			.then(() => {
+				return true;
+			})
+			.catch(() => {
+				return false;
+			});
+	}
+
+	/**
 	 * Desativa um usuário
 	 * @param userId ID do usuário a ser desativado
 	 * @param userRequestPermission permissão do usuario que solicitou a alteração

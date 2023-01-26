@@ -97,6 +97,16 @@ class CampaignDAO {
 				return false;
 			});
 	}
+	deleteCampaign(campaignId) {
+		return this._objectStore
+			.deleteDocumentById(this._campaignCollection, campaignId)
+			.then(() => {
+				return true;
+			})
+			.catch(() => {
+				return false;
+			});
+	}
 	deactivateCampaign(campaignId, userRequestPermission) {
 		return this._objectStore
 			.getAllDocumentsFrom(this._campaignCollection)

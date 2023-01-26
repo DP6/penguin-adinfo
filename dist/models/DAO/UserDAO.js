@@ -174,6 +174,16 @@ class UserDAO {
 				throw err;
 			});
 	}
+	deleteUser(userId) {
+		return this._objectStore
+			.deleteDocumentById(this._userCollection, userId)
+			.then(() => {
+				return true;
+			})
+			.catch(() => {
+				return false;
+			});
+	}
 	deactivateUser(userId, userRequestPermission) {
 		return this._objectStore
 			.getAllDocumentsFrom(this._userCollection)

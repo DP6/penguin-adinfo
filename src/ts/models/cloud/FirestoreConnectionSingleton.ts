@@ -141,6 +141,16 @@ export class FirestoreConnectionSingleton extends ObjectStore {
 	}
 
 	/**
+	 * Deleta um documento no banco de Documentos
+	 * @param collection Coleção onde está o documento
+	 * @param id ID do documento
+	 * @returns Documento deletado
+	 */
+	public deleteDocumentById(collection: CollectionReference, id: string): Promise<WriteResult> {
+		return collection.doc(id).delete();
+	}
+
+	/**
 	 * Retorna documentos do Banco de Documentos a partir de filtros
 	 * @param collection Coleção onde estão os documentos
 	 * @param conditions Condições de filtragem

@@ -95,6 +95,22 @@ export class CampaignDAO {
 	}
 
 	/**
+	 * Deleta uma campanha
+	 * @param campaignId campanha que será deletada
+	 * @returns Retorna True caso a campanha tenha sido deletada com sucesso
+	 */
+	public deleteCampaign(campaignId: string): Promise<boolean | void> {
+		return this._objectStore
+			.deleteDocumentById(this._campaignCollection, campaignId)
+			.then(() => {
+				return true;
+			})
+			.catch(() => {
+				return false;
+			});
+	}
+
+	/**
 	 * Desativa uma campanha
 	 * @param campaignId ID da campanha a ser desativada
 	 * @param userRequestPermission permissão do usuario que solicitou a alteração
