@@ -97,7 +97,7 @@ export class AdOpsTeamDAO {
 	 * @param adOpsTeamId AdOpsTeam que será deletado
 	 * @returns Retorna True caso o adOpsTeam tenha sido deletado com sucesso
 	 */
-	public deleteAdopsteam(adOpsTeamId: string): Promise<boolean | void> {
+	public deleteAdopsteam(adOpsTeamId: string): Promise<boolean> {
 		return this._objectStore
 			.deleteDocumentById(this._adOpsTeamCollection, adOpsTeamId)
 			.then(() => {

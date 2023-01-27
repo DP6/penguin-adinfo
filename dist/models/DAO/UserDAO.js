@@ -136,6 +136,24 @@ class UserDAO {
 				throw err;
 			});
 	}
+	getUserById(userId) {
+		return this._objectStore
+			.getDocumentById(this._userCollection, userId)
+			.then((userDocument) => {
+				const user = new User_1.User(
+					userDocument.get('id'),
+					userDocument.get('permission'),
+					userDocument.get('advertiser'),
+					userDocument.get('email'),
+					userDocument.get('active'),
+					userDocument.get('adOpsTeam')
+				);
+				return user;
+			})
+			.catch((err) => {
+				throw err;
+			});
+	}
 	userExists(email) {
 		const equal = '==';
 		const conditions = [

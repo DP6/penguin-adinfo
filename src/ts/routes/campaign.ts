@@ -124,6 +124,37 @@ const campaign = (app: { [key: string]: any }): void => {
 			});
 	});
 
+	app.delete('/campaign/:id/delete', (req: { [key: string]: any }, res: { [key: string]: any }) => {
+		const apiResponse = new ApiResponse();
+
+		const targetCampaignId = req.params.id;
+		const campaignDAO = new CampaignDAO();
+
+		campaignDAO
+			.getCampaignById(targetCampaignId)
+			.then((campaign: Campaign) => {
+				if (req.permission === 'adOpsManager' && campaign.adOpsTeam !== req.adOpsTeam)
+					throw new Error('Usuário sem permissão');
+				return campaignDAO.deleteCampaign(targetCampaignId);
+			})
+			.then((result: boolean) => {
+				if (result) {
+					apiResponse.statusCode = 200;
+					apiResponse.responseText = 'Campanha deletada com sucesso!';
+				} else {
+					throw new Error('Erro ao deletar campanha!');
+				}
+			})
+			.catch((err) => {
+				apiResponse.statusCode = 500;
+				apiResponse.responseText = err.message;
+				apiResponse.errorMessage = err.message;
+			})
+			.finally(() => {
+				res.status(apiResponse.statusCode).send(apiResponse.jsonResponse);
+			});
+	});
+
 	app.post('/campaign/:id/deactivate', async (req: { [key: string]: any }, res: { [key: string]: any }) => {
 		const apiResponse = new ApiResponse();
 		const campaignId = req.params.id;

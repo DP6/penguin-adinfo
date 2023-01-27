@@ -137,6 +137,31 @@ export class UserDAO {
 	}
 
 	/**
+	 * Consulta o usuario na base de dados
+	 * @param userId Usuario que será buscado
+	 * @returns Retorna o usuario procurado
+	 */
+	public getUserById(userId: string): Promise<User | void> {
+		return this._objectStore
+			.getDocumentById(this._userCollection, userId)
+			.then((userDocument) => {
+				const user: User = new User(
+					userDocument.get('id'),
+					userDocument.get('permission'),
+					userDocument.get('advertiser'),
+					userDocument.get('email'),
+					userDocument.get('active'),
+					userDocument.get('adOpsTeam')
+				);
+
+				return user;
+			})
+			.catch((err) => {
+				throw err;
+			});
+	}
+
+	/**
 	 * Checa se o email inserido consta na base de dados
 	 * @param email Email a ser checado
 	 * @returns retorna True se o usuario ja existir na base de dados, do contrario retorna False.
@@ -196,7 +221,7 @@ export class UserDAO {
 	 * @param userId Usuario que será deletado
 	 * @returns Retorna True caso o usuario tenha sido deletado com sucesso
 	 */
-	public deleteUser(userId: string): Promise<boolean | void> {
+	public deleteUser(userId: string): Promise<boolean> {
 		return this._objectStore
 			.deleteDocumentById(this._userCollection, userId)
 			.then(() => {

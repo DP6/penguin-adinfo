@@ -30,8 +30,10 @@ export class RoutesPermission {
 			'/register',
 			'/user/.*/deactivate',
 			'/user/.*/reactivate',
+			'/user/.*/delete',
 			'/campaign/.*/deactivate',
 			'/campaign/.*/reactivate',
+			'/campaign/.*/delete',
 			'/campaign'
 		);
 

@@ -80,6 +80,33 @@ const adOpsTeam = (app: { [key: string]: any }): void => {
 			});
 	});
 
+	app.delete('/adOpsTeam/:adOpsTeam/delete', (req: { [key: string]: any }, res: { [key: string]: any }) => {
+		const apiResponse = new ApiResponse();
+
+		const targetAdOpsTeamId = req.params.id;
+		const adOpsTeamDAO = new AdOpsTeamDAO();
+
+		if (req.permission !== 'owner' || req.permission !== 'admin') throw new Error('Usuário sem permissão');
+		return adOpsTeamDAO
+			.deleteAdopsteam(targetAdOpsTeamId)
+			.then((result: boolean) => {
+				if (result) {
+					apiResponse.statusCode = 200;
+					apiResponse.responseText = 'AdOpsTeam deletado com sucesso!';
+				} else {
+					throw new Error('Erro ao deletar adOpsTeam!');
+				}
+			})
+			.catch((err) => {
+				apiResponse.statusCode = 500;
+				apiResponse.responseText = err.message;
+				apiResponse.errorMessage = err.message;
+			})
+			.finally(() => {
+				res.status(apiResponse.statusCode).send(apiResponse.jsonResponse);
+			});
+	});
+
 	app.post('/adOpsTeam/:adOpsTeam/deactivate', (req: { [key: string]: any }, res: { [key: string]: any }) => {
 		const apiResponse = new ApiResponse();
 
