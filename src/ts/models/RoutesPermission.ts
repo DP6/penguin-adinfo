@@ -18,7 +18,6 @@ export class RoutesPermission {
 			'/csv',
 			'/user',
 			'/campaign/.*/list',
-			'/adOpsTeam/list',
 			'/campaign/.*/csv/list',
 			'/adOpsTeams/campaigns',
 		];

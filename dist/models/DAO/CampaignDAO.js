@@ -41,19 +41,19 @@ class CampaignDAO {
 		this._campaignCollection = this._objectStore.getCollection(this._pathToCollection);
 	}
 	getCampaign(campaignId) {
-		return this._objectStore
-			.getAllDocumentsFrom(this._campaignCollection)
-			.then((campaigns) => {
-				if (campaigns.length > 0) {
-					const [filteredCampaign] = campaigns.filter((campaign) => campaign.campaignId === campaignId);
-					return filteredCampaign.name;
-				} else {
-					throw new Error('Nenhuma campanha encontrada!');
-				}
-			})
-			.catch((err) => {
-				throw err;
-			});
+		const equal = '==';
+		const conditions = [
+			{
+				key: 'campaignId',
+				operator: equal,
+				value: campaignId,
+			},
+		];
+		return this._objectStore.getDocumentFiltered(this._campaignCollection, conditions).then((campaigns) => {
+			if (campaigns.docs.length > 0) {
+				return campaigns.docs[0].id;
+			}
+		});
 	}
 	getAllCampaignsFrom(adOpsTeam, userRequestPermission) {
 		return this._objectStore

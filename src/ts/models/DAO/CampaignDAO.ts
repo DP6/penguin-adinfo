@@ -20,19 +20,19 @@ export class CampaignDAO {
 	 * @returns Retorna campanha procurada
 	 */
 	public getCampaign(campaignId: string): Promise<string | void> {
-		return this._objectStore
-			.getAllDocumentsFrom(this._campaignCollection)
-			.then((campaigns) => {
-				if (campaigns.length > 0) {
-					const [filteredCampaign] = campaigns.filter((campaign) => campaign.campaignId === campaignId);
-					return filteredCampaign.name;
-				} else {
-					throw new Error('Nenhuma campanha encontrada!');
-				}
-			})
-			.catch((err) => {
-				throw err;
-			});
+		const equal: WhereFilterOp = '==';
+		const conditions = [
+			{
+				key: 'campaignId',
+				operator: equal,
+				value: campaignId,
+			},
+		];
+		return this._objectStore.getDocumentFiltered(this._campaignCollection, conditions).then((campaigns) => {
+			if (campaigns.docs.length > 0) {
+				return campaigns.docs[0].id;
+			}
+		});
 	}
 
 	/**
@@ -65,7 +65,7 @@ export class CampaignDAO {
 									active: campaign.active,
 								};
 							} else {
-								throw new Error('Erro na recuperação dos atributos da campanha ' + campaign.name + '!');
+								throw new Error('Erro na recuperação dos atributos da campanha ' + campaign.name + '!'); // arrumar - ta feio
 							}
 						});
 
