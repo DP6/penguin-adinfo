@@ -73,6 +73,26 @@ const csv = (app) => {
 				res.status(apiResponse.statusCode).send(apiResponse.jsonResponse);
 			});
 	});
+	app.get('/campaign/:adOpsTeam/list', (req, res) =>
+		__awaiter(void 0, void 0, void 0, function* () {
+			const apiResponse = new ApiResponse_1.ApiResponse();
+			const adOpsTeam = req.params.adOpsTeam !== 'Campanhas Internas' ? req.params.adOpsTeam : 'AdvertiserCampaigns';
+			const permission = req.permission;
+			new CampaignDAO_1.CampaignDAO()
+				.getAllCampaignsFrom(adOpsTeam, permission)
+				.then((adOpsTeams) => {
+					apiResponse.responseText = JSON.stringify(adOpsTeams);
+				})
+				.catch((err) => {
+					apiResponse.statusCode = 500;
+					apiResponse.responseText = err.message;
+					apiResponse.errorMessage = err.message;
+				})
+				.finally(() => {
+					res.status(apiResponse.statusCode).send(apiResponse.jsonResponse);
+				});
+		})
+	);
 	app.get('/csv', (req, res) => {
 		const fileName = req.headers.file;
 		const campaign = req.headers.campaign;
