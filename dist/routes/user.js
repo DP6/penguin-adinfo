@@ -39,8 +39,7 @@ const user = (app) => {
 			.getUserById(targetUserId)
 			.then((user) => {
 				if (
-					(req.permission === 'adOpsManager' && user.permission === 'admin') ||
-					(req.permission === 'adOpsManager' && user.permission === 'owner') ||
+					(req.permission === 'adOpsManager' && user.adOpsTeam !== req.adOpsTeam) ||
 					(req.permission === 'admin' && user.permission === 'owner')
 				)
 					throw new Error('Usuário sem permissão');
