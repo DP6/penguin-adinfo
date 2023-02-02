@@ -1,5 +1,6 @@
 import { FileDAO } from '../models/DAO/FileDAO';
 import { DateUtils } from '../utils/DateUtils';
+import * as converter from 'json-2-csv';
 import { ApiResponse } from '../models/ApiResponse';
 
 const csv = (app: { [key: string]: any }): void => {
@@ -70,7 +71,9 @@ const csv = (app: { [key: string]: any }): void => {
 		fileDAO
 			.getFromStore(filePath)
 			.then((file) => {
-				// const dataFormated = data[0].toString("utf8");
+				// converter para csv
+				// pode ser JSON.parse -> string para json
+				//JSON.parse(file.toString())
 				res.setHeader('Content-disposition', 'attachment; filename=template.csv');
 				res.set('Content-Type', 'text/csv; charset=utf-8');
 				apiResponse.statusCode = 200;
@@ -117,6 +120,78 @@ const csv = (app: { [key: string]: any }): void => {
 			})
 			.finally(() => {
 				res.status(apiResponse.statusCode).send(apiResponse.jsonResponse);
+			});
+	});
+
+	app.get('/csv/historicaljson', (req: { [key: string]: any }, res: { [key: string]: any }) => {
+		const campaign = req.headers.campaign;
+		const adOpsTeam = req.headers.adopsteam;
+		const advertiser = req.advertiser;
+		const adOpsTeamPath = adOpsTeam ? adOpsTeam : 'AdvertiserCampaigns';
+		const apiResponse = new ApiResponse();
+
+		if (!campaign) {
+			apiResponse.responseText = 'Nenhuma campanha foi informada!';
+			apiResponse.statusCode = 400;
+			res.status(apiResponse.statusCode).send(apiResponse.jsonResponse);
+			return;
+		}
+
+		const filePath = `${advertiser}/${adOpsTeamPath}/${campaign}/historical.json`;
+
+		const fileDAO = new FileDAO();
+		fileDAO
+			.getFromStore(filePath)
+			.then((fileContent) => {
+				const fullJosn = JSON.parse(fileContent.toString());
+
+				delete fullJosn.campaign;
+				delete fullJosn.adOpsTeam;
+
+				const newJson = Object.keys(fullJosn).map((key) => {
+					return { ...fullJosn[key]['input'], ...fullJosn[key]['result'] };
+				});
+
+				return newJson;
+			})
+			.then((jsonFile) => {
+				return new Promise((resolve, reject) => {
+					converter.json2csv(
+						jsonFile,
+						async (err, csv) => {
+							if (err) {
+								reject(err);
+								throw Error('Falha na geração do CSV!');
+							}
+							resolve(csv);
+						},
+						{
+							delimiter: {
+								field: ',',
+							},
+						}
+					);
+				});
+			})
+			.then((csvfile: string) => {
+				//essas duas primeiras linhas são estão porque é um arquivo
+				res.setHeader('Content-disposition', 'attachment; filename=data.csv');
+				res.set('Content-Type', 'text/csv; charset=utf-8');
+				apiResponse.responseText = csvfile;
+				apiResponse.statusCode = 200;
+				res.status(apiResponse.statusCode).send(apiResponse.responseText);
+			})
+			.catch((err) => {
+				if (apiResponse.statusCode === 200) {
+					apiResponse.statusCode = 500;
+				}
+				apiResponse.responseText = 'Falha ao salvar o arquivo!';
+				apiResponse.errorMessage = err.message;
+			})
+			.finally(() => {
+				if (apiResponse.statusCode !== 200) {
+					res.status(apiResponse.statusCode).send(apiResponse.jsonResponse);
+				}
 			});
 	});
 };
