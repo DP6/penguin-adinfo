@@ -54,9 +54,25 @@ const campaign = (app: { [key: string]: any }): void => {
 
 	app.get('/campaign/:adOpsTeam/list', async (req: { [key: string]: any }, res: { [key: string]: any }) => {
 		const apiResponse = new ApiResponse();
-
 		const adOpsTeam = req.params.adOpsTeam !== 'Campanhas Internas' ? req.params.adOpsTeam : 'AdvertiserCampaigns';
 		const permission = req.permission;
+		const advertiser = req.advertiser;
+
+		if ((req.permission === 'owner' || req.permission === 'admin') && !req.params.adOpsTeam) {
+			new CampaignDAO()
+				.getAllCampaigns(advertiser)
+				.then((campanha: Campaign[]) => {
+					apiResponse.responseText = JSON.stringify(campanha);
+				})
+				.catch((err) => {
+					apiResponse.statusCode = 500;
+					apiResponse.responseText = err.message;
+					apiResponse.errorMessage = err.message;
+				})
+				.finally(() => {
+					res.status(apiResponse.statusCode).send(apiResponse.jsonResponse);
+				});
+		}
 
 		new CampaignDAO()
 			.getAllCampaignsFrom(adOpsTeam, permission)

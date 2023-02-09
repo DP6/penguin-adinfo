@@ -55,6 +55,37 @@ class CampaignDAO {
 			}
 		});
 	}
+	getAllCampaigns(advertiser) {
+		const equal = '==';
+		const conditions = [
+			{
+				key: 'advertiser',
+				operator: equal,
+				value: advertiser,
+			},
+		];
+		return this._objectStore
+			.getDocumentFiltered(this._campaignCollection, conditions)
+			.then((campaignsDocuments) => {
+				const campanha = [];
+				campaignsDocuments.docs.map((campaignsDocument) => {
+					campanha.push(
+						new Campaign_1.Campaign(
+							campaignsDocument.get('name'),
+							campaignsDocument.get('advertiser'),
+							campaignsDocument.get('adOpsTeam'),
+							campaignsDocument.get('campaignId'),
+							campaignsDocument.get('active'),
+							campaignsDocument.get('created')
+						)
+					);
+				});
+				return campanha;
+			})
+			.catch((err) => {
+				throw err;
+			});
+	}
 	getAllCampaignsFrom(adOpsTeam, userRequestPermission) {
 		return this._objectStore
 			.getAllDocumentsFrom(this._campaignCollection)

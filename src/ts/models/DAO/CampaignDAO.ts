@@ -36,6 +36,43 @@ export class CampaignDAO {
 	}
 
 	/**
+	 * retorna todas as campanhas de todos os adopsteam de um advertiser.
+	 * @param advertiser do usuario onde vão ser pegado as campanhas.
+	 * @returns Lista Objetos contendo atributos de cada campanha
+	 */
+	public getAllCampaigns(advertiser: string): Promise<Campaign[] | void> {
+		const equal: WhereFilterOp = '==';
+		const conditions = [
+			{
+				key: 'advertiser',
+				operator: equal,
+				value: advertiser,
+			},
+		];
+		return this._objectStore
+			.getDocumentFiltered(this._campaignCollection, conditions)
+			.then((campaignsDocuments) => {
+				const campanha: Campaign[] = [];
+				campaignsDocuments.docs.map((campaignsDocument) => {
+					campanha.push(
+						new Campaign(
+							campaignsDocument.get('name'),
+							campaignsDocument.get('advertiser'),
+							campaignsDocument.get('adOpsTeam'),
+							campaignsDocument.get('campaignId'),
+							campaignsDocument.get('active'),
+							campaignsDocument.get('created')
+						)
+					);
+				});
+				return campanha;
+			})
+			.catch((err) => {
+				throw err;
+			});
+	}
+
+	/**
 	 * Retorna todas as adOpsTeams de um advertiser
 	 * @param adOpsTeam adOpsTeam das campanhas a serem buscados
 	 * @param userRequestPermission permissão do usuario que solicitou a alteração

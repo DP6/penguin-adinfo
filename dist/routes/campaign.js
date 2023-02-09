@@ -84,6 +84,23 @@ const campaign = (app) => {
 			const apiResponse = new ApiResponse_1.ApiResponse();
 			const adOpsTeam = req.params.adOpsTeam !== 'Campanhas Internas' ? req.params.adOpsTeam : 'AdvertiserCampaigns';
 			const permission = req.permission;
+			const advertiser = req.advertiser;
+			if ((req.permission === 'owner' || req.permission === 'admin') && !req.params.adOpsTeam) {
+				new CampaignDAO_1.CampaignDAO()
+					.getAllCampaigns(advertiser)
+					.then((campanha) => {
+						apiResponse.responseText = JSON.stringify(campanha);
+						console.log('campanha' + JSON.stringify(campanha));
+					})
+					.catch((err) => {
+						apiResponse.statusCode = 500;
+						apiResponse.responseText = err.message;
+						apiResponse.errorMessage = err.message;
+					})
+					.finally(() => {
+						res.status(apiResponse.statusCode).send(apiResponse.jsonResponse);
+					});
+			}
 			new CampaignDAO_1.CampaignDAO()
 				.getAllCampaignsFrom(adOpsTeam, permission)
 				.then((adOpsTeams) => {
