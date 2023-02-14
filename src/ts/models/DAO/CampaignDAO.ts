@@ -2,6 +2,7 @@ import { ObjectStore } from './ObjectStore';
 import { FirestoreConnectionSingleton } from '../cloud/FirestoreConnectionSingleton';
 import { CollectionReference, WhereFilterOp } from '@google-cloud/firestore';
 import { Campaign } from '../Campaign';
+import { JsonUtils } from '../../utils/JsonUtils';
 
 export class CampaignDAO {
 	private _objectStore: ObjectStore;
@@ -137,22 +138,10 @@ export class CampaignDAO {
 	 * @param userRequestPermission permissão do usuario que solicitou a alteração
 	 * @returns retorna True em caso de sucesso
 	 */
-	public deactivateCampaign(campaignId: string, userRequestPermission: string): Promise<boolean | void> {
+	public deactivateCampaign(campaignId: string): Promise<boolean> {
 		return this._objectStore
-			.getAllDocumentsFrom(this._campaignCollection)
-			.then((campaigns) => {
-				if (userRequestPermission !== 'user') {
-					const [filteredCampaign] = campaigns.filter((campaign) => campaign.campaignId === campaignId);
-					filteredCampaign.active = false;
-					return filteredCampaign;
-				} else {
-					throw new Error('Permissões insuficientes para inavitar a campanha!');
-				}
-			})
-			.then((filteredCampaign) => {
-				this._objectStore.getCollection(this._pathToCollection).doc(campaignId).update(filteredCampaign);
-				return true;
-			})
+			.updateDocumentById(this._campaignCollection, campaignId, { active: false })
+			.then(() => true)
 			.catch((err) => {
 				throw err;
 			});
@@ -164,22 +153,10 @@ export class CampaignDAO {
 	 * @param userRequestPermission permissão do usuario que solicitou a alteração
 	 * @returns retorna True em caso de sucesso
 	 */
-	public reactivateCampaign(campaignId: string, userRequestPermission: string): Promise<boolean | void> {
+	public reactivateCampaign(campaignId: string): Promise<boolean> {
 		return this._objectStore
-			.getAllDocumentsFrom(this._campaignCollection)
-			.then((campaigns) => {
-				if (userRequestPermission !== 'user') {
-					const [filteredCampaign] = campaigns.filter((campaign) => campaign.campaignId === campaignId);
-					filteredCampaign.active = true;
-					return filteredCampaign;
-				} else {
-					throw new Error('Permissões insuficientes para inavitar a campanha!');
-				}
-			})
-			.then((filteredCampaign) => {
-				this._objectStore.getCollection(this._pathToCollection).doc(campaignId).update(filteredCampaign);
-				return true;
-			})
+			.updateDocumentById(this._campaignCollection, campaignId, { active: true })
+			.then(() => true)
 			.catch((err) => {
 				throw err;
 			});

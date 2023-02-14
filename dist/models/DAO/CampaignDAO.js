@@ -128,42 +128,18 @@ class CampaignDAO {
 				return false;
 			});
 	}
-	deactivateCampaign(campaignId, userRequestPermission) {
+	deactivateCampaign(campaignId) {
 		return this._objectStore
-			.getAllDocumentsFrom(this._campaignCollection)
-			.then((campaigns) => {
-				if (userRequestPermission !== 'user') {
-					const [filteredCampaign] = campaigns.filter((campaign) => campaign.campaignId === campaignId);
-					filteredCampaign.active = false;
-					return filteredCampaign;
-				} else {
-					throw new Error('Permissões insuficientes para inavitar a campanha!');
-				}
-			})
-			.then((filteredCampaign) => {
-				this._objectStore.getCollection(this._pathToCollection).doc(campaignId).update(filteredCampaign);
-				return true;
-			})
+			.updateDocumentById(this._campaignCollection, campaignId, { active: false })
+			.then(() => true)
 			.catch((err) => {
 				throw err;
 			});
 	}
-	reactivateCampaign(campaignId, userRequestPermission) {
+	reactivateCampaign(campaignId) {
 		return this._objectStore
-			.getAllDocumentsFrom(this._campaignCollection)
-			.then((campaigns) => {
-				if (userRequestPermission !== 'user') {
-					const [filteredCampaign] = campaigns.filter((campaign) => campaign.campaignId === campaignId);
-					filteredCampaign.active = true;
-					return filteredCampaign;
-				} else {
-					throw new Error('Permissões insuficientes para inavitar a campanha!');
-				}
-			})
-			.then((filteredCampaign) => {
-				this._objectStore.getCollection(this._pathToCollection).doc(campaignId).update(filteredCampaign);
-				return true;
-			})
+			.updateDocumentById(this._campaignCollection, campaignId, { active: true })
+			.then(() => true)
 			.catch((err) => {
 				throw err;
 			});

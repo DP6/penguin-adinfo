@@ -141,24 +141,26 @@ const campaign = (app: { [key: string]: any }): void => {
 		const campaignId = req.params.id;
 		const permission = req.permission;
 
-		new CampaignDAO()
-			.deactivateCampaign(campaignId, permission)
-			.then((result: boolean) => {
-				if (result) {
-					apiResponse.statusCode = 200;
-					apiResponse.responseText = 'Campanha desativada com sucesso!';
-				} else {
-					throw new Error('Erro ao desativar campanha!');
-				}
-			})
-			.catch((err) => {
-				apiResponse.statusCode = 500;
-				apiResponse.responseText = 'Erro ao desativar campanha!';
-				apiResponse.errorMessage = err.message;
-			})
-			.finally(() => {
-				res.status(apiResponse.statusCode).send(apiResponse.jsonResponse);
-			});
+		if (permission != 'user') {
+			new CampaignDAO()
+				.deactivateCampaign(campaignId)
+				.then((result: boolean) => {
+					if (result) {
+						apiResponse.statusCode = 200;
+						apiResponse.responseText = 'Campanha desativada com sucesso!';
+					} else {
+						throw new Error('Erro ao desativar campanha!');
+					}
+				})
+				.catch((err) => {
+					apiResponse.statusCode = 500;
+					apiResponse.responseText = 'Erro ao desativar campanha!';
+					apiResponse.errorMessage = err.message;
+				})
+				.finally(() => {
+					res.status(apiResponse.statusCode).send(apiResponse.jsonResponse);
+				});
+		}
 	});
 
 	app.post('/campaign/:id/reactivate', (req: { [key: string]: any }, res: { [key: string]: any }) => {
@@ -166,24 +168,26 @@ const campaign = (app: { [key: string]: any }): void => {
 		const campaignId = req.params.id;
 		const permission = req.permission;
 
-		new CampaignDAO()
-			.reactivateCampaign(campaignId, permission)
-			.then((result: boolean) => {
-				if (result) {
-					apiResponse.statusCode = 200;
-					apiResponse.responseText = 'Campanha reativada com sucesso!';
-				} else {
-					throw new Error('Erro ao reativar campanha!');
-				}
-			})
-			.catch((err) => {
-				apiResponse.statusCode = 500;
-				apiResponse.responseText = 'Erro ao reativar campanha!';
-				apiResponse.errorMessage = err.message;
-			})
-			.finally(() => {
-				res.status(apiResponse.statusCode).send(apiResponse.jsonResponse);
-			});
+		if (permission != 'user') {
+			new CampaignDAO()
+				.reactivateCampaign(campaignId)
+				.then((result: boolean) => {
+					if (result) {
+						apiResponse.statusCode = 200;
+						apiResponse.responseText = 'Campanha reativada com sucesso!';
+					} else {
+						throw new Error('Erro ao reativar campanha!');
+					}
+				})
+				.catch((err) => {
+					apiResponse.statusCode = 500;
+					apiResponse.responseText = 'Erro ao reativar campanha!';
+					apiResponse.errorMessage = err.message;
+				})
+				.finally(() => {
+					res.status(apiResponse.statusCode).send(apiResponse.jsonResponse);
+				});
+		}
 	});
 };
 
