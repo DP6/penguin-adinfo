@@ -14,7 +14,7 @@ describe('GA', () => {
 				separator: ':',
 				spaceSeparator: '_',
 				columns: {
-					'Tipo de Compra': ['cpa', 'cpc'],
+					'Tipo de Compra': {"data":['cpa', 'cpc'], "index": 0},
 					Período: [],
 					Bandeira: [],
 				},
@@ -48,7 +48,7 @@ describe('GA', () => {
 				separator: ':',
 				spaceSeparator: '_',
 				columns: {
-					'Tipo de Compra': ['cpa', 'cpc'],
+					'Tipo de Compra': {"data":['cpa', 'cpc'], "index": 0},
 					Período: ['/[a-zA-Z]* [0-9]{4}/'],
 					Bandeira: ['bandeira2'],
 				},
@@ -81,7 +81,7 @@ describe('GA', () => {
 				separator: ':',
 				spaceSeparator: '_',
 				columns: {
-					'Tipo de Compra': ['cpa', 'cpc'],
+					'Tipo de Compra': {"data":['cpa', 'cpc'], "index": 0},
 					Período: ['/[a-zA-Z]* [0-9]{4}/'],
 					Bandeira: [],
 				},
@@ -115,7 +115,7 @@ describe('GA', () => {
 				separator: ':',
 				spaceSeparator: '_',
 				columns: {
-					'Tipo de Compra': ['cpa', 'cpc'],
+					'Tipo de Compra': {"data":['cpa', 'cpc'], "index": 0},
 					Período: ['/[a-zA-Z]* [0-9]{4}/'],
 					Bandeira: [],
 				},
@@ -149,7 +149,7 @@ describe('GA', () => {
 				separator: ':',
 				spaceSeparator: '_',
 				columns: {
-					'Tipo de Compra': ['cpa', 'cpc'],
+					'Tipo de Compra': {"data":['cpa', 'cpc'], "index": 0},
 					Período: ['/[a-zA-Z]* [0-9]{4}/'],
 					Bandeira: [],
 				},
@@ -183,7 +183,7 @@ describe('GA', () => {
 				separator: ':',
 				spaceSeparator: '_',
 				columns: {
-					'Tipo de Compra': ['cpa', 'cpc'],
+					'Tipo de Compra': {"data":['cpa', 'cpc'], "index": 0},
 					Período: ['/[a-zA-Z]* [0-9]{4}/'],
 					Bandeira: [],
 				},
@@ -219,7 +219,7 @@ describe('GA', () => {
 				separator: ':',
 				spaceSeparator: '_',
 				columns: {
-					'Tipo de Compra': ['cpa', 'cpc'],
+					'Tipo de Compra': {"data":['cpa', 'cpc'], "index": 0},
 					Período: ['/[a-zA-Z]* [0-9]{4}/'],
 					Bandeira: [],
 				},
@@ -262,7 +262,7 @@ describe('GA', () => {
 				separator: ':',
 				spaceSeparator: '_',
 				columns: {
-					'Tipo de Compra': ['cpa', 'cpc'],
+					'Tipo de Compra': {"data":['cpa', 'cpc'], "index": 0},
 					Período: ['/[a-zA-Z]* [0-9]{4}/'],
 					Bandeira: [],
 				},
@@ -312,7 +312,7 @@ describe('GA', () => {
 				separator: ':',
 				spaceSeparator: '_',
 				columns: {
-					'Tipo de Compra': ['cpa', 'cpc'],
+					'Tipo de Compra': {"data":['cpa', 'cpc'], "index": 0},
 					Período: ['/[a-zA-Z]* [0-9]{4}/'],
 					Bandeira: [],
 				},
@@ -361,7 +361,7 @@ describe('GA', () => {
 				separator: ':',
 				spaceSeparator: '_',
 				columns: {
-					'Tipo de Compra': ['cpa', 'cpc'],
+					'Tipo de Compra': {"data":['cpa', 'cpc'], "index": 0},
 					Período: ['/[a-zA-Z]* [0-9]{4}/'],
 					Bandeira: [],
 				},

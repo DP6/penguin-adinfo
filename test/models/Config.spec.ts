@@ -41,20 +41,26 @@ describe('Config', () => {
 					}
 				},
 				columns: {
-					Veículo: [
-						'google_ads',
-						'facebook',
-						'verizon',
-						'globo',
-						'afilio',
-					],
-					Inserção: [
-						'CPC',
-						'feed',
-						'story',
-						'native ads',
-						'afiliado',
-					],
+					Veículo: {
+						"data": [
+							'google_ads',
+							'facebook',
+							'verizon',
+							'globo',
+							'afilio',
+						],
+						"index": 0
+					},
+					Inserção: {
+						"data":[
+							'CPC',
+							'feed',
+							'story',
+							'native ads',
+							'afiliado',
+						],
+						"index": 1
+					},
 					campanha: ['fifinha-na-copa', 'fifinha na copa da emoção'],
 					categoriaDoProduto: ['videogame', 'game'],
 					produto: ['FIFA', 'PÉS', 'ronaldinho soccer 64'],
@@ -114,20 +120,26 @@ describe('Config', () => {
 					}
 				},
 				columns: {
-					Veículo: [
-						'google_ads',
-						'facebook',
-						'verizon',
-						'globo',
-						'afilio',
-					],
-					Inserção: [
-						'CPC',
-						'feed',
-						'story',
-						'native ads',
-						'afiliado',
-					],
+					Veículo: {
+						"data": [
+							'google_ads',
+							'facebook',
+							'verizon',
+							'globo',
+							'afilio',
+						],
+						"index": 0
+					},
+					Inserção: {
+						"data":[
+							'CPC',
+							'feed',
+							'story',
+							'native ads',
+							'afiliado',
+						],
+						"index": 1
+					},
 					campanha: ['fifinha-na-copa', 'fifinha na copa da emoção'],
 					categoriaDoProduto: ['videogame', 'game'],
 					produto: ['FIFA', 'PÉS', 'ronaldinho soccer 64'],
@@ -171,20 +183,26 @@ describe('Config', () => {
 				],
 				spaceSeparator: '+',
 				columns: {
-					Veículo: [
-						'google_ads',
-						'facebook',
-						'verizon',
-						'globo',
-						'afilio',
-					],
-					Inserção: [
-						'CPC',
-						'feed',
-						'story',
-						'native ads',
-						'afiliado',
-					],
+					Veículo: {
+						"data":[
+							'google_ads',
+							'facebook',
+							'verizon',
+							'globo',
+							'afilio',
+						],
+						"index": 0,
+					},
+					Inserção: {
+						"data":[
+							'CPC',
+							'feed',
+							'story',
+							'native ads',
+							'afiliado',
+						],
+						"index": 1,
+					},
 					campanha: ['fifinha-na-copa', 'fifinha na copa da emoção'],
 					categoriaDoProduto: ['videogame', 'game'],
 				},
@@ -236,20 +254,26 @@ describe('Config', () => {
 					}
 				},
 				columns: {
-					Veículo: [
-						'google_ads',
-						'facebook',
-						'verizon',
-						'globo',
-						'afilio',
-					],
-					Inserção: [
-						'CPC',
-						'feed',
-						'story',
-						'native ads',
-						'afiliado',
-					],
+					Veículo: {
+						"data":[
+							'google_ads',
+							'facebook',
+							'verizon',
+							'globo',
+							'afilio',
+						],
+						"index": 0,
+					},
+					Inserção: {
+						"data":[
+							'CPC',
+							'feed',
+							'story',
+							'native ads',
+							'afiliado',
+						],
+						"index": 1,
+					},
 					campanha: ['fifinha-na-copa', 'fifinha na copa da emoção'],
 					categoriaDoProduto: ['videogame', 'game'],
 				},
@@ -289,20 +313,26 @@ describe('Config', () => {
 					}
 				},
 				columns: {
-					Veículo: [
-						'google_ads',
-						'facebook',
-						'verizon',
-						'globo',
-						'afilio',
-					],
-					Inserção: [
-						'CPC',
-						'feed',
-						'story',
-						'native ads',
-						'afiliado',
-					],
+					Veículo: {
+						"data":[
+							'google_ads',
+							'facebook',
+							'verizon',
+							'globo',
+							'afilio',
+						],
+						"index": 0,
+					},
+					Inserção: {
+						"data":[
+							'CPC',
+							'feed',
+							'story',
+							'native ads',
+							'afiliado',
+						],
+						"index": 1,
+					},
 					campanha: ['fifinha-na-copa', 'fifinha na copa da emoção'],
 					categoriaDoProduto: ['videogame', 'game'],
 				},
@@ -338,20 +368,26 @@ describe('Config', () => {
 					}
 				},
 				columns: {
-					Veículo: [
-						'google_ads',
-						'facebook',
-						'verizon',
-						'globo',
-						'afilio',
-					],
-					Inserção: [
-						'CPC',
-						'feed',
-						'story',
-						'native ads',
-						'afiliado',
-					],
+					Veículo: {
+						"data":[
+							'google_ads',
+							'facebook',
+							'verizon',
+							'globo',
+							'afilio',
+						],
+						"index": 0,
+					},
+					Inserção: {
+						"data":[
+							'CPC',
+							'feed',
+							'story',
+							'native ads',
+							'afiliado',
+						],
+						"index": 1,
+					},
 					campanha: ['fifinha-na-copa', 'fifinha na copa da emoção'],
 					categoriaDoProduto: ['videogame', 'game'],
 				},
@@ -365,20 +401,26 @@ describe('Config', () => {
 				separator: ':',
 				spaceSeparator: '+',
 				columns: {
-					Veículo: [
-						'google_ads',
-						'facebook',
-						'verizon',
-						'globo',
-						'afilio',
-					],
-					Inserção: [
-						'CPC',
-						'feed',
-						'story',
-						'native ads',
-						'afiliado',
-					],
+					Veículo: {
+						"data":[
+							'google_ads',
+							'facebook',
+							'verizon',
+							'globo',
+							'afilio',
+						],
+						"index": 0,
+					},
+					Inserção: {
+						"data":[
+							'CPC',
+							'feed',
+							'story',
+							'native ads',
+							'afiliado',
+						],
+						"index": 1,
+					},
 					campanha: ['fifinha-na-copa', 'fifinha na copa da emoção'],
 					categoriaDoProduto: ['videogame', 'game'],
 				},
@@ -416,20 +458,26 @@ describe('Config', () => {
 				separator: ':',
 				spaceSeparator: '+',
 				columns: {
-					Veículo: [
-						'google_ads',
-						'facebook',
-						'verizon',
-						'globo',
-						'afilio',
-					],
-					Inserção: [
-						'CPC',
-						'feed',
-						'story',
-						'native ads',
-						'afiliado',
-					],
+					Veículo: {
+						"data":[
+							'google_ads',
+							'facebook',
+							'verizon',
+							'globo',
+							'afilio',
+						],
+						"index": 0,
+					},
+					Inserção: {
+						"data":[
+							'CPC',
+							'feed',
+							'story',
+							'native ads',
+							'afiliado',
+						],
+						"index": 1,
+					},
 					campanha: ['fifinha-na-copa', 'fifinha na copa da emoção'],
 					categoriaDoProduto: ['videogame', 'game'],
 				},
@@ -459,20 +507,26 @@ describe('Config', () => {
 			const config = new Config(jsonConfig);
 			expect(JSON.stringify(config.validationRules)).to.equal(
 				JSON.stringify({
-					Veículo: [
-						'google_ads',
-						'facebook',
-						'verizon',
-						'globo',
-						'afilio',
-					],
-					Inserção: [
-						'CPC',
-						'feed',
-						'story',
-						'native ads',
-						'afiliado',
-					],
+					Veículo: {
+						"data":[
+							'google_ads',
+							'facebook',
+							'verizon',
+							'globo',
+							'afilio',
+						],
+						"index": 0,
+					},
+					Inserção: {
+						"data":[
+							'CPC',
+							'feed',
+							'story',
+							'native ads',
+							'afiliado',
+						],
+						"index": 1,
+					},
 					campanha: ['fifinha-na-copa', 'fifinha na copa da emoção'],
 					categoriaDoProduto: ['videogame', 'game'],
 				})

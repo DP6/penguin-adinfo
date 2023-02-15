@@ -15,7 +15,7 @@ describe('GoogleAds', () => {
 				separator: ':',
 				spaceSeparator: '_',
 				columns: {
-					'Tipo de Compra': ['cpa', 'cpc'],
+					'Tipo de Compra': {"data":['cpa', 'cpc'], "index": 0},
 					Dispositivo: ['desktop e mobile'],
 					Produto: ['/.*/'],
 				},
@@ -52,7 +52,7 @@ describe('GoogleAds', () => {
 				separator: ':',
 				spaceSeparator: '_',
 				columns: {
-					'Tipo de Compra': ['cpa', 'cpc'],
+					'Tipo de Compra': {"data":['cpa', 'cpc'], "index": 0},
 					Dispositivo: ['desktop e mobile'],
 					Produto: ['fif'],
 				},
@@ -91,7 +91,7 @@ describe('GoogleAds', () => {
 				separator: ':',
 				spaceSeparator: '_',
 				columns: {
-					'Tipo de Compra': ['cpa', 'cpc'],
+					'Tipo de Compra': {"data":['cpa', 'cpc'], "index": 0},
 					Dispositivo: ['desktop e mobile'],
 					Produto: ['/.*/'],
 				},
@@ -144,7 +144,7 @@ describe('GoogleAds', () => {
 				separator: ':',
 				spaceSeparator: '_',
 				columns: {
-					'Tipo de Compra': ['cpa', 'cpc'],
+					'Tipo de Compra': {"data":['cpa', 'cpc'], "index": 0},
 					Dispositivo: ['desktop'],
 					Produto: ['/.*/'],
 				},
@@ -197,7 +197,7 @@ describe('GoogleAds', () => {
 				separator: ':',
 				spaceSeparator: '_',
 				columns: {
-					'Tipo de Compra': ['cpa', 'cpc'],
+					'Tipo de Compra': {"data":['cpa', 'cpc'], "index": 0},
 					Dispositivo: ['desktop'],
 					Produto: ['/.*/'],
 				},
@@ -250,7 +250,7 @@ describe('GoogleAds', () => {
 				separator: ':',
 				spaceSeparator: '_',
 				columns: {
-					'Tipo de Compra': ['cpa', 'cpc'],
+					'Tipo de Compra': {"data":['cpa', 'cpc'], "index": 0},
 					Dispositivo: ['desktop e mobile'],
 					Produto: ['fif'],
 				},

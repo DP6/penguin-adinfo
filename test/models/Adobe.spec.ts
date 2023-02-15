@@ -14,7 +14,7 @@ describe('Adobe', () => {
 				separator: ':',
 				spaceSeparator: '_',
 				columns: {
-					'Tipo de Compra': ['cpa', 'cpc'],
+					'Tipo de Compra': {"data":['cpa', 'cpc'], "index": 0},
 					Bandeira: [],
 					Veículo: [],
 				},
@@ -45,7 +45,7 @@ describe('Adobe', () => {
 				separator: ':',
 				spaceSeparator: '_',
 				columns: {
-					'Tipo de Compra': ['cpa', 'cpc'],
+					'Tipo de Compra': {"data":['cpa', 'cpc'], "index": 0},
 					Bandeira: ['/meuProdut[ai]/'],
 					Veículo: ['/.*/'],
 				},
@@ -76,7 +76,7 @@ describe('Adobe', () => {
 				separator: ':',
 				spaceSeparator: '_',
 				columns: {
-					'Tipo de Compra': ['cpa', 'cpc'],
+					'Tipo de Compra': {"data":['cpa', 'cpc'], "index": 0},
 					Bandeira: ['/meu\\ ?Produto/'],
 					Veículo: [],
 				},
@@ -107,7 +107,7 @@ describe('Adobe', () => {
 				separator: ':',
 				spaceSeparator: '_',
 				columns: {
-					'Tipo de Compra': ['cpa', 'cpc'],
+					'Tipo de Compra': {"data":['cpa', 'cpc'], "index": 0},
 					Bandeira: ['/meu\\ ?Produto/'],
 					Veículo: [],
 				},
@@ -138,7 +138,7 @@ describe('Adobe', () => {
 				separator: ':',
 				spaceSeparator: '_',
 				columns: {
-					'Tipo de Compra': ['cpa', 'cpc'],
+					'Tipo de Compra': {"data":['cpa', 'cpc'], "index": 0},
 					Bandeira: ['/meu\\ ?Produto/'],
 					Veículo: [],
 				},
@@ -169,7 +169,7 @@ describe('Adobe', () => {
 				separator: ':',
 				spaceSeparator: '_',
 				columns: {
-					'Tipo de Compra': ['cpa', 'cpc'],
+					'Tipo de Compra': {"data":['cpa', 'cpc'], "index": 0},
 					Bandeira: ['/meu\\ ?Produto/'],
 					Veículo: [],
 				},
@@ -201,7 +201,7 @@ describe('Adobe', () => {
 				separator: ':',
 				spaceSeparator: '_',
 				columns: {
-					'Tipo de Compra': ['cpa', 'cpc'],
+					'Tipo de Compra': {"data":['cpa', 'cpc'], "index": 0},
 					Dispositivo: [],
 					Veículo: [],
 				},
@@ -241,7 +241,7 @@ describe('Adobe', () => {
 				separator: ':',
 				spaceSeparator: '_',
 				columns: {
-					'Tipo de Compra': ['cpa', 'cpc'],
+					'Tipo de Compra': {"data":['cpa', 'cpc'], "index": 0},
 					Bandeira: [],
 					Dispositivo: [],
 					Veículo: [],
@@ -289,7 +289,7 @@ describe('Adobe', () => {
 				separator: ':',
 				spaceSeparator: '_',
 				columns: {
-					'Tipo de Compra': ['cpa', 'cpc'],
+					'Tipo de Compra': {"data":['cpa', 'cpc'], "index": 0},
 					Bandeira: [],
 					Dispositivo: [],
 					Veículo: [],
@@ -337,7 +337,7 @@ describe('Adobe', () => {
 				separator: ':',
 				spaceSeparator: '_',
 				columns: {
-					'Tipo de Compra': ['cpa', 'cpc'],
+					'Tipo de Compra': {"data":['cpa', 'cpc'], "index": 0},
 					Bandeira: ['/meu\\ ?Produto/'],
 					Veículo: [],
 				},
