@@ -55,6 +55,24 @@ class CampaignDAO {
 				throw err;
 			});
 	}
+	getCampaignById(campaignId) {
+		return this._objectStore
+			.getDocumentById(this._campaignCollection, campaignId)
+			.then((campaignDocument) => {
+				const campaign = new Campaign_1.Campaign(
+					campaignDocument.get('name'),
+					campaignDocument.get('advertiser'),
+					campaignDocument.get('adOpsTeam'),
+					campaignDocument.get('campaignId'),
+					campaignDocument.get('active'),
+					campaignDocument.get('created')
+				);
+				return campaign;
+			})
+			.catch((err) => {
+				throw err;
+			});
+	}
 	getAllCampaignsFrom(adOpsTeam, userRequestPermission) {
 		return this._objectStore
 			.getAllDocumentsFrom(this._campaignCollection)
@@ -94,6 +112,16 @@ class CampaignDAO {
 				})
 			)
 			.catch((err) => {
+				return false;
+			});
+	}
+	deleteCampaign(campaignId) {
+		return this._objectStore
+			.deleteDocumentById(this._campaignCollection, campaignId)
+			.then(() => {
+				return true;
+			})
+			.catch(() => {
 				return false;
 			});
 	}

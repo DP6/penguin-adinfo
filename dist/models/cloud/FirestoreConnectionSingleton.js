@@ -79,6 +79,9 @@ class FirestoreConnectionSingleton extends ObjectStore_1.ObjectStore {
 	updateDocumentById(collection, id, updateData) {
 		return collection.doc(id).update(updateData);
 	}
+	deleteDocumentById(collection, id) {
+		return collection.doc(id).delete();
+	}
 	getDocumentFiltered(collection, conditions) {
 		let query;
 		for (let i = 0; i < conditions.length; i++) {

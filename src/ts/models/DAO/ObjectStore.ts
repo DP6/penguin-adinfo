@@ -23,6 +23,7 @@ export abstract class ObjectStore {
 		id: string,
 		updateData: { [key: string]: any }
 	): Promise<WriteResult>;
+	abstract deleteDocumentById(collection: CollectionReference, id: string): Promise<WriteResult>;
 	abstract getDocumentFiltered(
 		collection: CollectionReference,
 		conditions: { key: string; operator: WhereFilterOp; value: string | number | boolean }[]

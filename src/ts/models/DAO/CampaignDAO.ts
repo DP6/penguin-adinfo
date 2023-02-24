@@ -36,6 +36,31 @@ export class CampaignDAO {
 	}
 
 	/**
+	 * Consulta a campanha na base de dados
+	 * @param campaignId Campanha que será buscada
+	 * @returns Retorna a campanha procurada
+	 */
+	public getCampaignById(campaignId: string): Promise<Campaign | void> {
+		return this._objectStore
+			.getDocumentById(this._campaignCollection, campaignId)
+			.then((campaignDocument) => {
+				const campaign: Campaign = new Campaign(
+					campaignDocument.get('name'),
+					campaignDocument.get('advertiser'),
+					campaignDocument.get('adOpsTeam'),
+					campaignDocument.get('campaignId'),
+					campaignDocument.get('active'),
+					campaignDocument.get('created')
+				);
+
+				return campaign;
+			})
+			.catch((err) => {
+				throw err;
+			});
+	}
+
+	/**
 	 * Retorna todas as adOpsTeams de um advertiser
 	 * @param adOpsTeam adOpsTeam das campanhas a serem buscados
 	 * @param userRequestPermission permissão do usuario que solicitou a alteração
@@ -90,6 +115,22 @@ export class CampaignDAO {
 				return true;
 			})
 			.catch((err) => {
+				return false;
+			});
+	}
+
+	/**
+	 * Deleta uma campanha
+	 * @param campaignId campanha que será deletada
+	 * @returns Retorna True caso a campanha tenha sido deletada com sucesso
+	 */
+	public deleteCampaign(campaignId: string): Promise<boolean> {
+		return this._objectStore
+			.deleteDocumentById(this._campaignCollection, campaignId)
+			.then(() => {
+				return true;
+			})
+			.catch(() => {
 				return false;
 			});
 	}

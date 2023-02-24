@@ -31,6 +31,37 @@ const user = (app) => {
 		apiResponse.responseText = JSON.stringify(user);
 		res.status(apiResponse.statusCode).send(apiResponse.jsonResponse);
 	});
+	app.delete('/user/:id/delete', (req, res) => {
+		const apiResponse = new ApiResponse_1.ApiResponse();
+		const targetUserId = req.params.id;
+		const userDAO = new UserDAO_1.UserDAO();
+		userDAO
+			.getUserById(targetUserId)
+			.then((user) => {
+				if (
+					(req.permission === 'adOpsManager' && user.adOpsTeam !== req.adOpsTeam) ||
+					(req.permission === 'admin' && user.permission === 'owner')
+				)
+					throw new Error('Usuário sem permissão');
+				return userDAO.deleteUser(targetUserId);
+			})
+			.then((result) => {
+				if (result) {
+					apiResponse.statusCode = 200;
+					apiResponse.responseText = 'Usuário deletado com sucesso!';
+				} else {
+					throw new Error('Erro ao deletar usuário!');
+				}
+			})
+			.catch((err) => {
+				apiResponse.statusCode = 500;
+				apiResponse.responseText = err.message;
+				apiResponse.errorMessage = err.message;
+			})
+			.finally(() => {
+				res.status(apiResponse.statusCode).send(apiResponse.jsonResponse);
+			});
+	});
 	app.post('/user/changepass', (req, res) => {
 		const apiResponse = new ApiResponse_1.ApiResponse();
 		new UserDAO_1.UserDAO(req.email, req.body.password)

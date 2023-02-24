@@ -69,6 +69,16 @@ class AdOpsTeamDAO {
 				throw err;
 			});
 	}
+	deleteAdopsteam(adOpsTeamId) {
+		return this._objectStore
+			.deleteDocumentById(this._adOpsTeamCollection, adOpsTeamId)
+			.then(() => {
+				return true;
+			})
+			.catch(() => {
+				return false;
+			});
+	}
 	deactivateAdOpsTeam(adOpsTeamId) {
 		return this._objectStore
 			.updateDocumentById(this._adOpsTeamCollection, adOpsTeamId, { active: false })
