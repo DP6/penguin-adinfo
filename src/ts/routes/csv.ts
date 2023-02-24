@@ -1,6 +1,7 @@
 import { FileDAO } from '../models/DAO/FileDAO';
 import { DateUtils } from '../utils/DateUtils';
 import { ApiResponse } from '../models/ApiResponse';
+import { CampaignDAO } from '../models/DAO/CampaignDAO';
 
 const csv = (app: { [key: string]: any }): void => {
 	app.post('/csv', (req: { [key: string]: any }, res: { [key: string]: any }) => {
@@ -39,6 +40,26 @@ const csv = (app: { [key: string]: any }): void => {
 			.catch((err) => {
 				apiResponse.responseText = 'Falha ao salvar arquivo!';
 				apiResponse.statusCode = 500;
+				apiResponse.errorMessage = err.message;
+			})
+			.finally(() => {
+				res.status(apiResponse.statusCode).send(apiResponse.jsonResponse);
+			});
+	});
+
+	app.get('/campaign/:adOpsTeam/list', async (req: { [key: string]: any }, res: { [key: string]: any }) => {
+		const apiResponse = new ApiResponse();
+		const adOpsTeam = req.params.adOpsTeam !== 'Campanhas Internas' ? req.params.adOpsTeam : 'AdvertiserCampaigns';
+		const permission = req.permission;
+
+		new CampaignDAO()
+			.getAllCampaignsFrom(adOpsTeam, permission)
+			.then((adOpsTeams: { campaignName: string; campaignId: string }[]) => {
+				apiResponse.responseText = JSON.stringify(adOpsTeams);
+			})
+			.catch((err) => {
+				apiResponse.statusCode = 500;
+				apiResponse.responseText = err.message;
 				apiResponse.errorMessage = err.message;
 			})
 			.finally(() => {
@@ -87,6 +108,53 @@ const csv = (app: { [key: string]: any }): void => {
 				} else {
 					res.status(apiResponse.statusCode).send(apiResponse.jsonResponse);
 				}
+			});
+	});
+
+	app.get('/:adOpsTeam/:campaignId/csv/list', async (req: { [key: string]: any }, res: { [key: string]: any }) => {
+		const apiResponse = new ApiResponse();
+		const campaignId = req.params.campaignId;
+
+		const adOpsTeam = req.params.adOpsTeam;
+		const adOpsTeamPath = adOpsTeam === 'Campanhas Internas' ? 'AdvertiserCampaigns' : adOpsTeam;
+		const advertiser = req.advertiser;
+		const permission = req.permission;
+		const campaignObject = new CampaignDAO();
+		const campaign = await campaignObject.getCampaign(campaignId);
+		const fileDAO = new FileDAO();
+
+		// uma evolucao aqui eh o owner/admin conseguir ver (e selecionar) as campanhas de todas as agencias
+		if (
+			(permission === 'adOpsManager' || permission === 'user') &&
+			(!adOpsTeam || adOpsTeam === 'Campanhas Internas')
+		) {
+			apiResponse.responseText = 'Nenhuma adOpsTeam foi informada!';
+			apiResponse.statusCode = 400;
+			res.status(apiResponse.statusCode).send(apiResponse.jsonResponse);
+			return;
+		} else if (!campaign) {
+			apiResponse.responseText = 'Nenhuma campanha foi informada!';
+			apiResponse.statusCode = 400;
+			res.status(apiResponse.statusCode).send(apiResponse.jsonResponse);
+			return;
+		}
+
+		const filePath = `${advertiser}/${adOpsTeamPath}/${campaign}/`;
+
+		fileDAO
+			.getAllFilesFromStore(filePath)
+			.then((data) => {
+				const files = data[0].filter((file) => /\.csv$/.test(file.name)).map((file) => file.name);
+				apiResponse.responseText = files.join(',');
+				apiResponse.statusCode = 200;
+			})
+			.catch((err) => {
+				apiResponse.errorMessage = err.message;
+				apiResponse.responseText = `Falha ao restaurar os arquivos!`;
+				apiResponse.statusCode = 500;
+			})
+			.finally(() => {
+				res.status(apiResponse.statusCode).send(apiResponse.jsonResponse);
 			});
 	});
 
