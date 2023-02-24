@@ -19,7 +19,11 @@ const campaign = (app: { [key: string]: any }): void => {
 			throw new Error('Usuário sem permissão para realizar esta ação!');
 		}
 		if (!campaignName) {
-			throw new Error('Necessário nome da Campanha!');
+			apiResponse.statusCode = 400;
+			apiResponse.responseText = 'Necessário nome da Campanha!';
+			apiResponse.errorMessage = 'Necessário nome da Campanha!';
+			res.status(apiResponse.statusCode).send(apiResponse.jsonResponse);
+			return;
 		}
 
 		const campaignObject = new Campaign(campaignName, advertiser, adOpsTeam, '', true, created);
@@ -45,6 +49,37 @@ const campaign = (app: { [key: string]: any }): void => {
 			.catch((err) => {
 				apiResponse.statusCode = 500;
 				apiResponse.responseText = 'Erro ao criar campanha!';
+				apiResponse.errorMessage = err.message;
+			})
+			.finally(() => {
+				res.status(apiResponse.statusCode).send(apiResponse.jsonResponse);
+			});
+	});
+
+	app.delete('/campaign/:id/delete', (req: { [key: string]: any }, res: { [key: string]: any }) => {
+		const apiResponse = new ApiResponse();
+
+		const targetCampaignId = req.params.id;
+		const campaignDAO = new CampaignDAO();
+
+		campaignDAO
+			.getCampaignById(targetCampaignId)
+			.then((campaign: Campaign) => {
+				if (req.permission === 'adOpsManager' && campaign.adOpsTeam !== req.adOpsTeam)
+					throw new Error('Usuário sem permissão');
+				return campaignDAO.deleteCampaign(targetCampaignId);
+			})
+			.then((result: boolean) => {
+				if (result) {
+					apiResponse.statusCode = 200;
+					apiResponse.responseText = 'Campanha deletada com sucesso!';
+				} else {
+					throw new Error('Erro ao deletar campanha!');
+				}
+			})
+			.catch((err) => {
+				apiResponse.statusCode = 500;
+				apiResponse.responseText = err.message;
 				apiResponse.errorMessage = err.message;
 			})
 			.finally(() => {
