@@ -15,7 +15,7 @@ describe('Veículo Genérico', () => {
 				separator: ':',
 				spaceSeparator: '_',
 				columns: {
-					'Tipo de Compra': ['cpa', 'cpc'],
+					'Tipo de Compra': {"data":['cpa', 'cpc'], "index": 0},
 					Dispositivo: ['desktop e mobile'],
 					Produto: ['/.*/'],
 				},
@@ -52,7 +52,7 @@ describe('Veículo Genérico', () => {
 				separator: ':',
 				spaceSeparator: '_',
 				columns: {
-					'Tipo de Compra': ['cpa', 'cpc'],
+					'Tipo de Compra': {"data":['cpa', 'cpc'], "index": 0},
 					Dispositivo: ['desktop e mobile'],
 					Produto: ['fif'],
 				},
@@ -89,7 +89,7 @@ describe('Veículo Genérico', () => {
 				separator: ':',
 				spaceSeparator: '_',
 				columns: {
-					'Tipo de Compra': ['cpa', 'cpc'],
+					'Tipo de Compra': {"data":['cpa', 'cpc'], "index": 0},
 					Dispositivo: ['desktop e mobile'],
 				},
 				analyticsTools: {
@@ -127,7 +127,7 @@ describe('Veículo Genérico', () => {
 				separator: ':',
 				spaceSeparator: '_',
 				columns: {
-					'Tipo de Compra': ['cpa', 'cpc'],
+					'Tipo de Compra': {"data":['cpa', 'cpc'], "index": 0},
 					Dispositivo: ['desktop e mobile'],
 					Produto: ['/.*/'],
 				},
@@ -173,7 +173,7 @@ describe('Veículo Genérico', () => {
 				separator: ':',
 				spaceSeparator: '_',
 				columns: {
-					'Tipo de Compra': ['cpa', 'cpc'],
+					'Tipo de Compra': {"data":['cpa', 'cpc'], "index": 0},
 					Dispositivo: ['desktop e mobile'],
 					Produto: ['fif'],
 				},

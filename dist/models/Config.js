@@ -48,7 +48,9 @@ class Config {
 			!this._insertTime ||
 			!this._version ||
 			!this._analyticsTools ||
-			!this._validationRules
+			!this._validationRules ||
+			!this._columnData ||
+			!this._columnIndex
 		);
 	}
 	_buildDependenciesConfig(dependenciesConfig) {

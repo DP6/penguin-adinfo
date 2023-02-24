@@ -13,6 +13,8 @@ export class Config {
 	private _mediaTaxonomy: { [key: string]: any };
 	private _validationRules: { [key: string]: string[] };
 	private _columnNames: string[];
+	private _columnData: { [key: string]: string[] };
+	private _columnIndex: { [key: string]: number };
 	private _dependenciesConfig: DependencyConfig[];
 
 	constructor(jsonConfig: { [key: string]: any }) {
@@ -61,7 +63,9 @@ export class Config {
 			!this._insertTime ||
 			!this._version ||
 			!this._analyticsTools ||
-			!this._validationRules
+			!this._validationRules ||
+			!this._columnData ||
+			!this._columnIndex
 		);
 	}
 

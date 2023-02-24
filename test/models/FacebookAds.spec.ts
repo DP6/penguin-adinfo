@@ -15,7 +15,7 @@ describe('FacebookAds', () => {
 				separator: ':',
 				spaceSeparator: '_',
 				columns: {
-					'Tipo de Compra': ['cpa', 'cpc'],
+					'Tipo de Compra': {"data":['cpa', 'cpc'], "index": 0},
 					Dispositivo: ['desktop e mobile'],
 					Produto: ['/.*/'],
 				},
@@ -52,7 +52,7 @@ describe('FacebookAds', () => {
 				separator: ':',
 				spaceSeparator: '_',
 				columns: {
-					'Tipo de Compra': ['cpa', 'cpc'],
+					'Tipo de Compra': {"data":['cpa', 'cpc'], "index": 0},
 					Dispositivo: ['desktop e mobile'],
 					Produto: ['fif'],
 				},
@@ -89,7 +89,7 @@ describe('FacebookAds', () => {
 				separator: ':',
 				spaceSeparator: '_',
 				columns: {
-					'Tipo de Compra': ['cpa', 'cpc'],
+					'Tipo de Compra': {"data":['cpa', 'cpc'], "index": 0},
 					Dispositivo: ['desktop e mobile'],
 				},
 				analyticsTools: {
@@ -128,7 +128,7 @@ describe('FacebookAds', () => {
 				separator: ':',
 				spaceSeparator: '_',
 				columns: {
-					'Tipo de Compra': ['cpa', 'cpc'],
+					'Tipo de Compra': {"data":['cpa', 'cpc'], "index": 0},
 					Dispositivo: ['desktop e mobile'],
 					Produto: ['/.*/'],
 				},
@@ -181,7 +181,7 @@ describe('FacebookAds', () => {
 				separator: ':',
 				spaceSeparator: '_',
 				columns: {
-					'Tipo de Compra': ['cpa', 'cpc'],
+					'Tipo de Compra': {"data":['cpa', 'cpc'], "index": 0},
 					Dispositivo: ['desktop e mobile'],
 					Produto: ['fif'],
 				},
@@ -234,7 +234,7 @@ describe('FacebookAds', () => {
 				separator: ':',
 				spaceSeparator: '_',
 				columns: {
-					'Tipo de Compra': ['cpa', 'cpc'],
+					'Tipo de Compra': {"data":['cpa', 'cpc'], "index": 0},
 					Dispositivo: ['desktop e mobile'],
 					Produto: ['fif'],
 				},
@@ -287,7 +287,7 @@ describe('FacebookAds', () => {
 				separator: ':',
 				spaceSeparator: '_',
 				columns: {
-					'Tipo de Compra': ['cpa', 'cpc'],
+					'Tipo de Compra': {"data":['cpa', 'cpc'], "index": 0},
 					Dispositivo: ['desktop e mobile'],
 					Produto: ['fif'],
 				},
