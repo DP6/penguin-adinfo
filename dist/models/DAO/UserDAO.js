@@ -43,7 +43,7 @@ class UserDAO {
 		this._pathToCollection = ['users'];
 		this._userCollection = this._objectStore.getCollection(this._pathToCollection);
 	}
-	getAllUsersFrom(advertiser, userRequestPermission) {
+	getAllUsersFrom(advertiser) {
 		return this._objectStore
 			.getAllDocumentsFrom(this._userCollection)
 			.then((allUsersDocuments) => {

@@ -200,7 +200,6 @@ export class UserDAO {
 			.getAllDocumentsFrom(this._userCollection)
 			.then((allUsersDocuments) => {
 				const [userToDeactivate] = allUsersDocuments.filter((user) => user.userid === userId);
-				//e bom verificar a routes permission, pra ver quem pode acessars
 				if (
 					userToDeactivate.permission === 'user' ||
 					((userToDeactivate.permission === 'admin' || userToDeactivate.permission === 'adOpsManager') &&

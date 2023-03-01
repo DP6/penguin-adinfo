@@ -64,7 +64,6 @@ const user = (app: { [key: string]: any }): void => {
 
 	app.post('/user/:id/deactivate', (req: { [key: string]: any }, res: { [key: string]: any }) => {
 		const apiResponse = new ApiResponse();
-
 		const targetUserId = req.params.id;
 
 		new UserDAO()
@@ -89,7 +88,6 @@ const user = (app: { [key: string]: any }): void => {
 
 	app.post('/user/:id/reactivate', (req: { [key: string]: any }, res: { [key: string]: any }) => {
 		const apiResponse = new ApiResponse();
-
 		const targetUserId = req.params.id;
 
 		new UserDAO()
