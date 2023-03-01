@@ -3,6 +3,7 @@ import { FileDAO } from '../models/DAO/FileDAO';
 import { CampaignDAO } from '../models/DAO/CampaignDAO';
 import { Campaign } from '../models/Campaign';
 import { DateUtils } from '../utils/DateUtils';
+import adOpsTeam from './adOpsTeam';
 
 const campaign = (app: { [key: string]: any }): void => {
 	app.post('/campaign', async (req: { [key: string]: any }, res: { [key: string]: any }) => {
@@ -140,8 +141,10 @@ const campaign = (app: { [key: string]: any }): void => {
 		const apiResponse = new ApiResponse();
 		const campaignId = req.params.id;
 		const permission = req.permission;
+		const userAdOpsTeam = req.adOpsTeam;
+		const AdopsCampaign = await new CampaignDAO().getAdopsteamCampaign(campaignId);
 
-		if (permission != 'user') {
+		if (permission != 'user' && userAdOpsTeam === AdopsCampaign) {
 			new CampaignDAO()
 				.deactivateCampaign(campaignId)
 				.then((result: boolean) => {
@@ -160,15 +163,22 @@ const campaign = (app: { [key: string]: any }): void => {
 				.finally(() => {
 					res.status(apiResponse.statusCode).send(apiResponse.jsonResponse);
 				});
+		} else {
+			apiResponse.statusCode = 500;
+			apiResponse.responseText = 'Erro ao desativar Campanha!';
+			apiResponse.errorMessage = 'Erro ao desativar Campanha!';
+			res.status(apiResponse.statusCode).send(apiResponse.jsonResponse);
 		}
 	});
 
-	app.post('/campaign/:id/reactivate', (req: { [key: string]: any }, res: { [key: string]: any }) => {
+	app.post('/campaign/:id/reactivate', async (req: { [key: string]: any }, res: { [key: string]: any }) => {
 		const apiResponse = new ApiResponse();
 		const campaignId = req.params.id;
 		const permission = req.permission;
+		const userAdOpsTeam = req.adOpsTeam;
+		const AdopsCampaign = await new CampaignDAO().getAdopsteamCampaign(campaignId);
 
-		if (permission != 'user') {
+		if (permission != 'user' && userAdOpsTeam === AdopsCampaign) {
 			new CampaignDAO()
 				.reactivateCampaign(campaignId)
 				.then((result: boolean) => {
@@ -187,6 +197,11 @@ const campaign = (app: { [key: string]: any }): void => {
 				.finally(() => {
 					res.status(apiResponse.statusCode).send(apiResponse.jsonResponse);
 				});
+		} else {
+			apiResponse.statusCode = 500;
+			apiResponse.responseText = 'Erro ao reativar Campanha!';
+			apiResponse.errorMessage = 'Erro ao reativar Campanha!';
+			res.status(apiResponse.statusCode).send(apiResponse.jsonResponse);
 		}
 	});
 };

@@ -51,10 +51,7 @@ class UserDAO {
 				const allAdvertiserUsers = allUsersDocuments.filter((user) => user.advertiser === advertiser);
 				if (allAdvertiserUsers.length > 0) {
 					allAdvertiserUsers.forEach((advertiserUser) => {
-						if (
-							advertiserUser.permission !== 'owner' ||
-							(userRequestPermission === 'admin' && advertiserUser.permission === 'user')
-						) {
+						if (advertiserUser.permission === 'user') {
 							const user = new User_1.User(
 								advertiserUser.userid,
 								advertiserUser.permission,

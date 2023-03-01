@@ -5,8 +5,9 @@ import { User } from '../models/User';
 const user = (app: { [key: string]: any }): void => {
 	app.get('/users', (req: { [key: string]: any }, res: { [key: string]: any }) => {
 		const apiResponse = new ApiResponse();
+
 		new UserDAO()
-			.getAllUsersFrom(req.advertiser, req.permission)
+			.getAllUsersFrom(req.advertiser)
 			.then((users: User[]) => {
 				apiResponse.responseText = JSON.stringify(users.map((user: User) => user.toJson()));
 			})

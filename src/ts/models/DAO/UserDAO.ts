@@ -28,7 +28,7 @@ export class UserDAO {
 	 * @param userRequestPermission permissão do usuario que solicitou a alteração
 	 * @returns Lista de usuários
 	 */
-	public getAllUsersFrom(advertiser: string, userRequestPermission: string): Promise<User[] | void> {
+	public getAllUsersFrom(advertiser: string): Promise<User[] | void> {
 		return this._objectStore
 			.getAllDocumentsFrom(this._userCollection)
 			.then((allUsersDocuments) => {
@@ -36,10 +36,7 @@ export class UserDAO {
 				const allAdvertiserUsers = allUsersDocuments.filter((user) => user.advertiser === advertiser);
 				if (allAdvertiserUsers.length > 0) {
 					allAdvertiserUsers.forEach((advertiserUser) => {
-						if (
-							advertiserUser.permission !== 'owner' ||
-							(userRequestPermission === 'admin' && advertiserUser.permission === 'user')
-						) {
+						if (advertiserUser.permission === 'user') {
 							const user = new User(
 								advertiserUser.userid,
 								advertiserUser.permission,
@@ -203,6 +200,7 @@ export class UserDAO {
 			.getAllDocumentsFrom(this._userCollection)
 			.then((allUsersDocuments) => {
 				const [userToDeactivate] = allUsersDocuments.filter((user) => user.userid === userId);
+				//e bom verificar a routes permission, pra ver quem pode acessars
 				if (
 					userToDeactivate.permission === 'user' ||
 					((userToDeactivate.permission === 'admin' || userToDeactivate.permission === 'adOpsManager') &&

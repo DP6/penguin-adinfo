@@ -163,7 +163,9 @@ const campaign = (app) => {
 			const apiResponse = new ApiResponse_1.ApiResponse();
 			const campaignId = req.params.id;
 			const permission = req.permission;
-			if (permission != 'user') {
+			const userAdOpsTeam = req.adOpsTeam;
+			const AdopsCampaign = yield new CampaignDAO_1.CampaignDAO().getAdopsteamCampaign(campaignId);
+			if (permission != 'user' && userAdOpsTeam === AdopsCampaign) {
 				new CampaignDAO_1.CampaignDAO()
 					.deactivateCampaign(campaignId)
 					.then((result) => {
@@ -182,33 +184,47 @@ const campaign = (app) => {
 					.finally(() => {
 						res.status(apiResponse.statusCode).send(apiResponse.jsonResponse);
 					});
+			} else {
+				apiResponse.statusCode = 500;
+				apiResponse.responseText = 'Erro ao desativar Campanha!';
+				apiResponse.errorMessage = 'Erro ao desativar Campanha!';
+				res.status(apiResponse.statusCode).send(apiResponse.jsonResponse);
 			}
 		})
 	);
-	app.post('/campaign/:id/reactivate', (req, res) => {
-		const apiResponse = new ApiResponse_1.ApiResponse();
-		const campaignId = req.params.id;
-		const permission = req.permission;
-		if (permission != 'user') {
-			new CampaignDAO_1.CampaignDAO()
-				.reactivateCampaign(campaignId)
-				.then((result) => {
-					if (result) {
-						apiResponse.statusCode = 200;
-						apiResponse.responseText = 'Campanha reativada com sucesso!';
-					} else {
-						throw new Error('Erro ao reativar campanha!');
-					}
-				})
-				.catch((err) => {
-					apiResponse.statusCode = 500;
-					apiResponse.responseText = 'Erro ao reativar campanha!';
-					apiResponse.errorMessage = err.message;
-				})
-				.finally(() => {
-					res.status(apiResponse.statusCode).send(apiResponse.jsonResponse);
-				});
-		}
-	});
+	app.post('/campaign/:id/reactivate', (req, res) =>
+		__awaiter(void 0, void 0, void 0, function* () {
+			const apiResponse = new ApiResponse_1.ApiResponse();
+			const campaignId = req.params.id;
+			const permission = req.permission;
+			const userAdOpsTeam = req.adOpsTeam;
+			const AdopsCampaign = yield new CampaignDAO_1.CampaignDAO().getAdopsteamCampaign(campaignId);
+			if (permission != 'user' && userAdOpsTeam === AdopsCampaign) {
+				new CampaignDAO_1.CampaignDAO()
+					.reactivateCampaign(campaignId)
+					.then((result) => {
+						if (result) {
+							apiResponse.statusCode = 200;
+							apiResponse.responseText = 'Campanha reativada com sucesso!';
+						} else {
+							throw new Error('Erro ao reativar campanha!');
+						}
+					})
+					.catch((err) => {
+						apiResponse.statusCode = 500;
+						apiResponse.responseText = 'Erro ao reativar campanha!';
+						apiResponse.errorMessage = err.message;
+					})
+					.finally(() => {
+						res.status(apiResponse.statusCode).send(apiResponse.jsonResponse);
+					});
+			} else {
+				apiResponse.statusCode = 500;
+				apiResponse.responseText = 'Erro ao reativar Campanha!';
+				apiResponse.errorMessage = 'Erro ao reativar Campanha!';
+				res.status(apiResponse.statusCode).send(apiResponse.jsonResponse);
+			}
+		})
+	);
 };
 exports.default = campaign;

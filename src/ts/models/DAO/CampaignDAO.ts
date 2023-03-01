@@ -3,6 +3,7 @@ import { FirestoreConnectionSingleton } from '../cloud/FirestoreConnectionSingle
 import { CollectionReference, WhereFilterOp } from '@google-cloud/firestore';
 import { Campaign } from '../Campaign';
 import { JsonUtils } from '../../utils/JsonUtils';
+import adOpsTeam from '../../routes/adOpsTeam';
 
 export class CampaignDAO {
 	private _objectStore: ObjectStore;
@@ -129,6 +130,42 @@ export class CampaignDAO {
 			})
 			.catch((err) => {
 				return false;
+			});
+	}
+
+	/**Retorna o adopsteam de uma campanha
+	 * @param CampaignId ID da campanha a ser buscada
+	 * @retuns retorna a adopsteam da campanha
+	 */
+	public getAdopsteamCampaign(campaignId: string): Promise<Campaign[] | string> {
+		const equal: WhereFilterOp = '==';
+		const conditions = [
+			{
+				key: 'campaignId',
+				operator: equal,
+				value: campaignId,
+			},
+		];
+		return this._objectStore
+			.getDocumentFiltered(this._campaignCollection, conditions)
+			.then((campaignsDocuments) => {
+				const campanha: Campaign[] = [];
+				campaignsDocuments.docs.map((campaignsDocument) => {
+					campanha.push(
+						new Campaign(
+							campaignsDocument.get('name'),
+							campaignsDocument.get('advertiser'),
+							campaignsDocument.get('adOpsTeam'),
+							campaignsDocument.get('campaignId'),
+							campaignsDocument.get('active'),
+							campaignsDocument.get('created')
+						)
+					);
+				});
+				return campanha[0].adOpsTeam;
+			})
+			.catch((err) => {
+				throw err;
 			});
 	}
 

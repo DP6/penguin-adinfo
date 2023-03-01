@@ -128,6 +128,37 @@ class CampaignDAO {
 				return false;
 			});
 	}
+	getAdopsteamCampaign(campaignId) {
+		const equal = '==';
+		const conditions = [
+			{
+				key: 'campaignId',
+				operator: equal,
+				value: campaignId,
+			},
+		];
+		return this._objectStore
+			.getDocumentFiltered(this._campaignCollection, conditions)
+			.then((campaignsDocuments) => {
+				const campanha = [];
+				campaignsDocuments.docs.map((campaignsDocument) => {
+					campanha.push(
+						new Campaign_1.Campaign(
+							campaignsDocument.get('name'),
+							campaignsDocument.get('advertiser'),
+							campaignsDocument.get('adOpsTeam'),
+							campaignsDocument.get('campaignId'),
+							campaignsDocument.get('active'),
+							campaignsDocument.get('created')
+						)
+					);
+				});
+				return campanha[0].adOpsTeam;
+			})
+			.catch((err) => {
+				throw err;
+			});
+	}
 	deactivateCampaign(campaignId) {
 		return this._objectStore
 			.updateDocumentById(this._campaignCollection, campaignId, { active: false })
