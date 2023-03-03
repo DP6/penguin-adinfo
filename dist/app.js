@@ -70,7 +70,7 @@ app.use(
 		],
 		exposedHeaders: ['Authorization'],
 		origin: '*',
-		methods: 'GET, POST',
+		methods: 'GET, POST, DELETE',
 		preflightContinue: false,
 	})
 );

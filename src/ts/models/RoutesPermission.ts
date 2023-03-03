@@ -24,39 +24,68 @@ export class RoutesPermission {
 		];
 		const adOpsManagerGetRoutes = adOpsTeamUserGetRoutes.slice();
 		const adOpsManagerPostRoutes = adOpsTeamUserPostRoutes.slice();
+		const adOpsManagerDeleteRoutes = ['/campaign/.*/delete', '/user/.*/delete'];
 
 		adOpsManagerGetRoutes.push('/template/excel', '/users', '/adOpsTeam/users');
 		adOpsManagerPostRoutes.push(
 			'/register',
 			'/user/.*/deactivate',
 			'/user/.*/reactivate',
-			'/user/.*/delete',
 			'/campaign/.*/deactivate',
 			'/campaign/.*/reactivate',
-			'/campaign/.*/delete',
 			'/campaign'
 		);
 
-		if (user.permission === 'user') {
-			if (this._method === 'POST') {
-				return adOpsTeamUserPostRoutes.filter((route) => new RegExp(route).test(this._route)).length > 0;
-			} else if (this._method === 'GET') {
-				return adOpsTeamUserGetRoutes.filter((route) => new RegExp(route).test(this._route)).length > 0;
-			} else {
-				return false;
-			}
-		} else if (user.permission === 'adOpsManager') {
-			if (this._method === 'POST') {
-				return adOpsManagerPostRoutes.filter((route) => new RegExp(route).test(this._route)).length > 0;
-			} else if (this._method === 'GET') {
-				return adOpsManagerGetRoutes.filter((route) => new RegExp(route).test(this._route)).length > 0;
-			} else {
-				return false;
-			}
-		} else if (user.permission === 'admin' || user.permission === 'owner') {
+		// if (user.permission === 'user') {
+		// 	if (this._method === 'POST') {
+		// 		return adOpsTeamUserPostRoutes.filter((route) => new RegExp(route).test(this._route)).length > 0;
+		// 	} else if (this._method === 'GET') {
+		// 		return adOpsTeamUserGetRoutes.filter((route) => new RegExp(route).test(this._route)).length > 0;
+		// 	} else {
+		// 		return false;
+		// 	}
+		// } else if (user.permission === 'adOpsManager') {
+		// 	if (this._method === 'POST') {
+		// 		return adOpsManagerPostRoutes.filter((route) => new RegExp(route).test(this._route)).length > 0;
+		// 	} else if (this._method === 'GET') {
+		// 		return adOpsManagerGetRoutes.filter((route) => new RegExp(route).test(this._route)).length > 0;
+		// 	} else if(this._method === 'DELETE'){
+		// 		return adOpsManagerDeleteRoutes.filter((route) => new RegExp(route).test(this._route)).length > 0;
+		// 	} else {
+		// 		return false;
+		// 	}
+		// } else if (user.permission === 'admin' || user.permission === 'owner') {
+		// 	return true;
+		// } else {
+		// 	return false;
+		// }
+
+		type RouteMap = Record<string, string[]>;
+
+		const permissionRoutes: Record<string, RouteMap> = {
+			user: {
+				GET: adOpsTeamUserGetRoutes,
+				POST: adOpsTeamUserPostRoutes,
+			},
+			adOpsManager: {
+				GET: adOpsManagerGetRoutes,
+				POST: adOpsManagerPostRoutes,
+				DELETE: adOpsManagerDeleteRoutes,
+			},
+			admin: {},
+			owner: {},
+		};
+
+		if (user.permission === 'admin' || user.permission === 'owner') {
 			return true;
-		} else {
+		}
+
+		const routes = permissionRoutes[user.permission];
+		if (!routes) {
 			return false;
 		}
+
+		const allowedRoutes = routes[this._method] || [];
+		return allowedRoutes.some((route) => new RegExp(route).test(this._route));
 	}
 }
