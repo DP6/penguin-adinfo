@@ -45,7 +45,8 @@ const user = (app: { [key: string]: any }): void => {
 			.then((user: User) => {
 				if (
 					(req.permission === 'adOpsManager' && user.adOpsTeam !== req.adOpsTeam) ||
-					(req.permission === 'admin' && user.permission === 'owner')
+					(req.permission === 'admin' && user.permission === 'owner') ||
+					(req.permission === 'admin' && user.permission === 'admin')
 				)
 					throw new Error('Usuário sem permissão');
 				return userDAO.deleteUser(targetUserId);
