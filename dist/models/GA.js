@@ -7,7 +7,7 @@ const StringEmptyHandler_1 = require('../Handlers/StringEmptyHandler');
 const ValidateFieldHandler_1 = require('../Handlers/ValidateFieldHandler');
 const ValidateFieldDependencyHandler_1 = require('../Handlers/ValidateFieldDependencyHandler');
 class GA extends AnalyticsTool_1.AnalyticsTool {
-	constructor(csvLine, config) {
+	constructor(csvLine, config, encodeParams = true) {
 		super(csvLine, config);
 		this._utms = {};
 		this._hasValidationError = {};
@@ -20,6 +20,7 @@ class GA extends AnalyticsTool_1.AnalyticsTool {
 			this._validationErrorMessage[utm] = 'Parâmetros incorretos:';
 			this._undefinedParameterErroMessage[utm] = 'Parâmetros não encontrados:';
 		});
+		this._encodeParams = encodeParams;
 		this._utms = this._buildUtms();
 		this.url = this._buildUrl();
 	}
@@ -96,6 +97,9 @@ class GA extends AnalyticsTool_1.AnalyticsTool {
 	_buildUrl() {
 		let utmString = '';
 		Object.keys(this._utms).forEach((utm) => {
+			if (this._encodeParams) {
+				utm = encodeURIComponent(utm);
+			}
 			utmString += `${utm}=${this._utms[utm]}&`;
 		});
 		const ancora = this.csvLine.url.match(/#.*/);
