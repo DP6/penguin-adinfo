@@ -7,7 +7,7 @@ const StringEmptyHandler_1 = require('../Handlers/StringEmptyHandler');
 const ValidateFieldHandler_1 = require('../Handlers/ValidateFieldHandler');
 const ValidateFieldDependencyHandler_1 = require('../Handlers/ValidateFieldDependencyHandler');
 class Adobe extends AnalyticsTool_1.AnalyticsTool {
-	constructor(csvLine, config) {
+	constructor(csvLine, config, encodeParams = true) {
 		super(csvLine, config);
 		this._cid = '';
 		this._hasValidationError = false;
@@ -71,6 +71,9 @@ class Adobe extends AnalyticsTool_1.AnalyticsTool {
 		return cid;
 	}
 	_buildUrl() {
+		if (this._encodeParams) {
+			this._cid = encodeURIComponent(this._cid);
+		}
 		const ancora = this.csvLine.url.match(/#.*/);
 		const newUrl = this.csvLine.url.replace(`${ancora}`, '');
 		const regex = /\?/;

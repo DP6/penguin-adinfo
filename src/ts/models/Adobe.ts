@@ -40,7 +40,7 @@ export class Adobe extends AnalyticsTool {
 	 * @param csvLine Json contendo as colunas preenchidas no csv e seus valores
 	 * @param config
 	 */
-	constructor(csvLine: { [key: string]: string }, config: Config) {
+	constructor(csvLine: { [key: string]: string }, config: Config, encodeParams = true) {
 		super(csvLine, config);
 		this._cid = this._buildCid();
 		this.url = this._buildUrl();
@@ -116,6 +116,9 @@ export class Adobe extends AnalyticsTool {
 	 * Construção da url para adobe
 	 */
 	protected _buildUrl(): string {
+		if (this._encodeParams) {
+			this._cid = encodeURIComponent(this._cid);
+		}
 		const ancora = this.csvLine.url.match(/#.*/);
 		const newUrl = this.csvLine.url.replace(`${ancora}`, '');
 		const regex = /\?/;

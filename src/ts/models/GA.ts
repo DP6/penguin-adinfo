@@ -41,7 +41,7 @@ export class GA extends AnalyticsTool {
 	 * @param csvLine Json contendo as colunas preenchidas no csv e seus valores
 	 * @param config
 	 */
-	constructor(csvLine: { [key: string]: string }, config: Config) {
+	constructor(csvLine: { [key: string]: string }, config: Config, encodeParams = true) {
 		super(csvLine, config);
 		Object.keys(this.config.analyticsTool.ga).map((utm) => {
 			this._hasValidationError[utm] = false;
@@ -49,6 +49,7 @@ export class GA extends AnalyticsTool {
 			this._validationErrorMessage[utm] = 'Parâmetros incorretos:';
 			this._undefinedParameterErroMessage[utm] = 'Parâmetros não encontrados:';
 		});
+		this._encodeParams = encodeParams;
 		this._utms = this._buildUtms();
 		this.url = this._buildUrl();
 	}
@@ -150,6 +151,9 @@ export class GA extends AnalyticsTool {
 	protected _buildUrl(): string {
 		let utmString = '';
 		Object.keys(this._utms).forEach((utm) => {
+			if (this._encodeParams) {
+				utm = encodeURIComponent(utm);
+			}
 			utmString += `${utm}=${this._utms[utm]}&`;
 		});
 		const ancora = this.csvLine.url.match(/#.*/);

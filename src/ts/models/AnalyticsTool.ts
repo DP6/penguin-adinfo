@@ -2,6 +2,7 @@ import { Parametrizer } from './Parametrizer';
 
 export abstract class AnalyticsTool extends Parametrizer {
 	protected _url: string;
+	protected _encodeParams: boolean;
 
 	get url(): string {
 		return this._url;
