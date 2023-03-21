@@ -82,7 +82,7 @@ const campaign = (app) => {
 	app.get('/campaign/:adOpsTeam/list', (req, res) =>
 		__awaiter(void 0, void 0, void 0, function* () {
 			const apiResponse = new ApiResponse_1.ApiResponse();
-			const adOpsTeam = req.params.adOpsTeam !== 'Campanhas Internas' ? req.params.adOpsTeam : 'AdvertiserCampaigns';
+			const adOpsTeam = req.params.adOpsTeam === ':adOpsTeam' ? '' : req.params.adOpsTeam;
 			const permission = req.permission;
 			const advertiser = req.advertiser;
 			if ((req.permission === 'owner' || req.permission === 'admin') && !req.params.adOpsTeam) {
@@ -99,20 +99,21 @@ const campaign = (app) => {
 					.finally(() => {
 						res.status(apiResponse.statusCode).send(apiResponse.jsonResponse);
 					});
+			} else {
+				new CampaignDAO_1.CampaignDAO()
+					.getAllCampaignsFrom(adOpsTeam, permission)
+					.then((adOpsTeams) => {
+						apiResponse.responseText = JSON.stringify(adOpsTeams);
+					})
+					.catch((err) => {
+						apiResponse.statusCode = 500;
+						apiResponse.responseText = err.message;
+						apiResponse.errorMessage = err.message;
+					})
+					.finally(() => {
+						res.status(apiResponse.statusCode).send(apiResponse.jsonResponse);
+					});
 			}
-			new CampaignDAO_1.CampaignDAO()
-				.getAllCampaignsFrom(adOpsTeam, permission)
-				.then((adOpsTeams) => {
-					apiResponse.responseText = JSON.stringify(adOpsTeams);
-				})
-				.catch((err) => {
-					apiResponse.statusCode = 500;
-					apiResponse.responseText = err.message;
-					apiResponse.errorMessage = err.message;
-				})
-				.finally(() => {
-					res.status(apiResponse.statusCode).send(apiResponse.jsonResponse);
-				});
 		})
 	);
 	app.get('/:adOpsTeam/:campaignId/csv/list', (req, res) =>
