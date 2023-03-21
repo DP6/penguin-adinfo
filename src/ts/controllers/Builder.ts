@@ -34,7 +34,7 @@ export class Builder {
 			const parameters = parametrizerObject.buildedLine();
 			if (this._media) {
 				const mediaParameters = new ParametrizerFactory(lineFromFile, this._advertiserConfig)
-					.build(StringUtils.normalize(this._media))
+					.build(this._media)
 					.buildedLine();
 				const allParameters = {
 					...mediaParameters.values,
