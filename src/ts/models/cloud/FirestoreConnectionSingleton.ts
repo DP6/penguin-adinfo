@@ -14,7 +14,6 @@ import { ObjectStore } from '../DAO/ObjectStore';
 export class FirestoreConnectionSingleton extends ObjectStore {
 	private _db: Firestore;
 	private static _instance: FirestoreConnectionSingleton;
-
 	private constructor() {
 		super();
 		if (process.env.ENV === 'development') {
@@ -156,6 +155,16 @@ export class FirestoreConnectionSingleton extends ObjectStore {
 			else query = query.where(conditions[i].key, conditions[i].operator, conditions[i].value);
 		}
 		return query.get();
+	}
+
+	/**
+	 * Deleta um documento no banco de Documentos
+	 * @param collection Coleção onde está o documento
+	 * @param id ID do documento
+	 * @returns Documento deletado
+	 */
+	public deleteDocumentById(collection: CollectionReference, id: string): Promise<WriteResult> {
+		return collection.doc(id).delete();
 	}
 
 	/**

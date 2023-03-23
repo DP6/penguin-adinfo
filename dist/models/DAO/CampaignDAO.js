@@ -55,6 +55,24 @@ class CampaignDAO {
 			}
 		});
 	}
+	getCampaignById(campaignId) {
+		return this._objectStore
+			.getDocumentById(this._campaignCollection, campaignId)
+			.then((campaignDocument) => {
+				const campaign = new Campaign_1.Campaign(
+					campaignDocument.get('name'),
+					campaignDocument.get('advertiser'),
+					campaignDocument.get('adOpsTeam'),
+					campaignDocument.get('campaignId'),
+					campaignDocument.get('active'),
+					campaignDocument.get('created')
+				);
+				return campaign;
+			})
+			.catch((err) => {
+				throw err;
+			});
+	}
 	getAllCampaigns(advertiser) {
 		const equal = '==';
 		const conditions = [
@@ -209,6 +227,16 @@ class CampaignDAO {
 			})
 			.catch((err) => {
 				throw err;
+			});
+	}
+	deleteCampaign(campaignId) {
+		return this._objectStore
+			.deleteDocumentById(this._campaignCollection, campaignId)
+			.then(() => {
+				return true;
+			})
+			.catch(() => {
+				return false;
 			});
 	}
 	campaignExists(campaignName) {

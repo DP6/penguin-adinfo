@@ -2,8 +2,6 @@ import { ObjectStore } from './ObjectStore';
 import { FirestoreConnectionSingleton } from '../cloud/FirestoreConnectionSingleton';
 import { CollectionReference, WhereFilterOp } from '@google-cloud/firestore';
 import { Campaign } from '../Campaign';
-import { JsonUtils } from '../../utils/JsonUtils';
-import adOpsTeam from '../../routes/adOpsTeam';
 
 export class CampaignDAO {
 	private _objectStore: ObjectStore;
@@ -35,6 +33,30 @@ export class CampaignDAO {
 				return campaigns.docs[0].id;
 			}
 		});
+	}
+
+	/**
+	 * Consulta a campanha na base de dados
+	 * @param campaignId Campanha que será buscada
+	 * @returns Retorna a campanha procurada
+	 */
+	public getCampaignById(campaignId: string): Promise<Campaign | void> {
+		return this._objectStore
+			.getDocumentById(this._campaignCollection, campaignId)
+			.then((campaignDocument) => {
+				const campaign: Campaign = new Campaign(
+					campaignDocument.get('name'),
+					campaignDocument.get('advertiser'),
+					campaignDocument.get('adOpsTeam'),
+					campaignDocument.get('campaignId'),
+					campaignDocument.get('active'),
+					campaignDocument.get('created')
+				);
+				return campaign;
+			})
+			.catch((err) => {
+				throw err;
+			});
 	}
 
 	/**
@@ -133,7 +155,8 @@ export class CampaignDAO {
 			});
 	}
 
-	/**Retorna o adopsteam de uma campanha
+	/**
+	 * Retorna o adopsteam de uma campanha
 	 * @param CampaignId ID da campanha a ser buscada
 	 * @retuns retorna a adopsteam da campanha
 	 */
@@ -239,6 +262,22 @@ export class CampaignDAO {
 			})
 			.catch((err) => {
 				throw err;
+			});
+	}
+
+	/**
+	 * Deleta uma campanha
+	 * @param campaignId campanha que será deletada
+	 * @returns Retorna True caso a campanha tenha sido deletada com sucesso
+	 */
+	public deleteCampaign(campaignId: string): Promise<boolean> {
+		return this._objectStore
+			.deleteDocumentById(this._campaignCollection, campaignId)
+			.then(() => {
+				return true;
+			})
+			.catch(() => {
+				return false;
 			});
 	}
 

@@ -159,6 +159,34 @@ const campaign = (app) => {
 				});
 		})
 	);
+	app.delete('/campaign/:id/delete', (req, res) => {
+		const apiResponse = new ApiResponse_1.ApiResponse();
+		const targetCampaignId = req.params.id;
+		const campaignDAO = new CampaignDAO_1.CampaignDAO();
+		campaignDAO
+			.getCampaignById(targetCampaignId)
+			.then((campaign) => {
+				if (req.permission === 'adOpsManager' && campaign.adOpsTeam !== req.adOpsTeam)
+					throw new Error('Usuário sem permissão');
+				return campaignDAO.deleteCampaign(targetCampaignId);
+			})
+			.then((result) => {
+				if (result) {
+					apiResponse.statusCode = 200;
+					apiResponse.responseText = 'Campanha deletada com sucesso!';
+				} else {
+					throw new Error('Erro ao deletar campanha!');
+				}
+			})
+			.catch((err) => {
+				apiResponse.statusCode = 500;
+				apiResponse.responseText = err.message;
+				apiResponse.errorMessage = err.message;
+			})
+			.finally(() => {
+				res.status(apiResponse.statusCode).send(apiResponse.jsonResponse);
+			});
+	});
 	app.post('/campaign/:id/deactivate', (req, res) =>
 		__awaiter(void 0, void 0, void 0, function* () {
 			const apiResponse = new ApiResponse_1.ApiResponse();

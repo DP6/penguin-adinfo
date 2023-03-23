@@ -87,6 +87,9 @@ class FirestoreConnectionSingleton extends ObjectStore_1.ObjectStore {
 		}
 		return query.get();
 	}
+	deleteDocumentById(collection, id) {
+		return collection.doc(id).delete();
+	}
 	documentExists(collection, conditions) {
 		return this.getDocumentFiltered(collection, conditions)
 			.then((documents) => documents.docs.length > 0)
