@@ -6,7 +6,7 @@ const user = (app) => {
 	app.get('/users', (req, res) => {
 		const apiResponse = new ApiResponse_1.ApiResponse();
 		new UserDAO_1.UserDAO()
-			.getAllUsersFrom(req.advertiser, req.permission)
+			.getAllUsersFrom(req.advertiser)
 			.then((users) => {
 				apiResponse.responseText = JSON.stringify(users.map((user) => user.toJson()));
 			})

@@ -86,21 +86,38 @@ const campaign = (app) => {
 	app.get('/campaign/:adOpsTeam/list', (req, res) =>
 		__awaiter(void 0, void 0, void 0, function* () {
 			const apiResponse = new ApiResponse_1.ApiResponse();
-			const adOpsTeam = req.params.adOpsTeam !== 'Campanhas Internas' ? req.params.adOpsTeam : 'AdvertiserCampaigns';
+			const adOpsTeam = req.params.adOpsTeam === ':adOpsTeam' ? '' : req.params.adOpsTeam;
 			const permission = req.permission;
-			new CampaignDAO_1.CampaignDAO()
-				.getAllCampaignsFrom(adOpsTeam, permission)
-				.then((adOpsTeams) => {
-					apiResponse.responseText = JSON.stringify(adOpsTeams);
-				})
-				.catch((err) => {
-					apiResponse.statusCode = 500;
-					apiResponse.responseText = err.message;
-					apiResponse.errorMessage = err.message;
-				})
-				.finally(() => {
-					res.status(apiResponse.statusCode).send(apiResponse.jsonResponse);
-				});
+			const advertiser = req.advertiser;
+			if ((req.permission === 'owner' || req.permission === 'admin') && !req.params.adOpsTeam) {
+				new CampaignDAO_1.CampaignDAO()
+					.getAllCampaigns(advertiser)
+					.then((campanha) => {
+						apiResponse.responseText = JSON.stringify(campanha);
+					})
+					.catch((err) => {
+						apiResponse.statusCode = 500;
+						apiResponse.responseText = err.message;
+						apiResponse.errorMessage = err.message;
+					})
+					.finally(() => {
+						res.status(apiResponse.statusCode).send(apiResponse.jsonResponse);
+					});
+			} else {
+				new CampaignDAO_1.CampaignDAO()
+					.getAllCampaignsFrom(adOpsTeam, permission)
+					.then((adOpsTeams) => {
+						apiResponse.responseText = JSON.stringify(adOpsTeams);
+					})
+					.catch((err) => {
+						apiResponse.statusCode = 500;
+						apiResponse.responseText = err.message;
+						apiResponse.errorMessage = err.message;
+					})
+					.finally(() => {
+						res.status(apiResponse.statusCode).send(apiResponse.jsonResponse);
+					});
+			}
 		})
 	);
 	app.get('/:adOpsTeam/:campaignId/csv/list', (req, res) =>
@@ -179,48 +196,68 @@ const campaign = (app) => {
 			const apiResponse = new ApiResponse_1.ApiResponse();
 			const campaignId = req.params.id;
 			const permission = req.permission;
-			new CampaignDAO_1.CampaignDAO()
-				.deactivateCampaign(campaignId, permission)
-				.then((result) => {
-					if (result) {
-						apiResponse.statusCode = 200;
-						apiResponse.responseText = 'Campanha desativada com sucesso!';
-					} else {
-						throw new Error('Erro ao desativar campanha!');
-					}
-				})
-				.catch((err) => {
-					apiResponse.statusCode = 500;
-					apiResponse.responseText = 'Erro ao desativar campanha!';
-					apiResponse.errorMessage = err.message;
-				})
-				.finally(() => {
-					res.status(apiResponse.statusCode).send(apiResponse.jsonResponse);
-				});
+			const userAdOpsTeam = req.adOpsTeam;
+			const AdopsCampaign = yield new CampaignDAO_1.CampaignDAO().getAdopsteamCampaign(campaignId);
+			if (permission != 'user' && userAdOpsTeam === AdopsCampaign) {
+				new CampaignDAO_1.CampaignDAO()
+					.deactivateCampaign(campaignId)
+					.then((result) => {
+						if (result) {
+							apiResponse.statusCode = 200;
+							apiResponse.responseText = 'Campanha desativada com sucesso!';
+						} else {
+							throw new Error('Erro ao desativar campanha!');
+						}
+					})
+					.catch((err) => {
+						apiResponse.statusCode = 500;
+						apiResponse.responseText = 'Erro ao desativar campanha!';
+						apiResponse.errorMessage = err.message;
+					})
+					.finally(() => {
+						res.status(apiResponse.statusCode).send(apiResponse.jsonResponse);
+					});
+			} else {
+				apiResponse.statusCode = 500;
+				apiResponse.responseText = 'Erro ao desativar Campanha!';
+				apiResponse.errorMessage = 'Erro ao desativar Campanha!';
+				res.status(apiResponse.statusCode).send(apiResponse.jsonResponse);
+			}
 		})
 	);
-	app.post('/campaign/:id/reactivate', (req, res) => {
-		const apiResponse = new ApiResponse_1.ApiResponse();
-		const campaignId = req.params.id;
-		const permission = req.permission;
-		new CampaignDAO_1.CampaignDAO()
-			.reactivateCampaign(campaignId, permission)
-			.then((result) => {
-				if (result) {
-					apiResponse.statusCode = 200;
-					apiResponse.responseText = 'Campanha reativada com sucesso!';
-				} else {
-					throw new Error('Erro ao reativar campanha!');
-				}
-			})
-			.catch((err) => {
+	app.post('/campaign/:id/reactivate', (req, res) =>
+		__awaiter(void 0, void 0, void 0, function* () {
+			const apiResponse = new ApiResponse_1.ApiResponse();
+			const campaignId = req.params.id;
+			const permission = req.permission;
+			const userAdOpsTeam = req.adOpsTeam;
+			const AdopsCampaign = yield new CampaignDAO_1.CampaignDAO().getAdopsteamCampaign(campaignId);
+			if (permission != 'user' && userAdOpsTeam === AdopsCampaign) {
+				new CampaignDAO_1.CampaignDAO()
+					.reactivateCampaign(campaignId)
+					.then((result) => {
+						if (result) {
+							apiResponse.statusCode = 200;
+							apiResponse.responseText = 'Campanha reativada com sucesso!';
+						} else {
+							throw new Error('Erro ao reativar campanha!');
+						}
+					})
+					.catch((err) => {
+						apiResponse.statusCode = 500;
+						apiResponse.responseText = 'Erro ao reativar campanha!';
+						apiResponse.errorMessage = err.message;
+					})
+					.finally(() => {
+						res.status(apiResponse.statusCode).send(apiResponse.jsonResponse);
+					});
+			} else {
 				apiResponse.statusCode = 500;
-				apiResponse.responseText = 'Erro ao reativar campanha!';
-				apiResponse.errorMessage = err.message;
-			})
-			.finally(() => {
+				apiResponse.responseText = 'Erro ao reativar Campanha!';
+				apiResponse.errorMessage = 'Erro ao reativar Campanha!';
 				res.status(apiResponse.statusCode).send(apiResponse.jsonResponse);
-			});
-	});
+			}
+		})
+	);
 };
 exports.default = campaign;
