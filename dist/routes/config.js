@@ -20,16 +20,14 @@ const config = (app) => {
 			for (let i = 0; i < array.length; i++) {
 				for (let j = 0; j < array.length; j++) {
 					if (array[i] === array[j] && i != j) {
+						apiResponse.statusCode = 500;
 						apiResponse.responseText = 'Erro ao criar a configuração! Configuração com valores repetidos!';
 						apiResponse.errorMessage = 'Erro ao criar a configuração! Configuração com valores repetidos!';
-						apiResponse.statusCode = 500;
+						res.status(apiResponse.statusCode).send(apiResponse.jsonResponse);
+						return;
 					}
 				}
 			}
-			apiResponse.responseText = 'Configuração criada com sucesso!';
-			apiResponse.statusCode = 200;
-			res.status(apiResponse.statusCode).send(apiResponse.jsonResponse);
-			return;
 		};
 		const percorreObjeto = (objetos) => {
 			for (const propriedade in objetos) {
