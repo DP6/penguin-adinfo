@@ -20,19 +20,19 @@ export class CampaignDAO {
 	 * @returns Retorna campanha procurada
 	 */
 	public getCampaign(campaignId: string): Promise<string | void> {
-		return this._objectStore
-			.getAllDocumentsFrom(this._campaignCollection)
-			.then((campaigns) => {
-				if (campaigns.length > 0) {
-					const [filteredCampaign] = campaigns.filter((campaign) => campaign.campaignId === campaignId);
-					return filteredCampaign.name;
-				} else {
-					throw new Error('Nenhuma campanha encontrada!');
-				}
-			})
-			.catch((err) => {
-				throw err;
-			});
+		const equal: WhereFilterOp = '==';
+		const conditions = [
+			{
+				key: 'campaignId',
+				operator: equal,
+				value: campaignId,
+			},
+		];
+		return this._objectStore.getDocumentFiltered(this._campaignCollection, conditions).then((campaigns) => {
+			if (campaigns.docs.length > 0) {
+				return campaigns.docs[0].id;
+			}
+		});
 	}
 
 	/**
@@ -54,6 +54,43 @@ export class CampaignDAO {
 				);
 
 				return campaign;
+			})
+			.catch((err) => {
+				throw err;
+			});
+	}
+
+	/**
+	 * retorna todas as campanhas de todos os adopsteam de um advertiser.
+	 * @param advertiser do usuario onde vão ser pegado as campanhas.
+	 * @returns Lista Objetos contendo atributos de cada campanha
+	 */
+	public getAllCampaigns(advertiser: string): Promise<Campaign[] | void> {
+		const equal: WhereFilterOp = '==';
+		const conditions = [
+			{
+				key: 'advertiser',
+				operator: equal,
+				value: advertiser,
+			},
+		];
+		return this._objectStore
+			.getDocumentFiltered(this._campaignCollection, conditions)
+			.then((campaignsDocuments) => {
+				const campanha: Campaign[] = [];
+				campaignsDocuments.docs.map((campaignsDocument) => {
+					campanha.push(
+						new Campaign(
+							campaignsDocument.get('name'),
+							campaignsDocument.get('advertiser'),
+							campaignsDocument.get('adOpsTeam'),
+							campaignsDocument.get('campaignId'),
+							campaignsDocument.get('active'),
+							campaignsDocument.get('created')
+						)
+					);
+				});
+				return campanha;
 			})
 			.catch((err) => {
 				throw err;
@@ -120,6 +157,43 @@ export class CampaignDAO {
 	}
 
 	/**
+	 * Retorna o adopsteam de uma campanha
+	 * @param CampaignId ID da campanha a ser buscada
+	 * @retuns retorna a adopsteam da campanha
+	 */
+	public getAdopsteamCampaign(campaignId: string): Promise<Campaign[] | string> {
+		const equal: WhereFilterOp = '==';
+		const conditions = [
+			{
+				key: 'campaignId',
+				operator: equal,
+				value: campaignId,
+			},
+		];
+		return this._objectStore
+			.getDocumentFiltered(this._campaignCollection, conditions)
+			.then((campaignsDocuments) => {
+				const campanha: Campaign[] = [];
+				campaignsDocuments.docs.map((campaignsDocument) => {
+					campanha.push(
+						new Campaign(
+							campaignsDocument.get('name'),
+							campaignsDocument.get('advertiser'),
+							campaignsDocument.get('adOpsTeam'),
+							campaignsDocument.get('campaignId'),
+							campaignsDocument.get('active'),
+							campaignsDocument.get('created')
+						)
+					);
+				});
+				return campanha[0].adOpsTeam;
+			})
+			.catch((err) => {
+				throw err;
+			});
+	}
+
+	/**
 	 * Deleta uma campanha
 	 * @param campaignId campanha que será deletada
 	 * @returns Retorna True caso a campanha tenha sido deletada com sucesso
@@ -141,22 +215,10 @@ export class CampaignDAO {
 	 * @param userRequestPermission permissão do usuario que solicitou a alteração
 	 * @returns retorna True em caso de sucesso
 	 */
-	public deactivateCampaign(campaignId: string, userRequestPermission: string): Promise<boolean | void> {
+	public deactivateCampaign(campaignId: string): Promise<boolean> {
 		return this._objectStore
-			.getAllDocumentsFrom(this._campaignCollection)
-			.then((campaigns) => {
-				if (userRequestPermission !== 'user') {
-					const [filteredCampaign] = campaigns.filter((campaign) => campaign.campaignId === campaignId);
-					filteredCampaign.active = false;
-					return filteredCampaign;
-				} else {
-					throw new Error('Permissões insuficientes para inavitar a campanha!');
-				}
-			})
-			.then((filteredCampaign) => {
-				this._objectStore.getCollection(this._pathToCollection).doc(campaignId).update(filteredCampaign);
-				return true;
-			})
+			.updateDocumentById(this._campaignCollection, campaignId, { active: false })
+			.then(() => true)
 			.catch((err) => {
 				throw err;
 			});
@@ -168,22 +230,10 @@ export class CampaignDAO {
 	 * @param userRequestPermission permissão do usuario que solicitou a alteração
 	 * @returns retorna True em caso de sucesso
 	 */
-	public reactivateCampaign(campaignId: string, userRequestPermission: string): Promise<boolean | void> {
+	public reactivateCampaign(campaignId: string): Promise<boolean> {
 		return this._objectStore
-			.getAllDocumentsFrom(this._campaignCollection)
-			.then((campaigns) => {
-				if (userRequestPermission !== 'user') {
-					const [filteredCampaign] = campaigns.filter((campaign) => campaign.campaignId === campaignId);
-					filteredCampaign.active = true;
-					return filteredCampaign;
-				} else {
-					throw new Error('Permissões insuficientes para inavitar a campanha!');
-				}
-			})
-			.then((filteredCampaign) => {
-				this._objectStore.getCollection(this._pathToCollection).doc(campaignId).update(filteredCampaign);
-				return true;
-			})
+			.updateDocumentById(this._campaignCollection, campaignId, { active: true })
+			.then(() => true)
 			.catch((err) => {
 				throw err;
 			});
